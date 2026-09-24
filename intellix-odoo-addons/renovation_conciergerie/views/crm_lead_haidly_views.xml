@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="crm_lead_view_form_haidly" model="ir.ui.view">
+        <field name="name">crm.lead.form.haidly</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Haidly — SoumissionEntrepreneurs" name="haidly_ia">
+                    <group>
+                        <group string="Projet rénovation">
+                            <field name="haidly_source"/>
+                            <field name="reno_project_type"/>
+                            <field name="reno_types"/>
+                            <field name="reno_budget"/>
+                            <field name="reno_delai"/>
+                            <field name="reno_property_type"/>
+                            <field name="reno_style"/>
+                        </group>
+                        <group string="Score &amp; suivi">
+                            <field name="haidly_ia_score"/>
+                            <field name="haidly_ia_score_numeric"/>
+                            <field name="haidly_total_call_attempts"/>
+                            <field name="haidly_nurture_active"/>
+                            <field name="haidly_do_not_call"/>
+                            <field name="haidly_transfer_at"/>
+                            <field name="haidly_elevenlabs_conv_id"/>
+                        </group>
+                    </group>
+                    <group string="Services &amp; subventions">
+                        <field name="reno_plans_3d_offerts"/>
+                        <field name="reno_photos_uploadees"/>
+                        <field name="reno_lien_photos_envoye"/>
+                        <field name="reno_projet_multigenerationnel"/>
+                        <field name="reno_aine_present"/>
+                        <field name="reno_subventions_applicables"/>
+                        <field name="reno_subvention_estimee"/>
+                    </group>
+                    <field name="haidly_call_transcript" nolabel="1"/>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

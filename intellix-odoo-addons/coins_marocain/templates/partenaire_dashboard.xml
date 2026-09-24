@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="partenaire_hebergement_nav" name="Nav portail hébergement">
+        <nav class="cm-note" style="margin-bottom:18px;display:flex;flex-wrap:wrap;gap:10px 14px;">
+            <a t-attf-href="/partenaire/{{ token }}">Aperçu</a>
+            <a t-attf-href="/partenaire/{{ token }}/hebergement">Paramètres</a>
+            <a t-attf-href="/partenaire/{{ token }}/messages">Messages</a>
+            <a t-attf-href="/partenaire/{{ token }}/performance">Performance</a>
+            <a t-attf-href="/partenaire/{{ token }}/reservations">Réservations</a>
+            <a t-attf-href="/partenaire/{{ token }}/facturation">Facturation</a>
+        </nav>
+    </template>
+
+    <template id="partenaire_performance_page" name="Portail — Performance">
+        <html lang="fr">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <title>Performance — <t t-out="prop.name"/> — Coins Marocain</title>
+                <link rel="preconnect" href="https://fonts.googleapis.com"/>
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
+                <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,500&amp;family=Playfair+Display:wght@600&amp;family=Jost:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+                <link rel="stylesheet" href="/coins_marocain/static/src/css/partenaire_portal.css"/>
+            </head>
+            <body>
+                <div class="cm-wrap">
+                    <header class="cm-hero">
+                        <p class="cm-kicker">Coins Marocain · Performance</p>
+                        <h1><t t-out="prop.name"/></h1>
+                        <p>Temps de réponse, avis par plateforme, facteurs de ranking — données de ce lieu uniquement.</p>
+                    </header>
+                    <t t-call="coins_marocain.partenaire_hebergement_nav"/>
+
+                    <div class="cm-card">
+                        <h2>Temps de réponse</h2>
+                        <p style="font-size:28px;margin:8px 0;font-family:'Playfair Display',Georgia,serif;">
+                            <t t-out="perf['response']['display']"/>
+                        </p>
+                        <p class="cm-note"><t t-out="perf['response']['context']"/></p>
+
+                        <h2>Avis par plateforme</h2>
+                        <t t-foreach="perf['reviews']" t-as="rev">
+                            <div style="margin:0 0 22px;padding-bottom:16px;border-bottom:1px solid #e6ddcc;">
+                                <h3 style="font-size:16px;margin:0 0 8px;"><t t-out="rev['platform_label']"/></h3>
+                                <t t-if="rev.get('empty')">
+                                    <p class="cm-note"><t t-out="rev['empty_note']"/></p>
+                                </t>
+                                <p class="cm-note">
+                                    <t t-out="rev['overall_label']"/> :
+                                    <b>
+                                        <t t-if="rev.get('overall')">
+                                            <t t-out="rev['overall']"/>
+                                        </t>
+                                        <t t-else="">—</t>
+                                    </b>
+                                    — <t t-out="rev['overall_note']"/>
+                                </p>
+                                <t t-foreach="rev['categories']" t-as="cat">
+                                    <p style="margin:4px 0;font-size:14px;">
+                                        <t t-out="cat['label']"/> :
+                                        <b><t t-out="cat['display']"/></b>
+                                        <t t-if="cat.get('weight_hint')">
+                                            <span class="cm-note"> · <t t-out="cat['weight_hint']"/></span>
+                                        </t>
+                                    </p>
+                                </t>
+                            </div>
+                        </t>
+
+                        <h2>Facteurs de ranking (bruts)</h2>
+                        <t t-foreach="perf['ranking']" t-as="rk">
+                            <div style="margin:0 0 16px;">
+                                <h3 style="font-size:15px;margin:0 0 6px;"><t t-out="rk['platform']"/></h3>
+                                <ul style="margin:0;padding-left:18px;font-size:14px;">
+                                    <t t-foreach="rk['factors']" t-as="f">
+                                        <li><t t-out="f"/></li>
+                                    </t>
+                                </ul>
+                                <p class="cm-note"><t t-out="rk['note']"/></p>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </body>
+        </html>
+    </template>
+
+    <template id="partenaire_reservations_page" name="Portail — Réservations">
+        <html lang="fr">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <title>Réservations — <t t-out="prop.name"/> — Coins Marocain</title>
+                <link rel="preconnect" href="https://fonts.googleapis.com"/>
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
+                <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,500&amp;family=Playfair+Display:wght@600&amp;family=Jost:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+                <link rel="stylesheet" href="/coins_marocain/static/src/css/partenaire_portal.css"/>
+            </head>
+            <body>
+                <div class="cm-wrap">
+                    <header class="cm-hero">
+                        <p class="cm-kicker">Coins Marocain · Réservations</p>
+                        <h1><t t-out="prop.name"/></h1>
+                        <p>Groupées par statut existant — ce lieu uniquement.</p>
+                    </header>
+                    <t t-call="coins_marocain.partenaire_hebergement_nav"/>
+
+                    <t t-if="nudge_ok">
+                        <div class="cm-ok">Relance enregistrée — visible dans Messages.</div>
+                    </t>
+                    <t t-if="error">
+                        <div class="cm-err"><t t-out="error"/></div>
+                    </t>
+
+                    <t t-foreach="groups" t-as="grp">
+                        <div class="cm-card" style="margin-bottom:16px;">
+                            <h2><t t-out="grp['label']"/>
+                                <span class="cm-note">(<t t-out="grp['count']"/>)</span>
+                            </h2>
+                            <t t-if="grp.get('hint')">
+                                <p class="cm-note"><t t-out="grp['hint']"/></p>
+                            </t>
+                            <t t-if="not grp['rows']">
+                                <p class="cm-note">Aucune réservation dans ce groupe.</p>
+                            </t>
+                            <t t-foreach="grp['rows']" t-as="row">
+                                <div style="margin:0 0 14px;padding-bottom:12px;border-bottom:1px solid #e6ddcc;">
+                                    <p style="margin:0 0 4px;font-size:15px;">
+                                        <b><t t-out="row['name']"/></b>
+                                        — <t t-out="row['guest']"/>
+                                    </p>
+                                    <p class="cm-note" style="margin:0;">
+                                        <t t-out="row['check_in']"/> → <t t-out="row['check_out']"/>
+                                        · <t t-out="row['source_label']"/>
+                                        · <t t-out="row['state_label']"/>
+                                        · <t t-out="'%.0f' % row['amount']"/> MAD
+                                    </p>
+                                    <t t-if="grp.get('actions')">
+                                        <form method="post" t-attf-action="/partenaire/{{ token }}/reservations" style="margin-top:8px;">
+                                            <input type="hidden" name="csrf_token" t-att-value="csrf_token"/>
+                                            <input type="hidden" name="resa_id" t-att-value="row['id']"/>
+                                            <button class="cm-btn" type="submit" name="action" value="relance" style="display:inline-block;width:auto;padding:8px 14px;font-size:13px;">
+                                                Relancer le voyageur
+                                            </button>
+                                            <t t-if="row.get('checkin_url')">
+                                                <a t-att-href="row['checkin_url']" style="margin-left:10px;font-size:13px;">Lien check-in</a>
+                                            </t>
+                                        </form>
+                                    </t>
+                                </div>
+                            </t>
+                        </div>
+                    </t>
+                </div>
+            </body>
+        </html>
+    </template>
+
+    <template id="partenaire_facturation_page" name="Portail — Facturation">
+        <html lang="fr">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <title>Facturation — <t t-out="prop.name"/> — Coins Marocain</title>
+                <link rel="preconnect" href="https://fonts.googleapis.com"/>
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
+                <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,500&amp;family=Playfair+Display:wght@600&amp;family=Jost:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+                <link rel="stylesheet" href="/coins_marocain/static/src/css/partenaire_portal.css"/>
+            </head>
+            <body>
+                <div class="cm-wrap">
+                    <header class="cm-hero">
+                        <p class="cm-kicker">Coins Marocain · Facturation</p>
+                        <h1><t t-out="prop.name"/></h1>
+                        <p>OTA, direct, écarts et part Coins — ce lieu uniquement. Pas de total fusionné opaque.</p>
+                    </header>
+                    <t t-call="coins_marocain.partenaire_hebergement_nav"/>
+
+                    <div class="cm-card">
+                        <h2>Par plateforme OTA</h2>
+                        <t t-foreach="bill['ota_rows']" t-as="ota">
+                            <div style="margin:0 0 14px;padding-bottom:12px;border-bottom:1px solid #e6ddcc;">
+                                <p style="margin:0 0 4px;"><b><t t-out="ota['label']"/></b>
+                                    · <t t-out="ota['n']"/> résa(s)</p>
+                                <p class="cm-note" style="margin:0;">
+                                    Attendu : <t t-out="'%.2f' % ota['expected']"/> MAD
+                                    · Reçu (selon statut paiement) : <t t-out="'%.2f' % ota['received']"/> MAD
+                                </p>
+                                <t t-if="ota.get('empty_note') and ota['n'] == 0">
+                                    <p class="cm-note"><t t-out="ota['empty_note']"/></p>
+                                </t>
+                            </div>
+                        </t>
+
+                        <h2>Clients directs (Coins Marocain)</h2>
+                        <p class="cm-note">
+                            Attendu : <t t-out="'%.2f' % bill['direct']['expected']"/> MAD
+                            · Reçu : <t t-out="'%.2f' % bill['direct']['received']"/> MAD
+                            · <t t-out="bill['direct']['n']"/> résa(s)
+                        </p>
+
+                        <h2>Conciliation — écarts</h2>
+                        <t t-if="not bill['gaps']">
+                            <p class="cm-note">Aucun écart détecté sur les réservations chargées (ou aucune résa).</p>
+                        </t>
+                        <t t-foreach="bill['gaps']" t-as="g">
+                            <p style="margin:4px 0;font-size:14px;">
+                                <t t-out="g['resa']"/> (<t t-out="g['source']"/>) —
+                                attendu <t t-out="'%.2f' % g['expected']"/> /
+                                reçu <t t-out="'%.2f' % g['received']"/> —
+                                écart <b><t t-out="'%.2f' % g['gap']"/> MAD</b>
+                                · paiement <t t-out="g['payment_status']"/>
+                            </p>
+                        </t>
+
+                        <h2>Part Coins Marocain (estimation)</h2>
+                        <p class="cm-note">
+                            Direct <t t-out="bill['commission']['direct_pct']"/> % →
+                            <t t-out="'%.2f' % bill['commission']['coins_from_direct']"/> MAD
+                        </p>
+                        <p class="cm-note">
+                            OTA <t t-out="bill['commission']['ota_pct']"/> % →
+                            <t t-out="'%.2f' % bill['commission']['coins_from_ota']"/> MAD
+                        </p>
+                        <p class="cm-note">
+                            Forfait mensuel :
+                            <t t-out="'%.2f' % bill['commission']['monthly_fee']"/> MAD
+                        </p>
+                        <p style="font-size:16px;margin-top:8px;">
+                            Estimation totale Coins :
+                            <b><t t-out="'%.2f' % bill['commission']['coins_total_est']"/> MAD</b>
+                        </p>
+                        <p class="cm-note"><t t-out="bill['commission']['note']"/></p>
+                    </div>
+                </div>
+            </body>
+        </html>
+    </template>
+</odoo>

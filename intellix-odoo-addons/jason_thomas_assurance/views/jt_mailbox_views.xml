@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_doorway_crm_mailbox_form_jt" model="ir.ui.view">
+    <field name="name">doorway.crm.mailbox.form.jt</field>
+    <field name="model">doorway.crm.mailbox</field>
+    <field name="inherit_id" ref="doorway_crm.view_doorway_crm_mailbox_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//field[@name='create_crm_leads']" position="after">
+        <field name="jt_link_clients"/>
+        <field name="jt_auto_tasks"/>
+      </xpath>
+    </field>
+  </record>
+
+  <record id="view_doorway_crm_mailbox_list_jt" model="ir.ui.view">
+    <field name="name">doorway.crm.mailbox.list.jt</field>
+    <field name="model">doorway.crm.mailbox</field>
+    <field name="inherit_id" ref="doorway_crm.view_doorway_crm_mailbox_list"/>
+    <field name="arch" type="xml">
+      <xpath expr="//field[@name='create_crm_leads']" position="after">
+        <field name="jt_auto_tasks" optional="hide"/>
+      </xpath>
+    </field>
+  </record>
+</odoo>

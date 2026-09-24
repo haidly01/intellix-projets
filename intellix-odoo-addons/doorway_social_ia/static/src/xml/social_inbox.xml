@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="doorway_social_ia.InboxView" owl="1">
+        <div t-attf-class="doorway-inbox o_action o_intellix_client_action {{ props.className or '' }}">
+
+            <div class="inbox-filters">
+                <input type="text" class="inbox-search" placeholder="Rechercher..."
+                       t-att-value="state.searchQuery"
+                       t-on-input="onSearchInput"/>
+
+                <div class="filter-row">
+                    <span class="filter-label">Canal</span>
+                    <button t-att-class="'fpill' + (state.filterPlatform === 'all' ? ' active' : '')"
+                            t-on-click="() => this.setFilterPlatform('all')">
+                        Tous
+                        <t t-if="unreadTotal > 0">
+                            <span class="badge-unread" t-esc="unreadTotal"/>
+                        </t>
+                    </button>
+                    <button t-att-class="'fpill wa' + (state.filterPlatform === 'whatsapp' ? ' active' : '')"
+                            t-on-click="() => this.setFilterPlatform('whatsapp')">WhatsApp</button>
+                    <button t-att-class="'fpill ms' + (state.filterPlatform === 'messenger' ? ' active' : '')"
+                            t-on-click="() => this.setFilterPlatform('messenger')">Messenger</button>
+                    <button t-att-class="'fpill tg' + (state.filterPlatform === 'telegram' ? ' active' : '')"
+                            t-on-click="() => this.setFilterPlatform('telegram')">Telegram</button>
+                    <button t-att-class="'fpill ig' + (state.filterPlatform === 'instagram' ? ' active' : '')"
+                            t-on-click="() => this.setFilterPlatform('instagram')">Instagram DM</button>
+                    <button t-att-class="'fpill li' + (state.filterPlatform === 'linkedin' ? ' active' : '')"
+                            t-on-click="() => this.setFilterPlatform('linkedin')">LinkedIn</button>
+                    <button t-att-class="'fpill gmb' + (state.filterPlatform === 'gmb' ? ' active' : '')"
+                            t-on-click="() => this.setFilterPlatform('gmb')">Google My Business</button>
+                </div>
+
+                <div class="filter-row">
+                    <span class="filter-label">Compte</span>
+                    <button t-att-class="'fpill' + (state.filterAccount === 'all' ? ' active' : '')"
+                            t-on-click="() => this.setFilterAccount('all')">Tous</button>
+                    <t t-foreach="state.accounts" t-as="acc" t-key="acc.id">
+                        <button t-att-class="'fpill' + (state.filterAccount == acc.id ? ' active' : '')"
+                                t-on-click="() => this.setFilterAccount(acc.id)"
+                                t-esc="acc.name"/>
+                    </t>
+                </div>
+
+                <div class="filter-row">
+                    <span class="filter-label">Statut</span>
+                    <button t-att-class="'fpill' + (state.filterStatus === 'all' ? ' active' : '')"
+                            t-on-click="() => this.setFilterStatus('all')">Tous</button>
+                    <button t-att-class="'fpill' + (state.filterStatus === 'unread' ? ' active' : '')"
+                            t-on-click="() => this.setFilterStatus('unread')">Non lus</button>
+                    <button t-att-class="'fpill' + (state.filterStatus === 'unreplied' ? ' active' : '')"
+                            t-on-click="() => this.setFilterStatus('unreplied')">Sans réponse</button>
+                    <button t-att-class="'fpill' + (state.filterStatus === 'comments' ? ' active' : '')"
+                            t-on-click="() => this.setFilterStatus('comments')">Commentaires</button>
+                </div>
+            </div>
+
+            <div class="inbox-layout">
+                <div class="conv-list">
+                    <div class="conv-list-header">
+                        <span>Conversations</span>
+                        <div class="conv-list-actions">
+                            <button class="btn-inbox btn-sync"
+                                    t-att-disabled="state.syncing"
+                                    t-on-click="() => this.syncFromMeta()">
+                                <t t-if="state.syncing">Sync…</t>
+                                <t t-else="">Synchroniser</t>
+                            </button>
+                            <t t-if="unreadTotal > 0">
+                                <span class="unread-badge" t-esc="unreadTotal + ' non lu' + (unreadTotal > 1 ? 's' : '')"/>
+                            </t>
+                        </div>
+                    </div>
+                    <t t-if="state.syncMessage">
+                        <div class="sync-status" t-esc="state.syncMessage"/>
+                    </t>
+                    <t t-if="state.loading">
+                        <div class="inbox-loading">Chargement…</div>
+                    </t>
+                    <t t-elif="state.conversations.length === 0">
+                        <div class="inbox-empty-list">Aucune conversation</div>
+                    </t>
+                    <t t-else="">
+                        <t t-foreach="state.conversations" t-as="conv" t-key="conv.id">
+                            <div t-att-class="'conv-item' + (conv.unread_count > 0 ? ' unread' : '') + (isSelected(conv) ? ' selected' : '')"
+                                 t-on-click="() => this.selectConversation(conv)">
+                                <div t-att-class="'avatar av-' + platformPrefix(conv.platform)">
+                                    <t t-esc="conv.initials"/>
+                                    <span t-att-class="'platform-dot pd-' + platformPrefix(conv.platform)"/>
+                                </div>
+                                <div class="conv-meta">
+                                    <div class="conv-top">
+                                        <span class="conv-name" t-esc="conv.contact_name"/>
+                                        <span class="conv-time" t-esc="formatDate(conv.last_message_date)"/>
+                                    </div>
+                                    <div class="conv-preview" t-esc="conv.last_message"/>
+                                    <div class="conv-badges">
+                                        <span t-att-class="'account-chip ac-' + platformPrefix(conv.platform)"
+                                              t-esc="conv.social_account_name"/>
+                                        <t t-if="conv.unread_count > 0">
+                                            <span class="unread-dot"/>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </t>
+                </div>
+
+                <t t-if="state.selectedConv">
+                    <div class="thread">
+                        <div class="thread-header">
+                            <div t-att-class="'thread-avatar av-' + platformPrefix(state.selectedConv.platform)">
+                                <t t-esc="state.selectedConv.initials"/>
+                            </div>
+                            <div class="thread-info">
+                                <div class="thread-name" t-esc="state.selectedConv.contact_name"/>
+                                <div class="thread-sub">
+                                    <i t-att-class="'fa ' + platformIcon(state.selectedConv.platform)"/>
+                                    <t t-esc="state.selectedConv.social_account_name"/>
+                                </div>
+                            </div>
+                            <div class="thread-actions">
+                                <button class="btn-inbox" t-on-click="getAiSuggestion">
+                                    <t t-if="state.loadingAi">Génération…</t>
+                                    <t t-else="">Réponse IA</t>
+                                </button>
+                                <button class="btn-inbox btn-lead" t-on-click="createLead">
+                                    <i class="fa fa-user-plus"/>
+                                    Créer lead
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="tab-row">
+                            <button t-att-class="'dtab' + (state.activeTab === 'messages' ? ' on' : '')"
+                                    t-on-click="() => this.setActiveTab('messages')">Messages</button>
+                            <button t-att-class="'dtab' + (state.activeTab === 'comments' ? ' on' : '')"
+                                    t-on-click="() => this.setActiveTab('comments')">Commentaires</button>
+                            <button t-att-class="'dtab' + (state.activeTab === 'contact' ? ' on' : '')"
+                                    t-on-click="() => this.setActiveTab('contact')">Infos contact</button>
+                        </div>
+
+                        <t t-if="state.activeTab === 'messages'">
+                            <div class="messages">
+                                <t t-foreach="state.messages" t-as="msg" t-key="msg.id || msg_index">
+                                    <div t-att-class="'msg-row' + (msg.direction === 'outbound' ? ' out' : '')">
+                                        <div t-att-class="'msg-av' + (msg.direction === 'inbound' ? ' av-' + platformPrefix(state.selectedConv.platform) : ' av-out')">
+                                            <t t-if="msg.direction === 'inbound'" t-esc="initials(state.selectedConv.contact_name)[0]"/>
+                                            <t t-else="">K</t>
+                                        </div>
+                                        <div>
+                                            <div t-att-class="'bubble ' + msg.direction" t-esc="msg.content"/>
+                                            <div class="msg-time" t-esc="formatDate(msg.create_date)"/>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                            <t t-if="state.aiSuggestion">
+                                <div class="ai-suggestion">
+                                    <span class="ai-suggestion-label">Suggestion Claude :</span>
+                                    <span t-esc="state.aiSuggestion"/>
+                                    <button class="btn-inbox" t-on-click="applyAiSuggestion">Utiliser</button>
+                                </div>
+                            </t>
+                            <div class="reply-bar">
+                                <textarea t-att-value="state.replyText"
+                                          placeholder="Écrire un message…"
+                                          t-on-input="onReplyInput"/>
+                                <div class="reply-actions">
+                                    <button class="btn-inbox btn-send" t-on-click="sendReply">Envoyer</button>
+                                    <button class="btn-inbox" t-on-click="getAiSuggestion">IA</button>
+                                </div>
+                            </div>
+                        </t>
+
+                        <t t-if="state.activeTab === 'comments'">
+                            <div class="comments-panel">
+                                <t t-if="state.comments.length === 0">
+                                    <div class="inbox-empty-list">Aucun commentaire</div>
+                                </t>
+                                <t t-foreach="state.comments" t-as="cmt" t-key="cmt.id">
+                                    <div class="comment-item">
+                                        <div class="comment-header">
+                                            <span class="comment-author" t-esc="cmt.author_name"/>
+                                            <span class="comment-source" t-esc="formatDate(cmt.create_date)"/>
+                                        </div>
+                                        <t t-if="cmt.post_preview">
+                                            <div class="comment-post-preview" t-esc="cmt.post_preview"/>
+                                        </t>
+                                        <div class="comment-text" t-esc="cmt.content"/>
+                                        <t t-if="cmt.is_replied">
+                                            <div class="comment-replied">
+                                                Répondu : <span t-esc="cmt.reply_content"/>
+                                            </div>
+                                        </t>
+                                        <t t-else="">
+                                            <textarea class="comment-reply-input"
+                                                      t-att-value="commentReply(cmt.id)"
+                                                      placeholder="Votre réponse…"
+                                                      t-on-input="(ev) => this.onCommentReplyInput(cmt.id, ev)"/>
+                                            <div class="comment-actions">
+                                                <button class="btn-inbox" t-on-click="() => this.replyToComment(cmt.id)">Répondre</button>
+                                                <button class="btn-inbox" t-on-click="() => this.getAiCommentReply(cmt.id)">
+                                                    <t t-if="isCommentAiLoading(cmt.id)">IA…</t>
+                                                    <t t-else="">Réponse IA</t>
+                                                </button>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </t>
+                            </div>
+                        </t>
+
+                        <t t-if="state.activeTab === 'contact'">
+                            <div class="contact-panel">
+                                <div class="contact-field">
+                                    <label>Nom</label>
+                                    <span t-esc="state.selectedConv.contact_name"/>
+                                </div>
+                                <div class="contact-field">
+                                    <label>Téléphone</label>
+                                    <span t-esc="state.selectedConv.contact_phone or '—'"/>
+                                </div>
+                                <div class="contact-field">
+                                    <label>Canal</label>
+                                    <span t-esc="state.selectedConv.platform"/>
+                                </div>
+                                <div class="contact-field">
+                                    <label>Compte source</label>
+                                    <span t-esc="state.selectedConv.social_account_name or '—'"/>
+                                </div>
+                                <div class="contact-field">
+                                    <label>Lead CRM</label>
+                                    <span t-if="state.selectedConv.crm_lead_id">Lié (#<t t-esc="state.selectedConv.crm_lead_id"/>)</span>
+                                    <span t-else="">Aucun</span>
+                                </div>
+                                <button class="btn-inbox btn-lead" t-on-click="createLead">
+                                    <i class="fa fa-user-plus"/>
+                                    Créer / ouvrir lead
+                                </button>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+                <t t-else="">
+                    <div class="empty-state">
+                        <i class="fa fa-comments-o"/>
+                        <span>Sélectionnez une conversation</span>
+                    </div>
+                </t>
+            </div>
+        </div>
+    </t>
+
+</templates>

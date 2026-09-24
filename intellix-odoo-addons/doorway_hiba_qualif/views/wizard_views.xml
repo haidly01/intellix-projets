@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hiba_book_martin_wizard" model="ir.ui.view">
+        <field name="name">hiba.book.martin.wizard.form</field>
+        <field name="model">hiba.book.martin.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Assigner un RDV à Martin" class="o_hiba_book_martin">
+                <group>
+                    <field name="host_choice" invisible="1"/>
+                    <field name="lead_id" readonly="1"/>
+                </group>
+                <field name="slot" widget="hiba_martin_slots" nolabel="1"/>
+                <group>
+                    <field name="note" placeholder="Ce que Martin doit savoir"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" type="object" string="Booker" class="btn-primary"
+                            invisible="not slot"/>
+                    <button string="Annuler" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="quotation_template_call_center_10" model="sale.order.template">
+        <field name="name">Call Center — 10 agents</field>
+        <field name="sequence">10</field>
+        <field name="number_of_days">15</field>
+        <field name="note" type="html">
+            <p><strong>Offre lancement :</strong> Onboarding offert +
+            10% crédits IA bonus premier achat</p>
+            <p><strong>Validité :</strong> 15 jours</p>
+        </field>
+    </record>
+    <record id="quotation_template_line_10_voip" model="sale.order.template.line">
+        <field name="sale_order_template_id" ref="quotation_template_call_center_10"/>
+        <field name="sequence">10</field>
+        <field name="product_id" model="product.product" search="[('default_code', '=', 'INTLX-VOIP-CC-S')]"/>
+        <field name="product_uom_qty">1</field>
+    </record>
+    <record id="quotation_template_line_10_saas" model="sale.order.template.line">
+        <field name="sale_order_template_id" ref="quotation_template_call_center_10"/>
+        <field name="sequence">20</field>
+        <field name="product_id" model="product.product" search="[('default_code', '=', 'INTLX-CC-SAAS')]"/>
+        <field name="product_uom_qty">10</field>
+    </record>
+    <record id="quotation_template_line_10_ia" model="sale.order.template.line">
+        <field name="sale_order_template_id" ref="quotation_template_call_center_10"/>
+        <field name="sequence">30</field>
+        <field name="product_id" model="product.product" search="[('default_code', '=', 'INTLX-IA-M')]"/>
+        <field name="product_uom_qty">1</field>
+    </record>
+    <record id="quotation_template_line_10_setup" model="sale.order.template.line">
+        <field name="sale_order_template_id" ref="quotation_template_call_center_10"/>
+        <field name="sequence">40</field>
+        <field name="product_id" model="product.product" search="[('default_code', '=', 'INTLX-SETUP-CC')]"/>
+        <field name="product_uom_qty">1</field>
+    </record>
+
+    <record id="quotation_template_call_center_30" model="sale.order.template">
+        <field name="name">Call Center — 30 agents</field>
+        <field name="sequence">20</field>
+        <field name="number_of_days">15</field>
+        <field name="note" type="html">
+            <p><strong>Offre lancement :</strong> Onboarding offert +
+            10% crédits IA bonus premier achat</p>
+            <p><strong>Validité :</strong> 15 jours</p>
+        </field>
+    </record>
+    <record id="quotation_template_line_30_voip" model="sale.order.template.line">
+        <field name="sale_order_template_id" ref="quotation_template_call_center_30"/>
+        <field name="sequence">10</field>
+        <field name="product_id" model="product.product" search="[('default_code', '=', 'INTLX-VOIP-CC-L')]"/>
+        <field name="product_uom_qty">1</field>
+    </record>
+    <record id="quotation_template_line_30_saas" model="sale.order.template.line">
+        <field name="sale_order_template_id" ref="quotation_template_call_center_30"/>
+        <field name="sequence">20</field>
+        <field name="product_id" model="product.product" search="[('default_code', '=', 'INTLX-CC-SAAS')]"/>
+        <field name="product_uom_qty">30</field>
+    </record>
+    <record id="quotation_template_line_30_ia" model="sale.order.template.line">
+        <field name="sale_order_template_id" ref="quotation_template_call_center_30"/>
+        <field name="sequence">30</field>
+        <field name="product_id" model="product.product" search="[('default_code', '=', 'INTLX-IA-L')]"/>
+        <field name="product_uom_qty">1</field>
+    </record>
+    <record id="quotation_template_line_30_setup" model="sale.order.template.line">
+        <field name="sale_order_template_id" ref="quotation_template_call_center_30"/>
+        <field name="sequence">40</field>
+        <field name="product_id" model="product.product" search="[('default_code', '=', 'INTLX-SETUP-CC')]"/>
+        <field name="product_uom_qty">1</field>
+    </record>
+
+    <record id="quotation_template_call_center_50" model="sale.order.template">
+        <field name="name">Call Center — 50 agents</field>
+        <field name="sequence">30</field>
+        <field name="number_of_days">15</field>
+        <field name="note" type="html">
+            <p><strong>Offre lancement :</strong> Onboarding offert +
+            10% crédits IA bonus premier achat</p>
+            <p><strong>Validité :</strong> 15 jours</p>
+        </field>
+    </record>
+    <record id="quotation_template_line_50_voip" model="sale.order.template.line">
+        <field name="sale_order_template_id" ref="quotation_template_call_center_50"/>
+        <field name="sequence">10</field>
+        <field name="product_id" model="product.product" search="[('default_code', '=', 'INTLX-VOIP-CC-L')]"/>
+        <field name="product_uom_qty">1</field>
+    </record>
+    <record id="quotation_template_line_50_saas" model="sale.order.template.line">
+        <field name="sale_order_template_id" ref="quotation_template_call_center_50"/>
+        <field name="sequence">20</field>
+        <field name="product_id" model="product.product" search="[('default_code', '=', 'INTLX-CC-SAAS')]"/>
+        <field name="product_uom_qty">50</field>
+    </record>
+    <record id="quotation_template_line_50_ia" model="sale.order.template.line">
+        <field name="sale_order_template_id" ref="quotation_template_call_center_50"/>
+        <field name="sequence">30</field>
+        <field name="product_id" model="product.product" search="[('default_code', '=', 'INTLX-IA-XL')]"/>
+        <field name="product_uom_qty">1</field>
+    </record>
+    <record id="quotation_template_line_50_setup" model="sale.order.template.line">
+        <field name="sale_order_template_id" ref="quotation_template_call_center_50"/>
+        <field name="sequence">40</field>
+        <field name="product_id" model="product.product" search="[('default_code', '=', 'INTLX-SETUP-CC')]"/>
+        <field name="product_uom_qty">1</field>
+    </record>
+</odoo>

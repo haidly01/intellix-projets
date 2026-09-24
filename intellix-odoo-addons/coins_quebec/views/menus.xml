@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_cq_root"
+              name="Coins Québec"
+              web_icon="coins_quebec,static/description/icon.png"
+              sequence="2"
+              action="action_cq_dashboard"
+              groups="group_coins_quebec_user,group_coins_quebec_manager"/>
+
+    <menuitem id="menu_cq_mon_coin_demo"
+              name="Démo Mon Coin"
+              parent="menu_cq_root"
+              action="action_cq_mon_coin_demo"
+              sequence="4"
+              groups="group_coins_quebec_user,group_coins_quebec_manager"/>
+
+    <menuitem id="menu_cq_dashboard"
+              name="Tableau de bord"
+              parent="menu_cq_root"
+              action="action_cq_dashboard"
+              sequence="5"
+              groups="group_coins_quebec_user,group_coins_quebec_manager"/>
+
+    <menuitem id="menu_cq_pipeline_partenariats"
+              name="Partenariats Québec"
+              parent="menu_cq_root"
+              action="action_cq_pipeline_partenariats"
+              sequence="6"
+              groups="group_coins_quebec_user,group_coins_quebec_manager"/>
+
+    <menuitem id="menu_cq_pipeline_voyageurs"
+              name="Voyageurs Québec"
+              parent="menu_cq_root"
+              action="action_cq_pipeline_voyageurs"
+              sequence="7"
+              groups="group_coins_quebec_user,group_coins_quebec_manager"/>
+
+    <menuitem id="menu_cq_moderation"
+              name="Modération Mon Coin"
+              parent="menu_cq_root"
+              action="action_cq_moderation_fiches"
+              sequence="8"
+              groups="group_coins_quebec_user,group_coins_quebec_manager"/>
+
+    <menuitem id="menu_cq_boosts"
+              name="Boosts commerçants"
+              parent="menu_cq_root"
+              action="action_cq_boost_requests"
+              sequence="9"
+              groups="group_coins_quebec_user,group_coins_quebec_manager"/>
+
+    <!-- ITEX n'appartient pas à Coins Québec : menu retiré (maquette sous Finance). -->
+    <record id="menu_cq_itex_dashboard" model="ir.ui.menu">
+        <field name="name">Dashboard ITEX (retiré)</field>
+        <field name="parent_id" ref="menu_cq_root"/>
+        <field name="action" eval="False"/>
+        <field name="active" eval="False"/>
+        <field name="sequence">99</field>
+    </record>
+
+    <menuitem id="menu_cq_reservation"
+              name="Réservations"
+              parent="menu_cq_root"
+              action="action_cq_reservation_action"
+              sequence="10"
+              groups="group_coins_quebec_user,group_coins_quebec_manager"/>
+
+    <menuitem id="menu_cq_property"
+              name="Biens"
+              parent="menu_cq_root"
+              sequence="20"
+              groups="group_coins_quebec_user,group_coins_quebec_manager"/>
+
+    <menuitem id="menu_cq_property_fiches"
+              name="Fiches propriétés"
+              parent="menu_cq_property"
+              action="action_cq_property_action"
+              sequence="10"
+              groups="group_coins_quebec_user,group_coins_quebec_manager"/>
+
+    <menuitem id="menu_cq_property_category"
+              name="Catégories"
+              parent="menu_cq_property"
+              action="action_cq_property_category"
+              sequence="20"
+              groups="group_coins_quebec_user,group_coins_quebec_manager"/>
+
+    <menuitem id="menu_cq_distribution"
+              name="Distribution OTA"
+              parent="menu_cq_root"
+              sequence="25"
+              groups="group_coins_quebec_user,group_coins_quebec_manager"/>
+
+    <menuitem id="menu_cq_channex_config"
+              name="Connexion Channex"
+              parent="menu_cq_distribution"
+              action="action_cq_channex_config_action"
+              sequence="10"
+              groups="group_coins_quebec_manager"/>
+
+    <menuitem id="menu_cq_channex_mapping"
+              name="Mapping propriétés"
+              parent="menu_cq_distribution"
+              action="action_cq_channex_mapping_action"
+              sequence="20"
+              groups="group_coins_quebec_manager"/>
+
+    <menuitem id="menu_cq_channex_calendar"
+              name="Calendrier tarifs OTA"
+              parent="menu_cq_distribution"
+              action="action_cq_channex_calendar_action"
+              sequence="25"
+              groups="group_coins_quebec_user,group_coins_quebec_manager"/>
+
+    <menuitem id="menu_cq_channex_push"
+              name="File fermeture OTA"
+              parent="menu_cq_distribution"
+              action="action_cq_channex_push_action"
+              sequence="30"
+              groups="group_coins_quebec_user,group_coins_quebec_manager"/>
+
+    <menuitem id="menu_cq_channex_revision"
+              name="Résas OTA inbound"
+              parent="menu_cq_distribution"
+              action="action_cq_channex_revision_action"
+              sequence="40"
+              groups="group_coins_quebec_user,group_coins_quebec_manager"/>
+
+    <menuitem id="menu_cq_partner"
+              name="Partenaires"
+              parent="menu_cq_root"
+              action="action_cq_partner_action"
+              sequence="30"
+              groups="group_coins_quebec_user,group_coins_quebec_manager"/>
+
+    <menuitem id="menu_cq_evenement"
+              name="Événements"
+              parent="menu_cq_root"
+              action="action_cq_evenement_action"
+              sequence="35"
+              groups="group_coins_quebec_user,group_coins_quebec_manager"/>
+
+    <menuitem id="menu_cq_prestataire"
+              name="Prestataires CRM"
+              parent="menu_cq_root"
+              action="action_cq_prestataire_action"
+              sequence="36"
+              groups="group_coins_quebec_user,group_coins_quebec_manager"/>
+
+    <menuitem id="menu_cq_prestataire_tag"
+              name="Tags prestataires"
+              parent="menu_cq_root"
+              action="action_cq_prestataire_tag"
+              sequence="37"
+              groups="group_coins_quebec_manager"/>
+
+    <menuitem id="menu_cq_driver"
+              name="Chauffeurs"
+              parent="menu_cq_root"
+              sequence="40"
+              groups="group_coins_quebec_user,group_coins_quebec_manager"/>
+
+    <menuitem id="menu_cq_driver_list"
+              name="Chauffeurs"
+              parent="menu_cq_driver"
+              action="action_cq_driver_action"
+              sequence="10"
+              groups="group_coins_quebec_user,group_coins_quebec_manager"/>
+
+    <menuitem id="menu_cq_driver_contrat"
+              name="Contrats"
+              parent="menu_cq_driver"
+              action="action_cq_driver_contrat_action"
+              sequence="20"
+              groups="group_coins_quebec_user,group_coins_quebec_manager"/>
+
+    <menuitem id="menu_cq_driver_mouvement"
+              name="Mouvements"
+              parent="menu_cq_driver"
+              action="action_cq_driver_mouvement_action"
+              sequence="30"
+              groups="group_coins_quebec_user,group_coins_quebec_manager"/>
+
+    <menuitem id="menu_cq_driver_remise"
+              name="Remises quotidiennes"
+              parent="menu_cq_driver"
+              action="action_cq_driver_remise_action"
+              sequence="40"
+              groups="group_coins_quebec_user,group_coins_quebec_manager"/>
+
+    <menuitem id="menu_cq_forfait_root"
+              name="Forfaits"
+              parent="menu_cq_root"
+              sequence="50"
+              groups="group_coins_quebec_user,group_coins_quebec_manager"/>
+
+    <menuitem id="menu_cq_forfait"
+              name="Forfaits"
+              parent="menu_cq_forfait_root"
+              action="action_cq_forfait_action"
+              sequence="10"
+              groups="group_coins_quebec_user,group_coins_quebec_manager"/>
+
+    <menuitem id="menu_cq_forfait_booking"
+              name="Réservations forfaits"
+              parent="menu_cq_forfait_root"
+              action="action_cq_forfait_booking_action"
+              sequence="20"
+              groups="group_coins_quebec_user,group_coins_quebec_manager"/>
+
+    <menuitem id="menu_cq_forfait_partner"
+              name="Partenaires forfaits"
+              parent="menu_cq_forfait_root"
+              action="action_cq_forfait_partner_action"
+              sequence="30"
+              groups="group_coins_quebec_user,group_coins_quebec_manager"/>
+
+    <menuitem id="menu_cq_carnet_root"
+              name="Carnet &amp; Parrainage"
+              parent="menu_cq_root"
+              sequence="60"
+              groups="group_coins_quebec_user,group_coins_quebec_manager"/>
+
+    <menuitem id="menu_cq_carnet"
+              name="Carnets"
+              parent="menu_cq_carnet_root"
+              action="action_cq_carnet_action"
+              sequence="10"
+              groups="group_coins_quebec_user,group_coins_quebec_manager"/>
+
+    <menuitem id="menu_cq_tier"
+              name="Paliers"
+              parent="menu_cq_carnet_root"
+              action="action_cq_tier_action"
+              sequence="20"
+              groups="group_coins_quebec_manager"/>
+
+    <menuitem id="menu_cq_ambassador"
+              name="Ambassadeurs"
+              parent="menu_cq_carnet_root"
+              action="action_cq_ambassador_action"
+              sequence="30"
+              groups="group_coins_quebec_user,group_coins_quebec_manager"/>
+
+    <menuitem id="menu_cq_referral"
+              name="Parrainages"
+              parent="menu_cq_carnet_root"
+              action="action_cq_referral_action"
+              sequence="40"
+              groups="group_coins_quebec_user,group_coins_quebec_manager"/>
+</odoo>

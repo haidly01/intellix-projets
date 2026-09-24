@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_jt_client_list" model="ir.ui.view">
+    <field name="name">jt.client.list</field>
+    <field name="model">jt.client</field>
+    <field name="arch" type="xml">
+      <list string="Clients JT" decoration-warning="anniversary_this_week">
+        <field name="full_name"/>
+        <field name="birth_date" string="Date de naissance"/>
+        <field name="age" string="Âge"/>
+        <field name="cell_phone"/>
+        <field name="postal_code"/>
+        <field name="police_count" string="Polices"/>
+        <field name="source" widget="badge"/>
+        <field name="anniversary_this_week" string="Anniv. semaine" optional="hide"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="view_jt_client_search" model="ir.ui.view">
+    <field name="name">jt.client.search</field>
+    <field name="model">jt.client</field>
+    <field name="arch" type="xml">
+      <search string="Clients">
+        <field name="full_name"/>
+        <field name="cell_phone"/>
+        <field name="postal_code"/>
+        <separator/>
+        <filter name="anniversary_week" string="Date de naissance cette semaine"
+                domain="[('anniversary_this_week','=',True), ('birth_date','!=',False)]"/>
+        <filter name="missing_birth_date" string="Sans date de naissance"
+                domain="[('birth_date','=',False)]"/>
+        <filter name="source_ago" string="AGO" domain="[('source','in',['ago','ago_inalco'])]"/>
+        <filter name="source_inalco" string="Inalco" domain="[('source','in',['inalco','ago_inalco'])]"/>
+        <filter name="source_av" string="Assomption Vie" domain="[('source','=','assomption_vie')]"/>
+        <separator/>
+        <filter name="group_source" string="Source" context="{'group_by': 'source'}"/>
+      </search>
+    </field>
+  </record>
+
+  <record id="view_jt_client_form" model="ir.ui.view">
+    <field name="name">jt.client.form</field>
+    <field name="model">jt.client</field>
+    <field name="arch" type="xml">
+      <form string="Client">
+        <sheet>
+          <div class="oe_button_box" name="button_box">
+            <button class="oe_stat_button" type="object" name="action_view_polices" icon="fa-file-text-o">
+              <field name="police_count" widget="statinfo" string="Polices"/>
+            </button>
+            <button class="oe_stat_button" type="object" name="action_view_taches" icon="fa-check-square-o">
+              <field name="tache_count" widget="statinfo" string="Tâches"/>
+            </button>
+          </div>
+          <div class="oe_title">
+            <h1><field name="full_name"/></h1>
+          </div>
+          <group>
+            <group string="Informations personnelles">
+              <field name="first_name"/>
+              <field name="last_name"/>
+              <field name="birth_date"/>
+              <field name="age"/>
+              <field name="gender"/>
+              <field name="cell_phone" widget="phone"/>
+              <field name="home_phone" widget="phone"/>
+              <field name="office_phone" widget="phone"/>
+              <field name="email" widget="email"/>
+              <field name="postal_code"/>
+            </group>
+            <group string="Conjoint(e)">
+              <field name="spouse_first_name"/>
+              <field name="spouse_last_name"/>
+            </group>
+          </group>
+          <group string="Source &amp; totaux">
+            <field name="source"/>
+            <field name="client_id_source"/>
+            <field name="premium_total" string="Total primes ($)"/>
+          </group>
+          <notebook>
+            <page string="Polices" name="polices">
+              <field name="police_ids" mode="list">
+                <list string="Polices du client" create="1" delete="0">
+                  <field name="policy_number" string="N° police"/>
+                  <field name="institution" string="Assureur"/>
+                  <field name="product_family" string="Type" widget="badge"
+                    decoration-info="product_family == 'vie'"
+                    decoration-warning="product_family == 'accident_accis'"
+                    decoration-danger="product_family == 'maladie_grave'"/>
+                  <field name="product" string="Produit"/>
+                  <field name="policy_status" string="Statut" widget="badge"
+                    decoration-success="policy_status == 'en_force'"
+                    decoration-warning="policy_status == 'en_traitement'"
+                    decoration-danger="policy_status == 'refuse'"/>
+                  <field name="face_amount" string="Montant / couverture ($)" sum="Total"/>
+                  <field name="annual_premium" string="Prime ($)" sum="Total primes"/>
+                  <field name="premium" string="Prime ($)" optional="hide"/>
+                  <field name="payment_mode" string="Fréquence"/>
+                  <field name="premium_label" string="Type prime" optional="show"/>
+                  <field name="eff_date" string="Entrée en vigueur"/>
+                  <field name="term_date" string="Échéance"/>
+                  <field name="coverage_summary" string="Détail couvertures" optional="hide"/>
+                  <field name="insured_names" string="Assurés" optional="hide"/>
+                  <field name="co_owner_name" string="Co-propriétaire" optional="hide"/>
+                </list>
+              </field>
+              <p class="text-muted" style="margin-top:8px;">
+                Accis / Programme Cancer (AGO) : primes <strong>mensuelles</strong>
+                (colonne Prime + fréquence Mensuel). Montant de couverture rempli
+                après sync AgentView. Vie Assomption : capital + primes annuelles.
+              </p>
+            </page>
+          </notebook>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+
+  <record id="view_jt_client_kanban_bday" model="ir.ui.view">
+    <field name="name">jt.client.kanban.bday</field>
+    <field name="model">jt.client</field>
+    <field name="arch" type="xml">
+      <kanban>
+        <field name="full_name"/>
+        <field name="age"/>
+        <field name="birth_date"/>
+        <field name="cell_phone"/>
+        <templates>
+          <t t-name="card">
+            <field name="full_name" class="fw-bold"/>
+            <div>Date de naissance : <field name="birth_date"/></div>
+            <div><field name="age"/> ans · <field name="cell_phone"/></div>
+          </t>
+        </templates>
+      </kanban>
+    </field>
+  </record>
+
+  <record id="action_jt_client" model="ir.actions.act_window">
+    <field name="name">Clients</field>
+    <field name="res_model">jt.client</field>
+    <field name="view_mode">list,form,kanban</field>
+    <field name="help" type="html">
+      <p class="o_view_nocontent_smiling_face">
+        Tous les clients importés apparaissent ici.
+      </p>
+      <p>Utilisez la pagination en bas de liste pour parcourir l'ensemble des fiches.
+      La <strong>date de naissance</strong> sert au menu « Anniversaires cette semaine ».</p>
+    </field>
+  </record>
+
+  <record id="action_jt_client_anniversaires" model="ir.actions.act_window">
+    <field name="name">Anniversaires cette semaine</field>
+    <field name="res_model">jt.client</field>
+    <field name="view_mode">list,kanban</field>
+    <field name="domain">[('anniversary_this_week', '=', True), ('birth_date', '!=', False)]</field>
+    <field name="context">{'search_default_anniversary_week': 0}</field>
+    <field name="help" type="html">
+      <p>Clients dont la <strong>date de naissance</strong> tombe dans les 7 prochains jours.</p>
+    </field>
+  </record>
+</odoo>

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Menu racine -->
+    <menuitem id="menu_leads_bruts_root"
+              name="Extracteur"
+              action="action_extracteur_hub"
+              groups="doorway_leads_bruts.group_leads_bruts_user"
+              sequence="95"/>
+
+    <!-- Configurateur de campagne (no-code, 4 étapes) -->
+    <menuitem id="menu_leads_bruts_configurateur"
+              name="Configurer une campagne"
+              parent="menu_leads_bruts_root"
+              action="action_extracteur_configurateur"
+              sequence="5"/>
+
+    <!-- Historique -->
+    <menuitem id="menu_leads_bruts_history"
+              name="Historique extractions"
+              parent="menu_leads_bruts_root"
+              action="action_campagne_history"
+              sequence="10"/>
+
+    <menuitem id="menu_leads_bruts_configured_campaigns"
+              name="Campagnes configurées (n8n)"
+              parent="menu_leads_bruts_root"
+              action="action_extracteur_campaign_list"
+              sequence="12"/>
+
+    <!-- Leads extraits (tous types) -->
+    <menuitem id="menu_leads_bruts_leads"
+              name="Leads extraits"
+              parent="menu_leads_bruts_root"
+              action="action_leads_bruts_list"
+              sequence="20"/>
+
+    <!-- En cours -->
+    <menuitem id="menu_leads_bruts_running"
+              name="En cours"
+              parent="menu_leads_bruts_root"
+              action="action_campagne_running"
+              sequence="30"/>
+
+    <!-- Campagnes IA -->
+    <menuitem id="menu_leads_bruts_ia_campaigns"
+              name="Campagnes IA"
+              parent="menu_leads_bruts_root"
+              action="action_ia_campaign_list"
+              sequence="35"/>
+
+    <!-- Lancer une extraction -->
+    <menuitem id="menu_leads_bruts_extract"
+              name="Lancer une extraction"
+              parent="menu_leads_bruts_root"
+              sequence="40"/>
+
+    <menuitem id="menu_leads_bruts_wizard"
+              name="Nouvelle extraction (libre)"
+              parent="menu_leads_bruts_extract"
+              action="action_extraction_wizard"
+              sequence="10"/>
+
+    <menuitem id="menu_leads_bruts_wizard_callcenter"
+              name="Centres d'appels (France)"
+              parent="menu_leads_bruts_extract"
+              action="action_wizard_callcenter"
+              sequence="20"/>
+
+    <menuitem id="menu_leads_bruts_wizard_callcenter_ma"
+              name="Call centers Maroc"
+              parent="menu_leads_bruts_extract"
+              action="action_wizard_callcenter_ma"
+              sequence="21"/>
+
+    <menuitem id="menu_leads_bruts_wizard_callcenter_tn"
+              name="Call centers Tunisie"
+              parent="menu_leads_bruts_extract"
+              action="action_wizard_callcenter_tn"
+              sequence="22"/>
+
+    <menuitem id="menu_leads_bruts_wizard_solar"
+              name="Photovoltaïque (France)"
+              parent="menu_leads_bruts_extract"
+              action="action_wizard_solar"
+              sequence="30"/>
+
+    <menuitem id="menu_leads_bruts_wizard_pac"
+              name="PAC / thermopompe (France)"
+              parent="menu_leads_bruts_extract"
+              action="action_wizard_pac"
+              sequence="35"/>
+
+    <menuitem id="menu_leads_bruts_wizard_renovation"
+              name="Rénovation énergétique (France)"
+              parent="menu_leads_bruts_extract"
+              action="action_wizard_renovation"
+              sequence="40"/>
+
+    <!-- Configuration -->
+    <menuitem id="menu_leads_bruts_config"
+              name="Configuration"
+              parent="menu_leads_bruts_root"
+              groups="doorway_leads_bruts.group_leads_bruts_manager"
+              sequence="90"/>
+
+    <menuitem id="menu_leads_bruts_import_crm"
+              name="Synchroniser depuis le CRM"
+              parent="menu_leads_bruts_config"
+              action="action_import_crm_leads"
+              groups="doorway_leads_bruts.group_leads_bruts_manager"
+              sequence="5"/>
+
+    <menuitem id="menu_leads_bruts_credit"
+              name="Crédits &amp; marges"
+              parent="menu_leads_bruts_config"
+              action="action_credit_config"
+              groups="doorway_leads_bruts.group_admin_commercial"
+              sequence="10"/>
+
+    <menuitem id="menu_leads_bruts_extracteur_settings"
+              name="Réglages IA &amp; n8n"
+              parent="menu_leads_bruts_config"
+              action="action_extracteur_settings"
+              groups="doorway_leads_bruts.group_leads_bruts_manager"
+              sequence="15"/>
+
+    <menuitem id="menu_leads_bruts_ia_campaigns"
+              name="Campagnes IA"
+              parent="menu_leads_bruts_root"
+              action="action_ia_campaign_list"
+              sequence="35"/>
+</odoo>

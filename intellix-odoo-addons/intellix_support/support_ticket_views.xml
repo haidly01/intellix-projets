@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_intellix_support_ticket_kanban" model="ir.ui.view">
+        <field name="name">intellix.support.ticket.kanban</field>
+        <field name="model">intellix.support.ticket</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="stage_id" highlight_color="color"
+                    class="o_kanban_small_column intellix-support-kanban"
+                    quick_create="true" sample="1">
+                <field name="color"/>
+                <field name="priority"/>
+                <field name="stage_id"/>
+                <field name="partner_id"/>
+                <field name="user_id"/>
+                <field name="contact_user_id"/>
+                <field name="category_id"/>
+                <field name="category_color"/>
+                <field name="side_origin"/>
+                <field name="diagnostic_count"/>
+                <templates>
+                    <t t-name="menu" t-if="!selection_mode">
+                        <field name="color" widget="kanban_color_picker"/>
+                    </t>
+                    <t t-name="card">
+                        <main>
+                            <div class="o_kanban_record_top mb-2">
+                                <span t-if="record.category_id.value"
+                                      t-attf-class="intellix-support-category-dot o_colorlist_item_color_#{record.category_color.raw_value}"/>
+                                <strong class="o_kanban_record_title ms-1">
+                                    <field name="subject"/>
+                                </strong>
+                                <span class="float-end text-muted small">
+                                    <field name="name"/>
+                                </span>
+                            </div>
+                            <div class="o_kanban_record_body">
+                                <field name="partner_id" class="fw-semibold"/>
+                                <div t-if="record.category_id.value" class="text-muted small mt-1">
+                                    <field name="category_id"/>
+                                </div>
+                                <div class="mt-1">
+                                    <span t-if="record.side_origin.raw_value == 'platform'"
+                                          class="badge rounded-pill text-bg-warning">Plateforme</span>
+                                    <span t-if="record.side_origin.raw_value == 'client'"
+                                          class="badge rounded-pill text-bg-info">Client</span>
+                                </div>
+                            </div>
+                            <footer class="o_kanban_record_bottom mt-2 pt-1">
+                                <div class="oe_kanban_bottom_left">
+                                    <field name="priority" widget="priority"/>
+                                </div>
+                                <div class="oe_kanban_bottom_right d-flex align-items-center gap-1">
+                                    <field name="contact_user_id" widget="many2one_avatar_user"
+                                           invisible="not contact_user_id"/>
+                                    <field name="user_id" widget="many2one_avatar_user"
+                                           invisible="contact_user_id"/>
+                                    <button type="object" name="action_run_diagnostic_silent"
+                                            class="btn btn-sm intellix-support-kanban-play"
+                                            title="Lancer diagnostic">
+                                        <i class="fa fa-play"/>
+                                    </button>
+                                </div>
+                            </footer>
+                        </main>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_intellix_support_ticket_form" model="ir.ui.view">
+        <field name="name">intellix.support.ticket.form</field>
+        <field name="model">intellix.support.ticket</field>
+        <field name="arch" type="xml">
+            <form string="Ticket support" class="o_intellix_support_ticket_form">
+                <header>
+                    <button name="action_run_diagnostic" type="object"
+                            string="Lancer diagnostic" class="btn-primary"/>
+                    <field name="stage_id" widget="statusbar"
+                           options="{'clickable': '1', 'fold_field': 'fold'}"/>
+                </header>
+                <div class="o_intellix_support_form_layout">
+                    <div class="o_intellix_support_form_main">
+                        <sheet>
+                            <div class="oe_button_box" name="button_box">
+                                <button name="action_open_diagnostics" type="object"
+                                        class="oe_stat_button" icon="fa-stethoscope">
+                                    <field name="diagnostic_count" widget="statinfo" string="Diagnostics"/>
+                                </button>
+                            </div>
+                            <div class="oe_title">
+                                <h1><field name="name" readonly="1"/></h1>
+                                <label for="subject"/>
+                                <h2><field name="subject" placeholder="Sujet du ticket"/></h2>
+                            </div>
+                            <group>
+                                <group>
+                                    <field name="partner_id"
+                                           string="Partenaire client"
+                                           domain="['|', ('is_company', '=', True), ('user_ids', '!=', False)]"
+                                           context="{'support_ticket_partner_picker': 1}"
+                                           options="{'no_create': True}"/>
+                                    <field name="contact_user_id"
+                                           string="Utilisateur concerné"
+                                           widget="many2one_avatar_user"
+                                           domain="[('partner_id', 'child_of', partner_id), ('active', '=', True)]"
+                                           context="{'support_ticket_user_picker': 1}"
+                                           placeholder="Tous les utilisateurs du partenaire"
+                                           options="{'no_create': True}"
+                                           invisible="not partner_id"/>
+                                    <field name="category_id"/>
+                                    <field name="priority" widget="priority"/>
+                                </group>
+                                <group>
+                                    <field name="user_id" widget="many2one_avatar_user"/>
+                                    <field name="side_origin"/>
+                                    <field name="company_id" groups="base.group_multi_company"/>
+                                </group>
+                            </group>
+                            <notebook>
+                                <page string="Description" name="description">
+                                    <field name="description" placeholder="Détails du problème…"/>
+                                </page>
+                                <page string="AnyDesk" name="anydesk">
+                                    <group>
+                                        <field name="anydesk_id"/>
+                                        <field name="anydesk_consent"/>
+                                        <field name="anydesk_session_notes"/>
+                                    </group>
+                                </page>
+                            </notebook>
+                        </sheet>
+                        <chatter/>
+                    </div>
+                    <aside class="intellix-support-copilot-sidebar">
+                        <div class="intellix-support-copilot-header">
+                            <h3>AI Copilot</h3>
+                            <button name="action_run_diagnostic" type="object"
+                                    class="btn btn-link btn-sm p-0" title="Relancer diagnostic">
+                                <i class="fa fa-refresh"/>
+                            </button>
+                        </div>
+                        <div class="intellix-support-copilot-panel">
+                            <field name="copilot_suggestions" nolabel="1" readonly="1"
+                                   invisible="not copilot_suggestions"/>
+                            <div invisible="copilot_suggestions" class="intellix-support-copilot-empty">
+                                <p>Lancez un diagnostic pour obtenir une synthèse IA et des suggestions.</p>
+                                <button name="action_run_diagnostic" type="object"
+                                        string="Lancer diagnostic" class="btn btn-primary btn-sm"/>
+                            </div>
+                        </div>
+                        <div class="intellix-support-copilot-footer">
+                            <button name="action_inspect_diagnostic" type="object"
+                                    string="Inspecter" class="btn btn-outline-secondary btn-sm"/>
+                            <button name="action_apply_suggested_fix" type="object"
+                                    string="Appliquer le correctif"
+                                    class="btn btn-primary btn-sm intellix-support-copilot-cta-btn"/>
+                        </div>
+                    </aside>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_intellix_support_ticket_list" model="ir.ui.view">
+        <field name="name">intellix.support.ticket.list</field>
+        <field name="model">intellix.support.ticket</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="priority == '3'"
+                  decoration-warning="priority == '2'"
+                  decoration-muted="side_origin == 'unknown'"
+                  sample="1">
+                <field name="name"/>
+                <field name="subject"/>
+                <field name="partner_id"/>
+                <field name="contact_user_id" widget="many2one_avatar_user" optional="show"/>
+                <field name="category_id" optional="show"/>
+                <field name="user_id" widget="many2one_avatar_user"/>
+                <field name="stage_id"/>
+                <field name="priority" widget="priority"/>
+                <field name="side_origin"/>
+                <field name="diagnostic_count" optional="hide"/>
+                <field name="color" widget="color_picker" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_intellix_support_ticket_search" model="ir.ui.view">
+        <field name="name">intellix.support.ticket.search</field>
+        <field name="model">intellix.support.ticket</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="subject"/>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="user_id"/>
+                <field name="category_id"/>
+                <filter string="Mes tickets" name="my_tickets"
+                        domain="[('user_id', '=', uid)]"/>
+                <filter string="Urgents" name="urgent"
+                        domain="[('priority', '=', '3')]"/>
+                <filter string="Sans diagnostic" name="no_diagnostic"
+                        domain="[('diagnostic_count', '=', 0)]"/>
+                <separator/>
+                <filter string="Côté client" name="side_client"
+                        domain="[('side_origin', '=', 'client')]"/>
+                <filter string="Côté Intellix" name="side_platform"
+                        domain="[('side_origin', '=', 'platform')]"/>
+                <group>
+                    <filter string="Étape" name="group_stage" context="{'group_by': 'stage_id'}"/>
+                    <filter string="Catégorie" name="group_category" context="{'group_by': 'category_id'}"/>
+                    <filter string="Assigné" name="group_user" context="{'group_by': 'user_id'}"/>
+                    <filter string="Origine" name="group_side" context="{'group_by': 'side_origin'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_intellix_support_ticket_graph_stage" model="ir.ui.view">
+        <field name="name">intellix.support.ticket.graph.stage</field>
+        <field name="model">intellix.support.ticket</field>
+        <field name="arch" type="xml">
+            <graph string="Tickets par étape" type="bar" sample="1">
+                <field name="stage_id"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_intellix_support_ticket_graph_category" model="ir.ui.view">
+        <field name="name">intellix.support.ticket.graph.category</field>
+        <field name="model">intellix.support.ticket</field>
+        <field name="arch" type="xml">
+            <graph string="Tickets par catégorie" type="pie" sample="1">
+                <field name="category_id"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_intellix_support_ticket_pivot" model="ir.ui.view">
+        <field name="name">intellix.support.ticket.pivot</field>
+        <field name="model">intellix.support.ticket</field>
+        <field name="arch" type="xml">
+            <pivot string="Analyse tickets" sample="1">
+                <field name="stage_id" type="row"/>
+                <field name="category_id" type="row"/>
+                <field name="priority" type="col"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_intellix_support_ticket" model="ir.actions.act_window">
+        <field name="name">Tickets support</field>
+        <field name="res_model">intellix.support.ticket</field>
+        <field name="view_mode">kanban,list,form,graph,pivot</field>
+        <field name="context">{'search_default_my_tickets': 0}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créez un ticket support Intellix
+            </p>
+            <p>Lancez un diagnostic automatique pour distinguer problème client vs plateforme.</p>
+        </field>
+    </record>
+
+    <record id="action_intellix_support_command_center" model="ir.actions.act_window">
+        <field name="name">Command Center</field>
+        <field name="res_model">intellix.support.ticket</field>
+        <field name="view_mode">graph,pivot,kanban,list</field>
+        <field name="view_id" ref="view_intellix_support_ticket_graph_stage"/>
+        <field name="context">{'search_default_group_stage': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Centre de commande Support
+            </p>
+            <p>Vue agrégée des tickets : volumes par étape, catégorie et priorité.</p>
+        </field>
+    </record>
+</odoo>

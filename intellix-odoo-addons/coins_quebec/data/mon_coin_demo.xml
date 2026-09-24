@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <function model="coins.quebec.partenariat" name="ensure_mon_coin_demo_data"/>
+</odoo>

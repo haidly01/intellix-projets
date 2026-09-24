@@ -1,0 +1,141 @@
+/* Dashboard SEO IA — Portfolio Doorway. Couleurs de marque IntelliX
+   (fond #0a0a12, dégradé indigo/violet/cyan) — voir maquette de référence. */
+
+.pdb_app {
+    --pdb-bg: #0a0a12;
+    --pdb-card: #14141f;
+    --pdb-border: rgba(255, 255, 255, 0.08);
+    --pdb-text: #e5e7eb;
+    --pdb-muted: #9ca3af;
+    --pdb-indigo: #6366f1;
+    --pdb-violet: #8b5cf6;
+    --pdb-cyan: #06b6d4;
+    --pdb-up: #4ade80;
+    --pdb-down: #f87171;
+
+    background: var(--pdb-bg);
+    color: var(--pdb-text);
+    font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+    padding: 20px 24px 60px;
+    min-height: 100%;
+    box-sizing: border-box;
+}
+.pdb_app .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; }
+.pdb_app * { box-sizing: border-box; }
+
+.pdb_loading { display: flex; align-items: center; gap: 8px; color: var(--pdb-muted); padding: 40px; }
+
+.pdb_topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.pdb_brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 16px; }
+.pdb_brand__mark {
+    width: 26px; height: 26px; border-radius: 7px;
+    background: linear-gradient(135deg, var(--pdb-indigo), var(--pdb-violet) 55%, var(--pdb-cyan));
+    display: inline-block;
+}
+.pdb_tabs { display: flex; gap: 4px; }
+.pdb_tab { padding: 6px 14px; border-radius: 8px; color: var(--pdb-muted); cursor: pointer; font-size: 13px; }
+.pdb_tab--active { background: var(--pdb-card); color: var(--pdb-text); border: 1px solid var(--pdb-border); }
+
+.pdb_filterbar {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 18px;
+    background: var(--pdb-card); border: 1px solid var(--pdb-border); border-radius: 14px;
+    padding: 12px 16px; margin-bottom: 18px;
+}
+.pdb_filtergroup { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.pdb_filterlabel { color: var(--pdb-muted); font-size: 12px; margin-right: 4px; }
+.pdb_pill {
+    padding: 5px 11px; border-radius: 999px; font-size: 12.5px; cursor: pointer;
+    border: 1px solid var(--pdb-border); color: var(--pdb-muted); background: transparent;
+    white-space: nowrap;
+}
+.pdb_pill--active { background: linear-gradient(135deg, var(--pdb-indigo), var(--pdb-violet)); color: #fff; border-color: transparent; }
+.pdb_pill--ghost { opacity: 0.7; text-decoration: underline; }
+.pdb_search input {
+    background: #0e0e18; border: 1px solid var(--pdb-border); border-radius: 8px;
+    color: var(--pdb-text); padding: 6px 10px; font-size: 13px; min-width: 200px;
+}
+
+.pdb_kpirow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 18px; }
+.pdb_kpi { background: var(--pdb-card); border: 1px solid var(--pdb-border); border-radius: 16px; padding: 16px; }
+.pdb_kpi__label { color: var(--pdb-muted); font-size: 12px; margin-bottom: 6px; }
+.pdb_kpi__value { font-size: 24px; font-weight: 700; }
+.pdb_kpi__value--text { font-size: 16px; font-weight: 600; }
+
+.pdb_card { background: var(--pdb-card); border: 1px solid var(--pdb-border); border-radius: 16px; padding: 18px; margin-bottom: 18px; }
+.pdb_card__title { font-weight: 700; font-size: 14px; margin-bottom: 12px; }
+.pdb_card__subtitle { color: var(--pdb-muted); font-size: 12px; margin: 12px 0 6px; }
+
+.pdb_table__head, .pdb_table__row {
+    display: grid; grid-template-columns: 2.2fr 1.3fr 1fr 1.3fr 1.2fr 0.8fr;
+    gap: 8px; align-items: center; padding: 9px 4px; font-size: 13px;
+}
+.pdb_table--queries .pdb_table__head, .pdb_table--queries .pdb_table__row {
+    grid-template-columns: 2.5fr 0.8fr 0.8fr;
+}
+.pdb_table__head { color: var(--pdb-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; border-bottom: 1px solid var(--pdb-border); }
+.pdb_table__row { border-bottom: 1px solid rgba(255,255,255,0.04); }
+.pdb_table__site { display: flex; flex-direction: column; }
+.pdb_table__domain { color: var(--pdb-muted); font-size: 11px; }
+.pdb_table__link { color: var(--pdb-cyan); cursor: pointer; font-size: 12.5px; }
+.pdb_table__empty { color: var(--pdb-muted); font-size: 12.5px; padding: 10px 4px; }
+
+.pdb_up { color: var(--pdb-up); font-size: 11px; margin-left: 4px; }
+.pdb_down { color: var(--pdb-down); font-size: 11px; margin-left: 4px; }
+.pdb_flat { color: var(--pdb-muted); font-size: 11px; margin-left: 4px; }
+
+.pdb_chip { padding: 3px 9px; border-radius: 999px; font-size: 11px; display: inline-block; }
+.pdb_chip--ok { background: rgba(74,222,128,0.12); color: var(--pdb-up); }
+.pdb_chip--warn { background: rgba(250,204,21,0.12); color: #facc15; }
+.pdb_chip--alert { background: rgba(248,113,113,0.12); color: var(--pdb-down); }
+.pdb_chip--neutral { background: rgba(148,163,184,0.12); color: var(--pdb-muted); }
+
+.pdb_panels { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.pdb_geolist__row, .pdb_pendinglist__row { display: flex; justify-content: space-between; padding: 6px 2px; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.pdb_citstats { display: flex; gap: 16px; margin-bottom: 8px; }
+.pdb_citstat { flex: 1; border: 1px solid var(--pdb-border); border-radius: 10px; padding: 10px; }
+.pdb_citstat__label { color: var(--pdb-muted); font-size: 11.5px; margin-bottom: 4px; }
+
+.pdb_detailhead { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+.pdb_detailhead h2 { margin: 0; font-size: 20px; }
+.pdb_back { color: var(--pdb-cyan); cursor: pointer; font-size: 13px; }
+.pdb_detailnote { color: var(--pdb-muted); font-size: 12px; margin: 0 0 16px; }
+
+.pdb_nextaction {
+    border: 1px solid var(--pdb-violet); background: rgba(139,92,246,0.08);
+    border-radius: 12px; padding: 12px 16px; margin-bottom: 18px; font-size: 13px;
+}
+
+.pdb_healthlist { margin: 0; padding-left: 18px; font-size: 13px; }
+.pdb_healthlist li { margin-bottom: 6px; }
+
+.pdb_recogrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.pdb_recocol__label { font-weight: 700; font-size: 12.5px; margin-bottom: 8px; }
+.pdb_reco--sante { color: var(--pdb-up); }
+.pdb_reco--presence { color: var(--pdb-cyan); }
+.pdb_reco--position { color: #c4b5fd; }
+.pdb_recocol ol { margin: 0; padding-left: 16px; font-size: 12.5px; }
+.pdb_recocol li { margin-bottom: 6px; }
+
+.pdb_chantierrow { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.pdb_chantiermini { border: 1px solid var(--pdb-border); border-radius: 10px; padding: 12px; }
+.pdb_chantiermini__title { color: var(--pdb-muted); font-size: 12px; margin-bottom: 6px; }
+
+.pdb_chantierfull { border: 1px solid var(--pdb-border); border-radius: 12px; padding: 14px; margin-bottom: 14px; }
+.pdb_chantierfull__title { font-weight: 700; font-size: 13px; margin-bottom: 10px; }
+.pdb_chantier2grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.pdb_chantier2grid > div { display: flex; flex-direction: column; gap: 2px; }
+.pdb_chantier2grid span:first-child { font-size: 18px; font-weight: 700; }
+.pdb_chantier2grid span:last-child { color: var(--pdb-muted); font-size: 11px; }
+
+.pdb_bucketrow { margin-bottom: 14px; }
+.pdb_bucket__head { display: flex; justify-content: space-between; font-size: 12.5px; margin-bottom: 4px; }
+.pdb_bucket__bar { height: 6px; border-radius: 4px; background: rgba(255,255,255,0.06); overflow: hidden; margin-bottom: 6px; }
+.pdb_bucket__fill { height: 100%; background: linear-gradient(90deg, var(--pdb-indigo), var(--pdb-violet)); }
+.pdb_bucket__kwlist { display: flex; flex-wrap: wrap; gap: 6px; max-height: 110px; overflow-y: auto; padding: 4px 0; }
+.pdb_bucket__kwlist--loading { color: var(--pdb-muted); font-size: 12px; }
+.pdb_kwchip { background: rgba(255,255,255,0.05); border: 1px solid var(--pdb-border); border-radius: 999px; padding: 3px 9px; font-size: 11px; }
+
+@media (max-width: 900px) {
+    .pdb_kpirow, .pdb_panels, .pdb_recogrid, .pdb_chantierrow, .pdb_chantier2grid { grid-template-columns: 1fr; }
+    .pdb_table__head, .pdb_table__row { grid-template-columns: 1.6fr 1fr 1fr; }
+}

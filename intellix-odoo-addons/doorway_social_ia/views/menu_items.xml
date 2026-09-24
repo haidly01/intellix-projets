@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Accueil = maquette Veille + LinkedIn (client action / iframe). -->
+    <record id="action_social_home_triage" model="ir.actions.client">
+        <field name="name">Tableau de bord</field>
+        <field name="tag">social_home_dashboard_action</field>
+        <field name="path">reseaux-sociaux</field>
+    </record>
+
+    <menuitem id="menu_social_root"
+              name="Réseaux sociaux"
+              sequence="40"
+              action="action_social_home_triage"
+              web_icon="doorway_social_ia,static/description/icon.png"/>
+
+    <menuitem id="menu_social_dashboard"
+              name="Tableau de bord"
+              parent="menu_social_root"
+              action="action_social_home_triage"
+              sequence="1"/>
+
+    <menuitem id="menu_social_connect_tiktok_top"
+              name="Connecter TikTok"
+              parent="menu_social_root"
+              action="action_social_connect_tiktok"
+              sequence="3"/>
+
+    <menuitem id="menu_social_calendrier"
+              name="Calendrier"
+              parent="menu_social_root"
+              action="action_social_calendar"
+              sequence="10"/>
+
+    <menuitem id="menu_social_calendrier_future"
+              name="Publications à venir"
+              parent="menu_social_root"
+              action="action_social_calendar_future"
+              sequence="11"/>
+
+    <menuitem id="menu_social_calendrier_past"
+              name="Publications passées"
+              parent="menu_social_root"
+              action="action_social_calendar_past"
+              sequence="12"/>
+
+    <menuitem id="menu_social_messages"
+              name="Messages"
+              parent="menu_social_root"
+              action="action_social_inbox_unified"
+              sequence="20"/>
+
+    <menuitem id="menu_social_creer"
+              name="Créer"
+              parent="menu_social_root"
+              sequence="30"/>
+
+    <menuitem id="menu_social_creer_composer"
+              name="Créer une publication"
+              parent="menu_social_creer"
+              action="action_social_composer"
+              sequence="5"/>
+
+    <menuitem id="menu_social_creer_calendar"
+              name="Calendrier IA"
+              parent="menu_social_creer"
+              action="action_social_wizard"
+              sequence="10"/>
+
+    <menuitem id="menu_social_creer_post"
+              name="Post unique"
+              parent="menu_social_creer"
+              action="action_social_post_single"
+              sequence="20"/>
+
+    <menuitem id="menu_social_parametres"
+              name="Paramètres"
+              parent="menu_social_root"
+              sequence="90"/>
+
+    <menuitem id="menu_social_accounts"
+              name="Comptes connectés"
+              parent="menu_social_parametres"
+              action="action_social_accounts"
+              sequence="10"/>
+
+    <menuitem id="menu_social_accounts_tiktok"
+              name="Comptes TikTok"
+              parent="menu_social_parametres"
+              action="action_social_accounts_tiktok"
+              sequence="11"/>
+
+    <menuitem id="menu_social_connect_meta"
+              name="Connecter tous Meta (Veille)"
+              parent="menu_social_parametres"
+              action="action_social_connect_meta"
+              sequence="15"/>
+
+    <menuitem id="menu_social_connect_tiktok"
+              name="Connecter un compte TikTok"
+              parent="menu_social_parametres"
+              action="action_social_connect_tiktok"
+              sequence="16"/>
+</odoo>

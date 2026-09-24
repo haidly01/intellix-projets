@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Tranches IR annuelles indicatives Maroc -->
+    <record id="hr_ir_bracket_0" model="hr.ir.bracket">
+        <field name="company_id" ref="base.main_company"/>
+        <field name="sequence">10</field>
+        <field name="min_amount">0</field>
+        <field name="max_amount">30000</field>
+        <field name="rate">0</field>
+    </record>
+    <record id="hr_ir_bracket_10" model="hr.ir.bracket">
+        <field name="company_id" ref="base.main_company"/>
+        <field name="sequence">20</field>
+        <field name="min_amount">30000</field>
+        <field name="max_amount">50000</field>
+        <field name="rate">10</field>
+    </record>
+    <record id="hr_ir_bracket_20" model="hr.ir.bracket">
+        <field name="company_id" ref="base.main_company"/>
+        <field name="sequence">30</field>
+        <field name="min_amount">50000</field>
+        <field name="max_amount">60000</field>
+        <field name="rate">20</field>
+    </record>
+    <record id="hr_ir_bracket_30" model="hr.ir.bracket">
+        <field name="company_id" ref="base.main_company"/>
+        <field name="sequence">40</field>
+        <field name="min_amount">60000</field>
+        <field name="max_amount">80000</field>
+        <field name="rate">30</field>
+    </record>
+    <record id="hr_ir_bracket_34" model="hr.ir.bracket">
+        <field name="company_id" ref="base.main_company"/>
+        <field name="sequence">50</field>
+        <field name="min_amount">80000</field>
+        <field name="max_amount">180000</field>
+        <field name="rate">34</field>
+    </record>
+    <record id="hr_ir_bracket_37" model="hr.ir.bracket">
+        <field name="company_id" ref="base.main_company"/>
+        <field name="sequence">60</field>
+        <field name="min_amount">180000</field>
+        <field name="max_amount">0</field>
+        <field name="rate">37</field>
+    </record>
+</odoo>

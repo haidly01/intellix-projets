@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="crm_team_coins_marocain" model="crm.team">
+        <field name="name">Coins Marocain</field>
+        <field name="sequence">8</field>
+        <field name="use_leads" eval="False"/>
+        <field name="use_opportunities" eval="True"/>
+    </record>
+
+    <record id="crm_stage_cm_nouveau" model="crm.stage">
+        <field name="name">Nouveau</field>
+        <field name="sequence">10</field>
+        <field name="team_ids" eval="[(4, ref('crm_team_coins_marocain'))]"/>
+    </record>
+    <record id="crm_stage_cm_contacte" model="crm.stage">
+        <field name="name">Contacté</field>
+        <field name="sequence">20</field>
+        <field name="team_ids" eval="[(4, ref('crm_team_coins_marocain'))]"/>
+    </record>
+    <record id="crm_stage_cm_visite" model="crm.stage">
+        <field name="name">Attribué</field>
+        <field name="sequence">30</field>
+        <field name="team_ids" eval="[(4, ref('crm_team_coins_marocain'))]"/>
+    </record>
+    <record id="crm_stage_cm_relance" model="crm.stage">
+        <field name="name">Relance</field>
+        <field name="sequence">40</field>
+        <field name="team_ids" eval="[(4, ref('crm_team_coins_marocain'))]"/>
+    </record>
+    <record id="crm_stage_cm_signe" model="crm.stage">
+        <field name="name">Gagné</field>
+        <field name="sequence">50</field>
+        <field name="is_won" eval="True"/>
+        <field name="team_ids" eval="[(4, ref('crm_team_coins_marocain'))]"/>
+    </record>
+    <record id="crm_stage_cm_perdu" model="crm.stage">
+        <field name="name">Perdu</field>
+        <field name="sequence">60</field>
+        <field name="fold" eval="True"/>
+        <field name="team_ids" eval="[(4, ref('crm_team_coins_marocain'))]"/>
+    </record>
+</odoo>

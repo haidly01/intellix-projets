@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="icp_kpi_target_appels_jour" model="ir.config_parameter">
+        <field name="key">coins_marocain_partenariats.kpi_target_appels_jour</field>
+        <field name="value">100</field>
+    </record>
+    <record id="icp_kpi_target_conversations_jour" model="ir.config_parameter">
+        <field name="key">coins_marocain_partenariats.kpi_target_conversations_jour</field>
+        <field name="value">40</field>
+    </record>
+</odoo>

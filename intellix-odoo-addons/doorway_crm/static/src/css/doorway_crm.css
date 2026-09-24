@@ -1,0 +1,316 @@
+/* Doorway CRM — fiche opportunité B2C (thème Intellix sombre) */
+
+
+
+.o_web_client .o_lead_opportunity_form .o_contact_primary {
+
+    background: var(--ix-surface-elevated, #1e1e32);
+
+    border: 1px solid var(--ix-border, #334155);
+
+    border-left: 3px solid var(--ix-primary, #6366f1);
+
+    border-radius: 8px;
+
+    padding: 12px 16px;
+
+    margin-bottom: 16px;
+
+    color: var(--ix-text, #f1f5f9);
+
+}
+
+
+
+.o_web_client .o_lead_opportunity_form .o_contact_primary .o_horizontal_separator,
+
+.o_web_client .o_lead_opportunity_form .o_contact_primary .o_form_label,
+
+.o_web_client .o_lead_opportunity_form .o_contact_primary label {
+
+    color: var(--ix-text-muted, #b8c5d6) !important;
+
+    font-weight: 600;
+
+}
+
+
+
+.o_web_client .o_lead_opportunity_form .o_contact_primary .o_field_widget,
+
+.o_web_client .o_lead_opportunity_form .o_contact_primary input,
+
+.o_web_client .o_lead_opportunity_form .o_contact_primary .o_field_highlight input {
+
+    color: var(--ix-text, #f1f5f9) !important;
+
+    background-color: var(--ix-surface, #1a1a2e) !important;
+
+    border-color: var(--ix-border, #334155) !important;
+
+    font-size: 1.05rem;
+
+    font-weight: 600;
+
+}
+
+
+
+.o_web_client .o_lead_opportunity_form .o_company_section {
+
+    background: var(--ix-surface, #1a1a2e);
+
+    border: 1px solid var(--ix-border, #334155);
+
+    border-left: 3px solid #6c757d;
+
+    border-radius: 8px;
+
+    padding: 8px 16px;
+
+    margin-bottom: 16px;
+
+    color: var(--ix-text, #f1f5f9);
+
+}
+
+
+
+.o_web_client .o_lead_opportunity_form .o_company_section .o_horizontal_separator,
+
+.o_web_client .o_lead_opportunity_form .o_company_section .o_form_label,
+
+.o_web_client .o_lead_opportunity_form .o_company_section label {
+
+    color: var(--ix-text-muted, #b8c5d6) !important;
+
+    font-weight: 600;
+
+}
+
+
+
+.o_web_client .o_lead_opportunity_form .o_company_section .o_field_widget,
+
+.o_web_client .o_lead_opportunity_form .o_company_section input {
+
+    color: var(--ix-text, #f1f5f9) !important;
+
+    background-color: var(--ix-surface-elevated, #1e1e32) !important;
+
+    border-color: var(--ix-border, #334155) !important;
+
+}
+
+
+
+.o_doorway_nav_buttons {
+
+    flex-shrink: 0;
+
+}
+
+
+
+.o_web_client .o_lead_opportunity_form .doorway-activities-panel {
+
+    border: 1px solid var(--ix-border, #334155);
+
+    border-radius: 8px;
+
+    padding: 8px 12px;
+
+    background: var(--ix-surface-elevated, #1e1e32);
+
+    color: var(--ix-text, #f1f5f9);
+
+}
+
+
+
+.o_web_client .o_lead_opportunity_form .doorway-activities-panel .o_horizontal_separator,
+
+.o_web_client .o_lead_opportunity_form .doorway-activities-panel .o_form_label,
+
+.o_web_client .o_lead_opportunity_form .doorway-activities-panel label {
+
+    color: var(--ix-text-muted, #b8c5d6) !important;
+
+    font-weight: 600;
+
+}
+
+
+
+.o_web_client .o_lead_opportunity_form .doorway-activities-panel .o_list_renderer .o_list_table {
+
+    --table-bg: var(--ix-surface, #1a1a2e);
+
+    --table-color: var(--ix-text, #f1f5f9);
+
+    --table-border-color: var(--ix-border, #334155);
+
+    background-color: var(--ix-surface, #1a1a2e) !important;
+
+}
+
+
+
+.o_web_client .o_lead_opportunity_form .doorway-activities-panel .o_list_renderer thead th {
+
+    color: var(--ix-text, #f1f5f9) !important;
+
+    background-color: var(--ix-surface-hover, #2a2a48) !important;
+
+    border-color: var(--ix-border, #334155) !important;
+
+    font-weight: 600;
+
+}
+
+
+
+.o_web_client .o_lead_opportunity_form .doorway-activities-panel .o_list_renderer tbody td {
+
+    color: var(--ix-text, #f1f5f9) !important;
+
+    background-color: var(--ix-surface, #1a1a2e) !important;
+
+    border-color: var(--ix-border, #334155) !important;
+
+}
+
+
+
+.doorway_crm_sheet_row {
+
+    margin-bottom: 12px;
+
+}
+
+
+
+/* Revenu attendu / probabilité — libellés lisibles */
+
+.o_web_client .o_lead_opportunity_form .oe_title ~ .row label,
+
+.o_web_client .o_lead_opportunity_form .oe_title ~ .row .o_form_label,
+
+.o_web_client .o_lead_opportunity_form .o_row > label {
+
+    color: var(--ix-text-muted, #b8c5d6) !important;
+
+}
+
+
+
+/* Fil d'Ariane + étape CRM (complément intellix) */
+
+.o_web_client .o_control_panel .o_breadcrumb .breadcrumb-item a,
+
+.o_web_client .o_control_panel .o_last_breadcrumb_item span {
+
+    background: transparent !important;
+
+}
+
+
+
+.o_web_client .o_lead_opportunity_form .o_form_statusbar .o_arrow_button_current {
+
+    color: #fff !important;
+
+}
+
+
+
+.o_web_client .o_lead_opportunity_form .o_form_statusbar .o_arrow_button:not(.o_arrow_button_current) {
+
+    color: var(--ix-text, #e2e8f0) !important;
+
+    background-color: var(--ix-surface-elevated, #1e1e36) !important;
+
+    font-weight: 500;
+
+}
+
+
+
+.o_web_client .o_switch_company_menu_dropdown .company_label {
+
+    color: var(--ix-text, #f1f5f9) !important;
+
+}
+
+
+
+/* Wizard « Marquer comme perdu » — lisibilité des badges */
+
+.o_doorway_lost_wizard .o_selection_badge .btn,
+
+.o_doorway_lost_wizard .o_selection_badge label {
+
+    color: var(--ix-text, #f1f5f9) !important;
+
+    background-color: var(--ix-surface-elevated, #1e1e32) !important;
+
+    border: 1px solid var(--ix-border, #334155) !important;
+
+    font-weight: 500;
+
+}
+
+
+
+.o_doorway_lost_wizard .o_selection_badge .active,
+
+.o_doorway_lost_wizard .o_selection_badge input:checked + label {
+
+    color: #fff !important;
+
+    background-color: var(--ix-primary, #6366f1) !important;
+
+    border-color: var(--ix-primary, #6366f1) !important;
+
+}
+
+
+
+.o_doorway_lost_wizard .o_form_label {
+
+    font-weight: 600;
+
+    color: var(--ix-text, #f1f5f9);
+
+}
+
+
+
+/* Boîte mail — formulaire de gestion (lisibilité thème sombre) */
+.o_web_client .o_form_view.o_doorway_mailbox_form .o_form_label,
+.o_web_client .o_form_view .o_form_view_container:has([name="email"]) .o_form_label {
+    color: var(--ix-text-muted, #b8c5d6) !important;
+    font-weight: 600;
+}
+
+.o_web_client .o_form_view .o_form_view_container:has([name="imap_server"]) .o_field_widget,
+.o_web_client .o_form_view .o_form_view_container:has([name="email"]) h1,
+.o_web_client .o_form_view .o_form_view_container:has([name="email"]) h2 {
+    color: var(--ix-text, #f1f5f9) !important;
+}
+
+@media (max-width: 991.98px) {
+
+    .o_doorway_nav_buttons {
+
+        width: 100%;
+
+        justify-content: center;
+
+        margin-top: 8px;
+
+    }
+
+}
+
+

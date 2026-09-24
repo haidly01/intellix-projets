@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_doorway_whatsapp_log_form" model="ir.ui.view">
+        <field name="name">doorway.wa.log.form.whatsapp</field>
+        <field name="model">doorway.wa.log</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <form string="Log WhatsApp" class="wa-log-form">
+                <header>
+                    <field name="statut" widget="statusbar"
+                           statusbar_visible="draft,queued,sent,delivered,failed,received"/>
+                </header>
+                <sheet>
+                    <div class="wa-log-topbar">
+                        <span class="wa-log-badge">
+                            <field name="direction" readonly="1" nolabel="1"/>
+                        </span>
+                        <span class="wa-log-status">
+                            <field name="statut" readonly="1" nolabel="1"/>
+                        </span>
+                    </div>
+                    <group col="2" class="wa-log-grid">
+                        <field name="direction" readonly="1"/>
+                        <field name="statut" readonly="1"/>
+                        <field name="provider" readonly="1"/>
+                        <field name="phone" readonly="1"/>
+                        <field name="lead_id"/>
+                        <field name="partner_id"/>
+                        <field name="sent_by" readonly="1"/>
+                        <field name="twilio_meta_id" readonly="1"/>
+                        <field name="n8n_execution_id" readonly="1"/>
+                        <field name="error_message" readonly="1"/>
+                    </group>
+                    <group col="1">
+                        <field name="message" widget="text" readonly="1"/>
+                        <field name="raw_payload" widget="code" options="{'mode': 'json'}" readonly="1"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Répondre" class="btn-wa-primary"
+                            name="action_reply" type="object"/>
+                    <button string="Lier un lead" class="btn-wa-ghost"
+                            name="action_link_lead" type="object"/>
+                    <button string="Copier payload" class="btn-wa-ghost"
+                            name="action_copy_payload" type="object"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

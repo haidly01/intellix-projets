@@ -1,0 +1,147 @@
+// Intellix — wizards visite guidée (modales portées sur body.o_intellix_branded)
+
+body.o_intellix_branded {
+    .modal.o_technical_modal:has(.o_doorway_onboarding_wizard),
+    .modal:has(.o_doorway_onboarding_wizard),
+    .o_dialog:has(.o_doorway_onboarding_wizard) {
+        .modal-content {
+            background: var(--ix-surface) !important;
+            color: var(--ix-text) !important;
+            border: 1px solid var(--ix-border) !important;
+            box-shadow: var(--ix-shadow-md) !important;
+        }
+
+        .modal-header {
+            background: var(--ix-surface-elevated) !important;
+            border-bottom: 1px solid var(--ix-border) !important;
+            color: var(--ix-text) !important;
+
+            .modal-title,
+            .btn-close {
+                color: var(--ix-text) !important;
+            }
+        }
+
+        .modal-body {
+            background: var(--ix-surface) !important;
+            color: var(--ix-text) !important;
+        }
+
+        .modal-footer {
+            background: var(--ix-surface) !important;
+            border-top: 1px solid var(--ix-border) !important;
+        }
+    }
+}
+
+.o_doorway_onboarding_wizard,
+.o_pe_onboarding_wizard {
+    background: var(--ix-surface) !important;
+    color: var(--ix-text) !important;
+
+    .o_form_renderer,
+    .o_form_sheet_bg,
+    .o_form_sheet,
+    .o_form_statusbar {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        max-width: 100%;
+    }
+
+    .pe-onboarding-header {
+        .pe-onboarding-xp-label {
+            color: var(--ix-primary-light) !important;
+        }
+
+        .text-muted {
+            color: var(--ix-text-muted) !important;
+        }
+
+        .o_progressbar,
+        .progress {
+            background-color: var(--ix-surface-elevated) !important;
+            border-radius: var(--ix-radius-pill);
+        }
+
+        .progress-bar {
+            background: var(--ix-gradient-cta) !important;
+        }
+    }
+
+    .pe-onboarding-panel {
+        background: var(--ix-surface-elevated) !important;
+        border: 1px solid var(--ix-border) !important;
+        border-radius: var(--ix-radius-card);
+        padding: 1rem 1.15rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .pe-onboarding-title {
+        color: var(--ix-text) !important;
+    }
+
+    .o_field_widget[name="step_body_html"] .o_readonly,
+    .o_field_html .o_readonly,
+    .o_field_html .odoo-editor-editable,
+    .o_field_html iframe {
+        background: transparent !important;
+        color: var(--ix-text) !important;
+    }
+
+  .o_field_widget[name="step_body_html"],
+    .o_field_html {
+        color: var(--ix-text) !important;
+
+        p, li, span, div, em, strong {
+            color: var(--ix-text) !important;
+        }
+
+        .alert,
+        .alert-info {
+            background: linear-gradient(
+                135deg,
+                rgba(99, 102, 241, 0.18),
+                rgba(168, 85, 247, 0.12)
+            ) !important;
+            border: 1px solid var(--ix-border) !important;
+            color: var(--ix-text) !important;
+        }
+    }
+
+    .btn-outline-primary {
+        border-color: var(--ix-primary) !important;
+        color: var(--ix-primary-light) !important;
+
+        &:hover {
+            background: rgba(99, 102, 241, 0.12) !important;
+            color: var(--ix-text) !important;
+        }
+    }
+
+    .btn-secondary {
+        background: var(--ix-surface-elevated) !important;
+        border-color: var(--ix-border) !important;
+        color: var(--ix-text-muted) !important;
+    }
+
+    footer {
+        background: var(--ix-surface) !important;
+        border-top: 1px solid var(--ix-border) !important;
+    }
+
+    .pe-celebrate {
+        .text-success {
+            color: var(--ix-success) !important;
+        }
+
+        .text-muted {
+            color: var(--ix-text-muted) !important;
+        }
+
+        .bg-warning {
+            background: rgba(245, 158, 11, 0.25) !important;
+            color: var(--ix-warning) !important;
+        }
+    }
+}

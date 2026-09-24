@@ -1,0 +1,16 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_campaign_user,campaign user,model_doorway_message_campaign,base.group_user,1,1,1,0
+access_campaign_manager,campaign manager,model_doorway_message_campaign,base.group_system,1,1,1,1
+access_template_user,template user,model_doorway_message_template,base.group_user,1,0,0,0
+access_template_manager,template manager,model_doorway_message_template,base.group_system,1,1,1,1
+access_log_user,log user,model_doorway_message_log,base.group_user,1,0,0,0
+access_log_manager,log manager,model_doorway_message_log,base.group_system,1,1,1,1
+access_channel_config_manager,channel config,model_doorway_channel_config,base.group_system,1,1,1,1
+access_channel_config_user,channel config user,model_doorway_channel_config,base.group_user,1,0,0,0
+access_compose_wizard,compose wizard,model_doorway_compose_wizard,base.group_user,1,1,1,1
+access_bulk_wizard,bulk wizard,model_doorway_bulk_select_wizard,base.group_user,1,1,1,1
+access_wa_log_user,wa log user,model_doorway_wa_log,base.group_user,1,0,0,0
+access_wa_log_manager,wa log manager,model_doorway_wa_log,base.group_system,1,1,1,1
+access_wa_wizard,wa wizard,model_doorway_wa_wizard,base.group_user,1,1,1,1
+access_whatsapp_send_wizard,whatsapp send wizard,model_doorway_whatsapp_send_wizard,base.group_user,1,1,1,1
+access_assign_campaign_wizard,assign campaign wizard,model_doorway_assign_campaign_wizard,base.group_user,1,1,1,1

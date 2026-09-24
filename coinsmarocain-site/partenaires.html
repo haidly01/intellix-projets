@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" href="/favicon.ico?v=cm126" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32.png?v=cm126">
+  <link rel="icon" type="image/png" sizes="192x192" href="/assets/img/favicon-192.png?v=cm126">
+  <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png?v=cm126">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Devenir Partenaire | Coins Marocain Marrakech</title>
+  <link rel="canonical" href="https://coinsmarocain.com/partenaires">
+  <meta property="og:title" content="Devenir Partenaire | Coins Marocain Marrakech">
+  <meta property="og:description" content="Professionnel, voyageur ambassadeur ou créateur de contenu ? Rejoignez le réseau Coins Marocain à Marrakech.">
+  <meta property="og:url" content="https://coinsmarocain.com/partenaires">
+  <meta property="og:type" content="website">
+  <meta name="description" content="Devenez partenaire Coins Marocain : lieux et prestataires, programme ambassadeur voyageurs, ou créateurs vidéo.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cardo:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/activites.css?v=cm100">
+  <link rel="stylesheet" href="/assets/cookies.css?v=cm148">
+  <link rel="stylesheet" href="/assets/cm-chrome.css?v=cm148">
+  <link rel="stylesheet" href="/assets/cm-cross-promo.css?v=cm102">
+</head>
+<body>
+  <header class="site-header solid" id="siteHeader">
+    <div class="wrap header-inner">
+      <a class="brand" href="/">
+        <img src="/assets/img/logo-emblem-white.png?v=cm99" alt="Coins Marocain" class="brand-logo logo-light">
+        <img src="/assets/img/logo-emblem.png?v=cm99" alt="Coins Marocain" class="brand-logo logo-dark">
+      </a>
+      <button class="burger" id="burger" aria-label="Ouvrir le menu"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+  <nav class="menu-overlay" id="menuOverlay" aria-hidden="true">
+    <button class="menu-close" id="menuClose" aria-label="Fermer le menu">&times;</button>
+    <p class="m-eyebrow">Coins Marocain</p>
+  </nav>
+
+  <section class="hero" style="padding:120px 0 80px">
+    <div class="wrap">
+      <p class="eyebrow">Réseau Coins Marocain</p>
+      <h1>Devenez partenaire Coins Marocain</h1>
+      <p class="hero-sub">Guide local, chef, centre équestre, hammam ou hébergement à Marrakech&nbsp;?
+        Rejoignez notre réseau et gagnez en visibilité auprès de voyageurs déjà engagés.</p>
+      <div class="hero-ctas" style="margin-top:22px">
+        <a class="btn" href="#professionnel">Je suis un professionnel →</a>
+        <a class="btn" href="/espace/commercant/?token=cm-test-riad-ames" style="background:transparent;border:1px solid currentColor">Voir le compte test</a>
+        <a class="btn" href="#voyageur" style="background:transparent;border:1px solid currentColor">Je suis un voyageur</a>
+        <a class="btn" href="#createur" style="background:transparent;border:1px solid currentColor">Je suis créateur de contenu</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Professionnel : inscription lieu (même file que page Carte) -->
+  <section class="section" id="professionnel">
+    <div class="wrap" style="max-width:800px">
+      <div class="section-head" style="text-align:left;max-width:none">
+        <p class="eyebrow" style="color:var(--terracotta)">Professionnels locaux</p>
+        <h2>Vous avez un lieu ou une activité à Marrakech&nbsp;?</h2>
+        <p>Vous créez l’espace tout de suite. Ensuite vous complétez la fiche — YouTube, photos, services et prix. Après modération, votre pin apparaît sur la carte vidéo Marrakech.</p>
+      </div>
+      <ul style="color:var(--muted);line-height:1.7;margin:0 0 8px;padding-left:1.2em">
+        <li>Visibilité auprès de voyageurs déjà qualifiés</li>
+        <li>Intégration possible à la carte vidéo Coins Marocain</li>
+        <li>Libre-service après validation — vous pilotez votre fiche</li>
+      </ul>
+      <p style="margin:0 0 8px"><a href="/carte#vous-avez-un-lieu">Voir aussi l’inscription sur la page Carte →</a></p>
+
+      <form class="cm-part-form" id="cmPartSignup" novalidate>
+        <label>Nom du lieu
+          <input type="text" name="place_name" required maxlength="160" autocomplete="organization">
+        </label>
+        <label>Catégorie
+          <select name="category" required>
+            <option value="">—</option>
+            <option value="resto">Restaurant</option>
+            <option value="hebergement">Hébergement</option>
+            <option value="bien-etre">Bien-être / hammam</option>
+            <option value="experiences">Expériences</option>
+            <option value="evenements">Événements</option>
+            <option value="autre">Autre</option>
+          </select>
+        </label>
+        <label>Quartier
+          <select name="quartier">
+            <option value="Médina">Médina</option>
+            <option value="Guéliz">Guéliz</option>
+            <option value="Hivernage">Hivernage</option>
+            <option value="Palmeraie">Palmeraie</option>
+            <option value="Route de l'Ourika">Route de l'Ourika</option>
+            <option value="Agafay">Agafay</option>
+          </select>
+        </label>
+        <label>Nom du contact
+          <input type="text" name="contact_name" maxlength="120" autocomplete="name">
+        </label>
+        <div class="row">
+          <label>Courriel
+            <input type="email" name="email" required maxlength="120" autocomplete="email">
+          </label>
+          <label>Téléphone
+            <input type="tel" name="phone" required maxlength="40" autocomplete="tel">
+          </label>
+        </div>
+        <label>Description du lieu
+          <textarea name="description" rows="4" maxlength="4000" placeholder="Ambiance, capacité, atouts — quelques phrases suffisent."></textarea>
+        </label>
+        <label>Photo principale
+          <input type="file" name="photo" id="cmPartPhoto" accept="image/jpeg,image/png,image/webp,image/*">
+          <span class="cm-part-photo-hint">JPEG, PNG ou WebP — max 5&nbsp;Mo (optionnel)</span>
+        </label>
+        <input type="hidden" name="signup_channel" value="site_partenaires">
+        <button type="submit" id="cmPartSignupSubmit">Créer mon espace — puis compléter</button>
+        <p class="cm-part-status" id="cmPartSignupStatus" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- Voyageur : même contenu Ambassadeur que l'accueil -->
+  <section class="section alt ambass" id="voyageur">
+    <div class="wrap" data-cm-ambassadeur></div>
+  </section>
+
+  <!-- Créateur / influenceur -->
+  <section class="section" id="createur">
+    <div class="wrap" style="max-width:800px">
+      <div class="section-head" style="text-align:left;max-width:none">
+        <p class="eyebrow" style="color:var(--terracotta)">Créateurs de contenu</p>
+        <h2>Devenez ambassadeur vidéo de Coins Marocain</h2>
+        <p>Vous créez du contenu autour de Marrakech&nbsp;? On vous ouvre des lieux d’exception — en échange d’une vidéo courte authentique par adresse visitée.</p>
+      </div>
+      <div class="feature-list" style="margin-top:8px">
+        <div class="fi"><h4>Ce qu’on demande</h4><p>Une vidéo courte par lieu visité — ton libre, style personnel, pas de script figé.</p></div>
+        <div class="fi"><h4>Ce que vous gagnez</h4><p>Expérience offerte + commission sur les retombées, statut fondateur, choix des biens.</p></div>
+        <div class="fi"><h4>Pourquoi maintenant</h4><p>Marque en croissance : les premiers créateurs gardent un accès prioritaire aux nouveautés.</p></div>
+      </div>
+      <p style="margin-top:28px">
+        <a class="btn" href="https://wa.me/212660159177?text=Bonjour%20Coins%20Marocain%2C%20je%20suis%20cr%C3%A9ateur%2Frice%20de%20contenu%20et%20je%20souhaite%20rejoindre%20le%20programme%20vid%C3%A9o." target="_blank" rel="noopener noreferrer">Proposer ma candidature →</a>
+        <a class="btn" href="/affiliation" style="margin-left:8px;background:transparent;border:1px solid var(--terracotta);color:var(--terracotta)">Voir l’offre affiliation</a>
+      </p>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="wrap footer-cols">
+      <div>
+        <div class="foot-brand"><img src="/assets/img/logo-emblem-white.png?v=cm99" alt="Coins Marocain" style="height:44px"></div>
+        <p class="foot-tag">Voyages &amp; expériences curatés au Maroc — chaque adresse choisie et racontée.</p>
+      </div>
+      <div>
+        <h4>Explorer</h4>
+        <a href="/carte">Carte</a>
+        <a href="/activites">Activités</a>
+        <a href="/villas-riads-marrakech">Villas &amp; Riads</a>
+        <a href="/partenaires">Partenaires</a>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <a href="/contact">Nous contacter</a>
+        <a href="mailto:info@coinsmarocain.com">info@coinsmarocain.com</a>
+      </div>
+    </div>
+    <div class="wrap foot-bottom">
+      <p>© 2026 Coins Marocain — propriété de Digital Doorway SARL</p>
+    </div>
+  </footer>
+
+  <script src="/assets/nav.js?v=cm148" defer></script>
+  <script src="/assets/ambassadeur-block.js?v=cm100" defer></script>
+  <script src="/assets/cm-partner-api.js?v=cm142" defer></script>
+  <script src="/assets/partenaires-hub.js?v=cm142" defer></script>
+  <script src="/assets/cookies.js?v=cm148" defer></script>
+</body>
+</html>

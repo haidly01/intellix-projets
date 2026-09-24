@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Apps RH Odoo natives masquées — tout passe par le module RH -->
+    <record id="hr.menu_hr_root" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="hr_holidays.menu_hr_holidays_root" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="hr_attendance.menu_hr_attendance_root" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="hr_timesheet.timesheet_menu_root" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+</odoo>

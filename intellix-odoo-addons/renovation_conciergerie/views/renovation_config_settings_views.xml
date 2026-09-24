@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Formulaire léger (hors Paramètres généraux Odoo) pour éviter déconnexion WebSocket -->
+    <record id="res_config_settings_view_form_renovation_standalone" model="ir.ui.view">
+        <field name="name">res.config.settings.form.renovation.standalone</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority">50</field>
+        <field name="arch" type="xml">
+            <form string="Configuration Doorway" class="oe_form_configuration" js_class="base_settings">
+                <app string="Rénovation Conciergerie" name="renovation_conciergerie">
+                    <block title="Intelligence Artificielle (IA)">
+                        <setting string="Activer l'IA" help="Active les fonctionnalités IA (génération de tâches, assistant, suggestions).">
+                            <field name="ai_enabled"/>
+                        </setting>
+                        <setting string="Fournisseur IA" invisible="not ai_enabled">
+                            <field name="ai_provider"/>
+                        </setting>
+                        <setting string="Clé API Anthropic" invisible="not ai_enabled">
+                            <field name="anthropic_api_key" password="True"/>
+                        </setting>
+                        <setting string="Modèle IA" help="Ex : claude-3-5-sonnet-latest" invisible="not ai_enabled">
+                            <field name="ai_model"/>
+                        </setting>
+                        <setting string="Tokens maximum par réponse" invisible="not ai_enabled">
+                            <field name="ai_max_tokens"/>
+                        </setting>
+                        <setting string="Tester la connexion" invisible="not ai_enabled">
+                            <button name="action_test_ai_connection" type="object"
+                                    string="Tester la connexion IA" class="btn-secondary"/>
+                        </setting>
+                        <setting string="Webhook externe → tâches IA" invisible="not ai_enabled">
+                            <field name="project_ai_webhook_url" widget="CopyClipboardChar"/>
+                            <field name="project_ai_webhook_token" password="True" widget="CopyClipboardChar"/>
+                            <button name="action_generate_project_ai_token" type="object"
+                                    string="Générer / régénérer le token" class="btn-secondary"/>
+                        </setting>
+                    </block>
+                    <block title="Twilio">
+                        <setting string="Twilio Account SID">
+                            <field name="twilio_account_sid"/>
+                        </setting>
+                        <setting string="Twilio Auth Token">
+                            <field name="twilio_auth_token" password="True"/>
+                        </setting>
+                        <setting string="Numéro émetteur Twilio">
+                            <field name="twilio_from_number"/>
+                        </setting>
+                        <setting string="URL publique Odoo">
+                            <field name="twilio_base_url"/>
+                        </setting>
+                    </block>
+                    <block title="Agents IA (ElevenLabs / n8n) — webhooks CRM">
+                        <setting string="Webhook CRM — Immobilier (Maison Recherchée)">
+                            <field name="immobilier_agent_webhook_url" widget="CopyClipboardChar"/>
+                            <field name="immobilier_agent_webhook_token" password="True" widget="CopyClipboardChar"/>
+                        </setting>
+                        <setting string="Webhook CRM — Rénovation">
+                            <field name="retell_webhook_url" widget="CopyClipboardChar"/>
+                            <field name="retell_webhook_token" password="True" widget="CopyClipboardChar"/>
+                        </setting>
+                        <setting string="Webhook CRM — Marketing">
+                            <field name="marketing_retell_webhook_url" widget="CopyClipboardChar"/>
+                            <field name="marketing_retell_webhook_token" password="True" widget="CopyClipboardChar"/>
+                        </setting>
+                        <setting string="Webhook fin d'appel (n8n / ElevenLabs)">
+                            <field name="agents_ia_call_webhook_url" widget="CopyClipboardChar"/>
+                            <field name="agents_ia_call_webhook_token" password="True" widget="CopyClipboardChar"/>
+                        </setting>
+                        <setting string="Numéro émetteur Twilio par défaut (secours)">
+                            <field name="retell_from_number"/>
+                        </setting>
+                    </block>
+                    <block title="Énergie Pro — Leads web (n8n)">
+                        <setting string="Pages Facebook Lead Ads (Énergie Pro)">
+                            <field name="energie_facebook_page_ids"/>
+                            <button name="action_test_energie_facebook_pages" type="object"
+                                    string="Tester pages Meta" class="btn-secondary"/>
+                        </setting>
+                        <setting string="Webhook lead Énergie Pro (3 sites)">
+                            <field name="energie_lead_webhook_url" widget="CopyClipboardChar"/>
+                            <field name="energie_lead_update_url" widget="CopyClipboardChar"/>
+                            <field name="energie_webhook_token" password="True" widget="CopyClipboardChar"/>
+                            <button name="action_regenerate_energie_webhook_token" type="object"
+                                    string="Régénérer token Énergie" class="btn-secondary"/>
+                        </setting>
+                    </block>
+                    <block title="Haidly — SoumissionEntrepreneurs (n8n)">
+                        <setting string="Webhook lead SoumissionEntrepreneurs">
+                            <field name="haidly_lead_webhook_url" widget="CopyClipboardChar"/>
+                            <field name="haidly_lead_update_url" widget="CopyClipboardChar"/>
+                            <field name="haidly_webhook_token" password="True" widget="CopyClipboardChar"/>
+                            <button name="action_regenerate_haidly_webhook_token" type="object"
+                                    string="Régénérer token Haidly" class="btn-secondary"/>
+                        </setting>
+                    </block>
+
+                    <block title="Meta Lead Ads — Webhook Odoo direct (Zakaria / Marketing)">
+                        <setting string="Callback URL Meta (hub.verify_token + leadgen)">
+                            <field name="meta_leadgen_webhook_url" widget="CopyClipboardChar"/>
+                            <field name="meta_leadgen_webhook_verify_token" password="True" widget="CopyClipboardChar"/>
+                            <button name="action_regenerate_meta_leadgen_verify_token" type="object"
+                                    string="Régénérer verify token" class="btn-secondary"/>
+                        </setting>
+                        <setting string="Endpoint JSON Marketing (secours n8n)">
+                            <field name="marketing_meta_lead_webhook_url" widget="CopyClipboardChar"/>
+                            <field name="marketing_meta_webhook_token" password="True" widget="CopyClipboardChar"/>
+                        </setting>
+                    </block>
+                    <block title="Meta Lead Ads — Hub global (toutes pages)">
+                        <setting string="Point d'entrée unique Meta → n8n">
+                            <field name="meta_leads_hub_webhook_url" widget="CopyClipboardChar"/>
+                            <field name="meta_leads_routing_token" password="True" widget="CopyClipboardChar"/>
+                        </setting>
+                        <setting string="Mapping pages / formulaires (JSON)">
+                            <button name="action_open_meta_leads_map_editor" type="object"
+                                    string="Éditer le mapping Meta (JSON)" class="btn-primary"/>
+                            <button name="action_reset_meta_leads_global_map" type="object"
+                                    string="Réinitialiser mapping Doorway" class="btn-secondary"/>
+                        </setting>
+                    </block>
+                    <block title="Meta Ads — Qualification immobilier (n8n)">
+                        <setting string="Page Facebook — Maison Recherchée (Lead Ads)">
+                            <field name="meta_immo_facebook_page_id"/>
+                            <field name="meta_immo_facebook_page_name" readonly="1"/>
+                            <field name="meta_immo_reference_ad_id"/>
+                            <button name="action_test_meta_immo_facebook_page" type="object"
+                                    string="Tester page Meta immo" class="btn-secondary"/>
+                        </setting>
+                        <setting string="Création lead (webhook Meta → Odoo)">
+                            <field name="meta_immo_lead_webhook_url" widget="CopyClipboardChar"/>
+                            <field name="meta_immo_lead_update_url" widget="CopyClipboardChar"/>
+                            <field name="meta_immo_webhook_token" password="True" widget="CopyClipboardChar"/>
+                            <button name="action_regenerate_meta_immo_webhook_token" type="object"
+                                    string="Régénérer le token Meta immo" class="btn-secondary"/>
+                        </setting>
+                    </block>
+                    <block title="Leads site web (Rénovation)">
+                        <setting string="URL webhook (pipeline Rénovation)">
+                            <field name="website_lead_webhook_url" widget="CopyClipboardChar"/>
+                        </setting>
+                        <setting string="Token secret">
+                            <field name="website_lead_webhook_token" password="True" widget="CopyClipboardChar"/>
+                        </setting>
+                    </block>
+                    <block title="Leads site web (Marketing)">
+                        <setting string="URL webhook (pipeline Marketing)">
+                            <field name="marketing_website_lead_webhook_url" widget="CopyClipboardChar"/>
+                        </setting>
+                        <setting string="Token secret">
+                            <field name="marketing_website_lead_webhook_token" password="True" widget="CopyClipboardChar"/>
+                        </setting>
+                    </block>
+                </app>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_renovation_doorway_settings" model="ir.actions.act_window">
+        <field name="name">Doorway — Webhooks &amp; Meta</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="res_config_settings_view_form_renovation_standalone"/>
+        <field name="path">doorway-settings</field>
+        <field name="context">{'module': 'renovation_conciergerie'}</field>
+    </record>
+
+    <!-- Accès direct : Paramètres Odoo (engrenage) → entrée dédiée, formulaire léger -->
+    <menuitem id="menu_administration_doorway_settings"
+              name="Doorway — Webhooks &amp; Meta"
+              parent="base.menu_administration"
+              action="action_renovation_doorway_settings"
+              sequence="4"
+              groups="base.group_erp_manager"/>
+
+    <menuitem id="menu_renovation_doorway_settings"
+              name="Doorway — Webhooks &amp; Meta"
+              parent="menu_renovation_config"
+              action="action_renovation_doorway_settings"
+              sequence="5"
+              groups="base.group_erp_manager"/>
+</odoo>

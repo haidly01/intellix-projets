@@ -1,0 +1,512 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <record id="view_social_post_calendar" model="ir.ui.view">
+
+        <field name="name">doorway.social.post.calendar</field>
+
+        <field name="model">doorway.social.post</field>
+
+        <field name="arch" type="xml">
+
+            <calendar string="Calendrier éditorial"
+
+                      date_start="calendar_date"
+
+                      color="state"
+
+                      mode="month"
+
+                      quick_create="0"
+
+                      event_open_popup="1"
+
+                      scales="day,week,month,year">
+
+                <field name="platform"/>
+
+                <field name="post_format"/>
+
+                <field name="state"/>
+
+                <field name="hook"/>
+
+                <field name="scheduled_date"/>
+
+                <field name="published_date"/>
+
+            </calendar>
+
+        </field>
+
+    </record>
+
+
+
+    <record id="view_social_post_kanban" model="ir.ui.view">
+
+        <field name="name">doorway.social.post.kanban</field>
+
+        <field name="model">doorway.social.post</field>
+
+        <field name="arch" type="xml">
+
+            <kanban default_group_by="state" class="o_doorway_social_kanban">
+
+                <field name="platform"/>
+
+                <field name="post_format"/>
+
+                <field name="state"/>
+
+                <field name="hook"/>
+
+                <field name="image_url"/>
+
+                <field name="video_thumbnail"/>
+
+                <field name="scheduled_date"/>
+
+                <field name="published_date"/>
+
+                <templates>
+
+                    <t t-name="card">
+
+                        <div class="oe_kanban_global_click doorway_social_post_card">
+
+                            <div class="d-flex justify-content-between">
+
+                                <span class="badge text-bg-primary text-capitalize">
+
+                                    <field name="platform"/>
+
+                                </span>
+
+                                <span class="badge text-bg-secondary">
+
+                                    <field name="post_format"/>
+
+                                </span>
+
+                            </div>
+
+                            <div class="fw-bold mt-2"><field name="hook"/></div>
+
+                            <div class="text-muted small mt-1">
+
+                                <t t-if="record.state.raw_value == 'published'">
+
+                                    Publié : <field name="published_date" widget="datetime"/>
+
+                                </t>
+
+                                <t t-else="">
+
+                                    Prévu : <field name="scheduled_date" widget="datetime"/>
+
+                                </t>
+
+                            </div>
+
+                            <img t-if="record.image_url.raw_value or record.video_thumbnail.raw_value"
+
+                                 t-att-src="record.video_thumbnail.raw_value || record.image_url.raw_value"
+
+                                 class="doorway_social_thumb mt-2" alt=""/>
+
+                            <div class="mt-2 d-flex gap-1 flex-wrap">
+
+                                <button name="action_approve" type="object"
+
+                                        string="Approuver" class="btn btn-sm btn-outline-success"
+
+                                        invisible="state != 'draft'"/>
+
+                                <button name="action_generate_content" type="object"
+
+                                        string="Générer" class="btn btn-sm btn-primary"
+
+                                        invisible="state not in ('draft', 'approved')"/>
+
+                                <button name="action_schedule" type="object"
+
+                                        string="Programmer" class="btn btn-sm btn-outline-primary"
+
+                                        invisible="state != 'ready'"/>
+
+                                <button name="action_publish_now" type="object"
+
+                                        string="Publier" class="btn btn-sm btn-success"
+
+                                        invisible="state not in ('ready', 'scheduled')"/>
+
+                            </div>
+
+                        </div>
+
+                    </t>
+
+                </templates>
+
+            </kanban>
+
+        </field>
+
+    </record>
+
+
+
+    <record id="view_social_post_form" model="ir.ui.view">
+
+        <field name="name">doorway.social.post.form</field>
+
+        <field name="model">doorway.social.post</field>
+
+        <field name="arch" type="xml">
+
+            <form>
+
+                <header>
+
+                    <button name="action_approve" type="object" string="Approuver"
+
+                            invisible="state != 'draft'"/>
+
+                    <button name="action_generate_content" type="object" string="Générer contenu"
+
+                            class="btn-primary" invisible="state not in ('draft', 'approved')"/>
+
+                    <button name="action_schedule" type="object" string="Programmer"
+
+                            invisible="state != 'ready'"/>
+
+                    <button name="action_publish_now" type="object" string="Publier maintenant"
+
+                            class="btn-primary" invisible="state not in ('ready', 'scheduled')"/>
+
+                    <button name="action_refresh_tiktok_status" type="object" string="Actualiser statut TikTok"
+
+                            invisible="platform != 'tiktok' or not tiktok_publish_id"/>
+
+                    <button name="action_open_canva" type="object" string="Ouvrir Canva"
+
+                            invisible="not canva_design_url"/>
+
+                    <button name="action_regenerate_caption" type="object" string="Regénérer caption"
+
+                            invisible="state == 'published'"/>
+
+                    <button name="action_open_composer" type="object" string="Composer + aperçu"
+
+                            class="btn-secondary"/>
+
+                    <field name="state" widget="statusbar"
+
+                           statusbar_visible="draft,approved,generating,ready,scheduled,publishing,published"/>
+
+                </header>
+
+                <sheet>
+
+                    <div class="oe_title">
+
+                        <h1><field name="hook" placeholder="Accroche du post"/></h1>
+
+                    </div>
+
+                    <group>
+
+                        <group>
+
+                            <field name="pipeline_id"/>
+
+                            <field name="platform"/>
+
+                            <field name="post_format"/>
+
+                            <field name="content_type" readonly="1"/>
+
+                            <field name="account_ids" widget="many2many_tags"/>
+
+                            <field name="privacy"/>
+
+                        </group>
+
+                        <group>
+
+                            <field name="scheduled_date"/>
+
+                            <field name="published_date"/>
+
+                            <field name="tiktok_publish_status" invisible="platform != 'tiktok'" readonly="1"/>
+
+                            <field name="tiktok_publish_id" invisible="platform != 'tiktok'" readonly="1"/>
+
+                            <field name="calendar_date" readonly="1"/>
+
+                            <field name="best_time_ai"/>
+
+                            <field name="angle"/>
+
+                            <field name="cta"/>
+
+                            <field name="hashtags"/>
+
+                        </group>
+
+                    </group>
+
+                    <notebook>
+
+                        <page string="Contenu">
+
+                            <field name="caption" placeholder="Caption finale"/>
+
+                            <field name="visual_description"/>
+
+                            <field name="video_script" invisible="content_type != 'video'"/>
+
+                        </page>
+
+                        <page string="Visuels">
+
+                            <group>
+
+                                <field name="image_url" widget="url"/>
+
+                                <field name="canva_design_url" widget="url"/>
+
+                                <field name="video_url" widget="url"/>
+
+                                <field name="video_thumbnail" widget="url"/>
+
+                            </group>
+
+                            <field name="attachment_ids" widget="many2many_binary"/>
+
+                        </page>
+
+                        <page string="Groupes" invisible="not share_to_groups">
+
+                            <field name="share_to_groups"/>
+
+                            <field name="group_ids" widget="many2many_tags"/>
+
+                        </page>
+
+                        <page string="Analytics" invisible="state != 'published'">
+
+                            <group>
+
+                                <field name="reach"/>
+
+                                <field name="impressions"/>
+
+                                <field name="likes"/>
+
+                                <field name="comments"/>
+
+                                <field name="shares"/>
+
+                                <field name="engagement_rate"/>
+
+                                <field name="video_views"/>
+
+                            </group>
+
+                        </page>
+
+                    </notebook>
+
+                </sheet>
+
+                <chatter/>
+
+            </form>
+
+        </field>
+
+    </record>
+
+
+
+    <record id="view_social_post_list" model="ir.ui.view">
+
+        <field name="name">doorway.social.post.list</field>
+
+        <field name="model">doorway.social.post</field>
+
+        <field name="arch" type="xml">
+
+            <list default_order="calendar_date desc">
+
+                <field name="calendar_date" string="Date"/>
+
+                <field name="scheduled_date" optional="hide"/>
+
+                <field name="published_date" optional="hide"/>
+
+                <field name="platform"/>
+
+                <field name="post_format"/>
+
+                <field name="hook"/>
+
+                <field name="pipeline_id"/>
+
+                <field name="state" widget="badge"
+
+                       decoration-info="state == 'draft'"
+
+                       decoration-warning="state in ('generating', 'approved')"
+
+                       decoration-success="state in ('ready', 'scheduled', 'published')"
+
+                       decoration-danger="state == 'failed'"/>
+
+            </list>
+
+        </field>
+
+    </record>
+
+
+
+    <record id="view_social_post_search" model="ir.ui.view">
+
+        <field name="name">doorway.social.post.search</field>
+
+        <field name="model">doorway.social.post</field>
+
+        <field name="arch" type="xml">
+
+            <search>
+
+                <field name="hook"/>
+
+                <field name="pipeline_id"/>
+
+                <field name="calendar_date"/>
+
+                <separator/>
+
+                <filter name="filter_future" string="Publications à venir"
+
+                        domain="[('is_future', '=', True)]"/>
+
+                <filter name="filter_past" string="Publications passées"
+
+                        domain="[('is_past', '=', True)]"/>
+
+                <filter name="filter_this_month" string="Ce mois"
+
+                        date="calendar_date" default_period="month"/>
+
+                <separator/>
+
+                <filter name="filter_platform_fb" string="Facebook" domain="[('platform','=','facebook')]"/>
+
+                <filter name="filter_platform_ig" string="Instagram" domain="[('platform','=','instagram')]"/>
+
+                <filter name="filter_platform_tt" string="TikTok" domain="[('platform','=','tiktok')]"/>
+
+                <filter name="filter_reel" string="Reels" domain="[('post_format','=','reel')]"/>
+
+                <filter name="filter_draft" string="Brouillon" domain="[('state','=','draft')]"/>
+
+                <filter name="filter_ready" string="Prêt" domain="[('state','=','ready')]"/>
+
+                <filter name="filter_scheduled" string="Programmé" domain="[('state','=','scheduled')]"/>
+
+                <filter name="filter_published" string="Publié" domain="[('state','=','published')]"/>
+
+                <group>
+
+                    <filter name="group_platform" string="Plateforme" context="{'group_by': 'platform'}"/>
+
+                    <filter name="group_state" string="Statut" context="{'group_by': 'state'}"/>
+
+                    <filter name="group_pipeline" string="Marque" context="{'group_by': 'pipeline_id'}"/>
+
+                    <filter name="group_month" string="Mois" context="{'group_by': 'calendar_date:month'}"/>
+
+                </group>
+
+            </search>
+
+        </field>
+
+    </record>
+
+
+
+    <record id="action_social_calendar" model="ir.actions.act_window">
+
+        <field name="name">Calendrier publications</field>
+
+        <field name="res_model">doorway.social.post</field>
+
+        <field name="view_mode">calendar,kanban,list,form</field>
+
+        <field name="search_view_id" ref="view_social_post_search"/>
+
+        <field name="context">{'search_default_filter_future': 0}</field>
+
+        <field name="help" type="html">
+
+            <p class="o_view_nocontent_smiling_face">
+
+                Aucune publication planifiée
+
+            </p>
+
+            <p>
+
+                Créez un <strong>calendrier IA</strong> ou un <strong>post unique</strong>
+
+                pour remplir le calendrier. Les publications passées et à venir s'affichent
+
+                par date de publication ou de programmation.
+
+            </p>
+
+        </field>
+
+    </record>
+
+
+
+    <record id="action_social_calendar_future" model="ir.actions.act_window">
+
+        <field name="name">Publications à venir</field>
+
+        <field name="res_model">doorway.social.post</field>
+
+        <field name="view_mode">calendar,kanban,list,form</field>
+
+        <field name="search_view_id" ref="view_social_post_search"/>
+
+        <field name="context">{'search_default_filter_future': 1}</field>
+
+    </record>
+
+
+
+    <record id="action_social_calendar_past" model="ir.actions.act_window">
+
+        <field name="name">Publications passées</field>
+
+        <field name="res_model">doorway.social.post</field>
+
+        <field name="view_mode">calendar,kanban,list,form</field>
+
+        <field name="search_view_id" ref="view_social_post_search"/>
+
+        <field name="context">{'search_default_filter_past': 1}</field>
+
+    </record>
+
+</odoo>
+

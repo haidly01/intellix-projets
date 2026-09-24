@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 720" width="720" height="720" role="img" aria-label="Maison Recherch&#233;e">
+  <rect width="720" height="720" fill="#FFFFFF"/>
+  <g fill="#0B2A4A" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif">
+    <text x="360" y="290" font-size="78" font-weight="400">Maison</text>
+    <text x="360" y="380" font-size="78" font-weight="400">Recherch&#233;e</text>
+    <line x1="140" y1="430" x2="250" y2="430" stroke="#0B2A4A" stroke-width="1.5"/>
+    <text x="360" y="438" font-size="22" letter-spacing="3">REAL ESTATE</text>
+    <line x1="470" y1="430" x2="580" y2="430" stroke="#0B2A4A" stroke-width="1.5"/>
+  </g>
+</svg>

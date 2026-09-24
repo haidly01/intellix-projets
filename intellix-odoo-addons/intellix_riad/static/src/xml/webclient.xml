@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <!-- Le menu n'est plus injecté dans web.WebClient : un t-if OWL
+         y plantait tout Odoo (écran crème, puis noir). Le shell vit
+         dans les écrans Hébergement. -->
+</templates>

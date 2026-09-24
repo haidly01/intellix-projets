@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="tv_config_default" model="pe.tv.config">
+        <field name="name">Dashboard TV — Équipe Doorway</field>
+        <field name="refresh_interval">300</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

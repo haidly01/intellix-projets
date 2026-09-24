@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="product_intlx_voip_cc_s" model="product.template">
+        <field name="name">Intellix Call Center — VoIP Illimité Starter</field>
+        <field name="default_code">INTLX-VOIP-CC-S</field>
+        <field name="type">service</field>
+        <field name="list_price">70.0</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="categ_id" ref="product_category_intellix_call_center"/>
+        <field name="description_sale">Appels illimités France, Espagne, Canada. Jusqu'à 10 agents. Numéros locaux, enregistrement, transfert intelligent inclus. Facturation mensuelle.</field>
+    </record>
+
+    <record id="product_intlx_voip_cc_l" model="product.template">
+        <field name="name">Intellix Call Center — VoIP Illimité Scale</field>
+        <field name="default_code">INTLX-VOIP-CC-L</field>
+        <field name="type">service</field>
+        <field name="list_price">65.0</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="categ_id" ref="product_category_intellix_call_center"/>
+        <field name="description_sale">Appels illimités France, Espagne, Canada. 11 agents et plus. Numéros locaux, enregistrement, transfert intelligent inclus. Facturation mensuelle.</field>
+    </record>
+
+    <record id="product_intlx_cc_saas" model="product.template">
+        <field name="name">Intellix Call Center — SaaS Complet</field>
+        <field name="default_code">INTLX-CC-SAAS</field>
+        <field name="type">service</field>
+        <field name="list_price">20.0</field>
+        <field name="uom_id" ref="uom_intellix_user_month"/>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="categ_id" ref="product_category_intellix_call_center"/>
+        <field name="description_sale">Accès complet tous modules Intellix. CRM IA, Agent vocal, Marketing, Traffic Manager, Gestion RH, Scrapper leads, Gamification, Coaching IA. Facturation mensuelle par utilisateur.</field>
+    </record>
+
+    <record id="product_intlx_setup_cc" model="product.template">
+        <field name="name">Intellix — Onboarding Call Center</field>
+        <field name="default_code">INTLX-SETUP-CC</field>
+        <field name="type">service</field>
+        <field name="list_price">0.0</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="categ_id" ref="product_category_intellix_call_center"/>
+        <field name="description_sale">Configuration complète, import contacts, clonage voix Sofia, formation équipe, lancement première campagne. Offert au lancement.</field>
+    </record>
+</odoo>

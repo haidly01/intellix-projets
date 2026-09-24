@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="seq_hr_payslip_ma" model="ir.sequence">
+        <field name="name">Bulletin paie Maroc</field>
+        <field name="code">hr.payslip.ma</field>
+        <field name="prefix">BUL-MA/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

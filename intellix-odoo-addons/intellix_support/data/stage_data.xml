@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="stage_new" model="intellix.support.stage">
+        <field name="name">Nouveau</field>
+        <field name="code">new</field>
+        <field name="sequence">10</field>
+    </record>
+    <record id="stage_in_progress" model="intellix.support.stage">
+        <field name="name">En cours</field>
+        <field name="code">in_progress</field>
+        <field name="sequence">20</field>
+    </record>
+    <record id="stage_waiting" model="intellix.support.stage">
+        <field name="name">En attente client</field>
+        <field name="code">waiting_customer</field>
+        <field name="sequence">30</field>
+    </record>
+    <record id="stage_resolved" model="intellix.support.stage">
+        <field name="name">Résolu</field>
+        <field name="code">resolved</field>
+        <field name="sequence">40</field>
+    </record>
+</odoo>

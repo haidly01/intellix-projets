@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="pe_config_seuil_inactif" model="ir.config_parameter">
+        <field name="key">people_engine.seuil_inactif_minutes</field>
+        <field name="value">10</field>
+    </record>
+    <record id="pe_config_seuil_deconnecte" model="ir.config_parameter">
+        <field name="key">people_engine.seuil_deconnecte_minutes</field>
+        <field name="value">30</field>
+    </record>
+</odoo>

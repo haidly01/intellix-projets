@@ -1,0 +1,272 @@
+<odoo>
+  <record id="crm_lead_view_form_renovation" model="ir.ui.view">
+    <field name="name">crm.lead.form.renovation</field>
+    <field name="model">crm.lead</field>
+    <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+    <field name="arch" type="xml">
+      <!-- En-tête opportunité : contact, entreprise, type -->
+      <xpath expr="//div[hasclass('oe_title')]//h1" position="before">
+        <field name="is_marketing_pipeline" invisible="1"/>
+        <field name="is_driven_pipeline" invisible="1"/>
+        <div class="row g-2 mb-3" invisible="type == 'lead'">
+          <div class="col-12 col-lg-6">
+            <label for="contact_name" string="Nom et prénom du contact"/>
+            <field name="contact_name" placeholder="ex: Jean Tremblay" class="o_text_overflow"/>
+            <label for="partner_name" string="Nom de l'entreprise"/>
+            <field name="partner_name" placeholder="ex: Les Entreprises ABC inc."/>
+            <label for="marketing_company_type" string="Type d'entreprise"
+                   invisible="not is_marketing_pipeline"/>
+            <field name="marketing_company_type"
+                   invisible="not is_marketing_pipeline"
+                   placeholder="ex: PME, agence, commerce..."/>
+            <label for="driven_company_type" string="Type d'entreprise"
+                   invisible="not is_driven_pipeline"/>
+            <field name="driven_company_type"
+                   invisible="not is_driven_pipeline"
+                   placeholder="ex: inc., SENC, société de portefeuille..."/>
+          </div>
+          <div class="col-12 col-lg-6">
+            <group string="Assignation">
+              <field name="team_uses_provenance_stages" invisible="1"/>
+              <field name="team_id" string="Pipeline"
+                     domain="[('is_agence_doorway_pipeline', '=', True)]"
+                     options="{'no_create': True}"
+                     context="{'kanban_view_ref': 'sales_team.crm_team_view_kanban'}"/>
+              <field name="lead_provenance" string="Provenance du lead"
+                     invisible="not team_uses_provenance_stages"/>
+              <field name="source_id" string="Source"/>
+              <field name="user_id" string="Vendeur"
+                     widget="many2one_avatar_leader_user"
+                     teamField="team_id"
+                     domain="[('share', '=', False)]"
+                     context="{'default_sales_team_id': team_id}"/>
+            </group>
+          </div>
+        </div>
+      </xpath>
+
+      <group name="opportunity_partner" position="after">
+        <!-- Champs cachés pour conditions d'affichage -->
+        <field name="is_marketing_pipeline" invisible="1"/>
+        <field name="is_driven_pipeline" invisible="1"/>
+        <field name="is_renovation_pipeline" invisible="1"/>
+        <field name="is_assurance_pipeline" invisible="1"/>
+
+        <!-- Pipeline Assurance — Niveau 1 (formulaire front-end) -->
+        <group string="Assurance — Niveau 1 (qualification immédiate)"
+               invisible="not is_assurance_pipeline">
+          <group>
+            <field name="ins_type"/>
+            <field name="ins_situation"/>
+            <field name="ins_montant_mensuel"/>
+            <field name="ins_anciennete"/>
+          </group>
+          <group>
+            <field name="ins_age"/>
+            <field name="zip" string="Code postal"/>
+            <field name="ins_creneau_rappel"/>
+            <field name="ins_score" readonly="1"/>
+          </group>
+        </group>
+
+        <!-- Pipeline Assurance — Niveau 2 (qualification téléphonique) -->
+        <group string="Assurance — Niveau 2 : Auto"
+               invisible="not is_assurance_pipeline or ins_type not in ('auto', 'plusieurs')">
+          <group>
+            <field name="ins_auto_type_vehicule"/>
+            <field name="ins_auto_annee"/>
+            <field name="ins_auto_bonus_malus"/>
+          </group>
+          <group>
+            <field name="ins_auto_km_annuel"/>
+            <field name="ins_auto_conducteur"/>
+            <field name="ins_auto_sinistres_3ans"/>
+          </group>
+        </group>
+        <group string="Assurance — Niveau 2 : Habitation"
+               invisible="not is_assurance_pipeline or ins_type not in ('habitation', 'plusieurs')">
+          <group>
+            <field name="ins_hab_statut"/>
+            <field name="ins_hab_surface"/>
+            <field name="ins_hab_ville_quartier"/>
+          </group>
+          <group>
+            <field name="ins_hab_valeur_mobilier"/>
+            <field name="ins_hab_sinistres"/>
+          </group>
+        </group>
+        <group string="Assurance — Niveau 2 : Santé"
+               invisible="not is_assurance_pipeline or ins_type not in ('sante', 'plusieurs')">
+          <group>
+            <field name="ins_sante_composition"/>
+            <field name="ins_sante_nb_enfants"/>
+            <field name="ins_sante_regime"/>
+          </group>
+          <group>
+            <field name="ins_sante_besoins"/>
+            <field name="ins_sante_medecin_traitant"/>
+          </group>
+        </group>
+        <group string="Assurance — Niveau 2 : Tous types"
+               invisible="not is_assurance_pipeline">
+          <group>
+            <field name="ins_budget_max"/>
+            <field name="ins_priorite"/>
+            <field name="ins_delai_souscription"/>
+          </group>
+          <group>
+            <field name="ins_comparateur"/>
+          </group>
+        </group>
+
+        <!-- Pipeline Assurance — Niveau 3 (gestion CRM interne) -->
+        <group string="Assurance — Niveau 3 (gestion interne)"
+               invisible="not is_assurance_pipeline">
+          <group string="Suivi">
+            <field name="ins_source_acquisition"/>
+            <field name="user_id" string="Concierge assigné" readonly="1"/>
+            <field name="ins_date_reception"/>
+            <field name="ins_nb_tentatives_rappel"/>
+            <field name="ins_rappel_repondu"/>
+            <field name="ins_motif_perte"/>
+          </group>
+          <group string="Commission estimée">
+            <field name="ins_tarif_propose"/>
+            <field name="ins_taux_commission"/>
+            <field name="ins_commission_estimee" readonly="1"/>
+          </group>
+        </group>
+
+        <!-- Pipeline Marketing -->
+        <group string="Marketing" invisible="not is_marketing_pipeline">
+          <group>
+            <field name="marketing_monthly_budget"/>
+            <field name="marketing_already_has_agency"/>
+          </group>
+          <group string="Besoin marketing">
+            <field name="marketing_need_social"/>
+            <field name="marketing_need_ai_agent"/>
+            <field name="marketing_need_crm"/>
+            <field name="marketing_need_seo"/>
+            <field name="marketing_need_website"/>
+            <field name="marketing_need_lead_gen"/>
+          </group>
+        </group>
+
+        <!-- Pipeline Driven -->
+        <group string="Driven — Financement" invisible="not is_driven_pipeline">
+          <group string="Critères d'éligibilité">
+            <field name="driven_credit_score_ok" readonly="1"/>
+            <field name="driven_months_ok" readonly="1"/>
+            <field name="driven_revenue_ok" readonly="1"/>
+            <field name="driven_eligible" readonly="1" string="Éligible"/>
+          </group>
+          <group string="Détails">
+            <field name="driven_credit_score"/>
+            <field name="driven_months_in_business"/>
+            <field name="driven_monthly_revenue"/>
+          </group>
+          <group>
+            <field name="driven_working_capital_need"
+                   placeholder="Décrire en détail le besoin de fonds de roulement et les raisons..."/>
+          </group>
+        </group>
+
+        <!-- Pipeline Rénovation uniquement -->
+        <group string="Services demandés" invisible="not is_renovation_pipeline">
+          <field name="service_category_ids" widget="many2many_tags"/>
+        </group>
+        <group string="Adresse du chantier" invisible="not is_renovation_pipeline">
+          <field name="street" placeholder="Rue..."/>
+          <field name="city" placeholder="Ville..."/>
+          <field name="zip" placeholder="Code postal..."/>
+          <field name="state_id" placeholder="Province..." options="{'no_open': True}"/>
+          <field name="country_id" placeholder="Pays..." options="{'no_open': True, 'no_create': True}"/>
+        </group>
+        <group string="Attribution Rénovation"
+               groups="renovation_conciergerie.group_agence_doorway_crm"
+               invisible="not is_renovation_pipeline">
+          <field name="assigned_partner_id" string="Partenaire principal"/>
+          <field name="assignment_date" string="Date d'attribution" readonly="1"/>
+          <field name="assignment_status" string="Statut" readonly="1"/>
+          <button name="action_assign_partner"
+                  string="Assigner les partenaires"
+                  type="object"
+                  class="btn-primary"/>
+        </group>
+        <group string="Détail par service" colspan="2" invisible="not is_renovation_pipeline">
+          <field name="service_assignment_ids" nolabel="1">
+            <list editable="bottom">
+              <field name="service_category_id" readonly="1"/>
+              <field name="partner_id"/>
+              <field name="status" readonly="1"/>
+              <field name="assignment_date" readonly="1"/>
+            </list>
+          </field>
+        </group>
+      </group>
+    </field>
+  </record>
+
+  <record id="crm_lead_view_tree_pipeline" model="ir.ui.view">
+    <field name="name">crm.lead.tree.pipeline.flags</field>
+    <field name="model">crm.lead</field>
+    <field name="inherit_id" ref="crm.crm_case_tree_view_oppor"/>
+    <field name="arch" type="xml">
+      <field name="contact_name" position="after">
+        <field name="phone" string="Téléphone" widget="phone" optional="show"/>
+        <field name="source_id" string="Source" optional="show"/>
+      </field>
+      <field name="team_id" position="after">
+        <field name="doorway_segment" readonly="1" optional="hide"/>
+        <field name="marketing_company_type" optional="hide"/>
+        <field name="driven_eligible" optional="hide"/>
+        <field name="kpi_level" column_invisible="1"/>
+        <field name="kpi_text" string="KPI" widget="badge" optional="show"
+               decoration-success="kpi_level == 'high'"
+               decoration-warning="kpi_level == 'medium'"
+               decoration-danger="kpi_level == 'low'"/>
+      </field>
+    </field>
+  </record>
+
+  <record id="view_crm_lead_doorway_lea_search" model="ir.ui.view">
+    <field name="name">crm.lead.search.doorway.lea</field>
+    <field name="model">crm.lead</field>
+    <field name="inherit_id" ref="crm.view_crm_case_opportunities_filter"/>
+    <field name="arch" type="xml">
+      <xpath expr="//filter[@name='assigned_to_me']" position="after">
+        <separator/>
+        <filter string="Leads Léa" name="lea_leads"
+                domain="[('name', 'ilike', 'Léa —')]"/>
+        <filter string="Aujourd'hui (création)" name="today_lea"
+                domain="[('create_date', '&gt;=', (context_today()).strftime('%Y-%m-%d 00:00:00'))]"/>
+      </xpath>
+    </field>
+  </record>
+
+  <!-- Pastille KPI adaptative sur la carte kanban (tout le CRM) -->
+  <record id="crm_lead_view_kanban_kpi" model="ir.ui.view">
+    <field name="name">crm.lead.kanban.kpi</field>
+    <field name="model">crm.lead</field>
+    <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
+    <field name="arch" type="xml">
+      <xpath expr="//t[@t-name='card']//div[hasclass('o_kanban_card_crm_lead_revenue')]" position="after">
+        <field name="kpi_level" invisible="1"/>
+        <div class="text-muted small" invisible="not phone">
+          <i class="fa fa-phone"/> <field name="phone" widget="phone"/>
+        </div>
+        <div class="mt-1">
+          <field name="source_id" string="Source" widget="badge"
+                 invisible="not source_id"/>
+        </div>
+        <div class="mt-1" invisible="kpi_level == 'none'">
+          <field name="kpi_text" widget="badge"
+                 decoration-success="kpi_level == 'high'"
+                 decoration-warning="kpi_level == 'medium'"
+                 decoration-danger="kpi_level == 'low'"/>
+        </div>
+      </xpath>
+    </field>
+  </record>
+</odoo>

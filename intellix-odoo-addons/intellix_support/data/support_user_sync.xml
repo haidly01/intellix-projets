@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Attribue Support Utilisateur plateforme à tous les utilisateurs internes existants -->
+    <function model="res.users" name="_intellix_support_sync_platform_users"/>
+</odoo>

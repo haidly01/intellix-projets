@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+<t t-name="people_engine.PeQuizPlayerAction">
+    <div class="o_action o_intellix_client_action pe-quiz-action-root">
+        <t t-if="state.loading">
+            <div class="pe-quiz-player pe-quiz-loading">
+                <i class="fa fa-spinner fa-spin fa-2x"/>
+                <p>Chargement du quiz...</p>
+            </div>
+        </t>
+        <t t-elif="state.error">
+            <div class="pe-quiz-player pe-quiz-error">
+                <i class="fa fa-exclamation-triangle fa-2x"/>
+                <p t-esc="state.error"/>
+            </div>
+        </t>
+        <t t-else="">
+            <QuizPlayer
+                quizId="state.quizId"
+                employeeId="state.employeeId"
+                remainingAttempts="state.remainingAttempts"
+                canStart="state.canStart"/>
+        </t>
+    </div>
+</t>
+
+<t t-name="people_engine.QuizPlayer">
+    <div class="pe-quiz-player">
+
+        <t t-if="state.phase === 'loading'">
+            <div class="pe-quiz-loading">
+                <i class="fa fa-spinner fa-spin fa-2x"/>
+                <p>Chargement du quiz...</p>
+            </div>
+        </t>
+
+        <t t-if="state.phase === 'intro'">
+            <div class="pe-quiz-intro">
+                <div class="pe-quiz-intro-icon"><i class="fa fa-certificate fa-3x"/></div>
+                <h2 t-esc="state.quiz.name"/>
+                <p class="pe-quiz-intro-desc" t-esc="state.quiz.description"/>
+                <div class="pe-quiz-intro-meta">
+                    <span><i class="fa fa-question-circle"/> <t t-esc="state.quiz.question_count"/> questions</span>
+                    <span><i class="fa fa-check-circle"/> Seuil : <t t-esc="state.quiz.passing_score"/>%</span>
+                    <t t-if="state.quiz.time_limit">
+                        <span><i class="fa fa-clock-o"/> <t t-esc="state.quiz.time_limit"/> min</span>
+                    </t>
+                    <t t-if="state.quiz.croissance_points">
+                        <span><i class="fa fa-star"/> +<t t-esc="state.quiz.croissance_points"/> pts Croissance</span>
+                    </t>
+                    <t t-if="state.remainingAttempts !== null and state.remainingAttempts !== undefined">
+                        <span><i class="fa fa-repeat"/> <t t-esc="state.remainingAttempts"/> tentative(s) restante(s)</span>
+                    </t>
+                </div>
+                <button class="btn btn-primary btn-lg pe-quiz-start-btn" t-on-click="startQuiz"
+                    t-att-disabled="!state.canRetry">
+                    Commencer le quiz
+                </button>
+            </div>
+        </t>
+
+        <t t-if="state.phase === 'question'">
+            <div class="pe-quiz-question-wrap">
+                <div class="pe-quiz-progress-wrap">
+                    <div class="pe-quiz-progress-bar" t-att-style="'width: ' + progressPct + '%'"/>
+                </div>
+                <div class="pe-quiz-progress-label">
+                    <span><t t-esc="state.currentIndex + 1"/> / <t t-esc="state.questions.length"/></span>
+                    <t t-if="state.quiz.time_limit">
+                        <span class="pe-quiz-timer"><i class="fa fa-clock-o"/> <t t-esc="timerLabel"/></span>
+                    </t>
+                </div>
+                <div class="pe-quiz-question-card">
+                    <p class="pe-quiz-question-text" t-esc="currentQuestion.question_text"/>
+                    <div class="pe-quiz-options">
+                        <t t-foreach="currentQuestion.answers" t-as="answer" t-key="answer.id">
+                            <button
+                                t-att-class="getAnswerClass(answer)"
+                                t-on-click="() => this.toggleAnswer(answer.id)"
+                                t-att-disabled="state.answeredCorrectly !== null">
+                                <span class="pe-quiz-opt-text" t-esc="answer.answer_text"/>
+                                <t t-if="state.answeredCorrectly !== null and answer.is_correct">
+                                    <i class="fa fa-check pe-quiz-opt-icon correct"/>
+                                </t>
+                                <t t-if="state.answeredCorrectly !== null and isSelected(answer.id) and !answer.is_correct">
+                                    <i class="fa fa-times pe-quiz-opt-icon wrong"/>
+                                </t>
+                            </button>
+                        </t>
+                    </div>
+                    <t t-if="state.answeredCorrectly === null">
+                        <button class="btn btn-primary pe-quiz-validate-btn"
+                            t-on-click="validateAnswer"
+                            t-att-disabled="!state.selectedAnswers.length">
+                            Valider
+                        </button>
+                    </t>
+                    <t t-if="state.answeredCorrectly !== null">
+                        <div t-att-class="'pe-quiz-feedback ' + (state.answeredCorrectly ? 'correct' : 'wrong')">
+                            <i t-att-class="'fa ' + (state.answeredCorrectly ? 'fa-check-circle' : 'fa-times-circle')"/>
+                            <strong t-esc="state.answeredCorrectly ? 'Correct !' : 'Incorrect.'"/>
+                            <t t-if="state.explanation">
+                                <p t-esc="state.explanation"/>
+                            </t>
+                        </div>
+                        <button class="btn btn-secondary pe-quiz-next-btn" t-on-click="nextQuestion">
+                            <t t-if="isLastQuestion">Voir les résultats</t>
+                            <t t-else="">Question suivante →</t>
+                        </button>
+                    </t>
+                </div>
+            </div>
+        </t>
+
+        <t t-if="state.phase === 'result'">
+            <div class="pe-quiz-result">
+                <div t-att-class="'pe-quiz-result-badge ' + (state.passed ? 'passed' : 'failed')">
+                    <i t-att-class="'fa fa-3x ' + (state.passed ? 'fa-certificate' : 'fa-times-circle')"/>
+                </div>
+                <h2 t-esc="state.passed ? 'Certification obtenue !' : 'Essayez encore'"/>
+                <div class="pe-quiz-score-big"><span t-esc="state.score"/>%</div>
+                <div t-att-class="'pe-quiz-verdict ' + (state.passed ? 'passed' : (state.score >= 60 ? 'warn' : 'failed'))">
+                    <t t-if="state.passed">Certifié — prêt à démarrer</t>
+                    <t t-elif="state.score >= 60">Révision recommandée</t>
+                    <t t-else="">Formation à reprendre</t>
+                </div>
+                <div class="pe-quiz-category-scores">
+                    <t t-foreach="categoryEntries" t-as="entry" t-key="entry[0]">
+                        <div class="pe-quiz-cat-card">
+                            <div class="pe-quiz-cat-pct"><t t-esc="catPct(entry)"/>%</div>
+                            <div class="pe-quiz-cat-label" t-esc="entry[0]"/>
+                        </div>
+                    </t>
+                </div>
+                <t t-if="state.missedQuestions.length">
+                    <div class="pe-quiz-missed">
+                        <h4>Points à revoir (<t t-esc="state.missedQuestions.length"/>)</h4>
+                        <t t-foreach="state.missedQuestions" t-as="missed" t-key="missed_index">
+                            <div class="pe-quiz-missed-item">
+                                <p class="pe-quiz-missed-q" t-esc="missed.question"/>
+                                <p class="pe-quiz-missed-a">Bonne réponse : <t t-esc="missed.correctAnswer"/></p>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+                <t t-if="!state.passed and state.canRetry">
+                    <button class="btn btn-primary pe-quiz-restart-btn" t-on-click="restartQuiz">
+                        Recommencer
+                    </button>
+                </t>
+                <t t-if="!state.passed and !state.canRetry">
+                    <p class="pe-quiz-no-retry">Nombre maximum de tentatives atteint.</p>
+                </t>
+            </div>
+        </t>
+
+    </div>
+</t>
+
+</templates>

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_agent_test_call_list" model="ir.ui.view">
+        <field name="name">doorway.agent.test.call.list</field>
+        <field name="model">doorway.agent.test.call</field>
+        <field name="arch" type="xml">
+            <list string="Appels test"
+                  decoration-success="state == 'done'"
+                  decoration-danger="state == 'failed'">
+                <field name="create_date"/>
+                <field name="agent_id"/>
+                <field name="call_mode"/>
+                <field name="phone_number"/>
+                <field name="state"/>
+                <field name="score_global"/>
+                <field name="duration_seconds"/>
+                <field name="test_send_email" optional="show"/>
+                <field name="test_send_sms" optional="show"/>
+                <field name="test_availability_check" optional="show"/>
+                <field name="test_human_transfer" optional="show"/>
+                <field name="tested_by"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_agent_test_call_form" model="ir.ui.view">
+        <field name="name">doorway.agent.test.call.form</field>
+        <field name="model">doorway.agent.test.call</field>
+        <field name="arch" type="xml">
+            <form string="Appel test">
+                <header>
+                    <button name="action_launch_test_call" type="object"
+                            string="Relancer" class="btn-secondary"
+                            invisible="state not in ('pending', 'failed', 'in_progress')"/>
+                    <button name="action_analyze" type="object"
+                            string="Analyser (Claude)" class="btn-primary"
+                            invisible="not transcript"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="pending,in_progress,done,failed"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="agent_id"/>
+                            <field name="call_mode"/>
+                            <field name="phone_number"
+                                   invisible="call_mode != 'phone'"
+                                   required="call_mode == 'phone'"/>
+                            <field name="external_call_id" readonly="1"/>
+                            <field name="tested_by" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="duration_seconds"/>
+                            <field name="score_global"/>
+                            <field name="score_fluidite"/>
+                            <field name="score_pertinence"/>
+                            <field name="score_conversion"/>
+                            <field name="score_tone"/>
+                        </group>
+                    </group>
+                    <group string="Scénario">
+                        <field name="scenario_hint" nolabel="1"/>
+                        <field name="expected_action_result" nolabel="1" placeholder="Ex: envoie SMS de confirmation + transfert vers conseiller"/>
+                    </group>
+                    <group string="Actions à tester" col="4">
+                        <field name="test_send_email"/>
+                        <field name="test_send_sms"/>
+                        <field name="test_availability_check"/>
+                        <field name="test_human_transfer"/>
+                    </group>
+                    <notebook>
+                        <page string="Transcription">
+                            <field name="recording_url" widget="url"/>
+                            <field name="transcript" nolabel="1"/>
+                        </page>
+                        <page string="Analyse IA">
+                            <field name="analyse_ia" nolabel="1"/>
+                            <group>
+                                <field name="forces"/>
+                                <field name="faiblesses"/>
+                                <field name="recommandations"/>
+                            </group>
+                            <group string="Retour utilisateur">
+                                <field name="user_rating"/>
+                                <field name="user_feedback_comment"/>
+                            </group>
+                            <group string="Résultat actions">
+                                <field name="action_result_notes" nolabel="1"/>
+                            </group>
+                            <field name="feedback_ids" readonly="1">
+                                <list>
+                                    <field name="create_date"/>
+                                    <field name="rating"/>
+                                    <field name="comment"/>
+                                    <field name="user_id"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_agent_test_call" model="ir.actions.act_window">
+        <field name="name">Appels test</field>
+        <field name="res_model">doorway.agent.test.call</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_test_call_wizard" model="ir.ui.view">
+        <field name="name">doorway.test.call.wizard.form</field>
+        <field name="model">doorway.test.call.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Appel test agent IA" class="o_doorway_test_call_wizard">
+                <group>
+                    <field name="agent_id" string="Agent"/>
+                    <field name="call_volet" string="Volet"/>
+                    <field name="call_mode" string="Mode test"/>
+                    <field name="phone_number" string="Numéro à appeler"
+                           invisible="call_mode != 'phone'"
+                           required="call_mode == 'phone'"
+                           placeholder="+15141234567"/>
+                </group>
+                <group string="Scénario (optionnel)">
+                    <field name="scenario_hint" nolabel="1"
+                           placeholder="Ex: Lead thermopompe urgent, budget 15 000 $, secteur Laval"/>
+                </group>
+                <group string="Résultat attendu (optionnel)">
+                    <field name="expected_action_result" nolabel="1"
+                           placeholder="Ex: SMS de confirmation + transfert vers conseiller"/>
+                </group>
+                <group string="Actions à tester" col="4">
+                    <field name="test_send_email"/>
+                    <field name="test_send_sms"/>
+                    <field name="test_availability_check"/>
+                    <field name="test_human_transfer"/>
+                </group>
+                <footer>
+                    <button name="action_start_web_call" type="object"
+                            string="Test web (micro)" class="btn-primary"
+                            invisible="agent_id.provider not in ('n8n', 'elevenlabs')"/>
+                    <button name="action_start_call" type="object"
+                            string="Appel téléphonique" class="btn-secondary"/>
+                    <button special="cancel" string="Annuler"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

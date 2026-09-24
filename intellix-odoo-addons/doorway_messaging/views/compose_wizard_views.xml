@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_compose_wizard_form" model="ir.ui.view">
+        <field name="name">doorway.compose.wizard.form</field>
+        <field name="model">doorway.compose.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Nouveau message multi-canal" class="o_doorway_compose_wizard">
+                <field name="etape" invisible="1"/>
+                <sheet>
+                    <group invisible="etape != 1">
+                        <div class="oe_title">
+                            <h2>Étape 1 — Composer votre message</h2>
+                        </div>
+                        <field name="name" placeholder="Nom de la campagne"/>
+                        <field name="corps_master" widget="html"
+                               placeholder="Rédigez votre message ici..."/>
+                        <group string="Canaux cibles">
+                            <field name="canal_email"/>
+                            <field name="canal_sms"/>
+                            <field name="canal_whatsapp"/>
+                            <field name="canal_linkedin"/>
+                            <field name="canal_gmb"/>
+                        </group>
+                    </group>
+
+                    <group invisible="etape != 2">
+                        <div class="oe_title">
+                            <h2>Étape 2 — Versions par canal</h2>
+                            <p class="text-muted">Modifiez chaque version avant envoi</p>
+                        </div>
+                        <notebook>
+                            <page string="Email" invisible="not canal_email">
+                                <field name="sujet_email"/>
+                                <field name="corps_email" widget="html"/>
+                            </page>
+                            <page string="SMS" invisible="not canal_sms">
+                                <field name="corps_sms" class="o_doorway_sms_field"/>
+                            </page>
+                            <page string="WhatsApp" invisible="not canal_whatsapp">
+                                <field name="corps_whatsapp"/>
+                            </page>
+                            <page string="LinkedIn" invisible="not canal_linkedin">
+                                <field name="linkedin_page_id"/>
+                                <field name="linkedin_type"/>
+                                <field name="corps_linkedin"/>
+                            </page>
+                            <page string="Google My Business" invisible="not canal_gmb">
+                                <field name="gmb_location_id"/>
+                                <field name="gmb_post_type"/>
+                                <field name="corps_gmb"/>
+                            </page>
+                            <page string="Destinataires">
+                                <field name="source_destinataires"/>
+                                <field name="lead_ids" invisible="source_destinataires != 'leads'" widget="many2many_tags"/>
+                                <field name="partner_ids" invisible="source_destinataires != 'contacts'" widget="many2many_tags"/>
+                                <field name="pipeline_id" invisible="source_destinataires != 'pipeline'"/>
+                                <field name="stage_ids" invisible="source_destinataires != 'pipeline'" widget="many2many_tags"/>
+                                <field name="liste_manuelle" invisible="source_destinataires != 'manuel'"/>
+                                <div class="alert alert-info">
+                                    Destinataires estimés :
+                                    <field name="nb_destinataires_est" readonly="1" class="oe_inline"/>
+                                </div>
+                            </page>
+                        </notebook>
+                    </group>
+
+                    <group invisible="etape != 3">
+                        <div class="oe_title">
+                            <h2>Étape 3 — Confirmer et envoyer</h2>
+                        </div>
+                        <field name="envoi_immediat"/>
+                        <field name="date_planned" invisible="envoi_immediat" required="not envoi_immediat"/>
+                        <div class="alert alert-success">
+                            Destinataires :
+                            <field name="nb_destinataires_est" readonly="1" class="oe_inline"/>
+                        </div>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_adapter_claude" type="object" string="Adapter avec Claude →"
+                            class="btn-primary" invisible="etape != 1"/>
+                    <button name="action_etape_precedente" type="object" string="← Retour"
+                            class="btn-secondary" invisible="etape == 1"/>
+                    <button name="action_etape_suivante" type="object" string="Confirmer →"
+                            class="btn-primary" invisible="etape != 2"/>
+                    <button name="action_envoyer" type="object" string="Envoyer"
+                            class="btn-primary" invisible="etape != 3"/>
+                    <button special="cancel" string="Annuler"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_open_compose_wizard" model="ir.actions.act_window">
+        <field name="name">Nouveau message</field>
+        <field name="res_model">doorway.compose.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

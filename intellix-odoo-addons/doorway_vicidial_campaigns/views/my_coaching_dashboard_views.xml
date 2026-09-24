@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_my_coaching_dashboard" model="ir.actions.client">
+        <field name="name">Mon coaching</field>
+        <field name="tag">my_coaching_dashboard_action</field>
+    </record>
+</odoo>

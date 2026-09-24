@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="pe_department_callcenter_maroc" model="pe.department">
+        <field name="name">Call Center Maroc</field>
+        <field name="code">CC-MA</field>
+        <field name="is_template" eval="False"/>
+        <field name="parent_template_id" ref="pe_department_template_callcenter"/>
+        <field name="work_type">mixte</field>
+        <field name="pays_affectation">MA</field>
+        <field name="seuil_chute_pct">25.0</field>
+        <field name="seuil_conversion_ia">70.0</field>
+    </record>
+
+    <record id="pe_cc_ma_obj_appels_jour" model="pe.department.objective">
+        <field name="department_id" ref="pe_department_callcenter_maroc"/>
+        <field name="sequence">10</field>
+        <field name="name">Appels journaliers (mi-temps)</field>
+        <field name="type_usager">tous</field>
+        <field name="metrique">appels_total_jour</field>
+        <field name="valeur_cible">40</field>
+        <field name="tolerance_chute_pct">20</field>
+        <field name="points_atteint">50</field>
+        <field name="periode">jour</field>
+        <field name="notes">50 % du modèle temps plein (80 appels/j).</field>
+    </record>
+
+    <record id="pe_cc_ma_obj_demos_jour" model="pe.department.objective">
+        <field name="department_id" ref="pe_department_callcenter_maroc"/>
+        <field name="sequence">20</field>
+        <field name="name">Démos / RDV bookés — jour (mi-temps)</field>
+        <field name="type_usager">tous</field>
+        <field name="metrique">demos_jour</field>
+        <field name="valeur_cible">1.5</field>
+        <field name="tolerance_chute_pct">33</field>
+        <field name="points_atteint">25</field>
+        <field name="periode">jour</field>
+        <field name="notes">50 % du modèle temps plein (3 démos/j).</field>
+    </record>
+
+    <record id="pe_cc_ma_obj_conversion_ia" model="pe.department.objective">
+        <field name="department_id" ref="pe_department_callcenter_maroc"/>
+        <field name="sequence">30</field>
+        <field name="name">Taux conversion leads IA</field>
+        <field name="type_usager">tous</field>
+        <field name="metrique">taux_conversion_ia_pct</field>
+        <field name="valeur_cible">70</field>
+        <field name="points_atteint">20</field>
+        <field name="periode">mois</field>
+    </record>
+
+    <record id="pe_cc_ma_obj_score_ia" model="pe.department.objective">
+        <field name="department_id" ref="pe_department_callcenter_maroc"/>
+        <field name="sequence">40</field>
+        <field name="name">Score IA moyen journalier</field>
+        <field name="type_usager">tous</field>
+        <field name="metrique">score_ia_moy_jour</field>
+        <field name="valeur_cible">80</field>
+        <field name="points_atteint">20</field>
+        <field name="periode">jour</field>
+    </record>
+
+    <record id="pe_cc_ma_obj_ponctualite" model="pe.department.objective">
+        <field name="department_id" ref="pe_department_callcenter_maroc"/>
+        <field name="sequence">50</field>
+        <field name="name">Présence ponctuelle (mi-temps)</field>
+        <field name="type_usager">tous</field>
+        <field name="metrique">jours_ponctualite_semaine</field>
+        <field name="valeur_cible">2.5</field>
+        <field name="points_atteint">30</field>
+        <field name="periode">semaine</field>
+        <field name="notes">50 % du modèle temps plein (5 j/semaine).</field>
+    </record>
+
+    <record id="pe_cc_ma_prime_plateau_demos" model="pe.prime.config">
+        <field name="department_id" ref="pe_department_callcenter_maroc"/>
+        <field name="sequence">10</field>
+        <field name="name">Plateau démos bookées</field>
+        <field name="type_prime">plateau_demos</field>
+        <field name="montant_par_unite">500</field>
+        <field name="devise">MAD</field>
+        <field name="taille_bloc">10</field>
+        <field name="appliquer_chute" eval="True"/>
+        <field name="chute_pct_max">25</field>
+    </record>
+
+    <record id="pe_cc_ma_prime_vente" model="pe.prime.config">
+        <field name="department_id" ref="pe_department_callcenter_maroc"/>
+        <field name="sequence">20</field>
+        <field name="name">Prime vente conclue</field>
+        <field name="type_prime">vente_unitaire</field>
+        <field name="montant_par_unite">75</field>
+        <field name="devise">EUR</field>
+    </record>
+
+    <record id="pe_cc_ma_prime_conversion_ia" model="pe.prime.config">
+        <field name="department_id" ref="pe_department_callcenter_maroc"/>
+        <field name="sequence">30</field>
+        <field name="name">Prime conversion IA</field>
+        <field name="type_prime">conversion_ia</field>
+        <field name="montant_par_unite">200</field>
+        <field name="devise">MAD</field>
+        <field name="seuil_declenchement">70</field>
+        <field name="plafond_mois">100</field>
+    </record>
+</odoo>

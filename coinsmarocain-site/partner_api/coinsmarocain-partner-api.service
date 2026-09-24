@@ -1,0 +1,20 @@
+[Unit]
+Description=Coins Marocain partner API
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/coinsmarocain/partner_api
+Environment=CM_API_HOST=127.0.0.1
+Environment=CM_API_PORT=8098
+Environment=CM_DATA_PATH=/var/lib/coinsmarocain/store.json
+Environment=CM_SEED_PATH=/var/www/coinsmarocain/partner_api/seed.json
+Environment=CM_UPLOAD_DIR=/var/www/coinsmarocain/uploads/partners
+ExecStart=/usr/bin/python3 /var/www/coinsmarocain/partner_api/server.py
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

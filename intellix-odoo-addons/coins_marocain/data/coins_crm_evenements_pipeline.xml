@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Pipeline CRM Événements : Coins Marocain → Coins Québec → Suivi → Clients -->
+    <record id="crm_team_evenements" model="crm.team">
+        <field name="name">Événements</field>
+        <field name="sequence">50</field>
+        <field name="use_leads" eval="True"/>
+        <field name="use_opportunities" eval="True"/>
+    </record>
+
+    <record id="crm_stage_evenements_coins_marocain" model="crm.stage">
+        <field name="name">Coins Marocain</field>
+        <field name="sequence">10</field>
+        <field name="team_ids" eval="[(4, ref('crm_team_evenements'))]"/>
+    </record>
+    <record id="crm_stage_evenements_coins_quebec" model="crm.stage">
+        <field name="name">Coins Québec</field>
+        <field name="sequence">20</field>
+        <field name="team_ids" eval="[(4, ref('crm_team_evenements'))]"/>
+    </record>
+    <record id="crm_stage_evenements_suivi" model="crm.stage">
+        <field name="name">Suivi</field>
+        <field name="sequence">30</field>
+        <field name="team_ids" eval="[(4, ref('crm_team_evenements'))]"/>
+    </record>
+    <record id="crm_stage_evenements_clients" model="crm.stage">
+        <field name="name">Clients</field>
+        <field name="sequence">40</field>
+        <field name="is_won" eval="True"/>
+        <field name="team_ids" eval="[(4, ref('crm_team_evenements'))]"/>
+    </record>
+</odoo>

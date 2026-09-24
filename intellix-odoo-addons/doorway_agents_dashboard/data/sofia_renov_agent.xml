@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="0">
+    <record id="agent_sofia_renov" model="doorway.agent.profile">
+        <field name="name">Sofía · Renov ES (n8n)</field>
+        <field name="provider">n8n</field>
+        <field name="external_agent_id">sofia-test-maroc-juin2026</field>
+        <field name="pipeline">renovation</field>
+        <field name="agent_type">outbound</field>
+        <field name="language">es</field>
+        <field name="voice_gender">female</field>
+        <field name="default_volet">cold_call</field>
+        <field name="timezone">Europe/Madrid</field>
+        <field name="transfer_phone">+14389929200</field>
+        <field name="status">active</field>
+        <field name="export_calls_google_sheet" eval="True"/>
+        <field name="google_sheets_spreadsheet_id">1twVFnI9xFjmflhTJzF2jglwzff0bO_ZCp8abTvIYy4Y</field>
+        <field name="google_sheets_webhook_url">https://script.google.com/macros/s/AKfycbySth6ZxM6HQUnpwt3AqOYUhA_17F9COTrjIsEiMyocjQHf2wLH3vbwUzy_i4JqhI8GVw/exec</field>
+        <field name="allow_human_transfer" eval="False"/>
+        <field name="system_prompt">Sofía — agente outbound español (renov-aides). Calificación ayudas aislamiento áticos/buhardillas. State machine: propietario → tipo vivienda → CP → combles → acceso → cita asesor. Stack: n8n + Deepgram + Claude Haiku + ElevenLabs + Twilio.</field>
+    </record>
+
+    <record id="agent_sofia_renov_phone" model="doorway.agent.phone.number">
+        <field name="agent_id" ref="agent_sofia_renov"/>
+        <field name="name">Sofía Twilio</field>
+        <field name="phone_number">+14387905970</field>
+        <field name="phone_source">manual</field>
+        <field name="usage">outbound</field>
+        <field name="is_primary" eval="True"/>
+    </record>
+
+    <record id="agent_sofia_renov" model="doorway.agent.profile">
+        <field name="default_phone_number_id" ref="agent_sofia_renov_phone"/>
+    </record>
+
+    <record id="agent_sofia_volet_cold" model="doorway.agent.volet">
+        <field name="agent_id" ref="agent_sofia_renov"/>
+        <field name="sequence">10</field>
+        <field name="code">cold_call</field>
+        <field name="prompt_hint">Outbound renov España — campagne sofia-test-maroc-juin2026</field>
+    </record>
+</odoo>

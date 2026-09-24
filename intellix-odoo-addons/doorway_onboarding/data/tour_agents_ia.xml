@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="tour_agents_ia" model="doorway.onboarding.tour">
+        <field name="name">Agents IA</field>
+        <field name="code">doorway_agents_ia</field>
+        <field name="sequence">30</field>
+        <field name="quest_label">Quête Agents IA</field>
+        <field name="home_action_xmlid">doorway_agents_dashboard.action_agents_dashboard</field>
+        <field name="badge_icon">🎙️</field>
+        <field name="badge_name">Opérateur IA</field>
+        <field name="reward_points">45</field>
+    </record>
+    <record id="tour_agents_step_welcome" model="doorway.onboarding.tour.step">
+        <field name="tour_id" ref="tour_agents_ia"/>
+        <field name="sequence">1</field>
+        <field name="key">welcome</field>
+        <field name="title">Agents vocaux Doorway</field>
+        <field name="body_html" type="html">
+            <p>Appels ElevenLabs + Twilio, coaching Claude en direct et rapports post-appel.</p>
+            <div class="alert alert-info border-0 pe-xp-callout" role="status">
+                Badge <em>Opérateur IA</em> 🎙️ (+45 XP) à la fin de la quête
+            </div>
+        </field>
+    </record>
+    <record id="tour_agents_step_live" model="doorway.onboarding.tour.step">
+        <field name="tour_id" ref="tour_agents_ia"/>
+        <field name="sequence">2</field>
+        <field name="key">live</field>
+        <field name="title">Monitoring en direct</field>
+        <field name="body_html" type="html">
+            <p>Suivez les appels en cours, la qualité IA et les alertes coaching temps réel.</p>
+        </field>
+        <field name="action_xmlid">doorway_agents_dashboard.action_doorway_dashboard_live</field>
+        <field name="action_label">Monitoring live</field>
+    </record>
+    <record id="tour_agents_step_reports" model="doorway.onboarding.tour.step">
+        <field name="tour_id" ref="tour_agents_ia"/>
+        <field name="sequence">3</field>
+        <field name="key">reports</field>
+        <field name="title">Rapports post-appel</field>
+        <field name="body_html" type="html">
+            <p>Analyses Claude : résumé, objections, prochaines étapes et score qualité.</p>
+        </field>
+        <field name="action_xmlid">doorway_agents_dashboard.action_doorway_call_report</field>
+        <field name="action_label">Rapports d'appels</field>
+    </record>
+    <record id="tour_agents_step_config" model="doorway.onboarding.tour.step">
+        <field name="tour_id" ref="tour_agents_ia"/>
+        <field name="sequence">4</field>
+        <field name="key">config</field>
+        <field name="title">Configuration</field>
+        <field name="admin_only" eval="True"/>
+        <field name="body_html" type="html">
+            <ul>
+                <li>Agents vocaux (voix, script, pipeline CRM)</li>
+                <li>Campagnes VICIdial (MySQL port 3307)</li>
+                <li>Historique des sessions d'appel</li>
+            </ul>
+        </field>
+        <field name="action_xmlid">doorway_agents_dashboard.action_doorway_agent_ia</field>
+        <field name="action_label">Configurer les agents</field>
+    </record>
+</odoo>

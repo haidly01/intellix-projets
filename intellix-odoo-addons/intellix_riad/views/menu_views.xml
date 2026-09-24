@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_riad_menu_item_list" model="ir.ui.view">
+        <field name="name">intellix.riad.menu.item.list</field>
+        <field name="model">intellix.riad.menu.item</field>
+        <field name="arch" type="xml">
+            <list string="Catalogue">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="company_id"/>
+                <field name="establishment_id"/>
+                <field name="kind"/>
+                <field name="category"/>
+                <field name="duration_minutes" string="Durée (min)"/>
+                <field name="price"/>
+                <field name="currency_id" optional="hide"/>
+                <field name="included_in_half_board" string="Demi-pension"/>
+                <field name="space_mode"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_riad_menu_item_form" model="ir.ui.view">
+        <field name="name">intellix.riad.menu.item.form</field>
+        <field name="model">intellix.riad.menu.item</field>
+        <field name="arch" type="xml">
+            <form string="Ligne de menu">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="kind"/>
+                            <field name="category"/>
+                            <field name="type_id" invisible="kind != 'wellness'"/>
+                            <field name="establishment_id"/>
+                            <field name="company_id" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="duration_minutes" invisible="kind != 'wellness'"/>
+                            <field name="price"/>
+                            <field name="currency_id"/>
+                            <field name="included_in_half_board" invisible="kind != 'restaurant'"/>
+                            <field name="space_mode"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                            <field name="code"/>
+                        </group>
+                    </group>
+                    <field name="description" placeholder="Précisions pour l'agent et la gérante…"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_riad_menu_item_search" model="ir.ui.view">
+        <field name="name">intellix.riad.menu.item.search</field>
+        <field name="model">intellix.riad.menu.item</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="company_id"/>
+                <filter name="wellness" string="Soins" domain="[('kind', '=', 'wellness')]"/>
+                <filter name="restaurant" string="Restaurant" domain="[('kind', '=', 'restaurant')]"/>
+                <filter name="half_board" string="Demi-pension" domain="[('included_in_half_board', '=', True)]"/>
+                <group>
+                    <filter name="group_company" string="Société" context="{'group_by': 'company_id'}"/>
+                    <filter name="group_category" string="Catégorie" context="{'group_by': 'category'}"/>
+                    <filter name="group_mode" string="Mode d'espace" context="{'group_by': 'space_mode'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_riad_wellness_menu" model="ir.actions.act_window">
+        <field name="name">Menu des soins</field>
+        <field name="res_model">intellix.riad.menu.item</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('kind', '=', 'wellness')]</field>
+        <field name="context">{'default_kind': 'wellness', 'default_space_mode': 'wellness'}</field>
+        <field name="search_view_id" ref="view_riad_menu_item_search"/>
+    </record>
+
+    <record id="action_riad_restaurant_menu" model="ir.actions.act_window">
+        <field name="name">Menu restaurant</field>
+        <field name="res_model">intellix.riad.menu.item</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('kind', '=', 'restaurant')]</field>
+        <field name="context">{'default_kind': 'restaurant', 'default_space_mode': 'restaurant'}</field>
+        <field name="search_view_id" ref="view_riad_menu_item_search"/>
+    </record>
+</odoo>

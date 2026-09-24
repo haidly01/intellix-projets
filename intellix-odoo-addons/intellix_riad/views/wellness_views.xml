@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_riad_wellness_slot_list" model="ir.ui.view">
+        <field name="name">intellix.riad.wellness.slot.list</field>
+        <field name="model">intellix.riad.wellness.slot</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="date_start"/>
+                <field name="practitioner_id"/>
+                <field name="type_id"/>
+                <field name="guest_kind"/>
+                <field name="guest_name"/>
+                <field name="reservation_id"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_riad_wellness_slot_form" model="ir.ui.view">
+        <field name="name">intellix.riad.wellness.slot.form</field>
+        <field name="model">intellix.riad.wellness.slot</field>
+        <field name="arch" type="xml">
+            <form class="o_riad_wellness_form" string="Créneau bien-être">
+                <header>
+                    <button name="action_confirm" type="object" string="Confirmer"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_mark_done" type="object" string="Terminer"
+                            invisible="state != 'booked'"/>
+                    <button name="action_cancel" type="object" string="Annuler"
+                            invisible="state == 'cancelled'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,booked,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1" placeholder="Nouveau créneau bien-être"/></h1>
+                    </div>
+                    <notebook>
+                        <page string="Créneau" name="slot">
+                            <group string="Soin">
+                                <group>
+                                    <field name="establishment_id"/>
+                                    <field name="establishment_property_id" invisible="1"/>
+                                    <field name="type_id"/>
+                                    <field name="practitioner_id"/>
+                                </group>
+                                <group>
+                                    <field name="date_start"/>
+                                    <field name="date_end"/>
+                                    <field name="amount"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Voyageuse" name="guest">
+                            <group string="Cliente">
+                                <group>
+                                    <field name="guest_kind"/>
+                                    <field name="guest_name" placeholder="Rechercher une voyageuse…"/>
+                                    <field name="reservation_id"
+                                           string="Réservation chambre"
+                                           options="{'no_create': True, 'no_create_edit': True}"
+                                           domain="[('property_id', '=', establishment_property_id), ('state', 'in', ('confirmed', 'in_progress', 'done'))]"
+                                           invisible="guest_kind != 'resident'"
+                                           placeholder="Lier au séjour — n'ouvre pas le dossier chauffeur"/>
+                                </group>
+                                <group>
+                                    <field name="stay_room_id" readonly="1"
+                                           invisible="not reservation_id"/>
+                                    <field name="stay_check_in" readonly="1"
+                                           invisible="not reservation_id"/>
+                                    <field name="stay_check_out" readonly="1"
+                                           invisible="not reservation_id"/>
+                                    <field name="stay_nights" readonly="1"
+                                           invisible="not reservation_id"/>
+                                </group>
+                            </group>
+                            <div class="text-muted" invisible="guest_kind != 'resident'">
+                                Arrivée, chambre et nuits viennent du séjour. Elles ne se saisissent pas ici.
+                                Chauffeur, course et allergies restent sur la réservation Coins.
+                            </div>
+                        </page>
+                        <page string="Créateur d'Expérience" name="experience">
+                            <group string="Brief pour l'agent">
+                                <field name="experience_brief" nolabel="1"
+                                       placeholder="Souhaits de la cliente, à rester dans le script…"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_riad_wellness_slot" model="ir.actions.act_window">
+        <field name="name">Bien-être &amp; beauté</field>
+        <field name="res_model">intellix.riad.wellness.slot</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

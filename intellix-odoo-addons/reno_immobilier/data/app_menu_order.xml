@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="doorway_messaging.menu_messaging_root" model="ir.ui.menu">
+        <field name="sequence" eval="1"/>
+    </record>
+    <record id="coins_marocain.menu_coins_root" model="ir.ui.menu">
+        <field name="sequence" eval="2"/>
+    </record>
+    <record id="coins_quebec.menu_cq_root" model="ir.ui.menu">
+        <field name="sequence" eval="3"/>
+    </record>
+    <record id="reno_immobilier.menu_reno_immobilier_root" model="ir.ui.menu">
+        <field name="sequence" eval="4"/>
+    </record>
+    <record id="sale.sale_menu_root" model="ir.ui.menu">
+        <field name="sequence" eval="5"/>
+    </record>
+</odoo>

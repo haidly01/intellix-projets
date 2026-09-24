@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Masque le bloc contact rénovation_conciergerie (doublon layout B2C doorway) -->
+    <record id="doorway_crm_lead_form_renovation" model="ir.ui.view">
+        <field name="name">crm.lead.form.doorway.renovation</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="renovation_conciergerie.crm_lead_view_form_renovation"/>
+        <field name="priority">35</field>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('row')][hasclass('g-2')][hasclass('mb-3')][.//field[@name='contact_name']]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

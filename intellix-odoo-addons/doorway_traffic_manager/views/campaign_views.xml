@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_campaign_kanban" model="ir.ui.view">
+        <field name="name">doorway.traffic.campaign.kanban</field>
+        <field name="model">doorway.traffic.campaign</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="ai_status" class="o_doorway_traffic_campaigns">
+                <field name="name"/>
+                <field name="channel_id"/>
+                <field name="ai_status"/>
+                <field name="ai_action_pending"/>
+                <field name="ai_recommendation"/>
+                <field name="budget_daily"/>
+                <field name="cpa"/>
+                <field name="roas"/>
+                <field name="spend"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="o_kanban_card doorway_traffic_campaign_card">
+                            <div class="fw-bold"><field name="name"/></div>
+                            <div class="text-muted small">
+                                <field name="channel_id"/> · <field name="objective"/>
+                            </div>
+                            <div class="mt-2">
+                                <span>Budget <field name="budget_daily"/> €/j</span>
+                                <span class="ms-2">CPA <field name="cpa"/> €</span>
+                            </div>
+                            <div t-if="record.ai_recommendation.raw_value"
+                                 class="alert alert-warning mt-2 mb-0 py-1 px-2 small">
+                                ⚡ <field name="ai_recommendation"/>
+                            </div>
+                            <div class="mt-2" t-if="record.ai_action_pending.raw_value != 'none'">
+                                <button name="action_apply_ai_recommendation" type="object"
+                                        class="btn btn-sm btn-success" string="Accepter"/>
+                                <button name="action_ignore_recommendation" type="object"
+                                        class="btn btn-sm btn-secondary ms-1" string="Ignorer"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_campaign_list" model="ir.ui.view">
+        <field name="name">doorway.traffic.campaign.list</field>
+        <field name="model">doorway.traffic.campaign</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="pipeline_id"/>
+                <field name="channel_id"/>
+                <field name="ai_status" widget="badge"/>
+                <field name="budget_daily"/>
+                <field name="spend"/>
+                <field name="cpa"/>
+                <field name="roas"/>
+                <field name="ai_action_pending"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_campaign_form" model="ir.ui.view">
+        <field name="name">doorway.traffic.campaign.form</field>
+        <field name="model">doorway.traffic.campaign</field>
+        <field name="arch" type="xml">
+            <form string="Campagne">
+                <header>
+                    <button name="action_generate_with_ai" type="object"
+                            string="Générer avec l'IA" class="btn-primary"
+                            invisible="ai_status not in ('draft',)"/>
+                    <button name="action_approve" type="object" string="Approuver"
+                            invisible="ai_status != 'ai_proposed'"/>
+                    <button name="action_activate" type="object" string="Activer"
+                            invisible="ai_status != 'approved'"/>
+                    <button name="action_publish_to_ads" type="object"
+                            string="Publier sur la plateforme" class="btn-primary"
+                            invisible="ai_status not in ('approved', 'active')"/>
+                    <button name="action_sync_insights" type="object"
+                            string="Synchroniser performance"
+                            invisible="ai_status not in ('approved', 'active', 'paused')"/>
+                    <button name="action_pause" type="object" string="Pause"
+                            invisible="ai_status != 'active'"/>
+                    <button name="action_apply_ai_recommendation" type="object"
+                            string="Accepter recommandation IA" class="btn-success"
+                            invisible="ai_action_pending == 'none'"/>
+                    <button name="action_ignore_recommendation" type="object"
+                            string="Ignorer recommandation"
+                            invisible="ai_action_pending == 'none'"/>
+                    <field name="ai_status" widget="statusbar"
+                           statusbar_visible="draft,ai_proposed,approved,active,paused"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-warning" role="alert"
+                         invisible="ai_action_pending == 'none'">
+                        <strong>Recommandation IA :</strong>
+                        <field name="ai_recommendation" readonly="1" nolabel="1"/>
+                        (<field name="ai_action_pending" readonly="1" nolabel="1"/>)
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="foundation_id"
+                                   domain="[('state', '=', 'validated')]"/>
+                            <field name="pipeline_id"/>
+                            <field name="channel_id"/>
+                            <field name="objective"/>
+                        </group>
+                        <group>
+                            <field name="budget_total"/>
+                            <field name="budget_daily"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                        </group>
+                    </group>
+                    <group string="Plateforme">
+                        <group>
+                            <field name="external_campaign_id"/>
+                            <field name="last_sync_at"/>
+                            <field name="sync_message"/>
+                        </group>
+                    </group>
+                    <group string="Performance 7 jours" name="perf_group">
+                        <group>
+                            <field name="spend" readonly="1"/>
+                            <field name="impressions" readonly="1"/>
+                            <field name="clicks" readonly="1"/>
+                            <field name="ctr" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="conversions" readonly="1"/>
+                            <field name="cpa" readonly="1"/>
+                            <field name="roas" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Performance 30 jours" name="perf_30d_group">
+                        <group>
+                            <field name="spend_30d" readonly="1"/>
+                            <field name="impressions_30d" readonly="1"/>
+                            <field name="clicks_30d" readonly="1"/>
+                            <field name="ctr_30d" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="conversions_30d" readonly="1"/>
+                            <field name="cpa_30d" readonly="1"/>
+                            <field name="meta_campaigns_matched" readonly="1" widget="text"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Audiences" name="audiences">
+                            <field name="audience_ids">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="audience_type"/>
+                                    <field name="platform"/>
+                                    <field name="ai_status"/>
+                                    <field name="estimated_size"/>
+                                    <button name="action_approve" type="object"
+                                            string="Approuver" icon="fa-check"
+                                            invisible="ai_status != 'proposed'"/>
+                                    <button name="action_reject" type="object"
+                                            string="Ignorer" icon="fa-times"
+                                            invisible="ai_status != 'proposed'"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Créatifs" name="creatives">
+                            <div class="mb-2">
+                                <button name="action_regenerate_creative_suggestions" type="object"
+                                        string="Relancer suggestions créatifs"
+                                        class="btn-primary"
+                                        invisible="ai_status not in ('approved', 'active', 'paused')"/>
+                                <span class="ms-2 text-muted"
+                                      invisible="pending_creative_count == 0">
+                                    <field name="pending_creative_count" readonly="1"/>
+                                    proposition(s) en attente
+                                </span>
+                            </div>
+                            <field name="creative_ids">
+                                <list editable="bottom">
+                                    <field name="format"/>
+                                    <field name="brand_angle"/>
+                                    <field name="headline"/>
+                                    <field name="body"/>
+                                    <field name="creative_rationale"/>
+                                    <field name="cta"/>
+                                    <field name="ai_status"/>
+                                    <button name="action_approve" type="object"
+                                            string="Approuver" icon="fa-check"
+                                            invisible="ai_status != 'proposed'"/>
+                                    <button name="action_reject" type="object"
+                                            string="Ignorer" icon="fa-times"
+                                            invisible="ai_status != 'proposed'"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_campaign_search" model="ir.ui.view">
+        <field name="name">doorway.traffic.campaign.search</field>
+        <field name="model">doorway.traffic.campaign</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="foundation_id"/>
+                <field name="pipeline_id"/>
+                <field name="channel_id"/>
+                <filter name="filter_active" string="Actives"
+                        domain="[('ai_status', '=', 'active')]"/>
+                <filter name="filter_pending_ai" string="Recommandations IA"
+                        domain="[('ai_action_pending', '!=', 'none')]"/>
+                <filter name="filter_proposed" string="Propositions IA"
+                        domain="[('ai_status', '=', 'ai_proposed')]"/>
+                <group>
+                    <filter name="group_pipeline" string="Pipeline" context="{'group_by': 'pipeline_id'}"/>
+                    <filter name="group_channel" string="Canal" context="{'group_by': 'channel_id'}"/>
+                    <filter name="group_status" string="Statut" context="{'group_by': 'ai_status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_campaigns" model="ir.actions.act_window">
+        <field name="name">Campagnes</field>
+        <field name="res_model">doorway.traffic.campaign</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucune campagne — créez-les depuis Analyse marque.
+            </p>
+            <p>Utilisez « Créer campagnes portefeuilles » pour générer une campagne Meta par marque validée.</p>
+        </field>
+    </record>
+</odoo>

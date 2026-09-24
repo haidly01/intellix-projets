@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="sip_trunk_trustsip_espagne" model="doorway.sip.trunk">
+        <field name="name">TrustSIP — Espagne</field>
+        <field name="provider">custom</field>
+        <field name="termination_uri">116.202.233.75</field>
+        <field name="sip_username">trustsip</field>
+        <field name="sip_password">4i9jgo7</field>
+        <field name="sip_port">5060</field>
+        <field name="notes">Compte web TrustSIP: trustsip / 9f4k8fm — VoIP: trustsip / 4i9jgo7 @ 116.202.233.75</field>
+    </record>
+
+    <record id="agent_sofia_renov_phone" model="doorway.agent.phone.number">
+        <field name="trunk_id" ref="sip_trunk_trustsip_espagne"/>
+        <field name="phone_source">sip_trunk</field>
+        <field name="sip_trunk_name">TrustSIP — Espagne</field>
+    </record>
+</odoo>

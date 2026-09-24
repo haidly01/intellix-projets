@@ -1,0 +1,192 @@
+// Intellix — modales / wizards (test agent IA, composeurs, etc.)
+
+body.o_intellix_branded {
+    .modal.o_technical_modal,
+    .o_dialog > .modal {
+        .modal-content {
+            background: var(--ix-surface) !important;
+            color: var(--ix-text) !important;
+            border: 1px solid var(--ix-border) !important;
+        }
+
+        .modal-header {
+            background: var(--ix-surface-elevated) !important;
+            border-bottom: 1px solid var(--ix-border) !important;
+            color: var(--ix-text) !important;
+
+            .modal-title,
+            .btn-close {
+                color: var(--ix-text) !important;
+            }
+        }
+
+        .modal-body,
+        .modal-footer {
+            background: var(--ix-surface) !important;
+            color: var(--ix-text) !important;
+            border-color: var(--ix-border) !important;
+        }
+    }
+}
+
+// Formulaires dans modales (sans o_form_sheet — fond souvent blanc par défaut)
+.o_doorway_test_call_wizard,
+.modal-body .o_form_view:not(.o_field_highlight) {
+    background: var(--ix-surface) !important;
+    color: var(--ix-text) !important;
+
+    .o_form_renderer,
+    .o_form_sheet_bg,
+    .o_form_sheet {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        color: var(--ix-text) !important;
+    }
+
+    // Libellés champs (Agent, Mode test, etc.)
+    .o_cell_label,
+    .o_wrap_field .o_form_label,
+    .o_form_label,
+    .form-label,
+    label,
+    .o_wrap_label,
+    .o_wrap_label > label {
+        color: var(--ix-text) !important;
+        opacity: 1 !important;
+        font-weight: 500;
+    }
+
+    .o_cell_md,
+    .o_wrap_field {
+        color: var(--ix-text);
+    }
+
+    // Titres de section (Scénario, Actions à tester…)
+    .o_horizontal_separator,
+    .o_group .fw-bold,
+    .o_inner_group > .g-col-12 > span,
+    .o_group > label.o_form_label {
+        color: var(--ix-text) !important;
+        opacity: 1 !important;
+        font-weight: 600;
+        border-bottom-color: var(--ix-border) !important;
+    }
+
+    .text-muted,
+    .opacity-50,
+    .opacity-75 {
+        color: var(--ix-text-muted) !important;
+        opacity: 1 !important;
+    }
+
+    // Champs texte / select / many2one
+    .o_field_widget input,
+    .o_field_widget textarea,
+    .o_field_widget select,
+    .o_input,
+    .form-control,
+    .form-select {
+        background-color: var(--ix-surface-elevated) !important;
+        color: var(--ix-text) !important;
+        border: 1px solid var(--ix-border) !important;
+    }
+
+    .o_field_widget input::placeholder,
+    textarea::placeholder {
+        color: var(--ix-text-subtle, var(--ix-text-muted)) !important;
+        opacity: 1;
+    }
+
+    // Cases à cocher
+    .o_field_boolean,
+    .form-check {
+        .form-check-label,
+        label {
+            color: var(--ix-text) !important;
+            opacity: 1 !important;
+        }
+
+        .form-check-input {
+            border-color: var(--ix-border);
+            background-color: var(--ix-surface-elevated);
+
+            &:checked {
+                background-color: var(--ix-primary);
+                border-color: var(--ix-primary);
+            }
+        }
+    }
+
+    // Many2one / dropdown
+    .o_field_many2one_selection,
+    .o-autocomplete--input {
+        color: var(--ix-text) !important;
+    }
+
+    footer,
+    .modal-footer {
+        .btn-secondary {
+            color: var(--ix-text) !important;
+            background: var(--ix-surface-elevated) !important;
+            border: 1px solid var(--ix-border) !important;
+        }
+
+        .btn-primary,
+        .oe_highlight {
+            color: var(--ix-text-inverse) !important;
+        }
+    }
+
+    // Libellés Bootstrap encore en text-900 (wizard Payer / factures)
+    .text-900,
+    .text-break.text-900 {
+        color: var(--ix-text) !important;
+    }
+
+    // Montant (champ monétaire superposé — texte invisible sinon)
+    .o_field_monetary {
+        input.o_input {
+            color: var(--ix-text) !important;
+            background-color: transparent !important;
+            caret-color: var(--ix-primary-light);
+        }
+
+        .o_monetary_ghost_value,
+        .o_input.position-absolute.pe-none {
+            color: var(--ix-text-muted) !important;
+            opacity: 1 !important;
+        }
+
+        .opacity-0:not(.o_monetary_ghost_value) {
+            opacity: 0 !important;
+        }
+    }
+
+    .o_row {
+        .o_field_monetary,
+        .o_field_widget {
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+
+        .o_field_many2one_selection,
+        .o_input_dropdown {
+            background: var(--ix-surface-elevated) !important;
+            border: 1px solid var(--ix-border) !important;
+            border-radius: var(--ix-radius-btn);
+        }
+    }
+
+    // Alertes dans le wizard
+    .alert-info,
+    .alert-warning {
+        color: var(--ix-text) !important;
+        background: var(--ix-surface-elevated) !important;
+        border-color: var(--ix-border) !important;
+
+        .oe_link {
+            color: var(--ix-primary-light) !important;
+        }
+    }
+}

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_riad_availability_calendar_readonly" model="ir.ui.view">
+        <field name="name">coins.reservation.calendar.riad.readonly</field>
+        <field name="model">coins.reservation</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <calendar string="Disponibilités riad (lecture seule)"
+                      date_start="check_in"
+                      date_stop="check_out"
+                      create="0"
+                      edit="0"
+                      delete="0"
+                      mode="month"
+                      event_open_popup="1"
+                      quick_create="0">
+                <field name="name"/>
+                <field name="room_id"/>
+                <field name="client_nom"/>
+                <field name="state"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="view_riad_availability_list_readonly" model="ir.ui.view">
+        <field name="name">coins.reservation.list.riad.readonly</field>
+        <field name="model">coins.reservation</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <list string="Occupation riad" create="0" edit="0" delete="0">
+                <field name="name"/>
+                <field name="room_id"/>
+                <field name="client_nom"/>
+                <field name="check_in"/>
+                <field name="check_out"/>
+                <field name="state"/>
+                <field name="referral_code" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_coins_property_form_riad_venue" model="ir.ui.view">
+        <field name="name">coins.property.form.riad.venue</field>
+        <field name="model">coins.property</field>
+        <field name="inherit_id" ref="coins_marocain.view_coins_property_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <field name="riad_establishment_id" invisible="1"/>
+                <button name="action_open_riad_availability_readonly" type="object"
+                        class="oe_stat_button" icon="fa-eye"
+                        invisible="not riad_establishment_id">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">Dispo riad</span>
+                        <span class="o_stat_text">lecture seule</span>
+                    </div>
+                </button>
+            </xpath>
+            <xpath expr="//sheet" position="inside">
+                <group string="Module Hébergement — lieu partenaire" invisible="not riad_establishment_id">
+                    <field name="riad_establishment_id" readonly="1"/>
+                    <field name="riad_listed_as_event_venue"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_coins_partner_activity_form_riad" model="ir.ui.view">
+        <field name="name">coins.partner_activity.form.riad</field>
+        <field name="model">coins.partner_activity</field>
+        <field name="inherit_id" ref="coins_marocain.view_coins_partner_activity_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_open_riad_availability_readonly" type="object"
+                        string="Calendrier riad (lecture seule)"
+                        class="btn-secondary"
+                        invisible="not riad_establishment_id"/>
+            </xpath>
+            <xpath expr="//field[@name='commission_pct']" position="after">
+                <field name="riad_establishment_id"/>
+                <field name="riad_property_id" invisible="not riad_establishment_id"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_coins_evenement_form_riad_calendar" model="ir.ui.view">
+        <field name="name">coins.evenement.form.riad.calendar</field>
+        <field name="model">coins.evenement</field>
+        <field name="inherit_id" ref="coins_marocain.view_coins_evenement_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <field name="riad_has_availability_calendar" invisible="1"/>
+                <button name="action_open_riad_availability_readonly" type="object"
+                        string="Dispo riad (lecture seule)"
+                        class="btn-secondary"
+                        invisible="not riad_has_availability_calendar"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

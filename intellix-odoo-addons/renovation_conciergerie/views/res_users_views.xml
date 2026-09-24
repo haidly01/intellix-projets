@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_users_form_doorway_crm" model="ir.ui.view">
+        <field name="name">res.users.form.doorway.crm</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Pipelines Doorway" name="doorway_crm">
+                    <group>
+                        <group string="Pipelines CRM assignés (vendeur)">
+                            <field name="doorway_assigned_pipeline_ids"
+                                   widget="many2many_tags"
+                                   options="{'no_create': True}"/>
+                        </group>
+                        <group string="Admin de pipeline (restreint)">
+                            <field name="pipeline_admin_team_ids"
+                                   widget="many2many_tags"
+                                   options="{'no_create': True}"/>
+                        </group>
+                        <group string="Superviseur d'équipe">
+                            <field name="subordinate_user_ids"
+                                   widget="many2many_tags"
+                                   readonly="1"/>
+                        </group>
+                        <group string="Segment Doorway">
+                            <field name="doorway_segment" readonly="1"/>
+                            <field name="doorway_role" readonly="1"/>
+                        </group>
+                        <group string="Gamification">
+                            <field name="gamification_monthly_goal"/>
+                            <field name="project_monthly_goal"/>
+                            <field name="karma" readonly="1"/>
+                            <field name="rank_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <div class="text-muted">
+                        <p>« <b>Pipelines CRM assignés</b> » limite un vendeur aux onglets choisis (ex. Rénovation + Marketing) : il ne voit que <b>ses propres</b> leads et commandes.</p>
+                        <p>« <b>Pipelines administrés</b> » s'applique aux utilisateurs du groupe <b>Admin de pipeline (restreint)</b> : ils gèrent entièrement les leads de ces pipelines uniquement.</p>
+                        <p>« <b>Utilisateurs supervisés</b> » est calculé automatiquement à partir des équipes CRM dont l'utilisateur est responsable (champ « Responsable » de l'équipe). Il alimente le groupe <b>Superviseur d'équipe</b>.</p>
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

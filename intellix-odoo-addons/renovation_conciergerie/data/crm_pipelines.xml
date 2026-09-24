@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Équipes / pipelines -->
+    <record id="crm_team_renovation" model="crm.team">
+        <field name="name">Rénovation</field>
+        <field name="use_leads">True</field>
+        <field name="use_opportunities">True</field>
+        <field name="is_agence_doorway_pipeline">True</field>
+        <field name="uses_provenance_stages">True</field>
+        <field name="sequence">10</field>
+    </record>
+
+    <record id="crm_team_immobilier" model="crm.team">
+        <field name="name">Immobilier</field>
+        <field name="use_leads">True</field>
+        <field name="use_opportunities">True</field>
+        <field name="is_agence_doorway_pipeline">True</field>
+        <field name="uses_provenance_stages">True</field>
+        <field name="sequence">20</field>
+    </record>
+
+    <record id="crm_team_marketing" model="crm.team">
+        <field name="name">Marketing</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="use_leads">True</field>
+        <field name="use_opportunities">True</field>
+        <field name="is_agence_doorway_pipeline">True</field>
+        <field name="uses_provenance_stages">True</field>
+        <field name="sequence">30</field>
+    </record>
+
+    <record id="crm_team_driven" model="crm.team">
+        <field name="name">Driven</field>
+        <field name="use_leads">True</field>
+        <field name="use_opportunities">True</field>
+        <field name="is_agence_doorway_pipeline">True</field>
+        <field name="uses_provenance_stages">True</field>
+        <field name="sequence">40</field>
+    </record>
+
+    <record id="crm_team_doorway_b2b" model="crm.team">
+        <field name="name">Doorway Clients</field>
+        <field name="use_leads">True</field>
+        <field name="use_opportunities">True</field>
+        <field name="is_agence_doorway_pipeline">True</field>
+        <field name="uses_provenance_stages">False</field>
+        <field name="sequence">50</field>
+    </record>
+
+    <record id="crm_team_assurance" model="crm.team">
+        <field name="name">Assurance</field>
+        <field name="use_leads">True</field>
+        <field name="use_opportunities">True</field>
+        <field name="is_agence_doorway_pipeline">True</field>
+        <field name="uses_provenance_stages">False</field>
+        <field name="sequence">60</field>
+    </record>
+
+    <function model="crm.team" name="_setup_agence_doorway_pipelines"/>
+    <function model="renovation.website.lead.webhook" name="_ensure_website_lead_webhook_token"/>
+    <function model="renovation.website.lead.webhook" name="_ensure_marketing_website_lead_webhook_token"/>
+    <function model="renovation.retell.webhook" name="_ensure_retell_webhook_token"/>
+    <function model="renovation.retell.webhook" name="_ensure_marketing_retell_webhook_token"/>
+    <function model="renovation.retell.webhook" name="_ensure_immobilier_agent_webhook_token"/>
+    <function model="crm.team" name="_fix_webhook_leads_without_salesperson"/>
+    <function model="crm.team" name="_fix_webhook_leads_company"/>
+    <function model="crm.team" name="_assign_marketing_default_to_zakaria"/>
+    <function model="renovation.meta.leadgen.webhook" name="_ensure_verify_token"/>
+
+    <function model="res.users" name="_migrate_zakaria_leads_to_marketing"/>
+
+    <!-- Étapes Rénovation (provenance du lead) -->
+    <record id="crm_stage_renovation_new" model="crm.stage">
+        <field name="name">Nouveau</field>
+        <field name="sequence">1</field>
+        <field name="is_won" eval="False"/>
+        <field name="fold" eval="False"/>
+        <field name="team_ids" eval="[(6, 0, [ref('crm_team_renovation')])]"/>
+    </record>
+    <record id="crm_stage_renovation_social" model="crm.stage">
+        <field name="name">Réseaux Sociaux</field>
+        <field name="sequence">2</field>
+        <field name="is_won" eval="False"/>
+        <field name="fold" eval="False"/>
+        <field name="team_ids" eval="[(6, 0, [ref('crm_team_renovation')])]"/>
+    </record>
+    <record id="crm_stage_renovation_retell" model="crm.stage">
+        <field name="name">Agent IA</field>
+        <field name="sequence">3</field>
+        <field name="is_won" eval="False"/>
+        <field name="fold" eval="False"/>
+        <field name="team_ids" eval="[(6, 0, [ref('crm_team_renovation')])]"/>
+    </record>
+    <record id="crm_stage_renovation_website" model="crm.stage">
+        <field name="name">Site web</field>
+        <field name="sequence">4</field>
+        <field name="is_won" eval="False"/>
+        <field name="fold" eval="False"/>
+        <field name="team_ids" eval="[(6, 0, [ref('crm_team_renovation')])]"/>
+    </record>
+    <record id="crm_stage_renovation_qualified" model="crm.stage">
+        <field name="name">Qualification</field>
+        <field name="sequence">5</field>
+        <field name="is_won" eval="False"/>
+        <field name="fold" eval="False"/>
+        <field name="team_ids" eval="[(6, 0, [ref('crm_team_renovation')])]"/>
+    </record>
+    <record id="crm_stage_renovation_followup" model="crm.stage">
+        <field name="name">Relance</field>
+        <field name="sequence">6</field>
+        <field name="is_won" eval="False"/>
+        <field name="fold" eval="False"/>
+        <field name="team_ids" eval="[(6, 0, [ref('crm_team_renovation')])]"/>
+    </record>
+
+    <!-- Étapes Immobilier (provenance du lead) -->
+    <record id="crm_stage_immobilier_new" model="crm.stage">
+        <field name="name">Nouveau</field>
+        <field name="sequence">1</field>
+        <field name="is_won" eval="False"/>
+        <field name="fold" eval="False"/>
+        <field name="team_ids" eval="[(6, 0, [ref('crm_team_immobilier')])]"/>
+    </record>
+    <record id="crm_stage_immobilier_social" model="crm.stage">
+        <field name="name">Réseaux Sociaux</field>
+        <field name="sequence">2</field>
+        <field name="is_won" eval="False"/>
+        <field name="fold" eval="False"/>
+        <field name="team_ids" eval="[(6, 0, [ref('crm_team_immobilier')])]"/>
+    </record>
+    <record id="crm_stage_immobilier_retell" model="crm.stage">
+        <field name="name">Agent IA</field>
+        <field name="sequence">3</field>
+        <field name="is_won" eval="False"/>
+        <field name="fold" eval="False"/>
+        <field name="team_ids" eval="[(6, 0, [ref('crm_team_immobilier')])]"/>
+    </record>
+    <record id="crm_stage_immobilier_website" model="crm.stage">
+        <field name="name">Site web</field>
+        <field name="sequence">4</field>
+        <field name="is_won" eval="False"/>
+        <field name="fold" eval="False"/>
+        <field name="team_ids" eval="[(6, 0, [ref('crm_team_immobilier')])]"/>
+    </record>
+    <record id="crm_stage_immobilier_qualified" model="crm.stage">
+        <field name="name">Qualification</field>
+        <field name="sequence">5</field>
+        <field name="is_won" eval="False"/>
+        <field name="fold" eval="False"/>
+        <field name="team_ids" eval="[(6, 0, [ref('crm_team_immobilier')])]"/>
+    </record>
+    <record id="crm_stage_immobilier_followup" model="crm.stage">
+        <field name="name">Relance</field>
+        <field name="sequence">6</field>
+        <field name="is_won" eval="False"/>
+        <field name="fold" eval="False"/>
+        <field name="team_ids" eval="[(6, 0, [ref('crm_team_immobilier')])]"/>
+    </record>
+
+    <!-- Étapes Marketing (provenance du lead) -->
+    <record id="crm_stage_marketing_new" model="crm.stage">
+        <field name="name">Nouveau</field>
+        <field name="sequence">1</field>
+        <field name="is_won" eval="False"/>
+        <field name="fold" eval="False"/>
+        <field name="team_ids" eval="[(6, 0, [ref('crm_team_marketing')])]"/>
+    </record>
+    <record id="crm_stage_marketing_social" model="crm.stage">
+        <field name="name">Réseaux Sociaux</field>
+        <field name="sequence">2</field>
+        <field name="is_won" eval="False"/>
+        <field name="fold" eval="False"/>
+        <field name="team_ids" eval="[(6, 0, [ref('crm_team_marketing')])]"/>
+    </record>
+    <record id="crm_stage_marketing_retell" model="crm.stage">
+        <field name="name">Agent IA</field>
+        <field name="sequence">3</field>
+        <field name="is_won" eval="False"/>
+        <field name="fold" eval="False"/>
+        <field name="team_ids" eval="[(6, 0, [ref('crm_team_marketing')])]"/>
+    </record>
+    <record id="crm_stage_marketing_website" model="crm.stage">
+        <field name="name">Site web</field>
+        <field name="sequence">4</field>
+        <field name="is_won" eval="False"/>
+        <field name="fold" eval="False"/>
+        <field name="team_ids" eval="[(6, 0, [ref('crm_team_marketing')])]"/>
+    </record>
+    <record id="crm_stage_marketing_qualified" model="crm.stage">
+        <field name="name">Qualification</field>
+        <field name="sequence">5</field>
+        <field name="is_won" eval="False"/>
+        <field name="fold" eval="False"/>
+        <field name="team_ids" eval="[(6, 0, [ref('crm_team_marketing')])]"/>
+    </record>
+    <record id="crm_stage_marketing_followup" model="crm.stage">
+        <field name="name">Relance</field>
+        <field name="sequence">6</field>
+        <field name="is_won" eval="False"/>
+        <field name="fold" eval="False"/>
+        <field name="team_ids" eval="[(6, 0, [ref('crm_team_marketing')])]"/>
+    </record>
+
+    <!-- Étapes Driven (provenance du lead) -->
+    <record id="crm_stage_driven_new" model="crm.stage">
+        <field name="name">Nouveau</field>
+        <field name="sequence">1</field>
+        <field name="is_won" eval="False"/>
+        <field name="fold" eval="False"/>
+        <field name="team_ids" eval="[(6, 0, [ref('crm_team_driven')])]"/>
+    </record>
+    <record id="crm_stage_driven_social" model="crm.stage">
+        <field name="name">Réseaux Sociaux</field>
+        <field name="sequence">2</field>
+        <field name="is_won" eval="False"/>
+        <field name="fold" eval="False"/>
+        <field name="team_ids" eval="[(6, 0, [ref('crm_team_driven')])]"/>
+    </record>
+    <record id="crm_stage_driven_retell" model="crm.stage">
+        <field name="name">Agent IA</field>
+        <field name="sequence">3</field>
+        <field name="is_won" eval="False"/>
+        <field name="fold" eval="False"/>
+        <field name="team_ids" eval="[(6, 0, [ref('crm_team_driven')])]"/>
+    </record>
+    <record id="crm_stage_driven_website" model="crm.stage">
+        <field name="name">Site web</field>
+        <field name="sequence">4</field>
+        <field name="is_won" eval="False"/>
+        <field name="fold" eval="False"/>
+        <field name="team_ids" eval="[(6, 0, [ref('crm_team_driven')])]"/>
+    </record>
+    <record id="crm_stage_driven_qualified" model="crm.stage">
+        <field name="name">Qualification</field>
+        <field name="sequence">5</field>
+        <field name="is_won" eval="False"/>
+        <field name="fold" eval="False"/>
+        <field name="team_ids" eval="[(6, 0, [ref('crm_team_driven')])]"/>
+    </record>
+    <record id="crm_stage_driven_followup" model="crm.stage">
+        <field name="name">Relance</field>
+        <field name="sequence">6</field>
+        <field name="is_won" eval="False"/>
+        <field name="fold" eval="False"/>
+        <field name="team_ids" eval="[(6, 0, [ref('crm_team_driven')])]"/>
+    </record>
+
+    <!-- Étapes Assurance (processus de vente) -->
+    <record id="crm_stage_assurance_new" model="crm.stage">
+        <field name="name">Nouveau</field>
+        <field name="sequence">1</field>
+        <field name="is_won" eval="False"/>
+        <field name="fold" eval="False"/>
+        <field name="team_ids" eval="[(6, 0, [ref('crm_team_assurance')])]"/>
+    </record>
+    <record id="crm_stage_assurance_callback" model="crm.stage">
+        <field name="name">Rappel en cours</field>
+        <field name="sequence">2</field>
+        <field name="is_won" eval="False"/>
+        <field name="fold" eval="False"/>
+        <field name="team_ids" eval="[(6, 0, [ref('crm_team_assurance')])]"/>
+    </record>
+    <record id="crm_stage_assurance_qualified" model="crm.stage">
+        <field name="name">Qualifié</field>
+        <field name="sequence">3</field>
+        <field name="is_won" eval="False"/>
+        <field name="fold" eval="False"/>
+        <field name="team_ids" eval="[(6, 0, [ref('crm_team_assurance')])]"/>
+    </record>
+    <record id="crm_stage_assurance_quote" model="crm.stage">
+        <field name="name">Devis envoyé</field>
+        <field name="sequence">4</field>
+        <field name="is_won" eval="False"/>
+        <field name="fold" eval="False"/>
+        <field name="team_ids" eval="[(6, 0, [ref('crm_team_assurance')])]"/>
+    </record>
+    <record id="crm_stage_assurance_won" model="crm.stage">
+        <field name="name">Gagné (Signé)</field>
+        <field name="sequence">5</field>
+        <field name="is_won" eval="True"/>
+        <field name="fold" eval="False"/>
+        <field name="team_ids" eval="[(6, 0, [ref('crm_team_assurance')])]"/>
+    </record>
+    <record id="crm_stage_assurance_lost" model="crm.stage">
+        <field name="name">Perdu</field>
+        <field name="sequence">6</field>
+        <field name="is_won" eval="False"/>
+        <field name="fold" eval="True"/>
+        <field name="team_ids" eval="[(6, 0, [ref('crm_team_assurance')])]"/>
+    </record>
+
+    <function model="crm.team" name="_cleanup_all_provenance_stages"/>
+    <function model="crm.team" name="_cleanup_doorway_dedicated_stages"/>
+    <function model="crm.team" name="_migrate_leads_off_generic_stages"/>
+    <function model="renovation.assurance.webhook" name="_ensure_assurance_webhook_token"/>
+    <function model="res.users" name="_init_sync_doorway_assigned_pipeline_access"/>
+    <function model="res.users" name="_init_sync_pipeline_tab_groups"/>
+    <function model="res.users" name="_init_sync_doorway_segment_groups"/>
+    <function model="res.users" name="_init_sync_doorway_role_groups"/>
+    <function model="res.users" name="_doorway_sync_supervisor_users"/>
+    <function model="res.users" name="_doorway_sync_crm_sales_team_users"/>
+    <function model="crm.lead" name="_cleanup_doorway_test_leads"/>
+    <function model="crm.team" name="_assign_renovation_default_to_martin"/>
+    <function model="crm.lead" name="_backfill_expected_revenue"/>
+    <function model="crm.lead" name="_backfill_driven_eligibility"/>
+    <function model="crm.lead" name="_backfill_doorway_segment"/>
+    <function model="crm.team" name="_backfill_doorway_segment"/>
+</odoo>

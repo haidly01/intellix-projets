@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_cq_forfait_action" model="ir.actions.act_window">
+        <field name="name">Forfaits</field>
+        <field name="path">cq-forfaits</field>
+        <field name="res_model">coins.quebec.forfait</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_cq_forfait_list" model="ir.ui.view">
+        <field name="name">coins.quebec.forfait.list</field>
+        <field name="model">coins.quebec.forfait</field>
+        <field name="arch" type="xml">
+            <list>
+                    <field name="name"/>
+                    <field name="palier"/>
+                    <field name="prix"/>
+                    <field name="currency_id"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_cq_forfait_form" model="ir.ui.view">
+        <field name="name">coins.quebec.forfait.form</field>
+        <field name="model">coins.quebec.forfait</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                    <group string="Forfait">
+                        <field name="name"/>
+                        <field name="sequence"/>
+                        <field name="palier"/>
+                        <field name="active"/>
+                        <field name="currency_id"/>
+                        <field name="prix"/>
+                        <field name="description"/>
+                    </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_cq_forfait_booking_action" model="ir.actions.act_window">
+        <field name="name">Réservations forfaits</field>
+        <field name="path">cq-forfait-reservations</field>
+        <field name="res_model">coins.quebec.forfait.booking</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_cq_forfait_booking_list" model="ir.ui.view">
+        <field name="name">coins.quebec.forfait.booking.list</field>
+        <field name="model">coins.quebec.forfait.booking</field>
+        <field name="arch" type="xml">
+            <list>
+                    <field name="name"/>
+                    <field name="forfait_id"/>
+                    <field name="partner_id"/>
+                    <field name="service_date"/>
+                    <field name="status"/>
+                    <field name="amount"/>
+                    <field name="currency_id"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_cq_forfait_booking_form" model="ir.ui.view">
+        <field name="name">coins.quebec.forfait.booking.form</field>
+        <field name="model">coins.quebec.forfait.booking</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                    <group string="Réservation">
+                        <field name="name"/>
+                        <field name="forfait_id"/>
+                        <field name="partner_id"/>
+                        <field name="prestataire_id"/>
+                        <field name="service_date"/>
+                        <field name="status"/>
+                        <field name="currency_id"/>
+                        <field name="amount"/>
+                        <field name="notes"/>
+                    </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_cq_forfait_partner_action" model="ir.actions.act_window">
+        <field name="name">Partenaires forfaits</field>
+        <field name="path">cq-forfait-partenaires</field>
+        <field name="res_model">coins.quebec.forfait.partner</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_cq_forfait_partner_list" model="ir.ui.view">
+        <field name="name">coins.quebec.forfait.partner.list</field>
+        <field name="model">coins.quebec.forfait.partner</field>
+        <field name="arch" type="xml">
+            <list>
+                    <field name="name"/>
+                    <field name="city"/>
+                    <field name="verdict"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_cq_forfait_partner_form" model="ir.ui.view">
+        <field name="name">coins.quebec.forfait.partner.form</field>
+        <field name="model">coins.quebec.forfait.partner</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                    <group string="Partenaire">
+                        <field name="name"/>
+                        <field name="partner_id"/>
+                        <field name="phone"/>
+                        <field name="email"/>
+                        <field name="city"/>
+                        <field name="verdict"/>
+                        <field name="active"/>
+                        <field name="notes"/>
+                    </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coins Marocain — Retrouvez-nous</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Jost:wght@400;500;600&display=swap');
+
+  :root {
+    --cream: #faf6ee;
+    --cream-deep: #f2ead9;
+    --ink: #262220;
+    --ink-soft: #55504a;
+    --gold-1: #b5732f;
+    --gold-2: #e6b876;
+    --gold-3: #8a4f22;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+
+  body {
+    font-family: 'Jost', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(circle at 15% 10%, rgba(230,184,118,0.22) 0, transparent 42%),
+      radial-gradient(circle at 90% 85%, rgba(181,115,47,0.14) 0, transparent 46%);
+    pointer-events: none;
+  }
+
+  .card {
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    animation: rise 0.7s ease-out;
+  }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .logo {
+    width: 72%;
+    max-width: 260px;
+    margin: 0 auto 10px;
+    display: block;
+  }
+  .logo img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+  }
+
+  .tagline {
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 36px;
+  }
+
+  .links {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .linkbtn {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 20px;
+    background: #ffffff;
+    border: 1px solid rgba(181,115,47,0.28);
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--ink);
+    font-size: 0.96rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    text-align: left;
+    box-shadow: 0 1px 2px rgba(38,34,32,0.04);
+  }
+
+  .linkbtn:hover, .linkbtn:focus-visible {
+    transform: translateY(-2px);
+    border-color: var(--gold-1);
+    box-shadow: 0 8px 20px rgba(181,115,47,0.16);
+    outline: none;
+  }
+
+  .linkbtn .icon-wrap {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--gold-2), var(--gold-1));
+  }
+  .linkbtn .icon-wrap svg {
+    width: 19px;
+    height: 19px;
+    color: #fff;
+  }
+
+  .linkbtn .label { flex: 1; }
+  .linkbtn .label .primary {
+    display: block;
+    font-weight: 600;
+  }
+  .linkbtn .label .secondary {
+    display: block;
+    font-size: 0.76rem;
+    color: var(--ink-soft);
+    margin-top: 1px;
+  }
+
+  .linkbtn.whatsapp {
+    background: linear-gradient(135deg, var(--gold-1), var(--gold-3));
+    border-color: transparent;
+    color: #fff;
+  }
+  .linkbtn.whatsapp .label .secondary { color: rgba(255,255,255,0.78); }
+  .linkbtn.whatsapp .icon-wrap {
+    background: rgba(255,255,255,0.18);
+  }
+  .linkbtn.whatsapp:hover {
+    box-shadow: 0 10px 24px rgba(138,79,34,0.35);
+  }
+
+  .contact-cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 20px;
+    background: linear-gradient(135deg, var(--gold-2), var(--gold-1));
+    border: none;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #fff;
+    font-size: 0.92rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    margin-bottom: 12px;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    box-shadow: 0 4px 14px rgba(181,115,47,0.28);
+  }
+  .contact-cta:hover, .contact-cta:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(181,115,47,0.34);
+    outline: none;
+  }
+  .contact-cta svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+  .book-cta {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 20px;
+    margin-bottom: 14px;
+    background: #fff;
+    border: 1.5px solid var(--gold-1);
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--ink);
+    font-size: 0.96rem;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    box-shadow: 0 1px 2px rgba(38,34,32,0.04);
+    width: 100%;
+    appearance: none;
+    font-family: inherit;
+  }
+  .book-cta:hover, .book-cta:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(181,115,47,0.18);
+    outline: none;
+  }
+  .book-cta .icon-wrap {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--gold-2), var(--gold-1));
+    color: #fff;
+  }
+  .book-cta .icon-wrap svg { width: 19px; height: 19px; }
+  .book-cta .label { flex: 1; }
+  .book-cta .label .primary {
+    display: block;
+    font-weight: 600;
+  }
+  .book-cta .label .secondary {
+    display: block;
+    font-size: 0.76rem;
+    color: var(--ink-soft);
+    margin-top: 1px;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid rgba(181,115,47,0.22);
+    margin: 22px 0;
+  }
+
+  footer {
+    margin-top: 40px;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card { animation: none; }
+    .linkbtn { transition: none; }
+  }
+</style>
+  <link rel="icon" href="/favicon.ico?v=cm126" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32.png?v=cm126">
+  <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png?v=cm126">
+</head>
+<body>
+
+  <div class="card">
+    <div class="logo">
+      <img src="/assets/img/logo.png?v=3" alt="Coins Marocain" width="260" height="163">
+    </div>
+    <div class="tagline" data-i18n="tagline">Marrakech · Expériences privées</div>
+
+    <a class="contact-cta" href="zakaria-barmaki.vcf" download="Zakaria Barmaki - Coins Marocain.vcf">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg>
+      <span data-i18n="addContact">Ajouter aux contacts</span>
+    </a>
+
+    <button type="button" class="book-cta" id="cmLinksBook" data-planner-interests="piscine,desert,evenements">
+      <span class="icon-wrap" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      </span>
+      <span class="label">
+        <span class="primary" data-i18n="bookTitle">Réserver / planifier</span>
+        <span class="secondary" data-i18n="bookSub">Dates, budget &amp; expérience</span>
+      </span>
+    </button>
+
+    <div class="links">
+      <a class="linkbtn whatsapp" href="https://wa.me/212660159177" target="_blank" rel="noopener">
+        <span class="icon-wrap">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.46 1.32 4.96L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.9-4.45 9.9-9.91 0-2.65-1.03-5.14-2.9-7.01A9.85 9.85 0 0 0 12.04 2zm0 18.1h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.33c0-4.54 3.7-8.24 8.25-8.24 2.2 0 4.27.86 5.83 2.42a8.18 8.18 0 0 1 2.41 5.83c0 4.55-3.7 8.24-8.24 8.24zm4.52-6.17c-.25-.12-1.47-.72-1.7-.81-.23-.08-.4-.12-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.04-.38-1.99-1.22-.73-.66-1.23-1.46-1.37-1.71-.15-.25-.02-.38.11-.51.11-.11.25-.29.37-.44.13-.14.17-.25.25-.41.08-.17.04-.31-.02-.44-.06-.12-.56-1.36-.77-1.86-.2-.48-.41-.42-.56-.43-.14-.01-.31-.01-.48-.01-.16 0-.44.06-.67.31-.23.25-.87.85-.87 2.08 0 1.22.89 2.4 1.01 2.57.13.17 1.76 2.7 4.28 3.78.6.26 1.06.42 1.43.53.6.19 1.14.16 1.57.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.14-1.18-.06-.11-.23-.17-.48-.29z"/></svg>
+        </span>
+        <span class="label">
+          <span class="primary">WhatsApp</span>
+          <span class="secondary" data-i18n="whatsappSub">Écrire à Zakaria directement</span>
+        </span>
+      </a>
+
+      <a class="linkbtn" href="https://coinsmarocain.com" target="_blank" rel="noopener">
+        <span class="icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9.5"/><path d="M2.5 12h19M12 2.5c2.6 2.6 4 6 4 9.5s-1.4 6.9-4 9.5c-2.6-2.6-4-6-4-9.5s1.4-6.9 4-9.5z"/></svg>
+        </span>
+        <span class="label">
+          <span class="primary" data-i18n="siteTitle">Site officiel</span>
+          <span class="secondary">coinsmarocain.com</span>
+        </span>
+      </a>
+
+      <a class="linkbtn" href="https://www.instagram.com/coinsmarocain_" target="_blank" rel="noopener">
+        <span class="icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="0.9" fill="currentColor" stroke="none"/></svg>
+        </span>
+        <span class="label">
+          <span class="primary">Instagram</span>
+          <span class="secondary">@coinsmarocain_</span>
+        </span>
+      </a>
+
+      <a class="linkbtn" href="https://www.facebook.com/people/Coins-Marrakech/61592118442323/" target="_blank" rel="noopener">
+        <span class="icon-wrap">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-7.6h2.55l.38-2.96h-2.93V8.55c0-.86.24-1.44 1.47-1.44h1.57V4.46c-.27-.04-1.2-.12-2.28-.12-2.26 0-3.81 1.38-3.81 3.91v2.19H8v2.96h2.45V21h3.05z"/></svg>
+        </span>
+        <span class="label">
+          <span class="primary">Facebook</span>
+          <span class="secondary" data-i18n="fbSub">Page Coins Marocain</span>
+        </span>
+      </a>
+
+      <a class="linkbtn" href="https://www.linkedin.com/company/coins-marocain" target="_blank" rel="noopener">
+        <span class="icon-wrap">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5C4.98 4.88 3.86 6 2.5 6S.02 4.88.02 3.5 1.14 1 2.5 1s2.48 1.12 2.48 2.5zM.22 8.5h4.56V23H.22V8.5zM8.34 8.5h4.37v1.98h.06c.61-1.15 2.1-2.36 4.32-2.36 4.62 0 5.47 3.04 5.47 7v7.88h-4.56v-7c0-1.67-.03-3.81-2.32-3.81-2.32 0-2.68 1.81-2.68 3.69V23H8.34V8.5z"/></svg>
+        </span>
+        <span class="label">
+          <span class="primary">LinkedIn</span>
+          <span class="secondary" data-i18n="liSub">Coins Marocain</span>
+        </span>
+      </a>
+
+      <hr class="divider">
+
+      <a class="linkbtn" href="https://www.facebook.com/people/Coins-Marrakech/61592118442323?sk=reviews" target="_blank" rel="noopener">
+        <span class="icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385c.117.499-.417.912-.868.65l-4.723-2.885a.563.563 0 0 0-.586 0l-4.723 2.885c-.45.262-.985-.151-.868-.65l1.285-5.385a.563.563 0 0 0-.182-.557l-4.204-3.602c-.38-.325-.178-.948.321-.988l5.518-.442a.563.563 0 0 0 .475-.345l2.125-5.111z"/></svg>
+        </span>
+        <span class="label">
+          <span class="primary" data-i18n="reviewTitle">Laisser un avis</span>
+          <span class="secondary" data-i18n="reviewSub">Votre avis compte pour nous</span>
+        </span>
+      </a>
+    </div>
+
+    <footer data-i18n="footer">Marrakech, Maroc</footer>
+  </div>
+
+<script>
+  (function () {
+    var translations = {
+      fr: {
+        tagline: "Marrakech · Expériences privées",
+        addContact: "Ajouter aux contacts",
+        bookTitle: "Réserver / planifier",
+        bookSub: "Dates, budget & expérience",
+        whatsappSub: "Écrire à Zakaria directement",
+        siteTitle: "Site officiel",
+        fbSub: "Page Coins Marocain",
+        reviewTitle: "Laisser un avis",
+        reviewSub: "Votre avis compte pour nous",
+        footer: "Marrakech, Maroc"
+      },
+      en: {
+        tagline: "Marrakech · Private experiences",
+        addContact: "Add to contacts",
+        bookTitle: "Book / plan stay",
+        bookSub: "Dates, budget & experience",
+        whatsappSub: "Message Zakaria directly",
+        siteTitle: "Official website",
+        fbSub: "Coins Marocain page",
+        reviewTitle: "Leave a review",
+        reviewSub: "Your feedback matters to us",
+        footer: "Marrakech, Morocco"
+      }
+    };
+
+    var browserLang = (navigator.language || navigator.userLanguage || "fr").toLowerCase();
+    var lang = browserLang.indexOf("en") === 0 ? "en" : "fr";
+
+    document.documentElement.setAttribute("lang", lang);
+
+    var dict = translations[lang];
+    document.querySelectorAll("[data-i18n]").forEach(function (el) {
+      var key = el.getAttribute("data-i18n");
+      if (dict[key]) {
+        el.textContent = dict[key];
+      }
+    });
+
+    // Planner séjour (assets + API sur coinsmarocain.com)
+    var bookBtn = document.getElementById("cmLinksBook");
+    if (bookBtn) {
+      var interests = bookBtn.getAttribute("data-planner-interests") || "";
+      if (interests) document.body.setAttribute("data-planner-interests", interests);
+      bookBtn.addEventListener("click", function () {
+        function open() {
+          if (window.CoinsPlanner) window.CoinsPlanner.open();
+        }
+        if (window.CoinsPlanner) {
+          open();
+          return;
+        }
+        if (!document.querySelector('link[href*="cm-planner.css"]')) {
+          var link = document.createElement("link");
+          link.rel = "stylesheet";
+          link.href = "https://coinsmarocain.com/assets/cm-planner.css?v=cm122";
+          document.head.appendChild(link);
+        }
+        var s = document.createElement("script");
+        s.src = "https://coinsmarocain.com/assets/cm-planner.js?v=cm122";
+        s.async = true;
+        s.onload = open;
+        document.head.appendChild(s);
+      });
+    }
+  })();
+</script>
+
+  <script src="/assets/cookies.js?v=cm148" defer></script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_pe_payroll_bulletin" model="ir.actions.report">
+        <field name="name">Bulletin de paie</field>
+        <field name="model">pe.payroll.bulletin</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">people_engine.report_pe_payroll_bulletin</field>
+        <field name="report_file">people_engine.report_pe_payroll_bulletin</field>
+        <field name="print_report_name">'Bulletin_%s_%s' % (object.employee_id.name, object.name)</field>
+    </record>
+
+    <template id="report_pe_payroll_bulletin">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Bulletin de paie</h2>
+                        <p><strong>Employé :</strong> <span t-field="doc.employee_id.name"/></p>
+                        <p><strong>Référence :</strong> <span t-field="doc.name"/></p>
+                        <p><strong>Période :</strong> <span t-field="doc.period_label"/></p>
+                        <p><strong>Date de paiement :</strong> <span t-field="doc.payment_date"/></p>
+                        <table class="table table-sm mt-4">
+                            <tr><td>Salaire de base</td><td class="text-end"><span t-field="doc.salaire_base"/> <span t-field="doc.devise"/></td></tr>
+                            <tr><td>Heures loggées</td><td class="text-end"><span t-field="doc.heures_loggees"/> h</td></tr>
+                            <tr><td>Pauses déduites</td><td class="text-end"><span t-field="doc.heures_pause_deductibles"/> h</td></tr>
+                            <tr><td>Heures nettes</td><td class="text-end"><span t-field="doc.heures_nettes"/> h</td></tr>
+                            <tr><td>Heures sup. +25 %</td><td class="text-end"><span t-field="doc.heures_sup_25"/> h</td></tr>
+                            <tr><td>Heures sup. +50 %</td><td class="text-end"><span t-field="doc.heures_sup_50"/> h</td></tr>
+                            <tr><td>Primes plateau</td><td class="text-end"><span t-field="doc.prime_plateau"/></td></tr>
+                            <tr><td>Primes upsell</td><td class="text-end"><span t-field="doc.prime_upsell"/></td></tr>
+                            <tr><td>Primes conversion</td><td class="text-end"><span t-field="doc.prime_conversion"/></td></tr>
+                            <tr t-if="doc.primes_challenges"><td>Primes challenges</td><td class="text-end"><span t-field="doc.primes_challenges"/></td></tr>
+                            <tr><td>Déductions</td><td class="text-end"><span t-field="doc.deduction_absences"/></td></tr>
+                            <tr t-if="doc.deductions_disciplinaires"><td>Déductions disciplinaires</td><td class="text-end"><span t-field="doc.deductions_disciplinaires"/></td></tr>
+                            <tr t-if="doc.heures_non_reconnues"><td>Heures non reconnues</td><td class="text-end"><span t-field="doc.heures_non_reconnues"/> h</td></tr>
+                            <tr class="fw-bold"><td>Brut</td><td class="text-end"><span t-field="doc.montant_brut"/> <span t-field="doc.devise"/></td></tr>
+                            <tr class="fw-bold"><td>Net estimé</td><td class="text-end"><span t-field="doc.montant_net"/> <span t-field="doc.devise"/></td></tr>
+                        </table>
+                        <t t-if="doc.challenge_line_ids">
+                            <h4 class="mt-4">PRIMES &amp; CHALLENGES</h4>
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Challenge</th>
+                                        <th>Métrique</th>
+                                        <th class="text-end">Valeur</th>
+                                        <th class="text-end">Objectif</th>
+                                        <th class="text-end">%</th>
+                                        <th>Palier</th>
+                                        <th class="text-end">Prime</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="doc.challenge_line_ids" t-as="line">
+                                        <td><span t-field="line.challenge_name"/></td>
+                                        <td><span t-field="line.type_metrique"/></td>
+                                        <td class="text-end"><span t-field="line.valeur_atteinte"/></td>
+                                        <td class="text-end"><span t-field="line.objectif_valeur"/></td>
+                                        <td class="text-end"><span t-field="line.pourcentage"/>%</td>
+                                        <td><span t-field="line.palier_atteint"/></td>
+                                        <td class="text-end"><span t-field="line.montant"/> <span t-field="doc.devise"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </t>
+                        <t t-if="doc.deduction_line_ids">
+                            <h4 class="mt-4">DÉDUCTIONS DISCIPLINAIRES</h4>
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Libellé</th>
+                                        <th>Type</th>
+                                        <th class="text-end">Heures</th>
+                                        <th class="text-end">Jours</th>
+                                        <th class="text-end">Montant</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="doc.deduction_line_ids" t-as="dline">
+                                        <td><span t-field="dline.label"/></td>
+                                        <td><span t-field="dline.type_deduction"/></td>
+                                        <td class="text-end"><span t-field="dline.heures"/></td>
+                                        <td class="text-end"><span t-field="dline.jours"/></td>
+                                        <td class="text-end"><span t-field="dline.montant"/> <span t-field="doc.devise"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </t>
+                        <p class="text-muted small mt-4" t-if="doc.detail_calcul">
+                            <span t-field="doc.detail_calcul"/>
+                        </p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

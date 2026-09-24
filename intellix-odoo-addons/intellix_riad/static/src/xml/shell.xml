@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="intellix_riad.Shell">
+        <aside class="o_riad_sidebar sidebar">
+            <div class="brand">
+                <svg viewBox="0 0 100 100" fill="#EDE6D6">
+                    <path d="M50 8C46 8 43 12 43 18v14c-3-5-6-9-9-11-4-3-9-2-11 2-2 4 0 8 3 11 4 4 8 7 11 9-6-1-12-1-16 1-4 2-5 7-3 11 2 3 7 4 11 3 4-1 8-3 11-6-2 5-3 10-2 15 1 4 5 7 9 6 4-1 6-5 6-9v-1c0 4 2 8 6 9 4 1 8-2 9-6 1-5 0-10-2-15 3 3 7 5 11 6 4 1 9 0 11-3 2-4 1-9-3-11-4-2-10-2-16-1 3-2 7-5 11-9 3-3 5-7 3-11-2-4-7-5-11-2-3 2-6 6-9 11V18c0-6-3-10-7-10z"/>
+                </svg>
+                <div class="brand-text">Module Hébergement<small>IntelliX</small></div>
+            </div>
+            <ul class="o_riad_nav nav">
+                <li><button t-att-class="page === 'dashboard' ? 'active' : ''" t-on-click="() => this.onNav('dashboard')" data-page="dashboard">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg>
+                    <t t-esc="labels.dashboard"/>
+                </button></li>
+                <li><button t-att-class="page === 'channels' ? 'active' : ''" t-on-click="() => this.onNav('channels')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h10M4 17h14"/><circle cx="19" cy="12" r="2"/></svg>
+                    <t t-esc="labels.channels"/>
+                </button></li>
+                <li><button t-att-class="page === 'finance' ? 'active' : ''" t-on-click="() => this.onNav('finance')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V5M4 19h16"/><path d="M8 15v-4M12 15V8M16 15v-6"/></svg>
+                    <t t-esc="labels.finance"/>
+                </button></li>
+                <li><button t-att-class="page === 'whatsapp' ? 'active' : ''" t-on-click="() => this.onNav('whatsapp')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21a9 9 0 1 0-7.8-4.4L3 21l4.5-1.2A8.9 8.9 0 0 0 12 21z"/><path d="M8.5 10.5c.4 2 2 3.6 4 4"/></svg>
+                    <t t-esc="labels.whatsapp"/>
+                </button></li>
+                <li><button t-att-class="page === 'reservations' ? 'active' : ''" t-on-click="() => this.onNav('reservations')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 21V9l8-6 8 6v12"/><path d="M9 21v-6h6v6"/></svg>
+                    <t t-esc="labels.reservations"/>
+                </button></li>
+                <li><button t-att-class="page === 'restaurant' ? 'active' : ''" t-on-click="() => this.onNav('restaurant')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 3v18M4 8h16M4 13h10"/></svg>
+                    <t t-esc="labels.restaurant"/>
+                </button></li>
+                <li><button t-att-class="page === 'wellness' ? 'active' : ''" t-on-click="() => this.onNav('wellness')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.2"/><path d="M5 21c0-4 3-6.5 7-6.5s7 2.5 7 6.5"/></svg>
+                    <t t-esc="labels.wellness"/>
+                </button></li>
+                <li><button t-att-class="page === 'mails' ? 'active' : ''" t-on-click="() => this.onNav('mails')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+                    <t t-esc="labels.mails"/>
+                </button></li>
+                <li><button t-att-class="page === 'social' ? 'active' : ''" t-on-click="() => this.onNav('social')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a3 3 0 1 0-2.8-4M6 8a3 3 0 1 0 2.8-4M18 21a3 3 0 1 0-2.8-4M6 21a3 3 0 1 0 2.8-4M8.6 10.4l6.8-3.6M8.6 13.6l6.8 3.6"/></svg>
+                    <t t-esc="labels.social"/>
+                </button></li>
+                <li><button t-att-class="page === 'events' ? 'active' : ''" t-on-click="() => this.onNav('events')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 10h18M8 15h3"/></svg>
+                    <t t-esc="labels.events"/>
+                </button></li>
+                <li><button t-att-class="page === 'personnel' ? 'active' : ''" t-on-click="() => this.onNav('personnel')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 21c0-4 2.9-6.5 6.5-6.5s6.5 2.5 6.5 6.5"/><path d="M16.5 4.5a3.2 3.2 0 0 1 0 6.4M20 21c0-3.2-1.9-5.4-4.5-6.1"/></svg>
+                    <t t-esc="labels.personnel"/>
+                </button></li>
+                <li><button t-att-class="page === 'settings' ? 'active' : ''" t-on-click="() => this.onNav('settings')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V21a2 2 0 1 1-4 0v-.2a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H3a2 2 0 1 1 0-4h.2a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.6V3a2 2 0 1 1 4 0v.2a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l-.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.6 1H21a2 2 0 1 1 0 4h-.2a1.7 1.7 0 0 0-1.5 1z"/></svg>
+                    <t t-esc="labels.settings"/>
+                </button></li>
+            </ul>
+            <div class="sidebar-foot">
+                <div class="lang-switch">
+                    <button t-att-class="!isEnglish ? 'active' : ''" t-on-click="() => this.setLang('fr_FR')">FR</button>
+                    <button t-att-class="isEnglish ? 'active' : ''" t-on-click="() => this.setLang('en_US')">EN</button>
+                </div>
+                <button class="apps-exit" t-on-click="openAllApps"><t t-esc="labels.allApps"/></button>
+                Module Hébergement v1.0<br/><t t-esc="labels.productLine"/>
+            </div>
+        </aside>
+    </t>
+</templates>

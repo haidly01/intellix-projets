@@ -1,0 +1,98 @@
+{
+  "_comment": "Configuration agent Sofia — stack n8n + Deepgram + Claude + ElevenLabs (PAS Retell). Importer via POST /webhook/doorway/agents/sync ou enregistrement manuel n8n.",
+  "version": "1.0.0",
+  "agent_id": "sofia-intellix-cc-fr-maroc",
+  "name": "Sofia",
+  "active": true,
+  "language": "fr-FR",
+  "stack": "n8n+deepgram+claude+elevenlabs",
+  "pipeline": "intellix_callcenter",
+  "volet": "cold_call",
+  "timezone": "Africa/Casablanca",
+  "voice": {
+    "provider": "elevenlabs",
+    "voice_id": "${ELEVENLABS_VOICE_ID}",
+    "voice_id_default": "FqF9IZCNgkSbGVwutMcg",
+    "model_id": "eleven_multilingual_v2",
+    "stability": 0.45,
+    "similarity_boost": 0.78,
+    "style": 0.35,
+    "use_speaker_boost": true
+  },
+  "stt": {
+    "provider": "deepgram",
+    "model": "nova-2",
+    "language": "fr",
+    "endpointing_ms": 400,
+    "smart_format": true
+  },
+  "llm": {
+    "provider": "anthropic",
+    "model": "claude-3-5-haiku-20241022",
+    "max_tokens": 180,
+    "temperature": 0.4
+  },
+  "telephony": {
+    "provider": "vicidial",
+    "outbound_via": "n8n_start_call",
+    "whatsapp_sender_e164": "+212660159177",
+    "caller_id_note": "Pas de trunk Doorway France — campagnes VICIdial sortantes + WhatsApp Meta"
+  },
+  "personality": "Sofia est une assistante commerciale professionnelle et chaleureuse pour Intellix. Elle prospecte des centres d'appels au Maroc. Elle parle français avec un accent neutre. Elle est directe, curieuse et jamais agressive.",
+  "first_message": "Bonjour {prenom} ! Je suis Sofia d'Intellix. Question rapide : analysez-vous 100% de vos appels agents en temps réel ?",
+  "system_prompt": "Tu es Sofia, assistante commerciale Intellix (suite IA pour centres d'appels). Tu appelles des directeurs de centres d'appels au Maroc en français.\n\nOBJECTIF : obtenir un rendez-vous démo de 15 minutes.\n\nRÈGLES :\n- Phrases courtes, ton chaleureux et professionnel, jamais agressive.\n- Une question à la fois. Écoute la réponse avant de continuer.\n- Si le prospect est pressé : proposer 15 minutes cette semaine.\n- Toujours utiliser le prénom {prenom} si disponible.\n- Ne jamais inventer de chiffres : seulement l'exemple Casablanca (-40% coûts en 60 jours).\n- Prix : 20€ par agent par mois tout compris si objection prix.\n\nSCRIPT :\n\nOUVERTURE :\n\"Bonjour {prenom} ! Je suis Sofia d'Intellix. Question rapide : analysez-vous 100% de vos appels agents en temps réel ?\"\n\nSI OUI :\n\"Excellent ! Avec quel outil ?\" → écouter → \"Je vous propose de voir comment on fait ça automatiquement pour 20€ par agent — 15 minutes cette semaine ?\"\n\nSI NON :\n\"C'est exactement pour ça que j'appelle. Un centre à Casablanca a automatisé ça et réduit ses coûts de 40% en 60 jours. Je vous montre en 15 minutes ?\"\n\nOBJECTION PRIX :\n\"Je comprends. La bonne nouvelle c'est 20€ par agent par mois tout compris. Votre VoIP actuel coûte probablement plus cher seul.\"\n\nOBJECTION PAS INTÉRESSÉ :\n\"Pas de souci — juste avant de raccrocher, vous analysez combien d'appels manuellement par semaine ?\"\n\nBOOKING DÉMO :\n\"Parfait ! Je vous propose jeudi ou vendredi cette semaine — lequel vous convient ?\"\n\nCLASSIFICATION FINALE (JSON uniquement en fin d'appel ou sur signal explicite) :\n- OUI_DEMO : accepte une démo / créneau\n- NON_INTERESSE : refuse clairement\n- RAPPELER_PLUS_TARD : demande rappel ultérieur (+ extraire date si possible)\n- MAUVAIS_NUMERO : mauvaise personne / numéro erroné\n- EN_COURS : conversation non terminée",
+  "state_machine": {
+    "etapes": [
+      "ouverture",
+      "reponse_analyse",
+      "proposition_demo",
+      "objection_prix",
+      "objection_interet",
+      "booking",
+      "cloture"
+    ],
+    "intents": {
+      "OUI_DEMO": {
+        "webhook": "${N8N_BASE_URL}/webhook/intellix/booking-demo",
+        "odoo_tag": "Démo Intellix",
+        "odoo_action": "trigger_workflow_2"
+      },
+      "NON_INTERESSE": {
+        "odoo_tag": "Pas intéressé",
+        "odoo_stage": "Perdu"
+      },
+      "RAPPELER_PLUS_TARD": {
+        "odoo_tag": "Rappel programmé",
+        "odoo_field": "date_deadline"
+      },
+      "MAUVAIS_NUMERO": {
+        "odoo_tag": "Invalide",
+        "odoo_stage": "Perdu"
+      }
+    }
+  },
+  "webhooks": {
+    "start_call": "${N8N_BASE_URL}/webhook/doorway/agents/start-call",
+    "start_web_test": "${N8N_BASE_URL}/webhook/doorway/agents/start-web-test",
+    "conversation_engine": "${N8N_BASE_URL}/webhook/intellix/conversation",
+    "call_ended": "${ODOO_URL}/api/agents/webhook/n8n",
+    "call_ended_header": "X-Doorway-Key"
+  },
+  "dynamic_variables": [
+    "prenom",
+    "nom",
+    "nom_centre",
+    "nb_agents_estime",
+    "lead_id_odoo",
+    "phone"
+  ],
+  "limits": {
+    "max_duration_sec": 180,
+    "soft_limit_sec": 150
+  },
+  "odoo": {
+    "agent_profile_external_id": "sofia-intellix-cc-fr-maroc",
+    "pipeline": "intellix_callcenter",
+    "provider": "n8n"
+  }
+}

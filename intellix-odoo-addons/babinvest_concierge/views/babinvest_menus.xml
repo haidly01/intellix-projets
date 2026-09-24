@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_babinvest_root" name="Bab Invest" sequence="40"
+              groups="babinvest_concierge.group_babinvest_user"/>
+
+    <menuitem id="menu_babinvest_leads" name="Leads" parent="menu_babinvest_root"
+              action="action_babinvest_concierge_lead" sequence="10"/>
+    <menuitem id="menu_babinvest_visits" name="Visites" parent="menu_babinvest_root"
+              action="action_babinvest_concierge_visit" sequence="20"/>
+    <menuitem id="menu_babinvest_interactions" name="Interactions" parent="menu_babinvest_root"
+              action="action_babinvest_concierge_interaction" sequence="30"/>
+
+    <menuitem id="menu_babinvest_config" name="Configuration" parent="menu_babinvest_root"
+              sequence="90" groups="babinvest_concierge.group_babinvest_manager"/>
+    <menuitem id="menu_babinvest_markets" name="Marchés" parent="menu_babinvest_config"
+              action="action_babinvest_market" sequence="10"/>
+    <menuitem id="menu_babinvest_projects" name="Projets" parent="menu_babinvest_config"
+              action="action_babinvest_project" sequence="20"/>
+    <menuitem id="menu_babinvest_message_templates" name="Gabarits de relance" parent="menu_babinvest_config"
+              action="action_babinvest_message_template" sequence="30"/>
+</odoo>

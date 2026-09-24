@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_payslip_ma">
+        <t t-call="web.external_layout">
+            <t t-foreach="docs" t-as="o">
+                <div class="page">
+                    <h2>Bulletin de paie — Maroc</h2>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <strong>Société :</strong> <span t-field="o.company_id.name"/><br/>
+                            <strong>Employé :</strong> <span t-field="o.employee_id.name"/><br/>
+                            <strong>CIN :</strong> <span t-field="o.cin_number"/><br/>
+                            <strong>N° CNSS :</strong> <span t-field="o.cnss_number"/>
+                        </div>
+                        <div class="col-6 text-end">
+                            <strong>Référence :</strong> <span t-field="o.name"/><br/>
+                            <strong>Période :</strong> <span t-field="o.period_label"/><br/>
+                            <strong>Structure :</strong> <span t-field="o.structure_id.name"/>
+                        </div>
+                    </div>
+
+                    <h4>Gains</h4>
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Libellé</th>
+                                <th class="text-end">Base</th>
+                                <th class="text-end">Taux</th>
+                                <th class="text-end">Montant</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="o.line_ids.filtered(lambda l: l.category == 'gain' and l.appears_on_payslip)" t-as="line">
+                                <tr>
+                                    <td><span t-field="line.name"/></td>
+                                    <td class="text-end"><span t-field="line.base_amount"/></td>
+                                    <td class="text-end"><span t-field="line.rate"/> %</td>
+                                    <td class="text-end"><span t-field="line.amount"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+
+                    <h4>Retenues salariales</h4>
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Libellé</th>
+                                <th class="text-end">Base</th>
+                                <th class="text-end">Taux</th>
+                                <th class="text-end">Montant</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="o.line_ids.filtered(lambda l: l.category == 'retenue_salariale' and l.appears_on_payslip)" t-as="line">
+                                <tr>
+                                    <td><span t-field="line.name"/></td>
+                                    <td class="text-end"><span t-field="line.base_amount"/></td>
+                                    <td class="text-end"><span t-field="line.rate"/> %</td>
+                                    <td class="text-end"><span t-field="line.amount"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+
+                    <h4>Charges patronales</h4>
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Libellé</th>
+                                <th class="text-end">Base</th>
+                                <th class="text-end">Taux</th>
+                                <th class="text-end">Montant employeur</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="o.line_ids.filtered(lambda l: l.category == 'charge_patronale' and l.appears_on_payslip)" t-as="line">
+                                <tr>
+                                    <td><span t-field="line.name"/></td>
+                                    <td class="text-end"><span t-field="line.base_amount"/></td>
+                                    <td class="text-end"><span t-field="line.rate"/> %</td>
+                                    <td class="text-end"><span t-field="line.employer_amount"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+
+                    <div class="row mt-4">
+                        <div class="col-6">
+                            <strong>Salaire brut :</strong> <span t-field="o.gross_salary"/> MAD
+                        </div>
+                        <div class="col-6 text-end">
+                            <h4><strong>Net à payer :</strong> <span t-field="o.net_salary"/> MAD</h4>
+                        </div>
+                    </div>
+
+                    <p class="text-muted mt-4" style="font-size: 10px;">
+                        Taux indicatifs — document généré par IntelliX RH Paie Maroc.
+                        La paie Canada est gérée séparément (module intellix_hr_payroll_ca).
+                    </p>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

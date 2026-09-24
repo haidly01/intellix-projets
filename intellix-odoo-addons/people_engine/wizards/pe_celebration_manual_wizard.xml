@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pe_celebration_manual_wizard_form" model="ir.ui.view">
+        <field name="name">pe.celebration.manual.wizard.form</field>
+        <field name="model">pe.celebration.manual.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Féliciter">
+                <group>
+                    <field name="from_profile" invisible="1"/>
+                    <field name="profile_id" invisible="1"/>
+                    <field name="employee_id"
+                           readonly="from_profile"
+                           options="{'no_create': True, 'no_open': True}"/>
+                    <field name="template_id"
+                           placeholder="Optionnel — pré-remplit votre message"/>
+                    <field name="subject" placeholder="Ex. : Bravo pour vos résultats !"/>
+                    <field name="message"
+                           widget="html"
+                           placeholder="Rédigez ici votre message de félicitation…"/>
+                    <field name="occasion_date"/>
+                    <field name="send_employee_email"/>
+                    <field name="send_team_email"
+                           invisible="from_profile"/>
+                    <field name="detail"
+                           invisible="message or from_profile"
+                           placeholder="Message libre pour performance ou occasion personnalisée…"/>
+                    <field name="force_resend"
+                           invisible="from_profile"/>
+                </group>
+                <footer>
+                    <button name="action_send_celebration" type="object"
+                            string="Envoyer la félicitation" class="btn-primary"/>
+                    <button string="Annuler" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_pe_celebration_manual_wizard" model="ir.actions.act_window">
+        <field name="name">Féliciter</field>
+        <field name="res_model">pe.celebration.manual.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

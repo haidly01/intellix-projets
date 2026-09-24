@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Nettoyage des règles de démo précédentes (exécuté à chaque upgrade) -->
+    <function model="crm.lead" name="_doorway_cleanup_legacy_automation_rules"/>
+
+    <data noupdate="1">
+
+        <!-- Règle 1 : Alerte lead sans activité depuis 3 jours -->
+        <record id="automation_lead_no_activity" model="base.automation">
+            <field name="name">Lead sans activité — Alerte 3 jours</field>
+            <field name="model_id" ref="crm.model_crm_lead"/>
+            <field name="trigger">on_time_updated</field>
+            <field name="trg_date_id" ref="crm.field_crm_lead__write_date"/>
+            <field name="trg_date_range">3</field>
+            <field name="trg_date_range_type">day</field>
+            <field name="trg_date_range_mode">after</field>
+            <field name="filter_domain">[('active', '=', True), ('stage_id.is_won', '=', False)]</field>
+            <field name="active" eval="False"/>
+        </record>
+        <record id="automation_lead_no_activity_action" model="ir.actions.server">
+            <field name="name">Créer activité relance</field>
+            <field name="model_id" ref="crm.model_crm_lead"/>
+            <field name="usage">base_automation</field>
+            <field name="base_automation_id" ref="automation_lead_no_activity"/>
+            <field name="state">next_activity</field>
+            <field name="activity_type_id" ref="mail.mail_activity_data_todo"/>
+            <field name="activity_summary">Relancer ce lead — inactif depuis 3 jours</field>
+            <field name="activity_date_deadline_range">1</field>
+            <field name="activity_date_deadline_range_type">days</field>
+            <field name="activity_user_type">generic</field>
+            <field name="activity_user_field_name">user_id</field>
+        </record>
+
+        <!-- Règle 2 : Notification lead qualifié → pipeline Rénovation -->
+        <record id="automation_lead_qualified_renovation" model="base.automation">
+            <field name="name">Rénovation — Lead qualifié → notifier</field>
+            <field name="model_id" ref="crm.model_crm_lead"/>
+            <field name="trigger">on_stage_set</field>
+            <field name="trg_field_ref" ref="renovation_conciergerie.crm_stage_renovation_qualified"/>
+            <field name="filter_domain">[('is_renovation_pipeline', '=', True)]</field>
+            <field name="filter_pre_domain">[('stage_id.name', '!=', 'Qualification')]</field>
+            <field name="active" eval="False"/>
+        </record>
+        <record id="automation_lead_qualified_renovation_action" model="ir.actions.server">
+            <field name="name">Notifier le vendeur — lead qualifié</field>
+            <field name="model_id" ref="crm.model_crm_lead"/>
+            <field name="usage">base_automation</field>
+            <field name="base_automation_id" ref="automation_lead_qualified_renovation"/>
+            <field name="state">code</field>
+            <field name="code"><![CDATA[
+for lead in records:
+    if not lead.user_id:
+        continue
+    lead.message_post(
+        body="Lead qualifié dans le pipeline Rénovation : %s" % (lead.display_name,),
+        message_type="notification",
+        partner_ids=lead.user_id.partner_id.ids,
+    )
+]]></field>
+        </record>
+
+        <!-- Règle 3 : Lead Driven éligible → passer en Qualification -->
+        <record id="automation_driven_eligible" model="base.automation">
+            <field name="name">Driven — Éligible → passer Qualification</field>
+            <field name="model_id" ref="crm.model_crm_lead"/>
+            <field name="trigger">on_create_or_write</field>
+            <field name="trigger_field_ids" eval="[(6, 0, [ref('renovation_conciergerie.field_crm_lead__driven_eligible')])]"/>
+            <field name="filter_domain" eval="[
+                ('driven_eligible', '=', True),
+                ('is_driven_pipeline', '=', True),
+                ('stage_id', '!=', ref('renovation_conciergerie.crm_stage_driven_qualified')),
+            ]"/>
+            <field name="active" eval="False"/>
+        </record>
+        <record id="automation_driven_eligible_action" model="ir.actions.server">
+            <field name="name">Passer l'étape Qualification</field>
+            <field name="model_id" ref="crm.model_crm_lead"/>
+            <field name="usage">base_automation</field>
+            <field name="base_automation_id" ref="automation_driven_eligible"/>
+            <field name="state">object_write</field>
+            <field name="update_path">stage_id</field>
+            <field name="evaluation_type">value</field>
+            <field name="resource_ref" eval="'crm.stage,%d' % ref('renovation_conciergerie.crm_stage_driven_qualified')"/>
+        </record>
+
+        <!-- Règle 4 : Nouveau lead → activité bienvenue -->
+        <record id="automation_lead_assign_team" model="base.automation">
+            <field name="name">Nouveau lead → activité bienvenue</field>
+            <field name="model_id" ref="crm.model_crm_lead"/>
+            <field name="trigger">on_create</field>
+            <field name="filter_domain">[('stage_id.sequence', '=', 1)]</field>
+            <field name="active" eval="False"/>
+        </record>
+        <record id="automation_lead_assign_team_action" model="ir.actions.server">
+            <field name="name">Créer activité bienvenue</field>
+            <field name="model_id" ref="crm.model_crm_lead"/>
+            <field name="usage">base_automation</field>
+            <field name="base_automation_id" ref="automation_lead_assign_team"/>
+            <field name="state">next_activity</field>
+            <field name="activity_type_id" ref="mail.mail_activity_data_todo"/>
+            <field name="activity_summary">Bienvenue — premier contact avec le lead</field>
+            <field name="activity_note"><![CDATA[<p>Nouveau lead à la première étape du pipeline.</p>]]></field>
+            <field name="activity_date_deadline_range">1</field>
+            <field name="activity_date_deadline_range_type">days</field>
+            <field name="activity_user_type">generic</field>
+            <field name="activity_user_field_name">user_id</field>
+        </record>
+
+    </data>
+</odoo>

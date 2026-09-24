@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="doorway_agents_dashboard.PerformanceDashboard">
+        <div class="ix-performance-dashboard o_action o_intellix_client_action">
+
+            <t t-if="state.view === 'list'">
+                <header class="ix-perf-header">
+                    <div>
+                        <h1>Performance IA</h1>
+                        <p>Analysez vos agents, identifiez les faiblesses et améliorez les prompts.</p>
+                    </div>
+                </header>
+                <div class="ix-perf-filters">
+                    <select t-on-change="(e) => setFilter('pipeline', e.target.value)">
+                        <option value="">Tous pipelines</option>
+                        <t t-foreach="state.pipelines" t-as="p" t-key="p.value">
+                            <option t-att-value="p.value" t-esc="p.label"/>
+                        </t>
+                    </select>
+                    <select t-on-change="(e) => setFilter('campaign_id', e.target.value)">
+                        <option value="">Toutes campagnes</option>
+                        <t t-foreach="state.campaigns" t-as="c" t-key="c.id">
+                            <option t-att-value="c.id" t-esc="c.name"/>
+                        </t>
+                    </select>
+                    <select t-on-change="(e) => setFilter('agent_type', e.target.value)">
+                        <option value="">Tous types</option>
+                        <option value="inbound">Inbound</option>
+                        <option value="outbound">Outbound</option>
+                        <option value="followup">Followup</option>
+                    </select>
+                    <select t-on-change="(e) => setFilter('language', e.target.value)">
+                        <option value="">Toutes langues</option>
+                        <t t-foreach="state.languages" t-as="lang" t-key="lang.value">
+                            <option t-att-value="lang.value" t-esc="lang.label"/>
+                        </t>
+                    </select>
+                    <select t-on-change="(e) => setFilter('period_days', parseInt(e.target.value))">
+                        <option value="7">7 jours</option>
+                        <option value="30">30 jours</option>
+                    </select>
+                </div>
+                <t t-if="state.loading">
+                    <div class="ix-perf-loading"><i class="fa fa-spinner fa-spin"/> Chargement…</div>
+                </t>
+                <t t-elif="!state.agents.length">
+                    <p class="ix-perf-loading">Aucun agent ne correspond aux filtres sélectionnés.</p>
+                </t>
+                <t t-else="">
+                    <div class="ix-perf-grid">
+                        <t t-foreach="state.agents" t-as="agent" t-key="agent.id">
+                            <article class="ix-perf-card" t-on-click="() => openAgent(agent.id)">
+                                <div class="ix-perf-card__top">
+                                    <h3 t-esc="agent.name"/>
+                                    <span class="ix-perf-score"><t t-esc="agent.score"/>/100</span>
+                                </div>
+                                <div class="ix-perf-card__badges">
+                                    <span class="ix-perf-badge" t-esc="agent.pipeline_label"/>
+                                    <span class="ix-perf-badge ix-perf-badge--muted" t-esc="agent.language_label || agent.agent_type_label"/>
+                                </div>
+                                <div class="ix-perf-card__kpi-grid">
+                                    <div class="ix-perf-card__kpi">
+                                        <strong t-esc="agent.appels_7j"/>
+                                        <span>Appels 7j</span>
+                                    </div>
+                                    <div class="ix-perf-card__kpi">
+                                        <strong><t t-esc="agent.taux_decroches"/>%</strong>
+                                        <span>Décroché</span>
+                                    </div>
+                                    <div class="ix-perf-card__kpi">
+                                        <strong><t t-esc="agent.taux_conversion"/>%</strong>
+                                        <span>Conversion</span>
+                                    </div>
+                                    <div class="ix-perf-card__kpi">
+                                        <strong t-esc="agent.leads_qualifies_30j"/>
+                                        <span>Leads 30j</span>
+                                    </div>
+                                    <div class="ix-perf-card__kpi">
+                                        <strong><t t-esc="agent.score"/>/100</strong>
+                                        <span>Score IA</span>
+                                    </div>
+                                    <div class="ix-perf-card__kpi">
+                                        <strong><t t-esc="agent.cout_par_lead"/>€</strong>
+                                        <span>€/lead</span>
+                                    </div>
+                                </div>
+                                <div t-att-class="'ix-perf-trend ' + trendMeta(agent.trend).cls">
+                                    <i t-att-class="'fa ' + trendMeta(agent.trend).icon"/>
+                                    <t t-if="agent.trend === 'up'"> +<t t-esc="agent.trend_delta"/> pts</t>
+                                    <t t-elif="agent.trend === 'down'"> -<t t-esc="agent.trend_delta"/> pts</t>
+                                    <t t-else=""> Stable</t>
+                                </div>
+                                <span class="ix-perf-card__calls">
+                                    <t t-esc="agent.nb_campagnes_actives"/> campagne(s) · <t t-esc="agent.total_calls"/> appels
+                                </span>
+                            </article>
+                        </t>
+                    </div>
+                </t>
+            </t>
+
+            <t t-if="state.view === 'detail' and state.loading">
+                <div class="ix-perf-loading"><i class="fa fa-spinner fa-spin"/> Chargement de l'agent…</div>
+            </t>
+
+            <t t-if="state.view === 'detail' and !state.loading and state.detailError">
+                <header class="ix-perf-header">
+                    <button type="button" class="ix-perf-btn ix-perf-btn--ghost" t-on-click="backToList">
+                        <i class="fa fa-arrow-left"/> Retour
+                    </button>
+                    <div>
+                        <h1>Performance IA</h1>
+                        <p class="ix-perf-error">Impossible d'afficher le détail de l'agent.</p>
+                    </div>
+                </header>
+                <div class="ix-perf-error-panel">
+                    <p t-esc="state.detailError"/>
+                    <button type="button" class="ix-perf-btn ix-perf-btn--secondary"
+                            t-on-click="loadDetail">
+                        <i class="fa fa-refresh"/> Réessayer
+                    </button>
+                </div>
+            </t>
+
+            <t t-if="state.view === 'detail' and state.detail">
+                <header class="ix-perf-header">
+                    <button type="button" class="ix-perf-btn ix-perf-btn--ghost" t-on-click="backToList">
+                        <i class="fa fa-arrow-left"/> Retour
+                    </button>
+                    <div>
+                        <h1 t-esc="state.detail.agent.name"/>
+                        <p>
+                            <span t-esc="state.detail.agent.pipeline_label"/> ·
+                            Score <strong t-esc="state.detail.agent.score"/>/100
+                        </p>
+                    </div>
+                    <div class="ix-perf-period">
+                        <button type="button" t-att-class="state.periodDays === 7 ? 'active' : ''"
+                                t-on-click="() => setPeriod(7)">7j</button>
+                        <button type="button" t-att-class="state.periodDays === 30 ? 'active' : ''"
+                                t-on-click="() => setPeriod(30)">30j</button>
+                    </div>
+                </header>
+
+                <section class="ix-perf-section" t-if="state.detail.production_kpis">
+                    <h2>KPIs production</h2>
+                    <div class="ix-perf-sat-grid">
+                        <article>
+                            <span>Appels 30j</span>
+                            <strong t-esc="state.detail.production_kpis.appels_30j"/>
+                        </article>
+                        <article>
+                            <span>Décroché</span>
+                            <strong><t t-esc="state.detail.production_kpis.taux_decroches"/>%</strong>
+                        </article>
+                        <article>
+                            <span>Conversion</span>
+                            <strong><t t-esc="state.detail.production_kpis.taux_conversion"/>%</strong>
+                        </article>
+                        <article>
+                            <span>Leads qualifiés</span>
+                            <strong t-esc="state.detail.production_kpis.leads_qualifies"/>
+                        </article>
+                        <article>
+                            <span>Coût total</span>
+                            <strong><t t-esc="state.detail.production_kpis.cout_total_eur"/> €</strong>
+                        </article>
+                        <article>
+                            <span>€ / lead</span>
+                            <strong><t t-esc="state.detail.production_kpis.cout_par_lead"/> €</strong>
+                        </article>
+                    </div>
+                </section>
+
+                <section class="ix-perf-section">
+                    <h2>Score qualité</h2>
+                    <div class="ix-perf-metrics">
+                        <t t-foreach="[
+                            ['clarte', 'Clarté du message'],
+                            ['objections', 'Gestion des objections'],
+                            ['qualification', 'Qualification du lead'],
+                            ['script', 'Respect du script'],
+                            ['conversion', 'Taux de conversion']
+                        ]" t-as="m" t-key="m[0]">
+                            <div class="ix-perf-metric">
+                                <div class="ix-perf-metric__head">
+                                    <span t-esc="m[1]"/>
+                                    <strong><t t-esc="state.detail.metrics[m[0]]"/>/20</strong>
+                                </div>
+                                <div class="ix-perf-metric__bar">
+                                    <div class="ix-perf-metric__fill"
+                                         t-att-style="'width:' + metricPct(state.detail.metrics[m[0]]) + '%'"/>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </section>
+
+                <section class="ix-perf-section ix-perf-satisfaction">
+                    <h2>Satisfaction client</h2>
+                    <div class="ix-perf-sat-grid">
+                        <article>
+                            <span>CSAT moyen</span>
+                            <strong><t t-esc="state.detail.satisfaction.csat"/>/5</strong>
+                        </article>
+                        <article>
+                            <span>Durée moyenne</span>
+                            <strong><t t-esc="state.detail.satisfaction.avg_duration_sec"/>s</strong>
+                        </article>
+                        <article>
+                            <span>Raccrochage &lt;30s</span>
+                            <strong><t t-esc="state.detail.satisfaction.early_hangup_rate"/>%</strong>
+                        </article>
+                    </div>
+                    <div class="ix-perf-sentiments">
+                        <t t-foreach="[
+                            ['positif', 'Positif'],
+                            ['neutre', 'Neutre'],
+                            ['négatif', 'Négatif']
+                        ]" t-as="s" t-key="s[0]">
+                            <span t-att-class="'ix-perf-sent ' + sentimentClass(s[0])">
+                                <t t-esc="s[1]"/>: <t t-esc="state.detail.satisfaction.sentiments[s[0]] || 0"/>
+                            </span>
+                        </t>
+                    </div>
+                </section>
+
+                <section class="ix-perf-section">
+                    <h2>Analyse des appels</h2>
+                    <div class="ix-perf-calls">
+                        <t t-foreach="state.detail.calls" t-as="call" t-key="call.id">
+                            <div class="ix-perf-call">
+                                <div class="ix-perf-call__row" t-on-click="() => toggleCallExpand(call.id)">
+                                    <span t-esc="call.date"/>
+                                    <span t-esc="call.duration + 's'"/>
+                                    <span t-esc="call.status"/>
+                                    <span class="ix-perf-call__score" t-esc="roundScore(call.score)"/>
+                                    <span t-att-class="'ix-perf-sent ' + sentimentClass(call.sentiment)"
+                                          t-esc="call.sentiment"/>
+                                    <span class="ix-perf-call__tags">
+                                        <t t-foreach="call.tags" t-as="tag" t-key="tag">
+                                            <em t-esc="tag"/>
+                                        </t>
+                                    </span>
+                                </div>
+                                <t t-if="state.expandedCall === call.id">
+                                    <pre class="ix-perf-transcript" t-esc="call.transcript || call.note || '—'"/>
+                                </t>
+                            </div>
+                        </t>
+                    </div>
+                    <div class="ix-perf-pagination" t-if="state.detail.pagination">
+                        <button type="button" t-on-click="() => changeCallPage(-1)">Précédent</button>
+                        <span><t t-esc="state.detail.pagination.page"/> / <t t-esc="state.detail.pagination.pages"/></span>
+                        <button type="button" t-on-click="() => changeCallPage(1)">Suivant</button>
+                    </div>
+                </section>
+
+                <section class="ix-perf-section">
+                    <div class="ix-perf-section__head">
+                        <h2>Points faibles détectés</h2>
+                        <button type="button" class="ix-perf-btn ix-perf-btn--secondary"
+                                t-att-disabled="state.analyzing"
+                                t-on-click="runAnalysis">
+                            <i class="fa fa-refresh"/> Analyser avec Claude
+                        </button>
+                    </div>
+                    <t t-if="state.detail.analysis_at">
+                        <p class="ix-perf-muted">Dernière analyse : <t t-esc="state.detail.analysis_at"/></p>
+                    </t>
+                    <div class="ix-perf-weaknesses">
+                        <t t-foreach="state.detail.weaknesses" t-as="w" t-key="w_index">
+                            <article class="ix-perf-weakness">
+                                <h4 t-esc="w.title"/>
+                                <blockquote t-esc="w.verbatim"/>
+                                <span t-if="w.frequency" t-esc="w.frequency + '% des appels'"/>
+                            </article>
+                        </t>
+                        <t t-if="!state.detail.weaknesses.length">
+                            <p class="ix-perf-muted">Lancez une analyse Claude pour détecter les patterns.</p>
+                        </t>
+                    </div>
+                </section>
+
+                <section class="ix-perf-section" t-if="state.detail.feedbacks and state.detail.feedbacks.length">
+                    <h2>Retours utilisateurs (tests web)</h2>
+                    <p class="ix-perf-muted" t-if="state.detail.user_csat and state.detail.user_csat.count">
+                        CSAT superviseur : <strong t-esc="state.detail.user_csat.avg"/>/5
+                        (<t t-esc="state.detail.user_csat.count"/> retours)
+                    </p>
+                    <div class="ix-perf-feedbacks">
+                        <t t-foreach="state.detail.feedbacks" t-as="fb" t-key="fb.id">
+                            <article class="ix-perf-feedback">
+                                <div class="ix-perf-feedback__head">
+                                    <span t-esc="fb.date"/>
+                                    <span class="ix-perf-feedback__rating">
+                                        <t t-foreach="[1,2,3,4,5]" t-as="s" t-key="s">
+                                            <i t-att-class="'fa fa-star' + (fb.rating >= s ? '' : '-o')"/>
+                                        </t>
+                                    </span>
+                                    <span class="ix-perf-muted" t-esc="fb.user"/>
+                                </div>
+                                <p t-esc="fb.comment"/>
+                                <div class="ix-perf-call__tags" t-if="fb.issues and fb.issues.length">
+                                    <t t-foreach="fb.issues" t-as="tag" t-key="tag">
+                                        <em t-esc="tag"/>
+                                    </t>
+                                </div>
+                                <t t-if="fb.ai_suggestions and fb.ai_suggestions.length">
+                                    <ul class="ix-perf-feedback__suggestions">
+                                        <t t-foreach="fb.ai_suggestions" t-as="sug" t-key="sug_index">
+                                            <li t-esc="sug"/>
+                                        </t>
+                                    </ul>
+                                </t>
+                            </article>
+                        </t>
+                    </div>
+                </section>
+
+                <section class="ix-perf-section ix-perf-suggestions">
+                    <h2>Suggestions d'amélioration du prompt</h2>
+                    <ul>
+                        <t t-foreach="state.detail.prompt_suggestions" t-as="sug" t-key="sug_index">
+                            <li t-esc="sug"/>
+                        </t>
+                    </ul>
+                    <button type="button" class="ix-perf-btn ix-perf-btn--primary"
+                            t-att-disabled="!state.detail.prompt_suggestions.length"
+                            t-on-click="applySuggestions">
+                        Appliquer au prompt
+                    </button>
+                </section>
+            </t>
+        </div>
+    </t>
+</templates>

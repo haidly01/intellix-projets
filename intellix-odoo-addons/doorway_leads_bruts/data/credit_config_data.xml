@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="credit_config_default" model="doorway.credit.config">
+        <field name="name">Configuration crédits Extracteur</field>
+        <field name="marge_defaut_pct">40</field>
+        <field name="marge_premium_pct">60</field>
+        <field name="prix_credit_vente">0.10</field>
+        <field name="prix_credit_revient">0.06</field>
+        <field name="mode_commercial" eval="True"/>
+        <field name="devise">eur</field>
+        <field name="credit_nettoyage_ia">0.005</field>
+        <field name="credit_import_odoo">0.001</field>
+        <field name="tva_pct">20</field>
+    </record>
+</odoo>

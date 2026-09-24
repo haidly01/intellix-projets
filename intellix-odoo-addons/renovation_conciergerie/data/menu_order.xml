@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Ordre de base (surchargé par people_engine/data/intellix_app_menu_order.xml) -->
+    <record id="crm.crm_menu_root" model="ir.ui.menu">
+        <field name="name">CRM</field>
+        <field name="sequence">20</field>
+    </record>
+    <record id="spreadsheet_dashboard.spreadsheet_dashboard_menu_root" model="ir.ui.menu">
+        <field name="sequence">90</field>
+    </record>
+    <record id="renovation_conciergerie.menu_renovation_root" model="ir.ui.menu">
+        <field name="sequence">98</field>
+    </record>
+    <record id="sale.sale_menu_root" model="ir.ui.menu">
+        <field name="sequence">91</field>
+    </record>
+</odoo>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_crm_lead_coaching_inherit" model="ir.ui.view">
+        <field name="name">crm.lead.form.coaching.inherit</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="doorway_vicidial_campaigns.view_crm_lead_vicidial_qualification_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Appels &amp; coaching" name="appels_coaching">
+                    <group>
+                        <group>
+                            <field name="call_log_count" readonly="1"/>
+                            <field name="coaching_call_count" readonly="1"/>
+                            <field name="last_call_date" readonly="1"/>
+                        </group>
+                        <group>
+                            <button name="action_play_last_recording" type="object"
+                                    string="Écouter dernier enregistrement"
+                                    class="btn-primary"
+                                    invisible="call_log_count == 0"/>
+                            <button name="action_view_coaching_calls" type="object"
+                                    string="Ouvrir coaching complet"
+                                    invisible="coaching_call_count == 0"/>
+                        </group>
+                    </group>
+                    <separator string="Enregistrements d'appels"/>
+                    <field name="call_log_ids" readonly="1" nolabel="1">
+                        <list>
+                            <field name="call_date"/>
+                            <field name="duration"/>
+                            <field name="agent_name"/>
+                            <field name="disposition"/>
+                            <field name="recording_url" widget="url"/>
+                        </list>
+                    </field>
+                    <separator string="Historique appels"/>
+                    <field name="vicidial_sync_ids" readonly="1" nolabel="1">
+                        <list>
+                            <field name="date_debut"/>
+                            <field name="date_fin"/>
+                            <field name="duree_secondes"/>
+                            <field name="campagne_vicidial"/>
+                            <field name="qualification_faite"/>
+                        </list>
+                    </field>
+                    <separator string="Coaching IA / manager"/>
+                    <field name="coaching_call_ids" readonly="1" nolabel="1">
+                        <list>
+                            <field name="date_appel"/>
+                            <field name="employee_id"/>
+                            <field name="duree_affichee"/>
+                            <field name="qualification_appel" widget="badge"/>
+                            <field name="score_global"/>
+                            <field name="audio_url" widget="url"/>
+                            <field name="analyse_done"/>
+                            <field name="conseil_claude" optional="show"/>
+                            <field name="note_manager" optional="hide"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_riad_tax_bordereau_list" model="ir.ui.view">
+        <field name="name">intellix.riad.tax.bordereau.list</field>
+        <field name="model">intellix.riad.tax.bordereau</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="establishment_id"/>
+                <field name="year"/>
+                <field name="quarter"/>
+                <field name="guests_count"/>
+                <field name="nights_count"/>
+                <field name="amount_due"/>
+                <field name="due_date"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_riad_tax_bordereau_form" model="ir.ui.view">
+        <field name="name">intellix.riad.tax.bordereau.form</field>
+        <field name="model">intellix.riad.tax.bordereau</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_print" type="object" string="Imprimer le bordereau" class="btn-primary"/>
+                    <button name="action_print_annex" type="object" string="Justificatif interne"/>
+                    <button name="action_refresh_totals" type="object" string="Recalculer"/>
+                    <button name="action_mark_sent" type="object" string="Marquer envoyé"
+                            invisible="state == 'sent'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,ready,sent"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-info" role="alert">
+                        Document destiné à la recette communale. Les fiches de police (DGSN) sont un flux séparé.
+                    </div>
+                    <group>
+                        <group>
+                            <field name="establishment_id"/>
+                            <field name="template_id"/>
+                            <field name="year"/>
+                            <field name="quarter"/>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                            <field name="due_date"/>
+                        </group>
+                        <group>
+                            <field name="operator_name"/>
+                            <field name="operator_address"/>
+                            <field name="operator_cin"/>
+                            <field name="operator_phone"/>
+                            <field name="operator_fax"/>
+                            <field name="operator_nature"/>
+                        </group>
+                    </group>
+                    <group string="Totaux à déposer">
+                        <group>
+                            <field name="guests_count"/>
+                            <field name="nights_count"/>
+                            <field name="tax_rate"/>
+                        </group>
+                        <group>
+                            <field name="amount_due"/>
+                            <field name="amount_letter"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="sent_at" invisible="not sent_at"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_riad_tax_bordereau" model="ir.actions.act_window">
+        <field name="name">Bordereaux taxe de séjour</field>
+        <field name="res_model">intellix.riad.tax.bordereau</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_riad_tax_bordereau_template_list" model="ir.ui.view">
+        <field name="name">intellix.riad.tax.bordereau.template.list</field>
+        <field name="model">intellix.riad.tax.bordereau.template</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="authority_name"/>
+                <field name="city_for_date"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_riad_tax_bordereau_template_form" model="ir.ui.view">
+        <field name="name">intellix.riad.tax.bordereau.template.form</field>
+        <field name="model">intellix.riad.tax.bordereau.template</field>
+        <field name="arch" type="xml">
+            <form string="Modèle de bordereau (commune)">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="active"/>
+                            <field name="kingdom_label"/>
+                            <field name="authority_name"/>
+                            <field name="authority_line_2"/>
+                            <field name="authority_line_3"/>
+                            <field name="tax_title"/>
+                            <field name="document_title"/>
+                            <field name="city_for_date"/>
+                            <field name="service_name"/>
+                        </group>
+                        <group>
+                            <field name="currency_word"/>
+                            <field name="show_operator_nature"/>
+                            <field name="show_cin"/>
+                            <field name="show_fax"/>
+                            <field name="show_admin_box"/>
+                            <field name="report_xmlid"/>
+                            <field name="footer_note"/>
+                        </group>
+                    </group>
+                    <group string="Libellés de l'imprimé">
+                        <group>
+                            <field name="operator_name_label"/>
+                            <field name="operator_address_label"/>
+                            <field name="operator_cin_label"/>
+                            <field name="phone_label"/>
+                            <field name="fax_label"/>
+                            <field name="nature_label"/>
+                            <field name="nature_proprietaire_label"/>
+                            <field name="nature_directeur_label"/>
+                            <field name="nature_gerant_label"/>
+                        </group>
+                        <group>
+                            <field name="col_clients"/>
+                            <field name="col_nights"/>
+                            <field name="col_rate"/>
+                            <field name="col_amount"/>
+                            <field name="settled_text"/>
+                            <field name="in_letters_label"/>
+                            <field name="declarant_label"/>
+                            <field name="date_prefix"/>
+                            <field name="admin_box_title"/>
+                            <field name="admin_declaration_no"/>
+                            <field name="admin_received"/>
+                            <field name="admin_ordonnateur"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="certification_text"/>
+                        <field name="notes"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_riad_tax_bordereau_template" model="ir.actions.act_window">
+        <field name="name">Modèles de bordereau (communes)</field>
+        <field name="res_model">intellix.riad.tax.bordereau.template</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

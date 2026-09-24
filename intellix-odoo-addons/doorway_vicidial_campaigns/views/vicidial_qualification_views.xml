@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_crm_lead_vicidial_qualification_form" model="ir.ui.view">
+        <field name="name">crm.lead.vicidial.qualification.form</field>
+        <field name="model">crm.lead</field>
+        <field name="priority">25</field>
+        <field name="arch" type="xml">
+            <form string="Qualification appels">
+                <header>
+                    <button name="action_marquer_qualifie" type="object"
+                            string="Qualifié" class="btn-success"
+                            invisible="qualification_statut in ('qualifie', 'b2b_valide')"/>
+                    <button name="action_qualif_rdv" type="object"
+                            string="Démo / RDV" class="btn-primary"
+                            invisible="qualification_statut == 'rdv'"/>
+                    <button name="action_marquer_rappel" type="object"
+                            string="Rappel" class="btn-warning"
+                            invisible="qualification_statut == 'a_rappeler'"/>
+                    <button name="action_qualif_pas_interesse" type="object"
+                            string="Pas intéressé" class="btn-secondary"
+                            invisible="qualification_statut == 'pas_interesse'"/>
+                    <button name="action_qualif_deja_servi" type="object"
+                            string="Déjà servi" class="btn-secondary"
+                            invisible="qualification_statut == 'deja_servi'"/>
+                    <button name="action_qualif_locataire" type="object"
+                            string="Locataire" class="btn-secondary"
+                            invisible="qualification_statut == 'locataire'"/>
+                    <button name="action_qualif_messagerie" type="object"
+                            string="Boîte vocale" class="btn-secondary"
+                            invisible="qualification_statut == 'messagerie'"/>
+                    <button name="action_qualif_dnc" type="object"
+                            string="DNC" class="btn-danger"
+                            invisible="qualification_statut == 'dnc'"/>
+                    <button name="action_marquer_b2b_karine" type="object"
+                            string="B2B → Karine" class="btn-primary"
+                            invisible="type_projet != 'b2b_partenaire'"/>
+                    <button name="action_marquer_hors_cible" type="object"
+                            string="Hors cible" class="btn-secondary"
+                            invisible="qualification_statut == 'hors_cible'"/>
+                    <button name="action_play_last_recording" type="object"
+                            string="Écouter" class="btn-link"
+                            invisible="call_log_count == 0"/>
+                    <field name="call_log_count" invisible="1"/>
+                    <field name="stage_id" widget="statusbar"
+                           options="{'clickable': '1'}"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-danger mb-3" role="status"
+                         invisible="not source_vicidial">
+                        <strong>Appel en cours</strong> —
+                        <field name="phone" readonly="1" class="oe_inline"/>
+                        <span class="ms-2 text-muted">
+                            Campagne <field name="campagne_vicidial" readonly="1" class="oe_inline"/>
+                        </span>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                            <h1><field name="name" placeholder="Nom du contact"/></h1>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <span class="o_form_label text-muted">Score</span>
+                            <div class="display-6 fw-bold">
+                                <field name="score_qualification" readonly="1" class="oe_inline"/>/100
+                            </div>
+                            <field name="qualification_statut" widget="badge"/>
+                        </div>
+                    </div>
+                    <group>
+                        <group string="Contact">
+                            <field name="phone" widget="phone"/>
+                            <field name="email_from" widget="email"/>
+                            <field name="city"/>
+                            <field name="user_id"/>
+                            <field name="team_id"/>
+                            <field name="source_vicidial" invisible="1"/>
+                            <field name="vicidial_call_uid" invisible="1"/>
+                        </group>
+                        <group string="Qualification rapide">
+                            <field name="type_projet" widget="radio"/>
+                            <field name="est_proprietaire" widget="radio"/>
+                            <field name="type_logement"/>
+                            <field name="delai_projet"/>
+                            <field name="budget_estime"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Détails logement" name="logement">
+                            <group>
+                                <field name="age_logement"/>
+                                <field name="chauffage_actuel"/>
+                                <field name="surface_m2"/>
+                                <field name="connait_maprimerenov"/>
+                                <field name="deja_fait_travaux"/>
+                            </group>
+                        </page>
+                        <page string="Consentement" name="consentement"
+                              invisible="campagne_vicidial != 'DW_FRB2C'">
+                            <group>
+                                <field name="consentement_recontact_renov"/>
+                                <field name="consentement_recontact_artisans"/>
+                                <field name="consentement_recontact_date"/>
+                                <field name="consentement_recontact_preuve"/>
+                                <field name="consentement_recontact_source"/>
+                            </group>
+                        </page>
+                        <page string="PAC" name="pac"
+                              invisible="type_projet != 'pac'">
+                            <group>
+                                <field name="type_pac"/>
+                            </group>
+                        </page>
+                        <page string="Photovoltaïque" name="pv"
+                              invisible="type_projet != 'photovoltaique'">
+                            <group>
+                                <field name="orientation_toit"/>
+                                <field name="puissance_souhaitee"/>
+                                <field name="ombre_toit"/>
+                            </group>
+                        </page>
+                        <page string="B2B Partenaire" name="b2b"
+                              invisible="type_projet != 'b2b_partenaire'">
+                            <group>
+                                <field name="type_partenaire"/>
+                                <field name="nb_techniciens"/>
+                                <field name="zones_intervention"/>
+                                <field name="certifications"/>
+                            </group>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes_qualification" nolabel="1"
+                                   placeholder="Notes de qualification pendant l'appel..."/>
+                            <field name="prochaine_etape"/>
+                            <field name="rappel_datetime"
+                                   invisible="qualification_statut != 'a_rappeler'"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_crm_lead_vicidial_qualification_list" model="ir.ui.view">
+        <field name="name">crm.lead.vicidial.qualification.list</field>
+        <field name="model">crm.lead</field>
+        <field name="priority">25</field>
+        <field name="arch" type="xml">
+            <list string="File qualification appels"
+                  decoration-success="qualification_statut == 'qualifie'"
+                  decoration-danger="qualification_statut == 'hors_cible'"
+                  decoration-warning="qualification_statut == 'a_rappeler'">
+                <field name="name"/>
+                <field name="phone"/>
+                <field name="city"/>
+                <field name="type_projet"/>
+                <field name="score_qualification"/>
+                <field name="qualification_statut" widget="badge"/>
+                <field name="campagne_vicidial" optional="show"/>
+                <field name="user_id"/>
+                <button name="action_marquer_qualifie" type="object"
+                        string="OK" class="btn-sm btn-success"
+                        invisible="qualification_statut == 'qualifie'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_vicidial_qualification" model="ir.actions.act_window">
+        <field name="name">Qualification CRM</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_crm_lead_vicidial_qualification_list')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_crm_lead_vicidial_qualification_form')})]"/>
+        <field name="domain">[('user_id', '=', uid), ('source_vicidial', '=', True)]</field>
+        <field name="context">{
+            'default_source_vicidial': True,
+            'default_user_id': uid,
+        }</field>
+    </record>
+
+    <record id="view_vicidial_call_sync_list" model="ir.ui.view">
+        <field name="name">doorway.vicidial.call.sync.list</field>
+        <field name="model">doorway.vicidial.call.sync</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="date_debut"/>
+                <field name="user_id"/>
+                <field name="phone"/>
+                <field name="lead_name"/>
+                <field name="campagne_vicidial"/>
+                <field name="statut_vicidial"/>
+                <field name="duree_secondes"/>
+                <field name="qualification_faite"/>
+                <field name="lead_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_vicidial_call_sync" model="ir.actions.act_window">
+        <field name="name">Sync appels</field>
+        <field name="res_model">doorway.vicidial.call.sync</field>
+        <field name="view_mode">list</field>
+    </record>
+
+</odoo>

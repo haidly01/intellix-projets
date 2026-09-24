@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_veille_reactivation_automation_list" model="ir.ui.view">
+        <field name="name">doorway.veille.reactivation.automation.list</field>
+        <field name="model">doorway.veille.reactivation.automation</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="action_type"/>
+                <field name="source_filtre"/>
+                <field name="delay_jours"/>
+                <field name="auto_executer"/>
+                <field name="signal_count"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_veille_reactivation_automation_form" model="ir.ui.view">
+        <field name="name">doorway.veille.reactivation.automation.form</field>
+        <field name="model">doorway.veille.reactivation.automation</field>
+        <field name="arch" type="xml">
+            <form string="Automatisation réactivation">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_voir_signaux" type="object"
+                                class="oe_stat_button" icon="fa-rss">
+                            <field name="signal_count" widget="statinfo"
+                                   string="Signaux"/>
+                        </button>
+                    </div>
+                    <group>
+                        <field name="name"/>
+                        <field name="active"/>
+                        <field name="sequence"/>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="action_type"/>
+                            <field name="source_filtre"/>
+                            <field name="delay_jours"/>
+                            <field name="auto_executer"/>
+                        </group>
+                        <group>
+                            <field name="notify_user_id"
+                                   invisible="action_type != 'notification'"/>
+                            <field name="tache_nom"
+                                   invisible="action_type != 'tache'"/>
+                        </group>
+                    </group>
+                    <group string="Message" invisible="action_type != 'reponse_douce'">
+                        <field name="message_modele" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_veille_reactivation_automation" model="ir.actions.act_window">
+        <field name="name">Automatisations réactivation</field>
+        <field name="res_model">doorway.veille.reactivation.automation</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_veille_signal_reactivation" model="ir.actions.act_window">
+        <field name="name">Réactivation douce</field>
+        <field name="res_model">doorway.veille.signal</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_veille_signal_search"/>
+        <field name="domain">[
+            ('statut', 'in', ['en_attente', 'repondu', 'accepte']),
+            ('reactivation_statut', 'in', ['eligible', 'planifie']),
+        ]</field>
+        <field name="context">{'search_default_filter_cold': 1}</field>
+    </record>
+</odoo>

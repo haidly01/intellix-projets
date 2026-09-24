@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="stage_closed" model="intellix.support.stage">
+        <field name="name">Fermé</field>
+        <field name="code">closed</field>
+        <field name="sequence">50</field>
+        <field name="is_closed">True</field>
+    </record>
+</odoo>

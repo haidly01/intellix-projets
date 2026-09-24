@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_coins_wa_session_form" model="ir.ui.view">
+        <field name="name">coins.wa.session.form</field>
+        <field name="model">coins.wa.session</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml"><form string="Session WhatsApp">
+                <header>
+                    <button name="action_reply_whatsapp" type="object" string="Répondre WhatsApp" class="btn-primary" icon="fa-whatsapp"/>
+                    <button name="action_open_wa_logs" type="object" string="Voir journal" icon="fa-list"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="display_name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="phone"/>
+                            <field name="partner_id"/>
+                            <field name="lead_id"/>
+                        </group>
+                        <group>
+                            <field name="source"/>
+                            <field name="human_handoff"/>
+                            <field name="message_count"/>
+                            <field name="active"/>
+                            <field name="wa_log_count"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Conversation" name="thread">
+                            <field name="transcript_html" nolabel="1"/>
+                        </page>
+                        <page string="Journal Twilio / n8n" name="logs">
+                            <div class="oe_button_box">
+                                <button name="action_open_wa_logs" type="object" class="btn-primary" string="Ouvrir le journal WhatsApp"/>
+                            </div>
+                            <field name="wa_log_count"/>
+                        </page>
+                        <page string="JSON brut" name="raw" groups="base.group_no_one">
+                            <field name="messages_json" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form></field>
+    </record>
+
+    <record id="view_coins_wa_session_list" model="ir.ui.view">
+        <field name="name">coins.wa.session.list</field>
+        <field name="model">coins.wa.session</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml"><list string="Sessions WhatsApp">
+                <field name="write_date" string="Maj"/>
+                <field name="display_name" string="Contact"/>
+                <field name="phone"/>
+                <field name="message_count"/>
+                <field name="last_message"/>
+                <field name="source"/>
+                <field name="human_handoff"/>
+                <field name="lead_id"/>
+                <field name="wa_log_count" string="Logs"/>
+                <field name="active" column_invisible="1"/>
+            </list></field>
+    </record>
+
+    <record id="view_coins_wa_session_search" model="ir.ui.view">
+        <field name="name">coins.wa.session.search</field>
+        <field name="model">coins.wa.session</field>
+        <field name="type">search</field>
+        <field name="arch" type="xml"><search>
+                <field name="phone"/>
+                <field name="partner_id"/>
+                <field name="lead_id"/>
+                <filter name="active" string="Actives" domain="[('active','=',True)]"/>
+                <filter name="handoff" string="Transfert humain" domain="[('human_handoff','=',True)]"/>
+                <filter name="inactive" string="Archivées" domain="[('active','=',False)]"/>
+                <separator/>
+                <filter name="filter_active" string="Actives" domain="[('active','=',True)]"/>
+            </search></field>
+    </record>
+
+</odoo>

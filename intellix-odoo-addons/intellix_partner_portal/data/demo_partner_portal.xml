@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Données démo DEV — partenaire test portail -->
+    <record id="demo_partner_portal_company" model="res.partner">
+        <field name="name">Réno Beaumont Inc.</field>
+        <field name="is_company" eval="True"/>
+        <field name="email">reno.beaumont@email.com</field>
+        <field name="phone">+1 450-555-0182</field>
+        <field name="city">Laval</field>
+        <field name="coverage_mode">city</field>
+        <field name="city_text">Laval, Montréal-Nord, Longueuil</field>
+        <field name="monthly_lead_capacity">15</field>
+        <field name="partner_score">82</field>
+        <field name="partner_pause_mode" eval="False"/>
+    </record>
+
+    <record id="demo_partner_portal_contact" model="res.partner">
+        <field name="name">Jean Beaumont</field>
+        <field name="parent_id" ref="demo_partner_portal_company"/>
+        <field name="email">portal.demo@intellixcrm.com</field>
+        <field name="type">contact</field>
+    </record>
+
+    <record id="demo_partner_bloc" model="intellix.partner.lead.bloc">
+        <field name="name">Bloc #1042</field>
+        <field name="partner_id" ref="demo_partner_portal_company"/>
+        <field name="size">10</field>
+        <field name="state">active</field>
+    </record>
+
+    <record id="demo_mandate_tremblay" model="intellix.partner.lead.mandate">
+        <field name="name">Jean-Michel Tremblay</field>
+        <field name="partner_id" ref="demo_partner_portal_company"/>
+        <field name="bloc_id" ref="demo_partner_bloc"/>
+        <field name="status">new</field>
+        <field name="ia_score">87</field>
+        <field name="phone">+1 450-555-0142</field>
+        <field name="city">Laval, QC</field>
+        <field name="project_type">Rénovation salle de bain</field>
+        <field name="budget_range">15 000 – 25 000 $</field>
+        <field name="timing">1 à 3 mois</field>
+        <field name="is_owner_confirmed" eval="True"/>
+        <field name="qualification_notes">Rénovation salle de bain + cuisine</field>
+    </record>
+
+    <record id="demo_mandate_cote" model="intellix.partner.lead.mandate">
+        <field name="name">Marie Côté</field>
+        <field name="partner_id" ref="demo_partner_portal_company"/>
+        <field name="bloc_id" ref="demo_partner_bloc"/>
+        <field name="status">new</field>
+        <field name="ia_score">72</field>
+        <field name="phone">+1 514-555-0199</field>
+        <field name="city">Montréal, QC</field>
+        <field name="project_type">Thermopompe</field>
+        <field name="budget_range">8 000 – 12 000 $</field>
+        <field name="timing">1 à 2 mois</field>
+        <field name="is_owner_confirmed" eval="True"/>
+    </record>
+
+    <!-- Mandats déjà traités pour stats dashboard -->
+    <record id="demo_mandate_accepted_1" model="intellix.partner.lead.mandate">
+        <field name="name">Lead accepté 1</field>
+        <field name="partner_id" ref="demo_partner_portal_company"/>
+        <field name="bloc_id" ref="demo_partner_bloc"/>
+        <field name="status">accepted</field>
+        <field name="ia_score">90</field>
+        <field name="phone">+1 450-555-0001</field>
+        <field name="city">Laval, QC</field>
+        <field name="project_type">Toiture</field>
+    </record>
+    <record id="demo_mandate_accepted_2" model="intellix.partner.lead.mandate">
+        <field name="name">Lead accepté 2</field>
+        <field name="partner_id" ref="demo_partner_portal_company"/>
+        <field name="bloc_id" ref="demo_partner_bloc"/>
+        <field name="status">accepted</field>
+        <field name="ia_score">85</field>
+        <field name="phone">+1 450-555-0002</field>
+        <field name="city">Longueuil, QC</field>
+        <field name="project_type">Rénovation</field>
+    </record>
+    <record id="demo_mandate_converted_1" model="intellix.partner.lead.mandate">
+        <field name="name">Lead converti 1</field>
+        <field name="partner_id" ref="demo_partner_portal_company"/>
+        <field name="bloc_id" ref="demo_partner_bloc"/>
+        <field name="status">converted</field>
+        <field name="ia_score">95</field>
+        <field name="phone">+1 450-555-0003</field>
+        <field name="city">Montréal, QC</field>
+        <field name="project_type">Rénovation</field>
+    </record>
+    <record id="demo_mandate_converted_2" model="intellix.partner.lead.mandate">
+        <field name="name">Lead converti 2</field>
+        <field name="partner_id" ref="demo_partner_portal_company"/>
+        <field name="bloc_id" ref="demo_partner_bloc"/>
+        <field name="status">converted</field>
+        <field name="ia_score">88</field>
+        <field name="phone">+1 450-555-0004</field>
+        <field name="city">Laval, QC</field>
+        <field name="project_type">Toiture</field>
+    </record>
+    <record id="demo_mandate_accepted_3" model="intellix.partner.lead.mandate">
+        <field name="name">Lead accepté 3</field>
+        <field name="partner_id" ref="demo_partner_portal_company"/>
+        <field name="bloc_id" ref="demo_partner_bloc"/>
+        <field name="status">accepted</field>
+        <field name="ia_score">78</field>
+        <field name="phone">+1 450-555-0005</field>
+        <field name="city">Laval, QC</field>
+        <field name="project_type">Rénovation</field>
+    </record>
+    <record id="demo_mandate_accepted_4" model="intellix.partner.lead.mandate">
+        <field name="name">Lead accepté 4</field>
+        <field name="partner_id" ref="demo_partner_portal_company"/>
+        <field name="bloc_id" ref="demo_partner_bloc"/>
+        <field name="status">accepted</field>
+        <field name="ia_score">80</field>
+        <field name="phone">+1 450-555-0006</field>
+        <field name="city">Montréal, QC</field>
+        <field name="project_type">Thermopompe</field>
+    </record>
+    <record id="demo_mandate_accepted_5" model="intellix.partner.lead.mandate">
+        <field name="name">Lead accepté 5</field>
+        <field name="partner_id" ref="demo_partner_portal_company"/>
+        <field name="bloc_id" ref="demo_partner_bloc"/>
+        <field name="status">accepted</field>
+        <field name="ia_score">83</field>
+        <field name="phone">+1 450-555-0007</field>
+        <field name="city">Laval, QC</field>
+        <field name="project_type">Rénovation</field>
+    </record>
+</odoo>

@@ -1,0 +1,86 @@
+<odoo>
+  <record id="res_partner_view_form_renovation" model="ir.ui.view">
+    <field name="name">res.partner.form.renovation</field>
+    <field name="model">res.partner</field>
+    <field name="inherit_id" ref="base.view_partner_form"/>
+    <field name="arch" type="xml">
+      <notebook position="inside">
+        <page string="Rénovation" name="renovation_tab">
+
+          <!-- Forfait actif -->
+          <group string="Forfait actif">
+            <field name="active_package_id" readonly="1"/>
+          </group>
+
+          <!-- Zone de couverture -->
+          <group string="Zone de couverture">
+            <field name="coverage_mode" widget="radio"/>
+          </group>
+
+          <!-- Par province -->
+          <group string="Provinces desservies"
+                invisible="coverage_mode != 'province'">
+            <field name="province_ids" widget="many2many_tags"
+                   options="{'no_create': True}"/>
+          </group>
+
+          <!-- Par villes -->
+          <group string="Villes desservies"
+                invisible="coverage_mode != 'city'">
+            <field name="city_text" placeholder="ex: Montréal Laval Longueuil (espace ou virgule)"/>
+          </group>
+
+          <!-- Par rayon -->
+          <group string="Rayon de couverture"
+                invisible="coverage_mode != 'radius'">
+            <field name="partner_latitude"/>
+            <field name="partner_longitude"/>
+            <field name="coverage_radius_km"/>
+          </group>
+
+          <!-- Par codes postaux -->
+          <group string="Codes postaux desservis"
+                invisible="coverage_mode != 'postal'">
+            <field name="postal_codes_text"
+                   placeholder="Saisie rapide : H7T1A1 J7E2B2 G1A0A1 (espace ou virgule)"/>
+            <separator string="Détail (ville / pays par code)"/>
+            <field name="postal_code_ids" nolabel="1">
+              <list editable="bottom">
+                <field name="postal_code"/>
+                <field name="city"/>
+                <field name="country_id"/>
+              </list>
+            </field>
+          </group>
+
+          <!-- Services -->
+          <group string="Services offerts">
+            <field name="service_category_ids" widget="many2many_tags"/>
+          </group>
+
+          <!-- Forfaits -->
+          <group string="Forfaits leads">
+            <field name="package_ids">
+              <list>
+                <field name="name"/>
+                <field name="state"/>
+                <field name="leads_remaining"/>
+                <field name="date_end"/>
+              </list>
+            </field>
+          </group>
+
+          <group string="Email de bienvenue partenaire">
+            <field name="welcome_email_subject"/>
+            <field name="welcome_email_body" widget="html"/>
+            <button name="action_send_welcome_email"
+                    type="object"
+                    string="Envoyer l'email de bienvenue"
+                    class="btn-primary"/>
+          </group>
+
+        </page>
+      </notebook>
+    </field>
+  </record>
+</odoo>

@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Départements -->
+    <record id="view_pe_department_tree" model="ir.ui.view">
+        <field name="name">pe.department.tree</field>
+        <field name="model">pe.department</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="work_type"/>
+                <field name="nb_employees"/>
+                <field name="is_template" widget="boolean"/>
+                <field name="manager_id"/>
+                <field name="leads_qualifies_mois"/>
+                <field name="prime_totale_mois"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pe_department_form" model="ir.ui.view">
+        <field name="name">pe.department.form</field>
+        <field name="model">pe.department</field>
+        <field name="arch" type="xml">
+            <form string="Département RH">
+                <header>
+                    <button name="action_dupliquer_comme_departement" type="object"
+                            string="Dupliquer comme département" class="btn-primary"
+                            invisible="not is_template"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Nom"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="work_type"/>
+                            <field name="is_template"/>
+                            <field name="parent_template_id"/>
+                            <field name="manager_id"/>
+                            <field name="agent_ia_id"/>
+                        </group>
+                        <group>
+                            <field name="nb_employees"/>
+                            <field name="seuil_chute_pct"/>
+                            <field name="seuil_conversion_ia"/>
+                            <field name="leads_qualifies_mois"/>
+                            <field name="taux_conversion_mois"/>
+                            <field name="prime_totale_mois"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Employés">
+                            <field name="employee_ids" widget="many2many_tags"/>
+                        </page>
+                        <page string="Objectifs">
+                            <field name="objective_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="type_usager"/>
+                                    <field name="metrique"/>
+                                    <field name="valeur_cible"/>
+                                    <field name="valeur_minimum"/>
+                                    <field name="tolerance_chute_pct"/>
+                                    <field name="periode"/>
+                                    <field name="actif"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Configuration primes">
+                            <field name="prime_config_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="type_prime"/>
+                                    <field name="montant_par_unite"/>
+                                    <field name="devise"/>
+                                    <field name="taille_bloc"/>
+                                    <field name="seuil_declenchement"/>
+                                    <field name="plafond_mois"/>
+                                    <field name="actif"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_pe_department" model="ir.actions.act_window">
+        <field name="name">Départements</field>
+        <field name="res_model">pe.department</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Paie temps réel / dashboard employé -->
+    <record id="view_pe_payslip_live_form" model="ir.ui.view">
+        <field name="name">pe.payslip.live.form</field>
+        <field name="model">pe.payslip.live</field>
+        <field name="arch" type="xml">
+            <form string="Mon dashboard" create="false" edit="false" class="pe-rh-theme">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>Dashboard — <field name="employee_id" readonly="1" nolabel="1"/></h1>
+                        <h3>Mois : <field name="mois" readonly="1" nolabel="1"/></h3>
+                    </div>
+                    <group string="Objectifs du mois">
+                        <group>
+                            <field name="leads_confirmes_mois" readonly="1"/>
+                            <field name="taux_conversion_ia_mois" readonly="1"/>
+                            <field name="leads_upsell_mois" readonly="1"/>
+                            <field name="heures_reelles_mois" readonly="1" widget="float_time"/>
+                        </group>
+                        <group>
+                            <field name="blocs_primes" readonly="1"/>
+                            <field name="jours_absents_mois" readonly="1"/>
+                            <field name="date_calcul" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Rémunération temps réel">
+                        <group>
+                            <field name="salaire_base" readonly="1"/>
+                            <field name="devise_base" readonly="1"/>
+                            <field name="prime_plateau" readonly="1"/>
+                            <field name="prime_upsell" readonly="1"/>
+                            <field name="prime_conversion" readonly="1"/>
+                            <field name="prime_presence" readonly="1"/>
+                            <field name="deduction_absences" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="total_brut" readonly="1"/>
+                            <field name="total_net_estime" readonly="1"/>
+                            <field name="detail_calcul" readonly="1" widget="text"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_pe_payslip_live_tree" model="ir.ui.view">
+        <field name="name">pe.payslip.live.tree</field>
+        <field name="model">pe.payslip.live</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="mois"/>
+                <field name="employee_id"/>
+                <field name="leads_confirmes_mois"/>
+                <field name="prime_plateau"/>
+                <field name="prime_upsell"/>
+                <field name="prime_conversion"/>
+                <field name="total_brut"/>
+                <field name="date_calcul"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_pe_payslip_live" model="ir.actions.act_window">
+        <field name="name">Paie temps réel</field>
+        <field name="res_model">pe.payslip.live</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_pe_my_dashboard" model="ir.actions.server">
+        <field name="name">Mon dashboard PE</field>
+        <field name="model_id" ref="model_pe_payslip_live"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_my_payslip()</field>
+    </record>
+
+    <!-- Présence -->
+    <record id="view_pe_presence_log_tree" model="ir.ui.view">
+        <field name="name">pe.presence.log.tree</field>
+        <field name="model">pe.presence.log</field>
+        <field name="arch" type="xml">
+            <list create="false">
+                <field name="timestamp"/>
+                <field name="employee_id"/>
+                <field name="statut"/>
+                <field name="source"/>
+                <field name="vicidial_agent_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pe_presence_summary_tree" model="ir.ui.view">
+        <field name="name">pe.presence.summary.tree</field>
+        <field name="model">pe.presence.summary</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="date"/>
+                <field name="employee_id"/>
+                <field name="statut_jour"/>
+                <field name="heures_reelles" widget="float_time"/>
+                <field name="heures_pause" widget="float_time"/>
+                <field name="nb_appels_vicidial"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_pe_presence_live" model="ir.actions.act_window">
+        <field name="name">Présence temps réel</field>
+        <field name="res_model">pe.presence.log</field>
+        <field name="view_mode">list</field>
+        <field name="context">{'search_default_today': 1}</field>
+    </record>
+
+    <record id="action_pe_presence_summary" model="ir.actions.act_window">
+        <field name="name">Résumés présence</field>
+        <field name="res_model">pe.presence.summary</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <!-- Agent IA assignments -->
+    <record id="view_pe_agent_assignment_tree" model="ir.ui.view">
+        <field name="name">pe.agent.assignment.tree</field>
+        <field name="model">pe.agent.assignment</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="date_attribution"/>
+                <field name="employee_id"/>
+                <field name="agent_ia_id"/>
+                <field name="projet_principal"/>
+                <field name="statut" widget="badge"/>
+                <field name="nb_upsells"/>
+                <field name="prime_upsell_generee"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pe_agent_assignment_form" model="ir.ui.view">
+        <field name="name">pe.agent.assignment.form</field>
+        <field name="model">pe.agent.assignment</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_declarer_upsell" type="object"
+                            string="Déclarer upsell" class="btn-secondary"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="employee_id"/>
+                        <field name="agent_ia_id"/>
+                        <field name="lead_id"/>
+                        <field name="date_attribution"/>
+                        <field name="statut"/>
+                        <field name="score_ia"/>
+                        <field name="projet_principal"/>
+                        <field name="projets_detectes"/>
+                        <field name="notes_employe"/>
+                    </group>
+                    <field name="upsell_log_ids">
+                        <list editable="bottom">
+                            <field name="date"/>
+                            <field name="projet_upsell"/>
+                            <field name="prime_generee"/>
+                            <field name="valide_par_manager"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_pe_agent_assignment" model="ir.actions.act_window">
+        <field name="name">Leads IA attribués</field>
+        <field name="res_model">pe.agent.assignment</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Coaching appels -->
+    <record id="view_pe_coaching_call_tree" model="ir.ui.view">
+        <field name="name">pe.coaching.call.tree</field>
+        <field name="model">pe.coaching.call</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="date_appel"/>
+                <field name="employee_id"/>
+                <field name="lead_id"/>
+                <field name="qualification_appel" widget="badge"/>
+                <field name="source"/>
+                <field name="duree_affichee"/>
+                <field name="score_global"/>
+                <field name="audio_url" widget="url" optional="show"/>
+                <field name="lu_par_employe"/>
+                <field name="visible_employe"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pe_coaching_call_form" model="ir.ui.view">
+        <field name="name">pe.coaching.call.form</field>
+        <field name="model">pe.coaching.call</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_analyser_claude" type="object"
+                            string="Analyser (Claude)" class="btn-primary"
+                            invisible="not transcript"/>
+                    <button name="action_marquer_lu" type="object"
+                            string="Marquer lu" class="btn-secondary"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="employee_id"/>
+                        <field name="date_appel"/>
+                        <field name="source"/>
+                        <field name="duree_affichee"/>
+                        <field name="score_global"/>
+                        <field name="lead_id"/>
+                        <field name="qualification_appel"/>
+                        <field name="audio_url"/>
+                        <field name="visible_employe"/>
+                        <field name="lu_par_employe"/>
+                    </group>
+                    <group string="Scores détaillés">
+                        <field name="score_accroche"/>
+                        <field name="score_qualification"/>
+                        <field name="score_gestion_objections"/>
+                        <field name="score_closing"/>
+                    </group>
+                    <field name="transcript"/>
+                    <field name="points_positifs"/>
+                    <field name="points_ameliorer"/>
+                    <field name="conseil_claude"/>
+                    <field name="note_manager"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_pe_coaching_call" model="ir.actions.act_window">
+        <field name="name">Appels &amp; coaching</field>
+        <field name="res_model">pe.coaching.call</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Transactions primes -->
+    <record id="view_pe_prime_transaction_tree" model="ir.ui.view">
+        <field name="name">pe.prime.transaction.tree</field>
+        <field name="model">pe.prime.transaction</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="date"/>
+                <field name="employee_id"/>
+                <field name="type_prime"/>
+                <field name="nb_leads"/>
+                <field name="montant"/>
+                <field name="devise"/>
+                <field name="detail"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_pe_prime_transaction" model="ir.actions.act_window">
+        <field name="name">Journal primes variables</field>
+        <field name="res_model">pe.prime.transaction</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <!-- Extension profil employé Phase 4 -->
+    <record id="view_pe_employee_profile_form_phase4" model="ir.ui.view">
+        <field name="name">pe.employee.profile.form.phase4</field>
+        <field name="model">pe.employee.profile</field>
+        <field name="inherit_id" ref="view_pe_employee_profile_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='access']" position="after">
+                <page string="Opérations &amp; rémunération" name="ops" groups="people_engine.group_hr">
+                    <group>
+                        <group string="VICIdial / IA">
+                            <field name="vicidial_agent_id"/>
+                            <field name="vicidial_user"/>
+                            <field name="agent_ia_personnel_id"/>
+                            <field name="department_pe_id"/>
+                            <field name="type_usager_pe"/>
+                        </group>
+                        <group string="Rémunération">
+                            <field name="type_remuneration"/>
+                            <field name="regime_travail"/>
+                            <field name="coefficient_objectifs"/>
+                            <field name="pays_affectation"/>
+                            <field name="hors_paie_maroc"/>
+                            <field name="entite_paie_externe" invisible="not hors_paie_maroc"/>
+                            <field name="salaire_base"/>
+                            <field name="devise_remuneration"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="pe_department_template_prospection" model="pe.department">
+        <field name="name">Prospection Modèle</field>
+        <field name="code">PROSP-MODELE</field>
+        <field name="is_template" eval="True"/>
+        <field name="work_type">prospection_froide</field>
+        <field name="seuil_chute_pct">25.0</field>
+        <field name="seuil_conversion_ia">70.0</field>
+    </record>
+
+    <record id="pe_dept_obj_leads_jour" model="pe.department.objective">
+        <field name="department_id" ref="pe_department_template_prospection"/>
+        <field name="sequence">10</field>
+        <field name="name">Leads qualifiés / jour</field>
+        <field name="type_usager">tous</field>
+        <field name="metrique">leads_qualifies_jour</field>
+        <field name="valeur_cible">2.0</field>
+        <field name="tolerance_chute_pct">25.0</field>
+        <field name="valeur_minimum">1.5</field>
+        <field name="periode">jour</field>
+    </record>
+
+    <record id="pe_dept_obj_conversion_ia" model="pe.department.objective">
+        <field name="department_id" ref="pe_department_template_prospection"/>
+        <field name="sequence">20</field>
+        <field name="name">Taux conversion leads IA</field>
+        <field name="type_usager">tous</field>
+        <field name="metrique">taux_conversion_ia_pct</field>
+        <field name="valeur_cible">70.0</field>
+        <field name="periode">mois</field>
+    </record>
+
+    <record id="pe_prime_config_plateau" model="pe.prime.config">
+        <field name="department_id" ref="pe_department_template_prospection"/>
+        <field name="sequence">10</field>
+        <field name="name">Plateau 10 leads confirmés</field>
+        <field name="type_prime">plateau_leads</field>
+        <field name="montant_par_unite">500.0</field>
+        <field name="devise">MAD</field>
+        <field name="taille_bloc">10</field>
+        <field name="appliquer_chute" eval="True"/>
+        <field name="chute_pct_max">25.0</field>
+    </record>
+
+    <record id="pe_prime_config_upsell" model="pe.prime.config">
+        <field name="department_id" ref="pe_department_template_prospection"/>
+        <field name="sequence">20</field>
+        <field name="name">Upsell lead supplémentaire</field>
+        <field name="type_prime">upsell_lead</field>
+        <field name="montant_par_unite">5.0</field>
+        <field name="devise">EUR</field>
+    </record>
+
+    <record id="pe_prime_config_conversion_ia" model="pe.prime.config">
+        <field name="department_id" ref="pe_department_template_prospection"/>
+        <field name="sequence">30</field>
+        <field name="name">Prime conversion leads IA</field>
+        <field name="type_prime">conversion_ia</field>
+        <field name="montant_par_unite">200.0</field>
+        <field name="devise">MAD</field>
+        <field name="seuil_declenchement">70.0</field>
+    </record>
+</odoo>

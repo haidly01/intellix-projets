@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_coins_property_review_list" model="ir.ui.view">
+        <field name="name">coins.property.review.list</field>
+        <field name="model">coins.property.review</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="property_id"/>
+                <field name="author_name"/>
+                <field name="note"/>
+                <field name="state" widget="badge"
+                       decoration-warning="state == 'a_valider'"
+                       decoration-success="state == 'publie'"
+                       decoration-muted="state == 'sollicite'"
+                       decoration-danger="state == 'refuse'"/>
+                <field name="reservation_id"/>
+                <field name="asked_at"/>
+                <field name="submitted_at"/>
+                <field name="is_test" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_coins_property_review_form" model="ir.ui.view">
+        <field name="name">coins.property.review.form</field>
+        <field name="model">coins.property.review</field>
+        <field name="arch" type="xml">
+            <form string="Avis lieu">
+                <header>
+                    <button name="action_send_ask" type="object"
+                            string="Envoyer la sollicitation WhatsApp"
+                            class="btn-primary"
+                            invisible="asked_at and not ask_error"/>
+                    <button name="action_validate" type="object"
+                            string="Valider et publier sur la fiche"
+                            class="btn-primary"
+                            invisible="state != 'a_valider'"
+                            confirm="L’avis apparaîtra sur la fiche publique. Rien n’est inventé."/>
+                    <button name="action_refuse" type="object"
+                            string="Refuser"
+                            invisible="state not in ('a_valider', 'sollicite')"/>
+                    <button name="action_reset_to_validate" type="object"
+                            string="Remettre à valider"
+                            invisible="state != 'refuse'"/>
+                    <button name="action_propose_google" type="object"
+                            string="Proposer le lien Google"
+                            invisible="state != 'publie' or google_proposed_at or not google_review_url"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="sollicite,a_valider,publie"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-info" role="alert" invisible="state != 'a_valider'">
+                        À valider par Karine ou Zakaria. Aucune publication automatique.
+                    </div>
+                    <group>
+                        <group>
+                            <field name="property_id"/>
+                            <field name="reservation_id"/>
+                            <field name="evenement_id"/>
+                            <field name="traveler_id"/>
+                            <field name="author_name"/>
+                            <field name="phone"/>
+                            <field name="is_test"/>
+                        </group>
+                        <group>
+                            <field name="note"/>
+                            <field name="asked_at"/>
+                            <field name="submitted_at"/>
+                            <field name="published_at"/>
+                            <field name="public_url" widget="url"/>
+                            <field name="google_review_url" widget="url"/>
+                            <field name="google_proposed_at"/>
+                            <field name="ask_error"/>
+                            <field name="token" groups="base.group_no_one"/>
+                        </group>
+                    </group>
+                    <group string="Texte du client (jamais généré)">
+                        <field name="texte" nolabel="1" placeholder="En attente du client…"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_coins_property_review_search" model="ir.ui.view">
+        <field name="name">coins.property.review.search</field>
+        <field name="model">coins.property.review</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="property_id"/>
+                <field name="author_name"/>
+                <filter name="a_valider" string="À valider" domain="[('state', '=', 'a_valider')]"/>
+                <filter name="publie" string="Publiés" domain="[('state', '=', 'publie')]"/>
+                <filter name="sollicite" string="Sollicités" domain="[('state', '=', 'sollicite')]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_coins_property_review" model="ir.actions.act_window">
+        <field name="name">Avis lieux</field>
+        <field name="res_model">coins.property.review</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_a_valider': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun avis en attente</p>
+            <p>Les avis viennent uniquement des clients après un séjour. Rien n’est inventé, rien n’est publié sans validation.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_coins_property_reviews"
+              name="Avis clients"
+              parent="menu_coins_property"
+              action="action_coins_property_review"
+              sequence="35"/>
+
+    <record id="view_coins_reservation_form_review" model="ir.ui.view">
+        <field name="name">coins.reservation.form.review</field>
+        <field name="model">coins.reservation</field>
+        <field name="inherit_id" ref="coins_marocain.view_coins_reservation_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_ask_review_now" type="object"
+                        string="Solliciter un avis (J+1)"
+                        invisible="review_ask_sent"/>
+            </xpath>
+            <xpath expr="//field[@name='concierge_state']" position="after">
+                <field name="review_ask_sent"/>
+                <field name="review_asked_at"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_coins_property_form_review" model="ir.ui.view">
+        <field name="name">coins.property.form.review</field>
+        <field name="model">coins.property</field>
+        <field name="inherit_id" ref="coins_marocain.view_coins_property_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='description']" position="after">
+                <page string="Avis clients" name="reviews">
+                    <group>
+                        <field name="google_review_url" widget="url"
+                               placeholder="https://g.page/r/… (préparé à part, facultatif)"/>
+                    </group>
+                    <field name="review_ids">
+                        <list>
+                            <field name="author_name"/>
+                            <field name="note"/>
+                            <field name="state"/>
+                            <field name="submitted_at"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

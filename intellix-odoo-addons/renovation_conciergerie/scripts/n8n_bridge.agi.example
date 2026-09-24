@@ -1,0 +1,33 @@
+#!/usr/bin/env php
+<?php
+/**
+ * Exemple AGI Asterisk → n8n (renov-aides outbound v2)
+ * Copier vers : /var/lib/asterisk/agi-bin/n8n_bridge.agi
+ * chmod +x && chown asterisk:asterisk
+ *
+ * Variables AGI attendues : N8N_WEBHOOK_URL, CALLID, PHONE, RECORDING_PATH
+ */
+$webhook = getenv('N8N_WEBHOOK_URL') ?: 'https://doorway.app.n8n.cloud/webhook/telephony/vicidial/event';
+
+$payload = json_encode([
+    'event_type'     => getenv('AGI_EVENT') ?: 'recording_ready',
+    'call_sid'       => getenv('CALLID') ?: '',
+    'phone_number'   => getenv('PHONE') ?: '',
+    'recording_path' => getenv('RECORDING_PATH') ?: '',
+    'duration_sec'   => (int) (getenv('DURATION') ?: 0),
+    'amd_result'     => getenv('AMD_RESULT') ?: 'unknown',
+]);
+
+$ch = curl_init($webhook);
+curl_setopt_array($ch, [
+    CURLOPT_POST           => true,
+    CURLOPT_POSTFIELDS     => $payload,
+    CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_TIMEOUT        => 15,
+]);
+$response = curl_exec($ch);
+curl_close($ch);
+
+fwrite(STDOUT, "SET VARIABLE N8N_RESPONSE " . str_replace("\n", "", $response) . "\n");
+fwrite(STDOUT, "VERBOSE \"n8n_bridge OK\" 1\n");

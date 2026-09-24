@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Phase runbooks — noupdate=0 pour forcer l'upgrade -->
+    <record id="runbook_access_denied" model="intellix.support.runbook">
+        <field name="phase">ready</field>
+        <field name="requires_approval" eval="True"/>
+    </record>
+    <record id="runbook_calls_not_dialing" model="intellix.support.runbook">
+        <field name="phase">ready</field>
+        <field name="requires_approval" eval="True"/>
+    </record>
+    <record id="runbook_lea_silent" model="intellix.support.runbook">
+        <field name="phase">ready</field>
+        <field name="requires_approval" eval="True"/>
+    </record>
+</odoo>

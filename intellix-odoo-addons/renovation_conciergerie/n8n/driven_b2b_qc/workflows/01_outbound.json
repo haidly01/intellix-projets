@@ -1,0 +1,54 @@
+{
+  "name": "driven-b2b-qc — 01 Outbound",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "driven-b2b-qc/outbound",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        300
+      ],
+      "webhookId": "driven-b2b-qc-outbound"
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = $input.first().json;\nconst body = item.body || item;\n\nfunction normCa(p) {\n  if (!p) return '';\n  const d = String(p).replace(/\\D/g, '');\n  if (d.length === 10) return '+1' + d;\n  if (d.length === 11 && d.startsWith('1')) return '+' + d;\n  if (String(p).startsWith('+')) return '+' + d;\n  return d ? '+1' + d : '';\n}\n\nconst phone = normCa(body.telephone || body.phone || body.phone_number);\nif (!phone) throw new Error('telephone requis');\n\nconst provider = ($env.TELEPHONY_PROVIDER || 'vicidial').toLowerCase();\nconst odooUrl = ($env.ODOO_URL || 'https://intellixcrm.com').replace(/\\/$/, '');\nconst campaign = $env.VICIDIAL_CAMPAIGN || 'DW_QCB2B';\n\nif (provider === 'twilio') {\n  const sid = $env.TWILIO_ACCOUNT_SID;\n  const auth = Buffer.from(`${sid}:${$env.TWILIO_AUTH_TOKEN}`).toString('base64');\n  const from = $env.TWILIO_FROM_SOUMISSION || '+15817058118';\n  const base = ($env.N8N_WEBHOOK_URL || '').replace(/\\/$/, '');\n  await this.helpers.httpRequest({\n    method: 'POST',\n    url: `https://api.twilio.com/2010-04-01/Accounts/${sid}/Calls.json`,\n    headers: { Authorization: 'Basic ' + auth, 'Content-Type': 'application/x-www-form-urlencoded' },\n    body: `To=${encodeURIComponent(phone)}&From=${encodeURIComponent(from)}&Url=${encodeURIComponent(base + '/driven-b2b-qc/twilio/voice')}&StatusCallback=${encodeURIComponent(base + '/driven-b2b-qc/event')}`,\n  });\n  return [{ json: { ok: true, telephone: phone, provider: 'twilio', campaign } }];\n}\n\nconst res = await this.helpers.httpRequest({\n  method: 'POST',\n  url: odooUrl + '/doorway/api/driven-b2b/dial',\n  body: {\n    jsonrpc: '2.0',\n    method: 'call',\n    params: {\n      tenant_api_key: $env.DOORWAY_TENANT_API_KEY,\n      telephone: phone,\n      prenom: body.prenom || body.nombre || body.name || '',\n      partner_id: body.partner_id || body.lead_id || '',\n      campaign,\n    },\n    id: Date.now(),\n  },\n  json: true,\n  timeout: 30000,\n});\nconst result = res.result || res;\nreturn [{\n  json: {\n    telephone: phone,\n    campaign,\n    provider: 'vicidial',\n    ok: !!(result.ok || result.success),\n    ...result,\n  },\n}];"
+      },
+      "name": "Outbound Dial",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Outbound Dial",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [
+    {
+      "name": "driven-b2b-qc"
+    }
+  ]
+}

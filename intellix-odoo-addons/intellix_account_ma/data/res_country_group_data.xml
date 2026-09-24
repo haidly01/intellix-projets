@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="country_group_intellix_export_services" model="res.country.group">
+        <field name="name">IntelliX — Export services (hors Maroc)</field>
+        <field name="country_ids" eval="[(6, 0, [
+            ref('base.fr'),
+            ref('base.be'),
+            ref('base.ch'),
+            ref('base.ca'),
+            ref('base.us'),
+            ref('base.uk'),
+            ref('base.de'),
+            ref('base.es'),
+            ref('base.it'),
+            ref('base.pt'),
+            ref('base.nl'),
+            ref('base.lu'),
+            ref('base.sn'),
+            ref('base.ci'),
+            ref('base.tn'),
+            ref('base.dz'),
+        ])]"/>
+    </record>
+</odoo>

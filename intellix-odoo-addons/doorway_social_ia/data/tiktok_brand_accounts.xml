@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="social_account_tiktok_coins_marocain" model="doorway.social.account">
+        <field name="name">Coins Marocain — TikTok</field>
+        <field name="platform">tiktok</field>
+        <field name="connection_state">disconnected</field>
+    </record>
+    <record id="social_account_tiktok_coins_quebec" model="doorway.social.account">
+        <field name="name">Coins Québec — TikTok</field>
+        <field name="platform">tiktok</field>
+        <field name="connection_state">disconnected</field>
+    </record>
+</odoo>

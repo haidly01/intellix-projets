@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data noupdate="1">
+    <record id="config_jt_sync_cookies_path" model="ir.config_parameter">
+      <field name="key">jt.sync.cookies_path</field>
+      <field name="value">/opt/intellix/jason_sync/cookies_session.json</field>
+    </record>
+  </data>
+</odoo>

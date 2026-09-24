@@ -1,0 +1,209 @@
+{
+  "name": "Immo Meta — Orchestrateur (Odoo + SMS + Appel Sophie)",
+  "nodes": [
+    {
+      "parameters": {
+        "event": "newLead",
+        "page": {
+          "__rl": true,
+          "mode": "id",
+          "value": "964640820063787"
+        },
+        "form": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "options": {
+          "simplifyOutput": true
+        }
+      },
+      "id": "a1-fb-trigger",
+      "name": "1 Facebook Lead Ads",
+      "type": "n8n-nodes-base.facebookLeadAdsTrigger",
+      "typeVersion": 1,
+      "position": [0, 300],
+      "disabled": true,
+      "notes": "Activer ce nœud après avoir connecté la credential Facebook Lead Ads et choisi le Formulaire. Désactiver le webhook de secours si vous utilisez uniquement ce trigger.",
+      "credentials": {
+        "facebookLeadAdsOAuth2Api": {
+          "id": "CONFIGURE_FACEBOOK_LEAD_ADS",
+          "name": "Facebook Lead Ads — Doorway"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "meta-immo-lead",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "a1b-webhook-meta",
+      "name": "1b Webhook secours (tests)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 480],
+      "webhookId": "meta-immo-lead-doorway"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json;\n\nfunction normalizePhone(phone) {\n  if (!phone) return '';\n  const d = String(phone).replace(/\\D/g, '');\n  if (d.length === 10) return '+1' + d;\n  if (d.length === 11 && d.startsWith('1')) return '+' + d;\n  if (String(phone).trim().startsWith('+')) return '+' + d;\n  return d ? '+1' + d : '';\n}\nfunction pick(obj, ...keys) {\n  for (const k of keys) {\n    if (obj && obj[k] != null && String(obj[k]).trim() !== '') return String(obj[k]).trim();\n  }\n  return '';\n}\n\nlet body;\nif (raw.data && typeof raw.data === 'object' && !raw.body) {\n  const d = raw.data;\n  const fullName = pick(d, 'full_name', 'nom_complet', 'fullname');\n  const parts = fullName.split(/\\s+/).filter(Boolean);\n  body = {\n    first_name: pick(d, 'first_name', 'prénom', 'prenom') || parts[0] || '',\n    last_name: pick(d, 'last_name', 'nom') || parts.slice(1).join(' ') || '',\n    phone: pick(d, 'phone_number', 'phone', 'téléphone', 'tel', 'mobile'),\n    email: pick(d, 'email', 'courriel'),\n    full_address: pick(d, 'street_address', 'address', 'full_address', 'adresse', 'property_address'),\n    selling_timeline: pick(d, 'selling_timeline', 'délai_vente', 'timeline', 'when_do_you_plan_to_sell'),\n    estimated_value: pick(d, 'estimated_value', 'valeur_estimée', 'property_value'),\n    current_mortgage: pick(d, 'current_mortgage', 'hypothèque', 'mortgage_balance'),\n    ad_id: raw.ad?.id || '',\n    ad_name: raw.ad?.name || '',\n    form_id: raw.form?.id || '',\n    form_name: raw.form?.name || '',\n    meta_lead_id: raw.id || '',\n    page_id: raw.page?.id || '964640820063787',\n  };\n} else {\n  body = raw.body || raw;\n}\n\nconst nowStr = new Date().toLocaleString('en-US', { timeZone: 'America/Toronto' });\nconst toronto = new Date(nowStr);\nconst hour = toronto.getHours();\nconst day = toronto.getDay();\nconst isBusinessHours = day >= 1 && day <= 6 && hour >= 8 && hour < 20;\n\nreturn [{\n  json: {\n    ...body,\n    first_name: body.first_name || '',\n    last_name: body.last_name || '',\n    phone: normalizePhone(body.phone || body.mobile),\n    email: body.email || body.email_from || '',\n    full_address: body.full_address || body.street || body.address || '',\n    selling_timeline: body.selling_timeline || '',\n    estimated_value: body.estimated_value || '',\n    current_mortgage: body.current_mortgage || '',\n    isBusinessHours,\n    torontoHour: hour,\n    torontoDay: day\n  }\n}];"
+      },
+      "id": "a2-code-tz",
+      "name": "2 Normaliser lead Meta",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [260, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const b = $('2 Normaliser lead Meta').first().json;\nconst token = '{{META_IMMO_WEBHOOK_TOKEN}}';\nconst res = await this.helpers.httpRequest({\n  method: 'POST',\n  url: 'https://intellixcrm.com/api/immo/meta-lead',\n  headers: { 'X-Immo-Webhook-Token': token, 'Content-Type': 'application/json' },\n  body: {\n    first_name: b.first_name,\n    last_name: b.last_name,\n    phone: b.phone,\n    email: b.email,\n    full_address: b.full_address,\n    selling_timeline: b.selling_timeline,\n    estimated_value: b.estimated_value,\n    current_mortgage: b.current_mortgage,\n    ad_id: b.ad_id || '',\n    form_id: b.form_id || b.leadgen_form_id || '',\n    page_id: b.page_id || '964640820063787',\n    meta_lead_id: b.meta_lead_id || b.leadgen_id || b.id || ''\n  },\n  json: true,\n});\nreturn [{ json: { ...b, ...res } }];"
+      },
+      "id": "a3-odoo-create",
+      "name": "3 Odoo Create Lead",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [520, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const lead = $('3 Odoo Create Lead').first().json;\nconst prep = $('2 Normaliser lead Meta').first().json;\nconst phone = prep.phone;\nif (!phone) return [{ json: { ...lead, sms_sent: false } }];\ntry {\n  const sid = '{{TWILIO_ACCOUNT_SID}}';\n  const auth = Buffer.from(sid + ':{{TWILIO_AUTH_TOKEN}}').toString('base64');\n  const msg = `Bonjour ${prep.first_name || ''}! Merci pour votre demande d'évaluation marchande. Sophie vous appellera sous peu. — Maison Recherchée`;\n  await this.helpers.httpRequest({\n    method: 'POST',\n    url: `https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`,\n    headers: { Authorization: 'Basic ' + auth, 'Content-Type': 'application/x-www-form-urlencoded' },\n    body: `To=${encodeURIComponent(phone)}&From=${encodeURIComponent('{{TWILIO_FROM_IMMO}}')}&Body=${encodeURIComponent(msg)}`,\n  });\n  return [{ json: { ...lead, sms_sent: true } }];\n} catch (e) {\n  return [{ json: { ...lead, sms_sent: false, sms_error: String(e.message || e) } }];\n}"
+      },
+      "id": "a4-sms",
+      "name": "4 SMS Twilio Bienvenue",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [780, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "const lead = $('3 Odoo Create Lead').first().json;\nreturn [{ json: { ...lead, whatsapp_skipped: true } }];"
+      },
+      "id": "a5-whatsapp",
+      "name": "5 WhatsApp Twilio",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [780, 400]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "bh",
+              "leftValue": "={{ $('2 Normaliser lead Meta').item.json.isBusinessHours }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "a6-if-hours",
+      "name": "6 Heures ouvrées?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1040, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const lead = $('3 Odoo Create Lead').first().json;\nconst prep = $('2 Normaliser lead Meta').first().json;\nconst apiKey = '{{ELEVENLABS_API_KEY}}';\nconst agentId = lead.agent_id || lead.elevenlabs_agent_id_immo || '';\nconst phId = lead.elevenlabs_phone_number_id || '';\nif (!agentId || !phId || !prep.phone) {\n  return [{ json: { ...lead, call_skipped: true, reason: 'missing_agent_or_phone' } }];\n}\ntry {\n  const res = await this.helpers.httpRequest({\n    method: 'POST',\n    url: 'https://api.elevenlabs.io/v1/convai/twilio/outbound-call',\n    headers: { 'xi-api-key': apiKey, 'Content-Type': 'application/json' },\n    body: {\n      agent_id: agentId,\n      agent_phone_number_id: phId,\n      to_number: prep.phone,\n      telephony_call_config: { ringing_timeout_secs: 25 },\n      conversation_initiation_client_data: {\n        dynamic_variables: {\n          lead_name: prep.first_name || 'there',\n          property_address: prep.full_address || '',\n          selling_timeline: prep.selling_timeline || '',\n          lead_id_odoo: String(lead.lead_id || '')\n        }\n      }\n    },\n    json: true,\n  });\n  return [{ json: { ...lead, ...res, call_started: true } }];\n} catch (e) {\n  return [{ json: { ...lead, call_skipped: true, call_error: String(e.message || e) } }];\n}"
+      },
+      "id": "a7-el-call",
+      "name": "7 ElevenLabs Appel sortant",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1300, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "const lead = $('3 Odoo Create Lead').first().json;\nif (!lead.lead_id) return [{ json: lead }];\nconst token = '{{META_IMMO_WEBHOOK_TOKEN}}';\nawait this.helpers.httpRequest({\n  method: 'POST',\n  url: 'https://intellixcrm.com/api/immo/lead/update',\n  headers: { 'X-Immo-Webhook-Token': token, 'Content-Type': 'application/json' },\n  body: { lead_id: lead.lead_id, increment_call_attempt: true },\n  json: true,\n});\nreturn [{ json: lead }];"
+      },
+      "id": "a7b-odoo-called",
+      "name": "7b Odoo étape Appelé",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1560, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "const lead = $('3 Odoo Create Lead').first().json;\nif (!lead.lead_id) return [{ json: lead }];\nconst token = '{{META_IMMO_WEBHOOK_TOKEN}}';\nawait this.helpers.httpRequest({\n  method: 'POST',\n  url: 'https://intellixcrm.com/api/immo/lead/update',\n  headers: { 'X-Immo-Webhook-Token': token, 'Content-Type': 'application/json' },\n  body: {\n    lead_id: lead.lead_id,\n    next_action: 'Appel matin programmé 9h Toronto (lead hors heures)',\n    nurture_step: 0\n  },\n  json: true,\n});\nreturn [{ json: lead }];"
+      },
+      "id": "a8-hors-heures",
+      "name": "8 Hors heures — note Odoo",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1300, 420]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ '{{N8N_WEBHOOK_BASE}}' + '/webhook/morning-call-schedule' }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"pipeline\": \"immo\",\n  \"lead_id\": {{ $('3 Odoo Create Lead').item.json.lead_id }},\n  \"phone\": {{ JSON.stringify($('2 Normaliser lead Meta').item.json.phone) }},\n  \"first_name\": {{ JSON.stringify($('2 Normaliser lead Meta').item.json.first_name) }},\n  \"full_address\": {{ JSON.stringify($('2 Normaliser lead Meta').item.json.full_address) }},\n  \"agent_id\": {{ JSON.stringify($('3 Odoo Create Lead').item.json.agent_id || $('3 Odoo Create Lead').item.json.elevenlabs_agent_id_immo || '') }},\n  \"elevenlabs_phone_number_id\": {{ JSON.stringify($('3 Odoo Create Lead').item.json.elevenlabs_phone_number_id || '') }}\n}"
+      },
+      "id": "a8b-morning-call",
+      "name": "8b Planifier appel matin",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1560, 420]
+    }
+  ],
+  "connections": {
+    "1 Facebook Lead Ads": {
+      "main": [[{ "node": "2 Normaliser lead Meta", "type": "main", "index": 0 }]]
+    },
+    "1b Webhook secours (tests)": {
+      "main": [[{ "node": "2 Normaliser lead Meta", "type": "main", "index": 0 }]]
+    },
+    "2 Normaliser lead Meta": {
+      "main": [[{ "node": "3 Odoo Create Lead", "type": "main", "index": 0 }]]
+    },
+    "3 Odoo Create Lead": {
+      "main": [
+        [
+          { "node": "4 SMS Twilio Bienvenue", "type": "main", "index": 0 },
+          { "node": "5 WhatsApp Twilio", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "4 SMS Twilio Bienvenue": {
+      "main": [[{ "node": "6 Heures ouvrées?", "type": "main", "index": 0 }]]
+    },
+    "5 WhatsApp Twilio": {
+      "main": [[{ "node": "6 Heures ouvrées?", "type": "main", "index": 0 }]]
+    },
+    "6 Heures ouvrées?": {
+      "main": [
+        [{ "node": "7 ElevenLabs Appel sortant", "type": "main", "index": 0 }],
+        [{ "node": "8 Hors heures — note Odoo", "type": "main", "index": 0 }]
+      ]
+    },
+    "7 ElevenLabs Appel sortant": {
+      "main": [[{ "node": "7b Odoo étape Appelé", "type": "main", "index": 0 }]]
+    },
+    "8 Hors heures — note Odoo": {
+      "main": [[{ "node": "8b Planifier appel matin", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    { "name": "immo" },
+    { "name": "meta-ads" },
+    { "name": "doorway" }
+  ]
+}

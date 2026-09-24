@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_stats" name="Portail — Mes stats">
+        <t t-call="intellix_partner_portal.ipp_portal_layout">
+            <h1 class="ipp-page-title">Mes stats</h1>
+            <p class="ipp-page-sub">Vue lecture seule de votre performance partenaires.</p>
+
+            <div class="ipp-grid-3" style="margin-bottom:16px">
+                <div class="ipp-stat-card">
+                    <div class="ipp-stat-label">Acceptés</div>
+                    <div class="ipp-stat-value" style="color:#10b981" t-esc="accepted_count"/>
+                </div>
+                <div class="ipp-stat-card">
+                    <div class="ipp-stat-label">Score</div>
+                    <div class="ipp-stat-value" style="color:#a78bfa" t-esc="partner_score"/>
+                </div>
+                <div class="ipp-stat-card">
+                    <div class="ipp-stat-label">Convertis</div>
+                    <div class="ipp-stat-value" style="color:#06b6d4" t-esc="converted_count"/>
+                </div>
+            </div>
+
+            <div class="ipp-card">
+                <div class="ipp-card-title">Bloc actif</div>
+                <div style="font-size:18px;font-weight:700;color:#f59e0b;margin-bottom:8px">
+                    <t t-esc="delivered_count"/> livrés sur <t t-esc="bloc_size"/>
+                </div>
+                <div class="ipp-progress-bar" style="margin-bottom:8px">
+                    <div class="ipp-progress-fill" t-attf-style="width:#{bloc_percent}%"/>
+                </div>
+                <div style="font-size:14px;color:#b4b4d0">
+                    <t t-esc="remaining_count"/> lead(s) restant(s) à livrer
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

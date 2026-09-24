@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="crm_tag_reno_cuisine" model="crm.tag">
+        <field name="name">reno-cuisine</field>
+        <field name="color">3</field>
+    </record>
+    <record id="crm_tag_reno_salle_de_bain" model="crm.tag">
+        <field name="name">reno-salle-de-bain</field>
+        <field name="color">5</field>
+    </record>
+    <record id="crm_tag_reno_sous_sol" model="crm.tag">
+        <field name="name">reno-sous-sol</field>
+        <field name="color">2</field>
+    </record>
+    <record id="crm_tag_reno_agrandissement" model="crm.tag">
+        <field name="name">reno-agrandissement</field>
+        <field name="color">6</field>
+    </record>
+    <record id="crm_tag_reno_exterieure" model="crm.tag">
+        <field name="name">reno-exterieure</field>
+        <field name="color">9</field>
+    </record>
+    <record id="crm_tag_reno_patio_terrasse" model="crm.tag">
+        <field name="name">reno-patio-terrasse</field>
+        <field name="color">4</field>
+    </record>
+    <record id="crm_tag_reno_pergola" model="crm.tag">
+        <field name="name">reno-pergola</field>
+        <field name="color">7</field>
+    </record>
+    <record id="crm_tag_reno_pool_house" model="crm.tag">
+        <field name="name">reno-pool-house</field>
+        <field name="color">8</field>
+    </record>
+    <record id="crm_tag_reno_pieux" model="crm.tag">
+        <field name="name">reno-pieux</field>
+        <field name="color">1</field>
+    </record>
+    <record id="crm_tag_reno_multi_projets" model="crm.tag">
+        <field name="name">reno-multi-projets</field>
+        <field name="color">10</field>
+    </record>
+    <record id="crm_tag_eligible_renoclimat" model="crm.tag">
+        <field name="name">eligible-renoclimat</field>
+        <field name="color">5</field>
+    </record>
+    <record id="crm_tag_eligible_cirhm" model="crm.tag">
+        <field name="name">eligible-cirhm</field>
+        <field name="color">3</field>
+    </record>
+    <record id="crm_tag_eligible_ciad" model="crm.tag">
+        <field name="name">eligible-ciad</field>
+        <field name="color">6</field>
+    </record>
+    <record id="crm_tag_eligible_tps_tvq" model="crm.tag">
+        <field name="name">eligible-tps-tvq</field>
+        <field name="color">2</field>
+    </record>
+    <record id="crm_tag_eligible_renoregion" model="crm.tag">
+        <field name="name">eligible-renoregion</field>
+        <field name="color">9</field>
+    </record>
+    <record id="crm_tag_plans_3d_offerts" model="crm.tag">
+        <field name="name">plans-3d-offerts</field>
+        <field name="color">4</field>
+    </record>
+    <record id="crm_tag_photos_uploadees" model="crm.tag">
+        <field name="name">photos-uploadees</field>
+        <field name="color">3</field>
+    </record>
+    <record id="crm_tag_source_soumissionentrepreneurs" model="crm.tag">
+        <field name="name">source-soumissionentrepreneurs</field>
+        <field name="color">7</field>
+    </record>
+    <record id="crm_tag_haidly_hot" model="crm.tag">
+        <field name="name">haidly-hot</field>
+        <field name="color">10</field>
+    </record>
+    <record id="crm_tag_haidly_warm" model="crm.tag">
+        <field name="name">haidly-warm</field>
+        <field name="color">4</field>
+    </record>
+    <record id="crm_tag_haidly_cold" model="crm.tag">
+        <field name="name">haidly-cold</field>
+        <field name="color">1</field>
+    </record>
+</odoo>

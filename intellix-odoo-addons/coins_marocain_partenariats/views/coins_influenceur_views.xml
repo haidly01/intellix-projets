@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_coins_influenceur_list" model="ir.ui.view">
+        <field name="name">coins.influenceur.list</field>
+        <field name="model">coins.influenceur</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="plateforme"/>
+                <field name="ville"/>
+                <field name="niche"/>
+                <field name="abonnes"/>
+                <field name="taux_engagement"/>
+                <field name="audience_locale"/>
+                <field name="statut" widget="badge"/>
+                <field name="date_repere"/>
+                <field name="repere_par" widget="many2one_avatar_user"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_coins_influenceur_form" model="ir.ui.view">
+        <field name="name">coins.influenceur.form</field>
+        <field name="model">coins.influenceur</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="statut" widget="statusbar"
+                           statusbar_visible="a_contacter,contacte,en_discussion,partenaire_actif,decline"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_ententes" type="object"
+                                class="oe_stat_button" icon="fa-handshake-o">
+                            <field name="entente_count" widget="statinfo" string="Ententes"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Nom / @compte"/></h1>
+                    </div>
+                    <group>
+                        <group string="Profil">
+                            <field name="plateforme"/>
+                            <field name="ville"/>
+                            <field name="niche"/>
+                            <field name="abonnes"/>
+                            <field name="taux_engagement"/>
+                            <field name="audience_locale"/>
+                        </group>
+                        <group string="Suivi">
+                            <field name="contact" placeholder="email@… ou +212…"/>
+                            <field name="repere_par"/>
+                            <field name="date_repere"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <group string="Notes">
+                        <field name="notes" nolabel="1" placeholder="Notes de repérage / négociation…"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_coins_influenceur_search" model="ir.ui.view">
+        <field name="name">coins.influenceur.search</field>
+        <field name="model">coins.influenceur</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="ville"/>
+                <field name="niche"/>
+                <field name="contact"/>
+                <filter name="filter_actif" string="Partenaires actifs"
+                        domain="[('statut', '=', 'partenaire_actif')]"/>
+                <filter name="filter_a_contacter" string="À contacter"
+                        domain="[('statut', '=', 'a_contacter')]"/>
+                <group>
+                    <filter name="group_statut" string="Statut" context="{'group_by': 'statut'}"/>
+                    <filter name="group_plateforme" string="Plateforme" context="{'group_by': 'plateforme'}"/>
+                    <filter name="group_ville" string="Ville" context="{'group_by': 'ville'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_coins_influenceur" model="ir.actions.act_window">
+        <field name="name">Influenceurs</field>
+        <field name="res_model">coins.influenceur</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_coins_influenceur_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Ajoutez votre premier influenceur
+            </p>
+            <p>Remplace le suivi Excel : repérage, contact, négociation.</p>
+        </field>
+    </record>
+</odoo>

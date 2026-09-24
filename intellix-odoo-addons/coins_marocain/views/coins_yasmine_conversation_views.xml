@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_coins_yasmine_conversation_form" model="ir.ui.view">
+        <field name="name">coins.yasmine.conversation.form</field>
+        <field name="model">coins.yasmine.conversation</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml"><form string="Conversation Yasmine">
+                <header>
+                    <button name="action_prendre_le_relais" type="object" string="Répondre WhatsApp" class="btn-primary" icon="fa-whatsapp" invisible="state == 'abandoned'"/>
+                    <button name="action_save_contact" type="object" string="Enregistrer contact" class="btn-secondary" icon="fa-user-plus"/>
+                    <button name="action_creer_tache_suivi" type="object" string="Créer une tâche de suivi" class="btn-secondary" icon="fa-calendar-check-o"/>
+                    <button name="action_set_state_open" type="object" string="→ En cours" class="btn-link" invisible="state == 'open'"/>
+                    <button name="action_set_state_recommended" type="object" string="→ Recommandation" class="btn-link" invisible="state == 'recommended'"/>
+                    <button name="action_set_state_hot_handoff" type="object" string="→ Hot-handoff" class="btn-link" invisible="state == 'hot_handoff'"/>
+                    <button name="action_set_state_abandoned" type="object" string="→ Abandonnée" class="btn-link" invisible="state == 'abandoned'"/>
+                    <field name="state" widget="statusbar" clickable="1" statusbar_visible="open,recommended,hot_handoff,abandoned"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_activites" type="object" class="oe_stat_button" icon="fa-map-marker" invisible="not activites_recommandees_ids">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Activités</span>
+                            </div>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Hot" bg_color="text-bg-danger" invisible="not signal_fort_detecte"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <div class="alert alert-warning" role="alert" invisible="has_contact">
+                        Aucune coordonnée captée dans le chat. Saisissez le
+                        <b>WhatsApp</b> (et idéalement nom / e-mail) ci-dessous,
+                        puis cliquez <b>Répondre WhatsApp</b> pour prendre la suite.
+                    </div>
+                    <div class="alert alert-info" role="alert" invisible="not has_contact">
+                        Coordonnées voyageur ci-dessous — utilisez
+                        <b>Répondre WhatsApp</b> pour poursuivre la conversation
+                        (le chatter « Envoyer message » est interne Odoo, pas WhatsApp).
+                    </div>
+                    <group string="Coordonnées client" name="contact">
+                        <group>
+                            <field name="visitor_name" placeholder="Nom du voyageur"/>
+                            <field name="visitor_phone" placeholder="+2126…"/>
+                            <field name="visitor_email" placeholder="email@…"/>
+                            <field name="partner_id" options="{'no_create_edit': False}"/>
+                        </group>
+                        <group>
+                            <field name="contact_name_display" readonly="1"/>
+                            <field name="contact_phone_display" readonly="1"/>
+                            <field name="contact_email_display" readonly="1"/>
+                            <field name="user_id" widget="many2one_avatar_user"/>
+                            <field name="has_contact" invisible="1"/>
+                            <field name="can_prendre_relais" invisible="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Session">
+                            <field name="session_id"/>
+                            <field name="language"/>
+                            <field name="turn_count"/>
+                            <field name="completed"/>
+                        </group>
+                        <group string="Profil déduit (modifiable)">
+                            <field name="intention_deduite"/>
+                            <field name="composition_groupe"/>
+                            <field name="rythme"/>
+                            <field name="score_confiance"/>
+                            <field name="converti_en_reservation"/>
+                            <field name="carnet_badge_ref"/>
+                        </group>
+                    </group>
+                    <group string="Hot-handoff">
+                        <group>
+                            <field name="signal_fort_detecte"/>
+                            <field name="signal_fort_type"/>
+                            <field name="hot_handoff_envoye"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Conversation" name="transcript">
+                            <field name="transcript_html" nolabel="1"/>
+                            <separator string="Transcript brut"/>
+                            <field name="raw_transcript" nolabel="1" widget="text" groups="base.group_no_one"/>
+                        </page>
+                        <page string="Recommandation" name="reco">
+                            <field name="recommendation_narrative" nolabel="1" placeholder="Texte narratif affiché au visiteur…"/>
+                            <separator string="Activités recommandées"/>
+                            <field name="activites_recommandees_ids" nolabel="1" widget="many2many_tags"/>
+                            <separator string="Détail libre"/>
+                            <field name="detail_libre" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form></field>
+    </record>
+
+    <record id="view_coins_yasmine_conversation_kanban" model="ir.ui.view">
+        <field name="name">coins.yasmine.conversation.kanban</field>
+        <field name="model">coins.yasmine.conversation</field>
+        <field name="type">kanban</field>
+        <field name="arch" type="xml"><kanban default_group_by="state" class="o_kanban_small_column" quick_create="false">
+                <field name="name"/>
+                <field name="state"/>
+                <field name="intention_deduite"/>
+                <field name="composition_groupe"/>
+                <field name="rythme"/>
+                <field name="signal_fort_detecte"/>
+                <field name="signal_fort_type"/>
+                <field name="hot_handoff_envoye"/>
+                <field name="partner_id"/>
+                <field name="user_id"/>
+                <field name="visitor_phone"/>
+                <field name="visitor_email"/>
+                <field name="visitor_name"/>
+                <field name="score_confiance"/>
+                <field name="turn_count"/>
+                <field name="create_date"/>
+                <field name="activity_ids"/>
+                <progressbar field="state" colors="{&quot;open&quot;: &quot;info&quot;, &quot;recommended&quot;: &quot;success&quot;, &quot;hot_handoff&quot;: &quot;warning&quot;, &quot;abandoned&quot;: &quot;muted&quot;}"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex justify-content-between align-items-start mb-1">
+                            <strong><field name="name"/></strong>
+                            <span t-if="record.signal_fort_detecte.raw_value" class="badge text-bg-danger">HOT</span>
+                        </div>
+                        <div class="text-muted small mb-1">
+                            <field name="intention_deduite"/>
+                            <t t-if="record.composition_groupe.raw_value"> · </t>
+                            <field name="composition_groupe"/>
+                        </div>
+                        <div t-if="record.partner_id.raw_value" class="small">
+                            <i class="fa fa-user" title="Contact"/> <field name="partner_id"/>
+                        </div>
+                        <div t-if="record.visitor_phone.raw_value" class="small">
+                            <i class="fa fa-whatsapp" title="WhatsApp"/> <field name="visitor_phone"/>
+                        </div>
+                        <div t-if="record.visitor_email.raw_value" class="small">
+                            <i class="fa fa-envelope" title="E-mail"/> <field name="visitor_email"/>
+                        </div>
+                        <div t-if="record.user_id.raw_value" class="small mt-1">
+                            <i class="fa fa-handshake-o" title="Pris en charge"/> <field name="user_id"/>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-2 small text-muted">
+                            <span><field name="turn_count"/> tours</span>
+                            <span t-if="record.score_confiance.raw_value">
+                                conf. <field name="score_confiance"/>
+                            </span>
+                        </div>
+                        <field name="activity_ids" widget="kanban_activity"/>
+                    </t>
+                </templates>
+            </kanban></field>
+    </record>
+
+    <record id="view_coins_yasmine_conversation_list" model="ir.ui.view">
+        <field name="name">coins.yasmine.conversation.list</field>
+        <field name="model">coins.yasmine.conversation</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml"><list>
+                <field name="name"/>
+                <field name="create_date"/>
+                <field name="contact_name_display" string="Nom"/>
+                <field name="visitor_phone" string="WhatsApp"/>
+                <field name="visitor_email" string="E-mail"/>
+                <field name="partner_id" optional="hide"/>
+                <field name="user_id" widget="many2one_avatar_user"/>
+                <field name="intention_deduite"/>
+                <field name="composition_groupe"/>
+                <field name="rythme"/>
+                <field name="state" decoration-info="state == 'open'" decoration-success="state == 'recommended'" decoration-warning="state == 'hot_handoff'" decoration-muted="state == 'abandoned'" widget="badge"/>
+                <field name="signal_fort_detecte"/>
+                <field name="score_confiance"/>
+                <field name="turn_count"/>
+                <field name="converti_en_reservation"/>
+            </list></field>
+    </record>
+
+    <record id="view_coins_yasmine_conversation_search" model="ir.ui.view">
+        <field name="name">coins.yasmine.conversation.search</field>
+        <field name="model">coins.yasmine.conversation</field>
+        <field name="type">search</field>
+        <field name="arch" type="xml"><search>
+                <field name="name"/>
+                <field name="session_id"/>
+                <field name="partner_id"/>
+                <field name="user_id"/>
+                <field name="intention_deduite"/>
+                <filter name="filter_open" string="En cours" domain="[('state', '=', 'open')]"/>
+                <filter name="filter_recommended" string="Recommandées" domain="[('state', '=', 'recommended')]"/>
+                <filter name="filter_hot" string="Hot-handoff" domain="[('signal_fort_detecte', '=', True)]"/>
+                <filter name="filter_mine" string="Mes relais" domain="[('user_id', '=', uid)]"/>
+                <filter name="filter_converted" string="Converties" domain="[('converti_en_reservation', '=', True)]"/>
+                <group>
+                    <filter name="group_state" string="Statut" context="{'group_by': 'state'}"/>
+                    <filter name="group_intention" string="Intention" context="{'group_by': 'intention_deduite'}"/>
+                    <filter name="group_user" string="Pris en charge" context="{'group_by': 'user_id'}"/>
+                </group>
+            </search></field>
+    </record>
+
+    <record id="view_coins_yasmine_relais_wizard_form" model="ir.ui.view">
+        <field name="name">coins.yasmine.relais.wizard.form</field>
+        <field name="model">coins.yasmine.relais.wizard</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml"><form string="Prendre le relais">
+                <div class="alert alert-info" role="alert" invisible="phone">
+                    Aucun numéro capté dans le chat. Saisissez le WhatsApp du voyageur ci-dessous pour lui écrire.
+                </div>
+                <group>
+                    <field name="conversation_id" readonly="1"/>
+                    <field name="visitor_name" placeholder="Nom du voyageur"/>
+                    <field name="visitor_email" placeholder="email@…"/>
+                    <field name="phone" placeholder="+2126… ou 06…" required="1"/>
+                </group>
+                <separator string="Message WhatsApp"/>
+                <field name="message" nolabel="1" placeholder="Message WhatsApp au visiteur…"/>
+                <footer>
+                    <button name="action_send_whatsapp" type="object" string="Envoyer sur WhatsApp" class="btn-primary" icon="fa-whatsapp"/>
+                    <button string="Annuler" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form></field>
+    </record>
+
+</odoo>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="people_engine.PeCourseViewer">
+        <div class="o_pe_course_viewer o_action o_intellix_client_action ix-fullscreen-dashboard">
+            <iframe class="o_pe_course_viewer__iframe"
+                    t-att-src="iframeUrl"
+                    title="Formation Agent IA de Qualification"/>
+        </div>
+    </t>
+</templates>

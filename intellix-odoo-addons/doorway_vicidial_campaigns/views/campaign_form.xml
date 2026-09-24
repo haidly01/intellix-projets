@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <delete model="ir.ui.view" id="view_doorway_campaign_form"/>
+
+    <record id="view_campaign_form" model="ir.ui.view">
+        <field name="name">doorway.campaign.form</field>
+        <field name="model">doorway.campaign</field>
+        <field name="priority">16</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_start" string="▶ Démarrer" type="object"
+                            class="btn-primary"
+                            invisible="state not in ('draft', 'ready', 'paused')"/>
+                    <button name="action_pause" string="⏸ Pause" type="object"
+                            invisible="state != 'active'"/>
+                    <button name="action_stop" string="⏹ Arrêter" type="object"
+                            invisible="state not in ('active', 'paused')"/>
+                    <button name="action_sync_vicidial" string="Sync appels" type="object"
+                            class="btn-secondary"/>
+                    <button name="action_open_import_wizard" string="📁 Importer contacts"
+                            type="object" class="btn-secondary"/>
+                    <button name="action_cleanup_list" string="🧹 Nettoyer ma liste"
+                            type="object" class="btn-secondary"
+                            confirm="Supprimer les numéros invalides et doublons, puis recharger le hopper VICIdial ?"/>
+                    <button name="action_open_user_config" string="👥 Configurer agents"
+                            type="object" class="btn-secondary"/>
+                    <button name="action_open_vicidial_admin" string="Console appels"
+                            type="object" class="btn-secondary"
+                            title="Journal des appels et enregistrements (Odoo)"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,ready,active,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="object" name="action_sync_call_logs"
+                                class="oe_stat_button" icon="fa-refresh"
+                                invisible="not vicidial_campaign_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Sync logs</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Nom de la campagne..." class="oe_inline"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Configuration générale">
+                            <field name="campaign_mode"/>
+                            <field name="pipeline"/>
+                            <field name="vicidial_campaign_id" readonly="1"/>
+                            <field name="vicidial_list_id" readonly="1"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                        </group>
+                        <group string="Statistiques">
+                            <field name="total_contacts" readonly="1"/>
+                            <field name="total_called" readonly="1"/>
+                            <field name="total_answered" readonly="1"/>
+                            <field name="total_amd" readonly="1"/>
+                            <field name="answer_rate" widget="progressbar"
+                                   options="{'editable': false, 'max_value': 100}" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="🤖 Agent IA"
+                              invisible="campaign_mode == 'human_agent'">
+                            <group>
+                                <field name="ia_agent_id"/>
+                                <field name="ia_fallback_agent_id"/>
+                                <field name="ia_max_call_duration"/>
+                                <field name="ia_transfer_on_interest"/>
+                                <field name="ia_transfer_number"
+                                       invisible="not ia_transfer_on_interest"/>
+                            </group>
+                            <field name="ia_call_script_hint"
+                                   placeholder="Contexte additionnel envoyé à l'agent IA (ex: campagne toiture printemps 2026)..."/>
+                        </page>
+                        <page string="👥 Agents humains"
+                              invisible="campaign_mode == 'ia_agent'">
+                            <group>
+                                <field name="human_agent_user_ids"
+                                       widget="many2many_tags"
+                                       options="{'no_create': True}"
+                                       placeholder="Sélectionner des utilisateurs…"/>
+                            </group>
+                            <group string="Référence VICIdial">
+                                <field name="vicidial_ingroup" readonly="1"/>
+                                <field name="script_url" placeholder="https://..."/>
+                            </group>
+                            <field name="human_agent_ids" invisible="1"/>
+                        </page>
+                        <page string="📞 Détection répondeur (AMD)">
+                            <group>
+                                <field name="amd_enabled"/>
+                                <field name="amd_action" invisible="not amd_enabled"/>
+                                <field name="amd_sensitivity" invisible="not amd_enabled"/>
+                                <field name="amd_wait_seconds" invisible="not amd_enabled"/>
+                                <field name="amd_callback_delay_hours"
+                                       invisible="amd_action != 'callback_schedule'"/>
+                            </group>
+                            <field name="amd_message_tts"
+                                   placeholder="Message à laisser sur le répondeur..."
+                                   invisible="amd_action != 'leave_message'"/>
+                            <field name="amd_message_file"
+                                   invisible="amd_action != 'leave_message'"/>
+                        </page>
+                        <page string="⚡ Appels simultanés">
+                            <group>
+                                <group>
+                                    <field name="max_concurrent_calls"/>
+                                    <field name="auto_dial_mode"/>
+                                    <field name="dial_level"/>
+                                    <field name="dial_ratio"/>
+                                </group>
+                                <group>
+                                    <field name="dial_timeout_seconds"/>
+                                    <field name="calls_per_minute_limit"/>
+                                    <field name="retry_attempts"/>
+                                    <field name="retry_delay_minutes"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="📇 Contacts">
+                            <field name="contact_ids" nolabel="1">
+                                <list editable="bottom">
+                                    <field name="phone_number"/>
+                                    <field name="first_name"/>
+                                    <field name="last_name"/>
+                                    <field name="state"/>
+                                    <field name="vicidial_lead_id"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="📋 Log appels">
+                            <field name="call_log_ids" readonly="1" nolabel="1" limit="40">
+                                <list>
+                                    <field name="call_date"/>
+                                    <field name="phone_number"/>
+                                    <field name="duration"/>
+                                    <field name="amd_result" widget="badge"/>
+                                    <field name="disposition" widget="badge"/>
+                                    <field name="agent_name"/>
+                                    <field name="human_agent_id" optional="hide"/>
+                                    <field name="recording_url" widget="url" optional="show"/>
+                                    <button name="action_open_recording" type="object"
+                                            string="Écouter" icon="fa-play"
+                                            invisible="not recording_url"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes">
+                            <field name="description" nolabel="1"
+                                   placeholder="Notes internes..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_doorway_campaign_agent_form" model="ir.ui.view">
+        <field name="name">doorway.campaign.agent.user.form</field>
+        <field name="model">doorway.campaign.agent.user</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_sync_vicidial" type="object" string="Sync appels" class="btn-primary"/>
+                    <button name="action_view_call_logs" type="object"
+                            string="Voir enregistrements" class="btn-secondary"
+                            invisible="call_log_count == 0"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_call_logs" type="object"
+                                class="oe_stat_button" icon="fa-phone"
+                                invisible="call_log_count == 0">
+                            <field name="call_log_count" widget="statinfo" string="Enregistrements"/>
+                        </button>
+                    </div>
+                    <group>
+                        <field name="user_id"/>
+                        <field name="vicidial_user"/>
+                        <field name="full_name"/>
+                        <field name="callback_phone" placeholder="5145551234"/>
+                        <field name="user_group"/>
+                        <field name="user_level"/>
+                        <field name="active"/>
+                        <field name="vicidial_qualification_active"/>
+                        <field name="vicidial_crm_team_id"/>
+                        <field name="vicidial_crm_stage_id"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_doorway_campaign_agent_list" model="ir.ui.view">
+        <field name="name">doorway.campaign.agent.user.list</field>
+        <field name="model">doorway.campaign.agent.user</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="user_id"/>
+                <field name="vicidial_user"/>
+                <field name="callback_phone" optional="show"/>
+                <field name="vicidial_qualification_active"/>
+                <field name="vicidial_crm_team_id" optional="show"/>
+                <field name="user_group"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_file_import_wizard" model="ir.ui.view">
+        <field name="name">doorway.file.import.wizard.form</field>
+        <field name="model">doorway.file.import.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Import contacts">
+                <group>
+                    <field name="campaign_id"/>
+                    <field name="inject_vicidial"/>
+                    <field name="filename" invisible="1"/>
+                    <field name="data_file" filename="filename"/>
+                </group>
+                <footer>
+                    <button name="action_import" type="object" string="Importer" class="btn-primary"/>
+                    <button name="action_cleanup_list" type="object"
+                            string="Nettoyer ma liste" class="btn-secondary"
+                            confirm="Supprimer les numéros invalides et doublons de cette campagne ?"/>
+                    <button string="Annuler" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_user_config_wizard" model="ir.ui.view">
+        <field name="name">doorway.user.config.wizard.form</field>
+        <field name="model">doorway.user.config.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Configurer agents">
+                <group>
+                    <field name="campaign_id"/>
+                    <field name="user_ids" widget="many2many_tags"/>
+                    <field name="user_group"/>
+                    <field name="user_level"/>
+                    <field name="sync_vicidial"/>
+                </group>
+                <footer>
+                    <button name="action_apply" type="object" string="Appliquer" class="btn-primary"/>
+                    <button string="Annuler" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

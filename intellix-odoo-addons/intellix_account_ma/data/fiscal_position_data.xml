@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Position fiscale export — taxes mappées en post-init (Odoo 19 original_tax_ids) -->
+    <record id="fiscal_position_export_services" model="account.fiscal.position">
+        <field name="name">Export de services</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="auto_apply" eval="True"/>
+        <field name="sequence" eval="2"/>
+        <field name="country_group_id" ref="country_group_intellix_export_services"/>
+        <field name="note"><![CDATA[
+            <p>Prestations de services exportées hors Maroc — TVA 0 % (art. 92 CGI / hors champ).</p>
+            <p>Clients FR, BE, CH, CA, etc. Clients marocains : position « Maroc » (20 %).</p>
+        ]]></field>
+    </record>
+
+</odoo>

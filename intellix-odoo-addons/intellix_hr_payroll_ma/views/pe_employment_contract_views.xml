@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pe_employment_contract_form_payroll_ma" model="ir.ui.view">
+        <field name="name">pe.employment.contract.form.payroll.ma</field>
+        <field name="model">pe.employment.contract</field>
+        <field name="inherit_id" ref="people_engine.view_pe_employment_contract_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_ma_payslips" type="object"
+                        class="oe_stat_button" icon="fa-money"
+                        invisible="not payslip_ma_count">
+                    <field name="payslip_ma_count" widget="statinfo" string="Bulletins MA"/>
+                </button>
+            </xpath>
+            <xpath expr="//header" position="inside">
+                <button name="action_generate_ma_payslip" type="object"
+                        string="Générer bulletin MA"
+                        class="btn-secondary"
+                        invisible="statut != 'active' or contract_type == 'freelance'"
+                        groups="intellix_hr_payroll_ma.group_hr_payroll_ma_user"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

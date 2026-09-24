@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="hr_ir_config_doorway" model="hr.ir.config">
+        <field name="company_id" ref="base.main_company"/>
+        <field name="professional_expense_rate">20.0</field>
+        <field name="professional_expense_annual_cap">30000</field>
+        <field name="family_deduction_annual">360</field>
+        <field name="max_dependents">6</field>
+        <field name="note">Taux indicatifs 2024-2025 — à mettre à jour chaque année fiscale.</field>
+    </record>
+</odoo>

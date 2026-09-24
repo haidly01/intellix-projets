@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="mon_coin_layout" name="Mon Coin layout">
+        <html lang="fr">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <title>Mon Coin — Coins Québec</title>
+                <link rel="preconnect" href="https://fonts.googleapis.com"/>
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
+                <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&amp;family=Jost:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+                <link rel="stylesheet" href="/coins_quebec/static/src/css/mon_coin.css?v=19.0.1.17"/>
+            </head>
+            <body>
+                <div class="mc-page">
+                    <div class="mc-app">
+                        <aside class="mc-side">
+                            <div class="mc-logo"><span class="mark"></span><span>Mon Coin</span></div>
+                            <div class="sb-merchant">
+                                <b t-out="ops.get('merchant') or fiche.name"/>
+                                <span t-out="ops.get('place') or ''"/>
+                            </div>
+                            <nav class="mc-nav">
+                                <t t-foreach="nav" t-as="item">
+                                    <a t-att-class="'on' if page == item[0] else None" t-att-href="item[1]">
+                                        <span class="ic" t-out="item[3]"/>
+                                        <t t-out="item[2]"/>
+                                    </a>
+                                </t>
+                                <div class="nav-sep"/>
+                                <t t-foreach="nav_more" t-as="item">
+                                    <a t-att-class="'on' if page == item[0] else None" t-att-href="item[1]">
+                                        <t t-out="item[2]"/>
+                                    </a>
+                                </t>
+                            </nav>
+                            <a t-if="staff_demo" href="/mon-coin/demo/exit" class="btn btn-ghost" style="margin-top:12px;color:#f2e8d5;border-color:rgba(255,255,255,.2);background:transparent;">Quitter la démo</a>
+                            <a t-else="" href="/mon-coin/logout" class="btn btn-ghost" style="margin-top:12px;color:#f2e8d5;border-color:rgba(255,255,255,.2);background:transparent;">Déconnexion</a>
+                        </aside>
+                        <main class="mc-main">
+                            <t t-if="demo_mode">
+                                <div class="mc-demo-banner">
+                                    DÉMO MON COIN — Café des Trois Rives, Sorel-Tracy. Données fictives, hors production. Une modification ici n’écrit jamais sur une vraie fiche.
+                                </div>
+                            </t>
+                            <t t-if="flash_ok == 'draft'"><div class="flash ok">Brouillon enregistré. Rien n’est publié sans validation.</div></t>
+                            <t t-if="flash_ok == 'moderation'"><div class="flash ok">Fiche envoyée en modération. L’équipe Doorway la relit avant la carte.</div></t>
+                            <t t-if="flash_ok == 'boost'"><div class="flash ok">Demande transmise à l’équipe Doorway (activité réelle).</div></t>
+                            <t t-if="flash_ok == 'saved'"><div class="flash ok">Compte marchand enregistré côté serveur. Les clés ne s’affichent plus ici.</div></t>
+                            <t t-if="flash_ok == 'cleared'"><div class="flash ok">Identifiants Authorize.net retirés.</div></t>
+                            <t t-if="flash_ok == 'espace'"><div class="flash ok">Espace créé. Complétez la fiche, puis envoyez en modération.</div></t>
+                            <t t-if="flash_ok == 'demo_noop'"><div class="flash ok">Mode démo — aucune demande réelle, aucun lead ITEX/Driven, aucune clé enregistrée.</div></t>
+                            <t t-if="flash_ok == 'demo_saved'"><div class="flash ok">Brouillon démo enregistré sur la fiche [DÉMO] uniquement.</div></t>
+                            <t t-if="error"><div class="flash err" t-out="error"/></t>
+                            <t t-out="0"/>
+                        </main>
+                    </div>
+                </div>
+                <script src="/coins_quebec/static/src/js/mon_coin.js"></script>
+            </body>
+        </html>
+    </template>
+
+    <template id="mon_coin_login" name="Mon Coin login">
+        <html lang="fr">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <title>Connexion — Mon Coin</title>
+                <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&amp;family=Jost:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+                <link rel="stylesheet" href="/coins_quebec/static/src/css/mon_coin.css?v=19.0.1.17"/>
+            </head>
+            <body>
+                <div class="mc-login">
+                    <div class="kicker">Coins Québec</div>
+                    <h1>Mon Coin</h1>
+                    <p>Espace commerçant — vous ne voyez que votre fiche.</p>
+                    <t t-if="error"><div class="flash err" t-out="error"/></t>
+                    <form method="post" action="/mon-coin/login">
+                        <input type="hidden" name="csrf_token" t-att-value="csrf_token"/>
+                        <label>Courriel</label>
+                        <input type="email" name="login" required="required" autocomplete="username"/>
+                        <label>Mot de passe</label>
+                        <input type="password" name="password" required="required" autocomplete="current-password"/>
+                        <div class="btn-row">
+                            <button class="btn" type="submit">Entrer</button>
+                            <a class="btn btn-ghost" href="/mon-coin/inscription">Créer un espace</a>
+                        </div>
+                    </form>
+                </div>
+            </body>
+        </html>
+    </template>
+
+    <template id="mon_coin_signup" name="Mon Coin inscription">
+        <html lang="fr">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <title>Créer mon espace — Mon Coin</title>
+                <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&amp;family=Jost:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+                <link rel="stylesheet" href="/coins_quebec/static/src/css/mon_coin.css?v=19.0.1.17"/>
+            </head>
+            <body>
+                <div class="mc-login" style="max-width:560px">
+                    <div class="kicker">Coins Québec</div>
+                    <h1>Créer l’espace</h1>
+                    <p>Ensuite vous complétez la fiche. Rien n’apparaît sur la carte sans modération.</p>
+                    <t t-if="error"><div class="flash err" t-out="error"/></t>
+                    <form method="post" action="/mon-coin/inscription">
+                        <input type="hidden" name="csrf_token" t-att-value="csrf_token"/>
+                        <label>Nom du commerce</label>
+                        <input type="text" name="name" required="required"/>
+                        <div class="row">
+                            <div>
+                                <label>Contact</label>
+                                <input type="text" name="contact_name"/>
+                            </div>
+                            <div>
+                                <label>Téléphone</label>
+                                <input type="tel" name="phone"/>
+                            </div>
+                        </div>
+                        <label>Courriel (identifiant)</label>
+                        <input type="email" name="email" required="required"/>
+                        <label>Mot de passe (8 caractères min.)</label>
+                        <input type="password" name="password" required="required" minlength="8"/>
+                        <div class="row">
+                            <div>
+                                <label>Région</label>
+                                <select name="region">
+                                    <option value="monteregie">Montérégie</option>
+                                    <option value="estrie">Estrie</option>
+                                    <option value="sorel">Sorel</option>
+                                    <option value="laurentides">Laurentides</option>
+                                    <option value="montreal">Montréal</option>
+                                    <option value="quebec">Québec</option>
+                                    <option value="outaouais">Outaouais</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>Catégorie</label>
+                                <select name="type_partenaire">
+                                    <option value="resto">Gourmand</option>
+                                    <option value="hebergement">Hébergement</option>
+                                    <option value="spa">Bien-être</option>
+                                    <option value="activite">Plein air</option>
+                                    <option value="evenement">Événement</option>
+                                    <option value="autre">Autre</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="btn-row">
+                            <button class="btn" type="submit">Créer mon espace</button>
+                            <a class="btn btn-ghost" href="/mon-coin/login">J’ai déjà un compte</a>
+                        </div>
+                    </form>
+                </div>
+            </body>
+        </html>
+    </template>
+</odoo>

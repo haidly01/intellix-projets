@@ -1,0 +1,325 @@
+// Intellix — Tableaux de bord Spreadsheet (Ventes, Finance, etc.)
+// 1) dashboard_action.scss impose background white
+// 2) o_spreadsheet_extended.dark.scss force color-scheme:light dans .o-spreadsheet
+
+// Surcharge du force-light Odoo (uniquement dans l’action tableaux de bord)
+.o_spreadsheet_dashboard_action .o-spreadsheet,
+.o_web_client.o_intellix_branded .o_spreadsheet_dashboard_action .o-spreadsheet {
+    color-scheme: dark !important;
+
+    .bg-white {
+        background-color: var(--ix-surface) !important;
+    }
+
+    .o_multi_record_selector .badge {
+        background-color: rgba(99, 102, 241, 0.25) !important;
+        color: var(--ix-text) !important;
+    }
+
+    .o_model_field_selector_chain_part,
+    .o_read_mode .o_tree_editor_condition {
+        background: var(--ix-surface-elevated) !important;
+        border-color: var(--ix-border) !important;
+    }
+
+    input,
+    .o_input,
+    .btn {
+        color: var(--ix-text) !important;
+    }
+
+    .border,
+    .border-bottom,
+    .border-top {
+        border-color: var(--ix-border) !important;
+    }
+}
+
+.o_web_client.o_intellix_branded .o_spreadsheet_dashboard_action,
+.o_spreadsheet_dashboard_action {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    background-color: var(--ix-bg) !important;
+    color: var(--ix-text);
+
+    > .o_control_panel {
+        flex-shrink: 0;
+    }
+
+    .o_content.o_component_with_search_panel {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow: hidden;
+        background: var(--ix-bg) !important;
+        align-items: stretch;
+    }
+
+    // Panneau latéral (bg-view Odoo)
+    .bg-view,
+    .o_search_panel_sidebar {
+        background-color: var(--ix-surface) !important;
+        color: var(--ix-text) !important;
+        border-color: var(--ix-border) !important;
+    }
+
+    .o_control_panel {
+        background: var(--ix-surface) !important;
+        border-bottom-color: var(--ix-border) !important;
+
+        .o_control_panel_main,
+        .o_cp_title,
+        .o_breadcrumb,
+        .o_last_breadcrumb_item,
+        .o_cp_switch_buttons {
+            color: var(--ix-text) !important;
+        }
+
+        .text-muted {
+            color: var(--ix-text-muted) !important;
+        }
+
+        .o_filter_value,
+        .o-dropdown,
+        .btn,
+        .dropdown-toggle,
+        .btn-outline-secondary {
+            color: var(--ix-text) !important;
+            border-color: var(--ix-border) !important;
+        }
+
+        .btn-light,
+        .btn-outline-secondary {
+            background: var(--ix-surface-elevated) !important;
+
+            &:hover {
+                background: var(--ix-surface-hover) !important;
+                color: var(--ix-text) !important;
+            }
+        }
+
+        .o_input,
+        input,
+        select,
+        .form-control,
+        .o_searchview {
+            background: var(--ix-surface-elevated) !important;
+            border-color: var(--ix-border) !important;
+            color: var(--ix-text) !important;
+        }
+
+        .o_searchview .o_searchview_input::placeholder {
+            color: var(--ix-text-muted) !important;
+        }
+
+        .o_sp_dashboard_search .o_searchview_dropdown_toggler {
+            background: var(--ix-surface-elevated) !important;
+            border-color: var(--ix-border) !important;
+            color: var(--ix-text) !important;
+        }
+
+        .o_dashboard_star.fa-star-o {
+            color: var(--ix-text-muted) !important;
+
+            &:hover {
+                color: var(--ix-warning) !important;
+            }
+        }
+
+        .o_dashboard_star.fa-star {
+            color: var(--ix-warning) !important;
+        }
+    }
+
+    .o_spreadsheet_dashboard_search_panel {
+        max-width: 220px;
+        min-width: 160px;
+        background: var(--ix-surface) !important;
+        border-right: 1px solid var(--ix-border) !important;
+        color: var(--ix-text);
+
+        .btn-light {
+            background: var(--ix-surface-elevated) !important;
+            border-color: var(--ix-border) !important;
+            color: var(--ix-text-muted) !important;
+
+            &:hover {
+                background: var(--ix-surface-hover) !important;
+                color: var(--ix-text) !important;
+            }
+        }
+
+        .list-group-item {
+            background: transparent !important;
+            color: var(--ix-text-muted) !important;
+            border-color: transparent !important;
+
+            &:hover:not(.active) {
+                background-color: var(--ix-surface-hover) !important;
+                color: var(--ix-text) !important;
+            }
+
+            &.active {
+                background: rgba(99, 102, 241, 0.22) !important;
+                color: var(--ix-text) !important;
+                font-weight: 600;
+            }
+        }
+
+        li {
+            color: var(--ix-text-muted);
+
+            &:hover:not(.active) {
+                background-color: var(--ix-surface-hover) !important;
+                color: var(--ix-text) !important;
+            }
+
+            &.active,
+            .active {
+                background: rgba(99, 102, 241, 0.22) !important;
+                color: var(--ix-text) !important;
+                font-weight: 600;
+            }
+        }
+
+        .o_dashboard_name,
+        .o_search_panel_label,
+        .o_search_panel_section_header {
+            color: var(--ix-text) !important;
+            font-weight: 500;
+        }
+
+        .o_search_panel_section_header {
+            color: var(--ix-text-muted) !important;
+            font-size: 0.7rem;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+    }
+
+    .dashboard-loading-status {
+        color: var(--ix-text-muted) !important;
+
+        &.error {
+            color: var(--ix-danger) !important;
+        }
+    }
+
+    .o_renderer {
+        flex: 1 1 auto;
+        min-height: 0;
+        height: 100% !important;
+        overflow: auto;
+        background: var(--ix-bg) !important;
+
+        .o-spreadsheet {
+            background: var(--ix-bg) !important;
+            // Zone hors figures (évite bandes blanches entre widgets)
+            --o-spreadsheet-grid-background: var(--ix-bg);
+
+            .o-grid,
+            .o-grid-background,
+            .o-grid-container,
+            .o-grid-overlay {
+                background-color: var(--ix-bg) !important;
+            }
+
+            // Liens odoo:// dans les listes (meilleurs devis / commandes)
+            a,
+            .o-spreadsheet-link {
+                color: var(--ix-primary-light) !important;
+            }
+
+            .o-figure:has(.o-scorecard),
+            .o-figure:has(.o-gauge-chart) {
+                border-radius: var(--ix-radius-card);
+                box-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+                outline: 1px solid rgba(99, 102, 241, 0.2);
+            }
+
+            .o-figure:has(canvas) {
+                border-radius: var(--ix-radius-card);
+                overflow: visible;
+            }
+
+            .o-figure-canvas {
+                max-width: 100%;
+            }
+
+            .o-sp-badge {
+                background-color: rgba(99, 102, 241, 0.85) !important;
+                color: var(--ix-text-inverse) !important;
+            }
+        }
+    }
+
+    // Listes Odoo intégrées dans les figures du tableau de bord
+    .o_list_renderer,
+    .o_list_view {
+        background: var(--ix-surface) !important;
+        border-radius: var(--ix-radius-card);
+
+        .o_list_table {
+            --table-bg: var(--ix-surface);
+            --table-color: var(--ix-text);
+            --table-border-color: var(--ix-border);
+            --table-hover-bg: rgba(99, 102, 241, 0.1);
+            --table-hover-color: var(--ix-text);
+        }
+
+        thead th {
+            color: var(--ix-text-muted) !important;
+            background: var(--ix-surface-elevated) !important;
+            border-color: var(--ix-border) !important;
+        }
+
+        tbody td {
+            color: var(--ix-text) !important;
+            border-color: var(--ix-border) !important;
+            background: var(--ix-surface) !important;
+        }
+
+        tbody tr:hover td {
+            background: var(--ix-surface-hover) !important;
+        }
+
+        // Surbrillance lignes (devis / commandes) — teintes Intellix
+        tbody tr.text-bg-warning,
+        tbody tr.bg-warning-subtle {
+            background: rgba(245, 158, 11, 0.15) !important;
+
+            td {
+                background: rgba(245, 158, 11, 0.15) !important;
+            }
+        }
+
+        tbody tr.text-bg-info,
+        tbody tr.bg-info-subtle {
+            background: rgba(99, 102, 241, 0.14) !important;
+
+            td {
+                background: rgba(99, 102, 241, 0.14) !important;
+            }
+        }
+    }
+}
+
+// Autocomplete recherche filtres (hors action, menu portalé)
+.o_web_client.o_intellix_branded .o_searchview_autocomplete.dropdown-menu {
+    background: var(--ix-surface) !important;
+    border-color: var(--ix-border) !important;
+    color: var(--ix-text) !important;
+
+    .dropdown-item {
+        color: var(--ix-text) !important;
+
+        &:hover,
+        &:focus,
+        &.active {
+            background: rgba(99, 102, 241, 0.14) !important;
+            color: var(--ix-primary-light) !important;
+        }
+    }
+}

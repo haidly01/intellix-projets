@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="product_category_coins_partenaires" model="product.category">
+        <field name="name">Coins Marocain — Partenaires</field>
+    </record>
+
+    <record id="product_cm_visibilite" model="product.template">
+        <field name="name">[CM_VISIBILITE] Visibilité Coins Marocain</field>
+        <field name="default_code">CM_VISIBILITE</field>
+        <field name="type">service</field>
+        <field name="list_price">0.0</field>
+        <field name="ix_price_mad">0.0</field>
+        <field name="ix_price_cad">0.0</field>
+        <field name="ix_billing_type">quote_only</field>
+        <field name="ix_quote_only" eval="True"/>
+        <field name="coins_commission_pct">15.0</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="company_id" eval="False"/>
+        <field name="categ_id" ref="product_category_coins_partenaires"/>
+        <field name="description_sale">Mise en avant sur Coins Marocain. Commission 15 % calculée sur les réservations réelles — aucun montant facturé à la signature du devis.</field>
+    </record>
+
+    <record id="product_cm_digital_comm" model="product.template">
+        <field name="name">[CM_DIGITAL_COMM] Digitalisation — 10% des réservations</field>
+        <field name="default_code">CM_DIGITAL_COMM</field>
+        <field name="type">service</field>
+        <field name="list_price">0.0</field>
+        <field name="ix_price_mad">0.0</field>
+        <field name="ix_price_cad">0.0</field>
+        <field name="ix_billing_type">quote_only</field>
+        <field name="ix_quote_only" eval="True"/>
+        <field name="coins_commission_pct">10.0</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="company_id" eval="False"/>
+        <field name="categ_id" ref="product_category_coins_partenaires"/>
+        <field name="description_sale">Channel manager / digitalisation. Commission 10 % sur les réservations réelles — pas de forfait à la création du devis. Mutuellement exclusif avec le forfait 1 500 DH/mois.</field>
+    </record>
+
+    <record id="product_cm_digital_fixe" model="product.template">
+        <field name="name">[CM_DIGITAL_FIXE] Digitalisation — 1 500 DH/mois</field>
+        <field name="default_code">CM_DIGITAL_FIXE</field>
+        <field name="type">service</field>
+        <field name="list_price">1500.0</field>
+        <field name="ix_price_mad">1500.0</field>
+        <field name="ix_price_cad">250.0</field>
+        <field name="ix_billing_type">monthly</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="company_id" eval="False"/>
+        <field name="categ_id" ref="product_category_coins_partenaires"/>
+        <field name="description_sale">Alternative au 10 % : forfait mensuel 1 500 DH. Ne pas cumuler avec [CM_DIGITAL_COMM].</field>
+    </record>
+
+    <record id="product_cm_site_creation" model="product.template">
+        <field name="name">[CM_SITE_CREATION] Création site internet</field>
+        <field name="default_code">CM_SITE_CREATION</field>
+        <field name="type">service</field>
+        <field name="list_price">4000.0</field>
+        <field name="ix_price_mad">4000.0</field>
+        <field name="ix_price_cad">650.0</field>
+        <field name="ix_billing_type">one_time</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="company_id" eval="False"/>
+        <field name="categ_id" ref="product_category_coins_partenaires"/>
+        <field name="description_sale">Création du site — 4 000 DH, paiement unique.</field>
+    </record>
+
+    <record id="product_cm_site_hebergement" model="product.template">
+        <field name="name">[CM_SITE_HEBERGEMENT] Hébergement + nom de domaine</field>
+        <field name="default_code">CM_SITE_HEBERGEMENT</field>
+        <field name="type">service</field>
+        <field name="list_price">1500.0</field>
+        <field name="ix_price_mad">1500.0</field>
+        <field name="ix_price_cad">250.0</field>
+        <field name="ix_billing_type">one_time</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="company_id" eval="False"/>
+        <field name="categ_id" ref="product_category_coins_partenaires"/>
+        <field name="description_sale">Hébergement et nom de domaine — 1 500 DH / an.</field>
+    </record>
+
+    <record id="product_cm_social_shooting" model="product.template">
+        <field name="name">[CM_SOCIAL_SHOOTING] Gestion réseaux sociaux + shooting mensuel</field>
+        <field name="default_code">CM_SOCIAL_SHOOTING</field>
+        <field name="type">service</field>
+        <field name="list_price">5000.0</field>
+        <field name="ix_price_mad">5000.0</field>
+        <field name="ix_price_cad">850.0</field>
+        <field name="ix_billing_type">monthly</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="company_id" eval="False"/>
+        <field name="categ_id" ref="product_category_coins_partenaires"/>
+        <field name="description_sale">Gestion des réseaux + shooting mensuel — 5 000 DH / mois.</field>
+    </record>
+
+    <record id="product_cm_shooting_seul" model="product.template">
+        <field name="name">[CM_SHOOTING_SEUL] Shooting seul</field>
+        <field name="default_code">CM_SHOOTING_SEUL</field>
+        <field name="type">service</field>
+        <field name="list_price">2000.0</field>
+        <field name="ix_price_mad">2000.0</field>
+        <field name="ix_price_cad">350.0</field>
+        <field name="ix_billing_type">one_time</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="company_id" eval="False"/>
+        <field name="categ_id" ref="product_category_coins_partenaires"/>
+        <field name="description_sale">Shooting photo/vidéo ponctuel — 2 000 DH.</field>
+    </record>
+
+    <record id="product_cm_channex" model="product.template">
+        <field name="name">Channex Channel Manager</field>
+        <field name="default_code">CM_CHANNEX</field>
+        <field name="type">service</field>
+        <field name="list_price">750.0</field>
+        <field name="ix_price_mad">750.0</field>
+        <field name="ix_price_cad">0.0</field>
+        <field name="ix_billing_type">one_time</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="company_id" eval="False"/>
+        <field name="categ_id" ref="product_category_coins_partenaires"/>
+        <field name="description_sale">Connexion automatisée à plus de 200 plateformes de réservation (Booking, Airbnb, Expedia et autres) via Channex, gestionnaire de canaux certifié. Un seul calendrier, une seule mise à jour — les disponibilités, les tarifs et les réservations se synchronisent en temps réel sur tous les canaux connectés. Fini les doubles réservations et la mise à jour manuelle canal par canal.</field>
+    </record>
+</odoo>

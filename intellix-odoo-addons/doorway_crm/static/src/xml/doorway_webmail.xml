@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="doorway_crm.WebmailView" owl="1">
+        <div t-att-class="'doorway-webmail o_intellix_client_action' + (state.isMobile ? ' wm--mobile wm--pane-' + state.mobilePane : '') + (state.mode === 'compose' ? ' wm--composing' : '')">
+
+            <header t-if="state.isMobile and state.mobilePane !== 'nav'" class="wm-mobile-bar">
+                <button type="button" class="wm-mobile-back" t-on-click="() => this.mobileBack()">
+                    <i class="fa fa-arrow-left"/>
+                </button>
+                <span class="wm-mobile-title" t-esc="mobileBarTitle"/>
+                <button t-if="state.mobilePane === 'list'" type="button" class="wm-mobile-icon-btn"
+                        t-on-click="() => this._goMobilePane('nav')" title="Changer de boîte">
+                    <i class="fa fa-inbox"/>
+                </button>
+            </header>
+
+            <aside t-if="showNavPane" class="wm-sidebar">
+                <button class="wm-btn-compose" t-on-click="() => this.openCompose()">
+                    <i class="fa fa-pencil"/> Nouveau message
+                </button>
+
+                <div class="wm-mailboxes">
+                    <div class="wm-section-title">Mes boîtes</div>
+                    <t t-if="state.loading">
+                        <div class="wm-muted">Chargement…</div>
+                    </t>
+                    <t t-elif="state.mailboxes.length === 0">
+                        <div class="wm-empty-hint">
+                            Aucune boîte configurée.
+                            <button class="wm-link-btn" t-on-click="() => this.openAddMailbox()">
+                                Ajouter une boîte
+                            </button>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <t t-foreach="state.mailboxes" t-as="mb" t-key="mb.id">
+                            <button t-att-class="'wm-mailbox-item' + (state.selectedMailboxId === mb.id ? ' active' : '')"
+                                    t-on-click="() => this.selectMailbox(mb.id)">
+                                <span class="wm-mb-name" t-esc="mb.name"/>
+                                <span class="wm-mb-email" t-esc="mb.email"/>
+                                <span class="wm-mb-count" t-esc="mb.message_count"/>
+                            </button>
+                        </t>
+                    </t>
+                </div>
+
+                <nav class="wm-folders">
+                    <div class="wm-section-title">Dossiers</div>
+                    <button t-att-class="'wm-folder' + (state.folder === 'inbox' ? ' active' : '')"
+                            t-on-click="() => this.setFolder('inbox')">
+                        <i class="fa fa-inbox"/> Boîte de réception
+                    </button>
+                    <button t-att-class="'wm-folder' + (state.folder === 'sent' ? ' active' : '')"
+                            t-on-click="() => this.setFolder('sent')">
+                        <i class="fa fa-paper-plane"/> Envoyés
+                    </button>
+                    <button t-att-class="'wm-folder' + (state.folder === 'junk' ? ' active' : '')"
+                            t-on-click="() => this.setFolder('junk')">
+                        <i class="fa fa-ban"/> Spam
+                    </button>
+                    <button t-att-class="'wm-folder' + (state.folder === 'trash' ? ' active' : '')"
+                            t-on-click="() => this.setFolder('trash')">
+                        <i class="fa fa-trash"/> Corbeille
+                    </button>
+                    <button t-att-class="'wm-folder' + (state.folder === 'all' ? ' active' : '')"
+                            t-on-click="() => this.setFolder('all')">
+                        <i class="fa fa-envelope"/> Tous
+                    </button>
+                </nav>
+
+                <div class="wm-sidebar-actions">
+                    <button class="wm-btn-secondary"
+                            t-att-disabled="state.fetching || !state.selectedMailboxId"
+                            t-on-click="() => this.fetchEmails()">
+                        <i class="fa fa-refresh"/>
+                        <t t-if="state.fetching">Synchronisation…</t>
+                        <t t-else="">Récupérer</t>
+                    </button>
+                    <button class="wm-btn-secondary" t-on-click="() => this.openMailboxSettings()">
+                        <i class="fa fa-cog"/> Paramètres
+                    </button>
+                </div>
+            </aside>
+
+            <section t-if="showListPane" class="wm-list-panel">
+                <div class="wm-list-header">
+                    <div class="wm-list-title">
+                        <span t-esc="folderLabel"/>
+                        <t t-if="selectedMailbox">
+                            <span class="wm-list-sub" t-esc="selectedMailbox.email"/>
+                        </t>
+                    </div>
+                    <input type="search" class="wm-search" placeholder="Rechercher…"
+                           t-att-value="state.searchQuery"
+                           t-on-input="onSearchInput"/>
+                    <button type="button" class="wm-btn-compose wm-btn-compose-inline"
+                            t-on-click="() => this.openCompose()">
+                        <i class="fa fa-pencil"/> Nouveau message
+                    </button>
+                </div>
+
+                <t t-if="state.statusMessage">
+                    <div class="wm-status" t-esc="state.statusMessage"/>
+                </t>
+
+                <t t-if="state.loadingMessages">
+                    <div class="wm-loading">Chargement des messages…</div>
+                </t>
+                <t t-elif="!state.selectedMailboxId">
+                    <div class="wm-empty-list">Sélectionnez une boîte mail.</div>
+                </t>
+                <t t-elif="state.messages.length === 0">
+                    <div class="wm-empty-list">Aucun message dans ce dossier.</div>
+                </t>
+                <t t-else="">
+                    <div class="wm-message-list">
+                        <t t-foreach="state.messages" t-as="msg" t-key="msg.id">
+                            <div t-att-class="'wm-message-row' + (isSelectedMessage(msg) ? ' selected' : '')"
+                                 t-on-click="() => this.selectMessage(msg)">
+                                <div class="wm-row-top">
+                                    <span class="wm-sender" t-esc="msg.sender"/>
+                                    <span class="wm-date" t-esc="formatShortDate(msg.date)"/>
+                                </div>
+                                <div class="wm-subject" t-esc="msg.subject"/>
+                                <div class="wm-snippet" t-esc="msg.snippet"/>
+                                <t t-if="msg.attachment_count > 0">
+                                    <span class="wm-attach-badge">
+                                        <i class="fa fa-paperclip"/>
+                                        <t t-esc="msg.attachment_count"/>
+                                    </span>
+                                </t>
+                            </div>
+                        </t>
+                    </div>
+                    <div class="wm-list-footer" t-esc="state.total + ' message(s)'"/>
+                </t>
+            </section>
+
+            <main t-if="showContentPane" class="wm-content-panel">
+                <t t-if="state.selectedMessage">
+                    <div class="wm-read">
+                        <div class="wm-read-header">
+                            <h2 class="wm-read-subject" t-esc="state.selectedMessage.subject"/>
+                            <div class="wm-read-actions">
+                                <button class="wm-btn-secondary" t-on-click="() => this.openReply()">
+                                    <i class="fa fa-reply"/> Répondre
+                                </button>
+                                <button class="wm-btn-secondary" t-on-click="() => this.openForward()">
+                                    <i class="fa fa-share"/> Transférer
+                                </button>
+                            </div>
+                        </div>
+                        <div class="wm-read-meta">
+                            <div><strong>De :</strong> <span t-esc="state.selectedMessage.email_from"/></div>
+                            <div><strong>Date :</strong> <span t-esc="formatDate(state.selectedMessage.date)"/></div>
+                        </div>
+                        <t t-if="state.selectedMessage.attachments.length">
+                            <div class="wm-attachments">
+                                <t t-foreach="state.selectedMessage.attachments" t-as="att" t-key="att.id">
+                                    <a class="wm-attach-link" t-att-href="att.url" target="_blank">
+                                        <i class="fa fa-paperclip"/>
+                                        <span t-esc="att.name"/>
+                                    </a>
+                                </t>
+                            </div>
+                        </t>
+                        <t t-if="state.loadingMessage">
+                            <div class="wm-loading">Chargement…</div>
+                        </t>
+                        <div class="wm-body" t-out="state.selectedBody"/>
+                    </div>
+                </t>
+                <t t-else="">
+                    <div class="wm-placeholder">
+                        <i class="fa fa-envelope-o"/>
+                        <p>Sélectionnez un message pour le lire</p>
+                        <p class="wm-muted">ou composez un nouvel e-mail</p>
+                    </div>
+                </t>
+            </main>
+
+            <t t-if="state.mode === 'compose'">
+                <div class="wm-compose-overlay" role="dialog" aria-label="Nouveau message">
+                    <div class="wm-compose">
+                        <div class="wm-compose-header">
+                            <h3>Nouveau message</h3>
+                            <button class="wm-btn-icon" t-on-click="() => this.cancelCompose()">
+                                <i class="fa fa-times"/>
+                            </button>
+                        </div>
+                        <div class="wm-compose-fields">
+                            <label>De</label>
+                            <input type="text" class="wm-input" readonly="readonly"
+                                   t-att-value="selectedMailbox ? selectedMailbox.email : ''"/>
+                            <label>À</label>
+                            <input type="text" class="wm-input" placeholder="destinataire@exemple.com"
+                                   t-att-value="state.compose.to"
+                                   t-on-input="(ev) => this.onComposeInput('to', ev)"/>
+                            <button class="wm-link-btn wm-cc-toggle" t-on-click="() => this.toggleCcBcc()">
+                                Cc / Cci
+                            </button>
+                            <t t-if="state.showCcBcc">
+                                <label>Cc</label>
+                                <input type="text" class="wm-input"
+                                       t-att-value="state.compose.cc"
+                                       t-on-input="(ev) => this.onComposeInput('cc', ev)"/>
+                                <label>Cci</label>
+                                <input type="text" class="wm-input"
+                                       t-att-value="state.compose.bcc"
+                                       t-on-input="(ev) => this.onComposeInput('bcc', ev)"/>
+                            </t>
+                            <label>Objet</label>
+                            <input type="text" class="wm-input"
+                                   t-att-value="state.compose.subject"
+                                   t-on-input="(ev) => this.onComposeInput('subject', ev)"/>
+                            <label>Message</label>
+                            <textarea class="wm-textarea" rows="14"
+                                      t-att-value="state.compose.body"
+                                      t-on-input="(ev) => this.onComposeInput('body', ev)"/>
+                            <label>Pièces jointes</label>
+                            <div class="wm-attach">
+                                <label class="wm-attach-btn">
+                                    <i class="fa fa-paperclip"/> Joindre un fichier
+                                    <input type="file" multiple="multiple" class="wm-attach-input"
+                                           t-on-change="(ev) => this.onAttachFiles(ev)"/>
+                                </label>
+                                <ul class="wm-attach-list" t-if="state.compose.attachments.length">
+                                    <li t-foreach="state.compose.attachments" t-as="att" t-key="att_index">
+                                        <i class="fa fa-file-o"/>
+                                        <span class="wm-attach-name" t-esc="att.name"/>
+                                        <span class="wm-attach-size" t-esc="formatFileSize(att.size)"/>
+                                        <button type="button" class="wm-btn-icon" title="Retirer"
+                                                t-on-click="() => this.removeAttachment(att_index)">
+                                            <i class="fa fa-times"/>
+                                        </button>
+                                    </li>
+                                </ul>
+                                <span class="wm-attach-hint">10 fichiers max., 20 Mo au total.</span>
+                            </div>
+                        </div>
+                        <div class="wm-compose-actions">
+                            <button class="wm-btn-primary"
+                                    t-att-disabled="state.sending"
+                                    t-on-click="() => this.sendMail()">
+                                <i class="fa fa-paper-plane"/>
+                                <t t-if="state.sending">Envoi…</t>
+                                <t t-else="">Envoyer</t>
+                            </button>
+                            <button class="wm-btn-secondary" t-on-click="() => this.cancelCompose()">
+                                Annuler
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </t>
+
+            <nav t-if="state.isMobile and state.mobilePane !== 'read'" class="wm-mobile-tabs">
+                <button type="button"
+                        t-att-class="'wm-mobile-tab' + (state.mobilePane === 'nav' ? ' wm-mobile-tab--active' : '')"
+                        t-on-click="() => this._goMobilePane('nav')">
+                    <i class="fa fa-inbox"/>
+                    <span>Boîtes</span>
+                </button>
+                <button type="button"
+                        t-att-class="'wm-mobile-tab' + (state.mobilePane === 'list' ? ' wm-mobile-tab--active' : '')"
+                        t-on-click="() => this.showMessagesTab()">
+                    <i class="fa fa-envelope"/>
+                    <span>Messages</span>
+                    <t t-if="state.total">
+                        <span class="wm-mobile-tab-badge" t-esc="state.total"/>
+                    </t>
+                </button>
+                <button type="button"
+                        t-att-class="'wm-mobile-tab' + (state.mobilePane === 'compose' ? ' wm-mobile-tab--active' : '')"
+                        t-on-click="() => this.openCompose()">
+                    <i class="fa fa-pencil"/>
+                    <span>Nouveau</span>
+                </button>
+            </nav>
+
+        </div>
+    </t>
+
+</templates>

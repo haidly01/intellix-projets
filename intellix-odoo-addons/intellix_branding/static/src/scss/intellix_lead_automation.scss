@@ -1,0 +1,32 @@
+// Intellix — Lead Automation Hub
+.o_web_client.o_intellix_branded {
+    .o_lead_automation_hub_dashboard {
+        .oe_title h1 {
+            color: var(--ix-text);
+            font-weight: 600;
+        }
+
+        .text-muted {
+            color: var(--ix-text-muted) !important;
+        }
+    }
+
+    .o_lead_automation_list,
+    .o_lead_automation_form {
+        .o_list_table,
+        .o_form_sheet {
+            background: var(--ix-surface) !important;
+            color: var(--ix-text);
+        }
+    }
+
+    .o_view_nocontent {
+        .o_nocontent_help {
+            color: var(--ix-text-muted) !important;
+
+            p, span {
+                color: var(--ix-text-muted) !important;
+            }
+        }
+    }
+}

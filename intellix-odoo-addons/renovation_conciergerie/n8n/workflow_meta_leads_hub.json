@@ -1,0 +1,323 @@
+{
+  "name": "Meta Lead Ads — Hub global (route par page_id)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "meta-leads-hub",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "hub-webhook",
+      "name": "Webhook Meta Leadgen",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        320
+      ],
+      "webhookId": "meta-leads-hub-doorway"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json;\nconst body = raw.body || raw;\nconst graphToken = '{{META_GRAPH_ACCESS_TOKEN}}';\n\nfunction pick(obj, ...keys) {\n  for (const k of keys) {\n    if (obj && obj[k] != null && String(obj[k]).trim() !== '') return String(obj[k]).trim();\n  }\n  return '';\n}\n\nfunction mapFieldData(rows, target) {\n  for (const row of (rows || [])) {\n    const n = (row.name || '').toLowerCase();\n    const v = (row.values && row.values[0]) || '';\n    if (!v) continue;\n    if (n.includes('first') || n === 'prénom' || n === 'prenom') target.first_name = target.first_name || v;\n    else if (n.includes('last') || n === 'nom' || n === 'name') target.last_name = target.last_name || v;\n    else if (n.includes('phone') || n.includes('téléphone') || n.includes('tel') || n.includes('mobile')) target.phone = target.phone || v;\n    else if (n.includes('email') || n.includes('courriel')) target.email = target.email || v;\n    else if (n.includes('city') || n.includes('ville')) target.city = target.city || v;\n    else if (n.includes('address') || n.includes('adresse') || n.includes('street')) target.full_address = target.full_address || v;\n    else if (n.includes('chauffage') || n.includes('heating')) target.chauffage_actuel = target.chauffage_actuel || v;\n    else if (n.includes('budget')) target.budget_range = target.budget_range || v;\n    else if (n.includes('project') || n.includes('projet')) target.project_type = target.project_type || v;\n  }\n}\n\nlet page_id = pick(body, 'page_id', 'facebook_page_id');\nlet form_id = pick(body, 'form_id', 'leadgen_form_id');\nlet leadgen_id = pick(body, 'leadgen_id', 'meta_lead_id', 'id');\nconst field_data = {};\n\nif (body.entry && Array.isArray(body.entry)) {\n  for (const entry of body.entry) {\n    for (const ch of (entry.changes || [])) {\n      if (ch.field === 'leadgen' && ch.value) {\n        page_id = page_id || String(ch.value.page_id || '');\n        form_id = form_id || String(ch.value.form_id || '');\n        leadgen_id = leadgen_id || String(ch.value.leadgen_id || '');\n      }\n    }\n  }\n}\n\nif (body.data && typeof body.data === 'object' && !Array.isArray(body.data)) {\n  const d = body.data;\n  const full = pick(d, 'full_name', 'nom_complet');\n  const parts = full.split(/\\s+/).filter(Boolean);\n  field_data.first_name = pick(d, 'first_name', 'prénom', 'prenom') || parts[0] || '';\n  field_data.last_name = pick(d, 'last_name', 'nom') || parts.slice(1).join(' ') || '';\n  field_data.phone = pick(d, 'phone_number', 'phone', 'mobile', 'tel');\n  field_data.email = pick(d, 'email', 'courriel');\n  field_data.full_address = pick(d, 'street_address', 'address', 'full_address', 'adresse');\n  field_data.city = pick(d, 'city', 'ville');\n  field_data.chauffage_actuel = pick(d, 'chauffage_actuel', 'current_heating');\n  form_id = form_id || (body.form && body.form.id) || '';\n  page_id = page_id || (body.page && body.page.id) || '';\n  leadgen_id = leadgen_id || body.id || '';\n}\n\nmapFieldData(body.field_data, field_data);\n\nif (leadgen_id && graphToken && !pick(field_data, 'phone', 'phone_number', 'mobile')) {\n  try {\n    const g = await this.helpers.httpRequest({\n      method: 'GET',\n      url: `https://graph.facebook.com/v21.0/${leadgen_id}`,\n      qs: { access_token: graphToken, fields: 'field_data,created_time,id' },\n      json: true,\n    });\n    mapFieldData(g.field_data, field_data);\n  } catch (e) {\n    field_data._graph_fetch_error = String(e.message || e);\n  }\n}\n\nconst payload = {\n  ...body,\n  ...field_data,\n  page_id,\n  facebook_page_id: page_id,\n  form_id,\n  leadgen_form_id: form_id,\n  meta_lead_id: leadgen_id,\n  leadgen_id,\n};\n\nreturn [{ json: payload }];"
+      },
+      "id": "hub-parse",
+      "name": "Parser leadgen Meta",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        260,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const p = $('Parser leadgen Meta').first().json;\nconst token = '{{META_LEADS_ROUTING_TOKEN}}';\nlet route = {};\ntry {\n  route = await this.helpers.httpRequest({\n    method: 'POST',\n    url: 'https://intellixcrm.com/api/meta/leads/resolve',\n    headers: {\n      'Content-Type': 'application/json',\n      'X-Meta-Leads-Token': token,\n    },\n    body: p,\n    json: true,\n  });\n} catch (e) {\n  route = {\n    status: 'error',\n    pipeline: 'unknown',\n    skip_orchestrator: true,\n    message: String(e.message || e),\n  };\n}\nreturn [{ json: { ...p, _route: route } }];"
+      },
+      "id": "hub-resolve",
+      "name": "Odoo resolve route",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        520,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "leftValue": "={{ $json._route.pipeline }}",
+              "rightValue": "marketing",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ]
+        }
+      },
+      "id": "hub-if-marketing",
+      "name": "Pipeline marketing?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        780,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const p = $input.first().json;\nconst token = '{{MARKETING_META_WEBHOOK_TOKEN}}';\nlet res = {};\ntry {\n  res = await this.helpers.httpRequest({\n    method: 'POST',\n    url: 'https://intellixcrm.com/api/marketing/meta-lead',\n    headers: {\n      'Content-Type': 'application/json',\n      'X-Marketing-Meta-Webhook-Token': token,\n    },\n    body: {\n      first_name: p.first_name,\n      last_name: p.last_name,\n      phone: p.phone,\n      email: p.email,\n      city: p.city,\n      full_address: p.full_address,\n      page_id: p.page_id,\n      form_id: p.form_id,\n      meta_lead_id: p.meta_lead_id || p.leadgen_id || '',\n      assign_user_login: p._route.assign_user_login || '',\n    },\n    json: true,\n  });\n} catch (e) {\n  res = { status: 'error', message: String(e.message || e) };\n}\nreturn [{ json: { ...p, _odoo: res } }];"
+      },
+      "id": "hub-odoo-marketing",
+      "name": "Odoo lead Marketing",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1040,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "leftValue": "={{ $json._route.skip_orchestrator }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ]
+        }
+      },
+      "id": "hub-if-skip",
+      "name": "Skip?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        780,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "leftValue": "={{ $json._route.pipeline }}",
+              "rightValue": "immo",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ]
+        }
+      },
+      "id": "hub-if-immo",
+      "name": "Pipeline immo?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1040,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "leftValue": "={{ $json._route.pipeline }}",
+              "rightValue": "energie",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ]
+        }
+      },
+      "id": "hub-if-energie",
+      "name": "Pipeline energie?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1040,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ '{{N8N_WEBHOOK_BASE}}' + '/webhook/meta-immo-lead' }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}"
+      },
+      "id": "hub-fwd-immo",
+      "name": "→ Orchestrateur immo",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1300,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ '{{N8N_WEBHOOK_BASE}}' + '/webhook/energie-lead' }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}"
+      },
+      "id": "hub-fwd-energie",
+      "name": "→ Orchestrateur Énergie",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1300,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ '{{N8N_WEBHOOK_BASE}}' + '/webhook/haidly-lead' }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}"
+      },
+      "id": "hub-fwd-haidly",
+      "name": "→ Orchestrateur Haidly",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1300,
+        620
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Meta Leadgen": {
+      "main": [
+        [
+          {
+            "node": "Parser leadgen Meta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parser leadgen Meta": {
+      "main": [
+        [
+          {
+            "node": "Odoo resolve route",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Odoo resolve route": {
+      "main": [
+        [
+          {
+            "node": "Pipeline marketing?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pipeline marketing?": {
+      "main": [
+        [
+          {
+            "node": "Odoo lead Marketing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Skip?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Skip?": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Pipeline immo?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pipeline immo?": {
+      "main": [
+        [
+          {
+            "node": "→ Orchestrateur immo",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Pipeline energie?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pipeline energie?": {
+      "main": [
+        [
+          {
+            "node": "→ Orchestrateur Énergie",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "→ Orchestrateur Haidly",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [
+    {
+      "name": "meta-ads"
+    },
+    {
+      "name": "doorway"
+    },
+    {
+      "name": "hub"
+    }
+  ]
+}

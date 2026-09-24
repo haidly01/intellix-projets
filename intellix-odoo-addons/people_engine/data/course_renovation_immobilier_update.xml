@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="course_renovation_immobilier" model="pe.course">
+        <field name="title">Formation Rénovation &amp; Immobilier — Qualification Lead IA</field>
+        <field name="category">crm</field>
+        <field name="course_type">internal</field>
+        <field name="duration_hours">7.0</field>
+        <field name="difficulty">intermediate</field>
+        <field name="points_on_completion">60</field>
+        <field name="description">Formation complète qualification lead IA rénovation et immobilier — 9 modules interactifs : produits Léa/Sofia, fiche propriété, écoénergie, réno intérieure/extérieure, immobilier, besoins &amp; entrepreneurs, transfert &amp; RDV, objections.</field>
+        <field name="content_url">/people_engine/static/src/html/formation_renovation_immobilier_fr.html</field>
+        <field name="is_active" eval="True"/>
+    </record>
+</odoo>

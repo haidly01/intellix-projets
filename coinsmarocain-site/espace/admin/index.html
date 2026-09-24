@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin partenaires — Coins Marocain</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Cardo:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/cm-espace.css?v=cm150">
+</head>
+<body class="cm-espace">
+  <nav class="page-nav">
+    <a href="/">Accueil</a>
+    <a href="/partenaires">Partenaires</a>
+    <a href="/carte">Carte</a>
+    <span class="current">Admin</span>
+  </nav>
+  <div class="frame-label">File partenaires — unifier les visuels, puis publier</div>
+  <div class="app" style="grid-template-columns:1fr">
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <h1>Modération</h1>
+          <div class="sub">Photos et vidéos passent par l’outil visuel avant d’être en ligne. Même ton crème / ambre partout.</div>
+        </div>
+      </div>
+      <div id="err" class="status err"></div>
+      <div id="busy" class="status"></div>
+      <div class="panel"><h3>Commerçants</h3><div id="queue"></div></div>
+    </main>
+  </div>
+<script src="/assets/cm-partner-api.js"></script>
+<script>
+function esc(s) {
+  return String(s || "").replace(/[&<>"']/g, function (c) {
+    return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]);
+  });
+}
+function thumbs(a) {
+  var raw = (a.photos_raw && a.photos_raw.length) ? a.photos_raw : (a.photos || []);
+  var unified = a.media_unified ? (a.photos_carte || a.photos || []) : [];
+  var html = "";
+  raw.slice(0, 6).forEach(function (u) {
+    if (!u || String(u).indexOf("data:") === 0) return;
+    html += '<img src="' + esc(u) + '" alt="">';
+  });
+  var vid = a.video_url_raw || a.video_url || "";
+  if (vid && !/youtu\.be|youtube\.com|vimeo\.com/i.test(vid)) {
+    html += '<video src="' + esc(vid) + '" muted playsinline></video>';
+  }
+  if (a.media_unified && unified[0]) {
+    html += '<img class="after" src="' + esc(a.video_poster || unified[0]) + '" alt="après unification">';
+  }
+  return html
+    ? '<div class="admin-thumbs">' + html + "</div>"
+    : '<div class="hint">Aucun média envoyé</div>';
+}
+function unifyLabel(a) {
+  if (a.media_unified) return '<span class="pill uni">Visuels unifiés</span>';
+  var has = (a.photos && a.photos.length) || a.video_url;
+  return has ? '<span class="pill pend">Visuels bruts</span>' : "";
+}
+function act(id, action) {
+  var busy = document.getElementById("busy");
+  var err = document.getElementById("err");
+  err.textContent = "";
+  busy.textContent = action === "unify" || action === "approve" || action === "feature"
+    ? "Unification des visuels…"
+    : "";
+  var seq = Promise.resolve();
+  if (action === "approve" || action === "feature") {
+    seq = CMPartner.post("/admin/moderate", { token: CMPartner.currentToken(), id: id, action: "unify" });
+  }
+  return seq.then(function () {
+    if (action === "unify") {
+      return CMPartner.post("/admin/moderate", { token: CMPartner.currentToken(), id: id, action: "unify" });
+    }
+    return CMPartner.post("/admin/moderate", { token: CMPartner.currentToken(), id: id, action: action });
+  }).then(function () {
+    busy.textContent = "";
+    return boot();
+  }).catch(function (e) {
+    busy.textContent = "";
+    err.textContent = (e && e.message) || "Erreur";
+  });
+}
+function boot() {
+  CMPartner.get("/admin/queue?token=" + encodeURIComponent(CMPartner.currentToken()), CMPartner.currentToken()).then(function (j) {
+    document.getElementById("queue").innerHTML = (j.accounts || []).filter(function (a) {
+      return a.role === "merchant";
+    }).map(function (a) {
+      return '<div class="card-row"><b>' + esc(a.name) + "</b> · " + esc(a.region || "") + " · " + esc(a.category || "") +
+        ' <span class="pill ' + (a.status === "published" ? "pub" : a.status === "pending" ? "pend" : "draft") + '">' + esc(a.status) + "</span> " +
+        unifyLabel(a) +
+        thumbs(a) +
+        "<div style='margin-top:10px;display:flex;gap:8px;flex-wrap:wrap'>" +
+        '<button class="btn btn-gold" data-id="' + esc(a.id) + '" data-a="unify">Unifier les visuels</button>' +
+        '<button class="btn" data-id="' + esc(a.id) + '" data-a="approve">Publier</button>' +
+        '<button class="btn btn-ghost" data-id="' + esc(a.id) + '" data-a="reject">Refuser</button>' +
+        '<button class="btn btn-gold" data-id="' + esc(a.id) + '" data-a="feature">Vedette</button>' +
+        "</div></div>";
+    }).join("") || "Aucun compte.";
+    document.querySelectorAll("[data-a]").forEach(function (btn) {
+      btn.onclick = function () { act(btn.getAttribute("data-id"), btn.getAttribute("data-a")); };
+    });
+  }).catch(function (err) {
+    document.getElementById("err").innerHTML = "Accès admin requis. <a href='/espace/admin/?token=cm-test-admin-karine'>Lien test</a> (" + esc(err.message) + ")";
+  });
+}
+boot();
+</script>
+</body>
+</html>

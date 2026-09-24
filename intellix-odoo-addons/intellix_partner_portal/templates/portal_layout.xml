@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="ipp_portal_layout" name="Intellix Partner Portal Layout">
+        <t t-call="web.frontend_layout">
+            <t t-set="no_header" t-value="True"/>
+            <t t-set="no_footer" t-value="True"/>
+            <t t-set="partner_name" t-value="(partner and partner.name) or request.env.user.name or 'Partenaire'"/>
+            <div class="ipp-portal ix-itex-dash">
+                <div class="shell">
+                    <aside class="sidebar">
+                        <div class="brand">
+                            <div class="brand-mark"/>
+                            <div>
+                                <div class="brand-name">IntelliX</div>
+                                <div class="brand-sub">Espace Partenaire</div>
+                            </div>
+                        </div>
+                        <ul class="navlist">
+                            <li>
+                                <a t-attf-class="#{'active' if page == 'dashboard' else ''}"
+                                   href="/my/dashboard">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>
+                                    Tableau de bord
+                                </a>
+                            </li>
+                            <li>
+                                <a t-attf-class="#{'active' if page == 'leads' else ''}" href="/my/leads">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+                                    CRM leads
+                                </a>
+                            </li>
+                            <li>
+                                <a t-attf-class="#{'active' if page == 'visites' else ''}" href="/my/visites">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+                                    Mes visites
+                                </a>
+                            </li>
+                            <li>
+                                <a t-attf-class="#{'active' if page == 'equipe' else ''}" href="/my/equipe">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 19c0-3.5 2.9-6 6.5-6s6.5 2.5 6.5 6"/><circle cx="18" cy="8.5" r="2.5"/><path d="M16 13.2c2.7.4 4.5 2.4 4.5 5.8"/></svg>
+                                    Mon équipe
+                                </a>
+                            </li>
+                            <li>
+                                <a t-attf-class="#{'active' if page == 'devis' else ''}" href="/my/devis-ventes">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 5H4v14h16V5h-5M9 5v0a3 3 0 0 1 6 0v0M9 5h6"/></svg>
+                                    Devis &amp; ventes
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="sidebar-foot">
+                            <strong t-esc="partner_name"/>
+                            Accès partenaire · lecture seule
+                            <div style="margin-top:8px">
+                                <a href="/web/session/logout?redirect=/" style="color:var(--dim)">Déconnexion</a>
+                            </div>
+                        </div>
+                    </aside>
+                    <main class="ix-main">
+                        <t t-out="0"/>
+                    </main>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

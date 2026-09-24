@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_veille_config_sources" model="ir.ui.view">
+        <field name="name">doorway.veille.config.sources</field>
+        <field name="model">doorway.veille.config</field>
+        <field name="arch" type="xml">
+            <form string="Connexions veille">
+                <header>
+                    <button name="action_test_meta_connection" type="object"
+                            string="Tester Meta (FB + IG)" class="btn-primary"/>
+                    <button name="action_test_reddit_connection" type="object"
+                            string="Tester Reddit" class="btn-secondary"/>
+                    <button name="action_connect_reddit_oauth" type="object"
+                            string="Connecter Reddit" class="btn-secondary"/>
+                    <button name="action_sync_reddit_to_n8n" type="object"
+                            string="Synchroniser vers n8n" class="btn-secondary"/>
+                    <button name="action_test_webhook" type="object"
+                            string="Tester webhook Odoo" class="btn-secondary"/>
+                </header>
+                <sheet>
+                    <group string="État des connexions" col="6">
+                        <field name="connexion_meta_ok" widget="boolean"/>
+                        <field name="connexion_reddit_ok" widget="boolean"/>
+                        <field name="connexion_google_ok" widget="boolean"/>
+                        <field name="connexion_webhook_ok" widget="boolean"/>
+                        <field name="meta_last_check"/>
+                        <field name="reddit_last_check"/>
+                    </group>
+                    <group invisible="not meta_status_message">
+                        <field name="meta_facebook_name"/>
+                        <field name="meta_instagram_username"/>
+                        <field name="meta_status_message" nolabel="1"/>
+                    </group>
+                    <div class="alert alert-info mb-3" role="status">
+                        <p><strong>Architecture</strong> : Odoo reçoit les signaux via
+                        <strong>n8n</strong> + <strong>Supabase</strong> (ou webhook direct).
+                        Les accès Facebook, Instagram et Google Alerts se configurent dans
+                        n8n ; Odoo affiche les signaux et le chemin pour répondre.</p>
+                    </div>
+                    <group string="Webhook Odoo (obligatoire)">
+                        <field name="webhook_url_entrant" readonly="1" widget="url"/>
+                        <field name="webhook_token" password="True" readonly="1"/>
+                        <field name="n8n_webhook_url"/>
+                    </group>
+                    <notebook>
+                        <page string="Facebook &amp; Instagram" name="meta">
+                            <group>
+                                <field name="facebook_actif"/>
+                                <field name="facebook_page_id"/>
+                                <field name="instagram_actif"/>
+                                <field name="instagram_account_id"/>
+                                <field name="instagram_hashtags"/>
+                                <field name="meta_access_token" password="True"
+                                       groups="doorway_veille_sociale.group_veille_settings,base.group_system"/>
+                            </group>
+                            <div class="text-muted">
+                                <p>Utilisez <b>Tester Meta (FB + IG)</b> pour valider le
+                                token et les IDs renseignés ci-dessus.</p>
+                                <p><b>Dans n8n</b> : nœuds <i>Facebook Graph API</i> /
+                                <i>Instagram</i> avec le même token et ces IDs.
+                                Chaque nouveau commentaire ou mention → POST vers
+                                <code>/doorway/veille/webhook</code> avec :</p>
+                                <ul>
+                                    <li><code>source</code> : <code>facebook</code> ou <code>instagram</code></li>
+                                    <li><code>url</code> : lien direct vers le post</li>
+                                    <li><code>texte</code>, <code>auteur</code>, <code>plateforme</code></li>
+                                </ul>
+                            </div>
+                        </page>
+                        <page string="Google Alerts" name="google">
+                            <group>
+                                <field name="google_alerts_actif"/>
+                                <field name="google_alerts_email"/>
+                                <field name="google_alerts_mots_cles"/>
+                            </group>
+                            <div class="text-muted">
+                                <p><b>Google Alerts</b> n'a pas d'API officielle. Deux approches :</p>
+                                <ol>
+                                    <li><b>Email → n8n</b> : déclencheur Gmail/IMAP sur
+                                    l'adresse configurée ci-dessus — parser le lien « Voir plus »
+                                    et envoyer le webhook Odoo avec
+                                    <code>source=google_alerts</code>.</li>
+                                    <li><b>Flux RSS</b> (si disponible) : nœud RSS Read →
+                                    même webhook.</li>
+                                </ol>
+                                <p>Odoo classe ces signaux avec la pastille
+                                <b>Google Alerts</b> et le filtre dédié dans les signaux.</p>
+                            </div>
+                        </page>
+                        <page string="Reddit" name="reddit">
+                            <group>
+                                <field name="reddit_actif"/>
+                                <field name="reddit_subreddit"/>
+                                <field name="reddit_refresh_token_status"/>
+                            </group>
+                            <div class="alert alert-danger mb-3" role="alert">
+                                <p><b>« Bad Request » sur Reddit ?</b></p>
+                                <ul class="mb-0">
+                                    <li>L'app <b>script</b> ne fonctionne pas ici — créez une
+                                    app <b>web app</b> (nouveau Client ID + secret).</li>
+                                    <li><b>redirect uri</b> dans Reddit = copie exacte du champ
+                                    ci-dessous (https, sans slash final).</li>
+                                    <li>Utilisez le Client ID / secret de <b>cette app web</b>,
+                                    pas l'ancienne app script.</li>
+                                </ul>
+                            </div>
+                            <group string="Prérequis côté Reddit (app WEB)">
+                                <field name="reddit_oauth_redirect_uri"
+                                       placeholder="https://intellixcrm.com/doorway/veille/reddit/oauth/callback"/>
+                                <field name="reddit_client_id"/>
+                                <field name="reddit_client_secret" password="True"/>
+                                <field name="reddit_user_agent"/>
+                            </group>
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                <button name="action_connect_reddit_oauth" type="object"
+                                        string="Connecter via Reddit" class="btn-primary"/>
+                                <button name="action_paste_reddit_oauth_code" type="object"
+                                        string="Coller un code OAuth" class="btn-secondary"/>
+                                <button name="action_sync_reddit_to_n8n" type="object"
+                                        string="Synchroniser vers n8n" class="btn-secondary"/>
+                                <button name="action_test_reddit_connection" type="object"
+                                        string="Tester Reddit" class="btn-secondary"/>
+                            </div>
+                            <group string="Compte connecté (rempli automatiquement)">
+                                <field name="reddit_username" readonly="1"/>
+                                <field name="reddit_refresh_token" password="True" readonly="1"/>
+                            </group>
+                            <group string="Méthode avancée (app script + mot de passe)"
+                                   colspan="2">
+                                <field name="reddit_password" password="True"
+                                       placeholder="Uniquement si app script, sans OAuth navigateur"/>
+                                <button name="action_obtain_reddit_refresh_token" type="object"
+                                        string="Obtenir refresh token (script)" class="btn-link"/>
+                            </group>
+                            <group invisible="not reddit_status_message">
+                                <field name="reddit_status_message" nolabel="1"/>
+                            </group>
+                            <div class="alert alert-info" role="status" invisible="1">
+                                <p class="mb-0 text-muted">Instructions OAuth navigateur ci-dessus.</p>
+                            </div>
+                        </page>
+                        <page string="Supabase" name="supabase">
+                            <group>
+                                <field name="supabase_url"/>
+                                <field name="supabase_key" password="True"
+                                       groups="doorway_veille_sociale.group_veille_settings,base.group_system"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_veille_sources_open" model="ir.actions.server">
+        <field name="name">Connexions &amp; sources</field>
+        <field name="model_id" ref="model_doorway_veille_config"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_sources()</field>
+    </record>
+</odoo>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_cq_reservation_action" model="ir.actions.act_window">
+        <field name="name">Réservations</field>
+        <field name="path">cq-reservations</field>
+        <field name="res_model">coins.quebec.reservation</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('is_demo', '=', False)]</field>
+    </record>
+    <record id="action_cq_reservation_list" model="ir.ui.view">
+        <field name="name">coins.quebec.reservation.list</field>
+        <field name="model">coins.quebec.reservation</field>
+        <field name="arch" type="xml">
+            <list class="o_cq_list">
+                    <field name="name"/>
+                    <field name="traveler_id"/>
+                    <field name="property_id"/>
+                    <field name="check_in"/>
+                    <field name="check_out"/>
+                    <field name="state"/>
+                    <field name="amount_total"/>
+                    <field name="currency_id"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_cq_reservation_form" model="ir.ui.view">
+        <field name="name">coins.quebec.reservation.form</field>
+        <field name="model">coins.quebec.reservation</field>
+        <field name="arch" type="xml">
+            <form class="o_cq_form">
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,in_progress,done"/>
+                </header>
+                <sheet>
+                    <div class="o_cq_banner">Coins Québec · CAD · TPS / TVQ</div>
+                    <group>
+                    <group string="Réservation">
+                        <field name="name"/>
+                        <field name="traveler_id"/>
+                        <field name="lead_id"/>
+                        <field name="property_id"/>
+                        <field name="partner_activity_ids" widget="many2many_tags"/>
+                        <field name="driver_id"/>
+                        <field name="source"/>
+                        <field name="referral_code"/>
+                    </group>
+                    <group string="Dates">
+                        <field name="check_in"/>
+                        <field name="check_out"/>
+                        <field name="nights"/>
+                    </group>
+                    <group string="Montants CAD + taxes">
+                        <field name="currency_id"/>
+                        <field name="amount_property"/>
+                        <field name="amount_activities"/>
+                        <field name="amount_transport"/>
+                        <field name="amount_tax"/>
+                        <field name="amount_total"/>
+                        <field name="payment_status"/>
+                    </group>
+                    <group string="Notes">
+                        <field name="notes"/>
+                    </group>
+                    </group>
+                    <notebook>
+                        <page string="Lignes">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="amount"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+</odoo>

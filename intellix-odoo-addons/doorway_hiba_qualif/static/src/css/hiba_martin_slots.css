@@ -1,0 +1,133 @@
+.o_hiba_book_martin {
+    min-width: min(720px, 92vw);
+}
+.modal-dialog:has(.o_hiba_book_martin) {
+    max-width: 820px;
+}
+.hiba-martin-cal {
+    --navy: #1B3A6B;
+    --cyan: #0EA5E9;
+    --cyan-lt: #E0F2FE;
+    --muted: #64748B;
+    --border: #CBD5E1;
+    --bg: #F1F5F9;
+    padding: 4px 2px 10px;
+}
+.hiba-martin-cal__hint {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 12px;
+}
+.hiba-martin-cal__title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--navy);
+    margin: 14px 0 8px;
+}
+.hiba-martin-cal__days {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+.hiba-day-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    text-align: left;
+    padding: 10px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    background: #fff;
+    cursor: pointer;
+}
+.hiba-day-btn:hover {
+    border-color: var(--cyan);
+    background: var(--cyan-lt);
+}
+.hiba-day-btn.selected {
+    border-color: var(--navy);
+    background: #EEF2FF;
+    box-shadow: 0 0 0 3px rgba(27, 58, 107, 0.1);
+}
+.hiba-day-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.hiba-day-btn.selected .hiba-day-icon {
+    background: var(--navy);
+    color: #fff;
+}
+.hiba-day-num {
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1;
+}
+.hiba-day-month {
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+.hiba-day-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1E293B;
+}
+.hiba-day-count {
+    font-size: 11px;
+    color: var(--muted);
+}
+.hiba-martin-cal__times {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+.hiba-time-btn {
+    padding: 10px 6px;
+    border: 1.5px solid var(--border);
+    border-radius: 9px;
+    background: #fff;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+}
+.hiba-time-btn:hover {
+    border-color: var(--cyan);
+    background: var(--cyan-lt);
+    color: var(--navy);
+}
+.hiba-time-btn.selected {
+    border-color: var(--navy);
+    background: var(--navy);
+    color: #fff;
+}
+.hiba-martin-cal__empty {
+    text-align: center;
+    padding: 18px 10px;
+    color: var(--muted);
+    font-size: 13px;
+}
+.hiba-martin-cal__recap {
+    margin-top: 12px;
+    padding: 10px 12px;
+    background: #EEF2FF;
+    border: 1px solid #C7D2FE;
+    border-radius: 10px;
+    font-size: 13px;
+    color: var(--navy);
+}
+@media (max-width: 640px) {
+    .hiba-martin-cal__days,
+    .hiba-martin-cal__times {
+        grid-template-columns: 1fr 1fr;
+    }
+}

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_reno_book_martin_wizard" model="ir.ui.view">
+        <field name="name">renovation.book.martin.wizard.form</field>
+        <field name="model">renovation.book.martin.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Planifier une réunion (Martin)" class="o_reno_book_martin">
+                <group>
+                    <div colspan="2" class="text-muted">
+                        Hôte : Martin Houle — calendrier unique, heure du Canada
+                        (America/Toronto). Le créneau n’utilise pas votre fuseau
+                        (évite le décalage 9h → 3h du matin).
+                    </div>
+                    <field name="partner_id" readonly="1" invisible="not partner_id"/>
+                    <field name="lead_id" readonly="1" invisible="not lead_id"/>
+                </group>
+                <group string="Contact (suit dans le RDV)">
+                    <group>
+                        <field name="contact_name" placeholder="Nom du contact"/>
+                        <field name="phone"/>
+                        <field name="email_from"/>
+                    </group>
+                </group>
+                <field name="slot" widget="reno_martin_slots" nolabel="1"/>
+                <group>
+                    <field name="start_toronto"
+                           string="Hors créneau (Toronto)"
+                           placeholder="2026-09-15 09:00"
+                           invisible="slot"/>
+                    <field name="note" placeholder="Ce que Martin doit savoir"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" type="object" string="Booker"
+                            class="btn-primary"
+                            invisible="not slot and not start_toronto"/>
+                    <button string="Annuler" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

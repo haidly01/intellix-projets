@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <template id="jt_dashboard" name="JT Dashboard">
+    <div class="jt-app-shell jt-dashboard-page">
+      <main class="jt-main">
+        <div class="jt-topbar">
+          <div class="jt-topbar-left">
+            <h1 class="jt-page-title">Tableau de bord</h1>
+            <span class="jt-date" t-esc="today_date"/>
+          </div>
+          <div class="jt-topbar-right">
+            <a t-att-href="nav_new_client + '&amp;view_type=form'" class="jt-btn-outline">
+              <i class="fa fa-plus"/> Nouveau client
+            </a>
+          </div>
+        </div>
+
+        <div class="jt-kpi-grid">
+          <div class="jt-kpi-card jt-navy">
+            <div class="jt-kpi-icon"><i class="fa fa-users"/></div>
+            <div class="jt-kpi-num" t-esc="nb_clients_fmt"/>
+            <div class="jt-kpi-label">Clients actifs</div>
+            <div class="jt-kpi-delta" t-if="show_monthly_delta">
+              <i class="fa fa-arrow-up"/> +<t t-esc="new_clients_month_fmt"/> ce mois
+            </div>
+          </div>
+          <div class="jt-kpi-card jt-gold">
+            <div class="jt-kpi-icon"><i class="fa fa-shield"/></div>
+            <div class="jt-kpi-num" t-esc="nb_polices_force_fmt"/>
+            <div class="jt-kpi-label">Polices en force</div>
+            <div class="jt-kpi-delta" t-if="show_monthly_delta">
+              <i class="fa fa-arrow-up"/> +<t t-esc="new_polices_month_fmt"/> ce mois
+            </div>
+          </div>
+          <div class="jt-kpi-card jt-green">
+            <div class="jt-kpi-icon"><i class="fa fa-money"/></div>
+            <div class="jt-kpi-num" t-esc="total_primes_fmt"/>
+            <div class="jt-kpi-label">Primes annualisées</div>
+            <div class="jt-kpi-delta jt-delta-muted" t-esc="total_capital_label"/>
+          </div>
+          <div class="jt-kpi-card jt-amber">
+            <div class="jt-kpi-icon"><i class="fa fa-refresh"/></div>
+            <div class="jt-kpi-num" t-esc="nb_renouvellements_fmt"/>
+            <div class="jt-kpi-label">Renouvellements 30j</div>
+            <div class="jt-kpi-delta jt-urgent" t-if="nb_renouvellements_30j > 0">
+              <i class="fa fa-exclamation-triangle"/> Action requise
+            </div>
+          </div>
+        </div>
+
+        <div class="jt-two-col">
+          <div class="jt-card jt-card-tall">
+            <div class="jt-card-head">
+              <span class="jt-card-title">
+                <i class="fa fa-birthday-cake jt-icon-amber"/> Anniversaires cette semaine
+              </span>
+              <span class="jt-badge"><t t-esc="nb_anniversaires_fmt"/> contacts</span>
+            </div>
+            <div class="jt-list jt-list-scroll">
+              <t t-foreach="anniversaires" t-as="client">
+                <div class="jt-list-item">
+                  <div class="jt-avatar" t-attf-style="background:#{client['avatar_bg']};color:#{client['avatar_fg']};">
+                    <t t-esc="client['initials']"/>
+                  </div>
+                  <div class="jt-item-info">
+                    <a t-att-href="client['client_url']" class="jt-item-name jt-link">
+                      <t t-esc="client['full_name']"/>
+                    </a>
+                    <div class="jt-item-sub">
+                      <t t-esc="client['birth_date_label']"/>
+                      <t t-if="client['cell_phone']"> · <t t-esc="client['cell_phone']"/></t>
+                    </div>
+                  </div>
+                  <div t-attf-class="jt-bday-when #{client['is_today'] and 'jt-today' or ''}">
+                    <t t-if="client['is_today']">Aujourd'hui 🎂</t>
+                    <t t-else="" t-esc="client['bday_day_label']"/>
+                  </div>
+                  <a t-if="client['cell_phone']"
+                     t-attf-href="tel:#{client['cell_phone']}"
+                     class="jt-btn-call">
+                    <i class="fa fa-phone"/>
+                  </a>
+                </div>
+              </t>
+              <div class="jt-empty" t-if="not anniversaires">
+                Aucun anniversaire cette semaine
+              </div>
+            </div>
+          </div>
+
+          <div class="jt-right-col">
+            <div class="jt-card">
+              <div class="jt-card-head">
+                <span class="jt-card-title">
+                  <i class="fa fa-refresh jt-icon-red"/> Renouvellements à venir
+                </span>
+                <span class="jt-badge"><t t-esc="nb_renouvellements_fmt"/> polices</span>
+              </div>
+              <div class="jt-list">
+                <t t-foreach="renouvellements" t-as="pol">
+                  <div class="jt-list-item">
+                    <div class="jt-renew-icon"><i class="fa fa-shield"/></div>
+                    <div class="jt-item-info">
+                      <div class="jt-item-name" t-esc="pol['client_name']"/>
+                      <div class="jt-item-sub">
+                        Police <t t-esc="pol['policy_number']"/> · <t t-esc="pol['product']"/>
+                      </div>
+                    </div>
+                    <div t-attf-class="jt-days-badge #{pol['urgency_class']}">
+                      <t t-esc="pol['days_remaining']"/> jours
+                    </div>
+                  </div>
+                </t>
+                <div class="jt-empty" t-if="not renouvellements">
+                  <i class="fa fa-check-circle"/> Aucun renouvellement imminent
+                </div>
+              </div>
+            </div>
+
+            <div class="jt-card">
+              <div class="jt-card-head">
+                <span class="jt-card-title">
+                  <i class="fa fa-bolt jt-icon-navy"/> Activité récente
+                </span>
+              </div>
+              <div class="jt-activity">
+                <t t-foreach="activites_recentes" t-as="act">
+                  <div class="jt-act-item">
+                    <div t-attf-class="jt-act-dot jt-dot-#{act['color']}"/>
+                    <div class="jt-act-text">
+                      <strong t-esc="act['subject']"/> — <t t-esc="act['description']"/>
+                    </div>
+                    <div class="jt-act-time" t-esc="act['time_label']"/>
+                  </div>
+                </t>
+                <div class="jt-empty" t-if="not activites_recentes">
+                  Aucune activité récente
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="jt-three-col">
+          <div class="jt-mini-stat">
+            <div class="jt-mini-label"><i class="fa fa-university"/> Assomption Vie</div>
+            <div class="jt-mini-val" t-esc="nb_assomption_fmt"/>
+            <div class="jt-mini-sub">polices actives</div>
+            <div class="jt-prog-bar">
+              <div class="jt-prog-fill jt-fill-gold" t-attf-style="width:#{pct_assomption}%"/>
+            </div>
+          </div>
+          <div class="jt-mini-stat">
+            <div class="jt-mini-label"><i class="fa fa-file-text-o"/> Assure &amp; Go / iA</div>
+            <div class="jt-mini-val" t-esc="nb_ago_inalco_fmt"/>
+            <div class="jt-mini-sub">polices actives</div>
+            <div class="jt-prog-bar">
+              <div class="jt-prog-fill jt-fill-navy" t-attf-style="width:#{pct_ago}%"/>
+            </div>
+          </div>
+          <div class="jt-mini-stat">
+            <div class="jt-mini-label"><i class="fa fa-globe"/> Portail client</div>
+            <div class="jt-mini-val" t-esc="nb_portail_fmt"/>
+            <div class="jt-mini-sub">clients invités</div>
+            <div class="jt-prog-bar">
+              <div class="jt-prog-fill jt-fill-green" t-attf-style="width:#{pct_portail}%"/>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </template>
+
+  <record id="view_jt_dashboard_form" model="ir.ui.view">
+    <field name="name">jt.dashboard.form</field>
+    <field name="model">jt.dashboard</field>
+    <field name="arch" type="xml">
+      <form string="Tableau de bord" create="0" edit="0" delete="0" class="o_jt_dashboard_form">
+        <sheet>
+          <field name="dashboard_html" nolabel="1" widget="html" readonly="1"/>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <delete model="ir.actions.client" id="action_jt_dashboard"/>
+
+  <record id="action_jt_dashboard" model="ir.actions.server">
+    <field name="name">Tableau de bord</field>
+    <field name="model_id" ref="model_jt_dashboard"/>
+    <field name="state">code</field>
+    <field name="code">action = model.action_open_dashboard()</field>
+  </record>
+</odoo>

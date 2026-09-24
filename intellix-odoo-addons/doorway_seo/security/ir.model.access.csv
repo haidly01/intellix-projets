@@ -1,0 +1,27 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_seo_workspace_user,seo workspace user,model_doorway_seo_workspace,base.group_user,1,1,1,0
+access_seo_workspace_manager,seo workspace manager,model_doorway_seo_workspace,base.group_system,1,1,1,1
+access_seo_chat_message_user,seo chat message user,model_doorway_seo_chat_message,base.group_user,1,1,1,0
+access_seo_chat_message_manager,seo chat message manager,model_doorway_seo_chat_message,base.group_system,1,1,1,1
+access_seo_page_audit_user,seo page audit user,model_doorway_seo_page_audit,base.group_user,1,1,1,1
+access_seo_page_audit_manager,seo page audit manager,model_doorway_seo_page_audit,base.group_system,1,1,1,1
+access_seo_backlink_target_user,seo backlink target user,model_doorway_seo_backlink_target,base.group_user,1,1,1,1
+access_seo_backlink_target_manager,seo backlink target manager,model_doorway_seo_backlink_target,base.group_system,1,1,1,1
+access_seo_nap_user,seo nap user,model_doorway_seo_nap,base.group_user,1,1,1,0
+access_seo_nap_manager,seo nap manager,model_doorway_seo_nap,base.group_system,1,1,1,1
+access_seo_directory_user,seo directory user,model_doorway_seo_directory,base.group_user,1,0,0,0
+access_seo_directory_manager,seo directory manager,model_doorway_seo_directory,base.group_system,1,1,1,1
+access_seo_citation_user,seo citation user,model_doorway_seo_citation,base.group_user,1,1,1,1
+access_seo_citation_manager,seo citation manager,model_doorway_seo_citation,base.group_system,1,1,1,1
+access_seo_keyword_idea_user,seo keyword idea user,model_doorway_seo_keyword_idea,base.group_user,1,1,1,1
+access_seo_keyword_idea_manager,seo keyword idea manager,model_doorway_seo_keyword_idea,base.group_system,1,1,1,1
+access_seo_tracked_keyword_user,seo tracked keyword user,model_doorway_seo_tracked_keyword,base.group_user,1,1,1,1
+access_seo_tracked_keyword_manager,seo tracked keyword manager,model_doorway_seo_tracked_keyword,base.group_system,1,1,1,1
+access_seo_rank_snapshot_user,seo rank snapshot user,model_doorway_seo_rank_snapshot,base.group_user,1,1,1,1
+access_seo_rank_snapshot_manager,seo rank snapshot manager,model_doorway_seo_rank_snapshot,base.group_system,1,1,1,1
+access_seo_portfolio_audit_user,seo portfolio audit user,model_doorway_seo_portfolio_audit,base.group_user,1,0,0,0
+access_seo_portfolio_audit_manager,seo portfolio audit manager,model_doorway_seo_portfolio_audit,base.group_system,1,1,1,1
+access_seo_site_summary_user,seo site summary user,model_doorway_seo_site_summary,base.group_user,1,0,0,0
+access_seo_site_summary_manager,seo site summary manager,model_doorway_seo_site_summary,base.group_system,1,1,1,1
+access_seo_keyword_position_user,seo keyword position user,model_doorway_seo_keyword_position,base.group_user,1,0,0,0
+access_seo_keyword_position_manager,seo keyword position manager,model_doorway_seo_keyword_position,base.group_system,1,1,1,1

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_company_form_payroll_ma" model="ir.ui.view">
+        <field name="name">res.company.form.payroll.ma</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="intellix_hr_dossier.view_company_form_hr_dossier"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='x_cnss_employer_number']" position="after">
+                <field name="x_payroll_ma_enabled"/>
+                <field name="x_payroll_ma_journal_id" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

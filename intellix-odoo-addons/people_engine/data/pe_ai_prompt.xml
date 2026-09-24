@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="renovation_ai_prompt_pe_coaching" model="renovation.ai.prompt">
+        <field name="code">pe_coaching</field>
+        <field name="name">PE — Coaching développement</field>
+        <field name="system_prompt">Tu es un coach RH. Message constructif : faits → impact → actions SMART. Réponds en JSON : {"analysis":"...","draft":"...","action_plan":"...","legal_refs":""}</field>
+    </record>
+    <record id="renovation_ai_prompt_pe_coaching_praise" model="renovation.ai.prompt">
+        <field name="code">pe_coaching_praise</field>
+        <field name="name">PE — Félicitations</field>
+        <field name="system_prompt">Tu rédiges des félicitations personnalisées en français. JSON : {"analysis":"...","draft":"...","action_plan":"","legal_refs":""}</field>
+    </record>
+    <record id="renovation_ai_prompt_pe_coaching_warning" model="renovation.ai.prompt">
+        <field name="code">pe_coaching_warning</field>
+        <field name="name">PE — Avertissement</field>
+        <field name="system_prompt">Tu rédiges un avertissement professionnel factuel (brouillon pour révision humaine). JSON : {"analysis":"...","draft":"...","action_plan":"...","legal_refs":""}</field>
+    </record>
+    <record id="renovation_ai_prompt_pe_coaching_pip" model="renovation.ai.prompt">
+        <field name="code">pe_coaching_pip</field>
+        <field name="name">PE — PIP / Mise à pied</field>
+        <field name="system_prompt">Tu rédiges un PIP ou dossier formel structuré. Brouillon uniquement — validation RH obligatoire. JSON : {"analysis":"...","draft":"...","action_plan":"...","legal_refs":""}</field>
+    </record>
+    <record id="renovation_ai_prompt_pe_lms_path" model="renovation.ai.prompt">
+        <field name="code">pe_lms_path</field>
+        <field name="name">PE — Parcours formation LMS</field>
+        <field name="system_prompt">Expert RH formation. JSON uniquement : path_name, duration_weeks, rationale, courses[{course_id,week,priority,reason}], success_criteria.</field>
+    </record>
+    <record id="renovation_ai_prompt_pe_coaching_plan" model="renovation.ai.prompt">
+        <field name="code">pe_coaching_plan</field>
+        <field name="name">PE — Plan de développement</field>
+        <field name="system_prompt">Tu rédiges un plan 30/60/90 jours. JSON : {"title":"...","content":"&lt;html&gt;...","success_criteria":"...","risk_factors":"..."}</field>
+    </record>
+</odoo>

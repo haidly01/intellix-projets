@@ -1,0 +1,672 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="mon_coin_dashboard" name="Mon Coin dashboard">
+        <t t-call="coins_quebec.mon_coin_layout">
+            <div class="panel-head">
+                <div class="eyebrow" t-out="ops.get('today')"/>
+                <h1>Analytique</h1>
+            </div>
+
+            <div class="briefing">
+                <span class="ic">☀</span>
+                <div>
+                    <div class="eyebrow">Briefing du matin</div>
+                    <p t-out="ops.get('briefing')"/>
+                </div>
+            </div>
+
+            <div class="stat-grid stat-grid-6">
+                <div class="stat-card"><span>Appels (7 jours)</span><b t-out="ops.get('calls_7d')"/></div>
+                <div class="stat-card"><span>Durée moyenne</span><b t-out="ops.get('avg_duration')"/></div>
+                <div class="stat-card"><span>Taux de conversion</span><b t-out="ops.get('conv_rate')"/></div>
+                <div class="stat-card"><span>Manqués</span><b t-out="ops.get('missed')"/></div>
+                <div class="stat-card"><span>Score qualité moyen</span><b t-att-class="'q-ok' if ops.get('quality') == 'Bon' else None" t-out="ops.get('quality')"/></div>
+                <div class="stat-card"><span>Source</span><b class="src-soft" t-out="ops.get('ca_source')"/></div>
+            </div>
+
+            <div class="stat-grid stat-grid-3">
+                <div class="stat-card">
+                    <span>Chiffre d'affaires — aujourd'hui</span>
+                    <b t-out="ops.get('ca_today')"/>
+                    <span t-if="ops.get('ca_delta')" t-attf-class="delta #{'up' if ops.get('ca_delta_up') else 'down'}" t-out="ops.get('ca_delta')"/>
+                </div>
+                <div class="stat-card"><span>Ticket moyen</span><b t-out="ops.get('ticket')"/></div>
+                <div class="stat-card"><span>Transactions</span><b t-out="ops.get('tx')"/></div>
+            </div>
+
+            <div class="card" style="margin-bottom:22px;">
+                <h2 class="card-h">Produits vedettes — 7 derniers jours</h2>
+                <p class="card-sub">Top 5 par revenu, données du terminal — distinct de l’Inventaire (rotation / rupture)</p>
+                <t t-if="ops.get('vedettes')">
+                    <t t-foreach="ops.get('vedettes')" t-as="v">
+                        <div class="vedette-row">
+                            <span class="rank" t-out="v['rank']"/>
+                            <div class="info"><b t-out="v['name']"/><span t-out="v['units']"/></div>
+                            <div class="rev"><t t-out="v['rev']"/><div t-attf-class="delta #{'up' if v.get('up') else 'down'}" t-out="v['delta']"/></div>
+                        </div>
+                    </t>
+                </t>
+                <p t-else="" class="empty-hint">Aucun produit vedette tant que le terminal n’est pas branché.</p>
+            </div>
+
+            <div class="card frise-card">
+                <div class="frise-title">
+                    <span>Répartition des appels — 24 dernières heures</span>
+                    <div class="legend">
+                        <span><i class="src-radio"/>Radio</span>
+                        <span><i class="src-search"/>SEO</span>
+                        <span><i class="src-site"/>SEA</span>
+                        <span><i class="src-social"/>Réseaux</span>
+                        <span><i class="src-itex"/>ITEX</span>
+                        <span><i class="src-boutique"/>Boutique</span>
+                    </div>
+                </div>
+                <div class="frise-track">
+                    <t t-if="ops.get('boost_left') is not None">
+                        <div class="boost-mark" t-attf-style="left:#{ops.get('boost_left')}%" t-att-data-label="ops.get('boost_label')"/>
+                    </t>
+                    <t t-foreach="ops.get('frise') or []" t-as="dot">
+                        <div t-attf-class="frise-dot src-#{dot['src']}" t-attf-style="left:#{dot['left']}%"/>
+                    </t>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="toolbar">
+                    <h2>Journal d'appels</h2>
+                    <button type="button" class="filter-chip on" data-filter-review="" t-if="ops.get('review_count')">
+                        ⚑ À revoir (<t t-out="ops.get('review_count')"/>)
+                    </button>
+                </div>
+                <t t-if="ops.get('calls')">
+                    <table class="ops-table">
+                        <thead><tr><th>Heure</th><th>Source</th><th>Durée</th><th>Résultat</th><th>Qualité</th><th/></tr></thead>
+                        <tbody id="call-log">
+                            <t t-foreach="ops.get('calls')" t-as="c">
+                                <tr t-att-class="'to-review' if c.get('review') else None">
+                                    <td t-out="c['time']"/>
+                                    <td><span t-attf-class="src-dot src-#{c['src']}"/> <t t-out="c['src_label']"/></td>
+                                    <td t-out="c['dur']"/>
+                                    <td><span class="result-badge" t-out="c['result']"/></td>
+                                    <td><span t-attf-class="q-badge #{c['quality']}" data-toggle-report="" t-out="c['quality_label']"/></td>
+                                    <td><span class="row-link" data-toggle-report="">Voir le rapport</span></td>
+                                </tr>
+                                <tr t-if="c.get('report')" class="mini-report">
+                                    <td colspan="6">
+                                        <div class="crit-grid">
+                                            <t t-foreach="c['report']" t-as="crit">
+                                                <div class="crit"><span t-out="crit[0]"/><b t-out="crit[1]"/></div>
+                                            </t>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </t>
+                <p t-else="" class="empty-hint">Aucun appel enregistré pour l’instant.</p>
+            </div>
+
+            <div class="card" style="margin-top:18px;">
+                <h2 class="card-h">Votre pin sur la carte</h2>
+                <div class="mc-check" style="margin-top:12px;">
+                    <i t-att-class="'ok' if fiche.checklist_description else None">Description</i>
+                    <i t-att-class="'ok' if fiche.checklist_video else None">Vidéo</i>
+                    <i t-att-class="'ok' if fiche.checklist_photo else None">Photo</i>
+                    <i t-att-class="'ok' if fiche.checklist_services else None">Services &amp; prix</i>
+                    <i t-att-class="'ok' if fiche.checklist_address else None">Adresse</i>
+                    <i><t t-out="fiche.checklist_done_count"/> / 5</i>
+                </div>
+                <div class="mc-kpis" style="margin-top:14px;">
+                    <div class="mc-kpi"><span>Vues du pin</span><b t-out="fiche.pin_view_count or 0"/></div>
+                    <div class="mc-kpi"><span>Clics</span><b t-out="fiche.pin_click_count or 0"/></div>
+                    <div class="mc-kpi"><span>Réservations</span><b t-out="fiche.reservation_public_count or 0"/></div>
+                    <div class="mc-kpi"><span>Région</span><b t-out="dict(fiche._fields['region'].selection).get(fiche.region)"/></div>
+                </div>
+                <div class="btn-row">
+                    <a class="btn btn-ghost" href="/mon-coin/fiche">Compléter la fiche</a>
+                    <a class="btn btn-amber" href="/mon-coin/boosts">Prendre un boost</a>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="mon_coin_fiche" name="Mon Coin fiche">
+        <t t-call="coins_quebec.mon_coin_layout">
+            <div class="mc-top">
+                <div>
+                    <div class="eyebrow">Carte publique Coins Québec</div>
+                    <h1>Ma fiche</h1>
+                    <p class="card-sub" style="margin:6px 0 0;">
+                        <t t-if="demo_mode">Écriture limitée à cette fiche [DÉMO] Café des Trois Rives. Les vraies fiches ne sont pas touchées.</t>
+                        <t t-else="">Enregistrer le brouillon, puis envoyer en modération. Rien n’est publié tout seul.</t>
+                    </p>
+                </div>
+            </div>
+            <form class="mc-panel" method="post" action="/mon-coin/fiche" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" t-att-value="csrf_token"/>
+                <label>Nom du commerce</label>
+                <input type="text" name="name" required="required" t-att-value="fiche.name"/>
+                <div class="row">
+                    <div>
+                        <label>Contact</label>
+                        <input type="text" name="contact_name" t-att-value="fiche.contact_name"/>
+                    </div>
+                    <div>
+                        <label>Téléphone</label>
+                        <input type="tel" name="phone" t-att-value="fiche.phone"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div>
+                        <label>Courriel</label>
+                        <input type="email" name="email" t-att-value="fiche.email"/>
+                    </div>
+                    <div>
+                        <label>Région</label>
+                        <select name="region">
+                            <t t-foreach="fiche._fields['region'].selection" t-as="opt">
+                                <option t-att-value="opt[0]" t-att-selected="fiche.region == opt[0] and 'selected' or None" t-out="opt[1]"/>
+                            </t>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div>
+                        <label>Catégorie</label>
+                        <select name="type_partenaire">
+                            <t t-foreach="fiche._fields['type_partenaire'].selection" t-as="opt">
+                                <option t-att-value="opt[0]" t-att-selected="fiche.type_partenaire == opt[0] and 'selected' or None" t-out="opt[1]"/>
+                            </t>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Ville</label>
+                        <input type="text" name="city" t-att-value="fiche.city"/>
+                    </div>
+                </div>
+                <label>Adresse</label>
+                <input type="text" name="street" t-att-value="fiche.street"/>
+                <div class="row">
+                    <div>
+                        <label>Latitude</label>
+                        <input type="text" name="partner_lat" t-att-value="fiche.partner_lat or ''"/>
+                    </div>
+                    <div>
+                        <label>Longitude</label>
+                        <input type="text" name="partner_lng" t-att-value="fiche.partner_lng or ''"/>
+                    </div>
+                </div>
+                <label>Description</label>
+                <textarea name="description" t-out="fiche.description or ''"/>
+                <label>Vidéo (lien YouTube ou MP4)</label>
+                <input type="url" name="video_url" t-att-value="fiche.video_url"/>
+                <h3>Photos</h3>
+                <div class="photos">
+                    <t t-foreach="fiche.photo_ids" t-as="photo">
+                        <img t-attf-src="/web/image/coins.quebec.partenariat.photo/#{photo.id}/image" alt="photo"/>
+                    </t>
+                </div>
+                <input type="file" name="photos" multiple="multiple" accept="image/*"/>
+                <h3>Services &amp; prix</h3>
+                <div id="service-lines">
+                    <t t-foreach="fiche.service_ids" t-as="line">
+                        <div class="line">
+                            <input type="hidden" name="service_id" t-att-value="line.id"/>
+                            <input type="text" name="service_name" t-att-value="line.name"/>
+                            <input type="text" name="service_price" t-att-value="line.price or ''"/>
+                            <input type="text" name="service_unit" t-att-value="line.unit"/>
+                            <button type="button" class="btn btn-ghost mc-remove">✕</button>
+                        </div>
+                    </t>
+                </div>
+                <button type="button" class="btn btn-ghost" data-add="service">+ Service</button>
+                <h3>Forfaits</h3>
+                <div id="packages-lines">
+                    <t t-foreach="fiche.offer_ids" t-as="line">
+                        <div class="line">
+                            <input type="hidden" name="offer_id" t-att-value="line.id"/>
+                            <input type="text" name="offer_name" t-att-value="line.name"/>
+                            <input type="text" name="offer_price" t-att-value="line.price or ''"/>
+                            <input type="text" name="offer_unit" t-att-value="line.unit"/>
+                            <button type="button" class="btn btn-ghost mc-remove">✕</button>
+                        </div>
+                    </t>
+                </div>
+                <button type="button" class="btn btn-ghost" data-add="packages">+ Forfait</button>
+                <div class="btn-row">
+                    <button class="btn" type="submit">Enregistrer le brouillon</button>
+                    <button class="btn btn-amber" type="submit" name="submit_moderation" value="1">Envoyer en modération</button>
+                    <a class="btn btn-ghost" href="/mon-coin/apercu">Aperçu</a>
+                </div>
+            </form>
+        </t>
+    </template>
+
+    <template id="mon_coin_boosts" name="Mon Coin boosts">
+        <t t-call="coins_quebec.mon_coin_layout">
+            <div class="mc-top">
+                <div>
+                    <h1>Boosts &amp; suggestions</h1>
+                    <div class="sub" t-if="demo_mode">Mode démo : les boutons n’ouvrent aucun lead ITEX ni Driven.</div>
+                    <div class="sub" t-else="">Chaque demande crée une activité Doorway. ITEX et Driven ouvrent un lead Finance existant (pas un autre pipeline).</div>
+                </div>
+            </div>
+            <div class="mc-boost">
+                <div class="mc-pills">
+                    <a t-att-class="'on' if tab == 'radio' else None" href="/mon-coin/boosts?tab=radio">Radio</a>
+                    <a t-att-class="'on' if tab == 'vedette' else None" href="/mon-coin/boosts?tab=vedette">Vedette</a>
+                    <a t-att-class="'on' if tab == 'influenceurs' else None" href="/mon-coin/boosts?tab=influenceurs">Influenceurs</a>
+                    <a t-att-class="'on' if tab == 'reseaux' else None" href="/mon-coin/boosts?tab=reseaux">Réseaux</a>
+                    <a t-att-class="'on' if tab == 'itex' else None" href="/mon-coin/boosts?tab=itex">ITEX</a>
+                    <a t-att-class="'on' if tab == 'driven' else None" href="/mon-coin/boosts?tab=driven">Driven</a>
+                </div>
+                <t t-if="tab == 'itex'">
+                    <h4>Boost ITEX</h4>
+                    <p>Références commerçants du réseau. Le bouton crée ou met à jour un lead dans l’entonnoir Finance ITEX (équipe 112).</p>
+                </t>
+                <t t-if="tab == 'driven'">
+                    <h4>Financement B2B Driven</h4>
+                    <p>Fonds de roulement et financement commerçant. Le bouton crée ou met à jour un lead Driven (équipe 94) — pas un troisième pipeline.</p>
+                </t>
+                <t t-if="tab == 'radio'">
+                    <h4>Capsule radio</h4>
+                    <p>Demande transmise à l’équipe Doorway (tâche / activité réelle).</p>
+                </t>
+                <t t-if="tab == 'vedette'">
+                    <h4>Annonce vedette</h4>
+                    <p>Mise en avant sur la carte — l’équipe valide le créneau.</p>
+                </t>
+                <t t-if="tab == 'influenceurs'">
+                    <h4>Créateurs</h4>
+                    <p>Mise en relation avec un créateur Coins Québec.</p>
+                </t>
+                <t t-if="tab == 'reseaux'">
+                    <h4>Réseaux</h4>
+                    <p>Relance organique / stories — l’équipe programme le geste.</p>
+                </t>
+                <form method="post" t-attf-action="/mon-coin/boosts?tab=#{tab}">
+                    <input type="hidden" name="csrf_token" t-att-value="csrf_token"/>
+                    <input type="hidden" name="kind" t-att-value="tab"/>
+                    <label>Note pour l’équipe</label>
+                    <textarea name="note" placeholder="Quand, quel offre, quelle contrainte…"></textarea>
+                    <div class="btn-row">
+                        <t t-if="tab == 'itex'">
+                            <button class="btn btn-amber" type="submit">Je prends mon boost</button>
+                        </t>
+                        <t t-elif="tab == 'driven'">
+                            <button class="btn btn-amber" type="submit">Demander un financement Driven</button>
+                        </t>
+                        <t t-else="">
+                            <button class="btn btn-amber" type="submit">Envoyer la demande</button>
+                        </t>
+                    </div>
+                </form>
+            </div>
+            <div class="mc-panel">
+                <h3>Historique réel</h3>
+                <ul class="hist">
+                    <t t-foreach="fiche.boost_ids" t-as="boost">
+                        <li>
+                            <b t-out="boost.name"/>
+                            — <t t-out="dict(boost._fields['state'].selection).get(boost.state)"/>
+                            <t t-if="boost.lead_ref"> · lead #<t t-out="boost.lead_ref"/></t>
+                        </li>
+                    </t>
+                    <t t-if="not fiche.boost_ids">
+                        <li>Aucune demande pour l’instant.</li>
+                    </t>
+                </ul>
+            </div>
+        </t>
+    </template>
+
+    <template id="mon_coin_finances" name="Mon Coin finances">
+        <t t-call="coins_quebec.mon_coin_layout">
+            <div class="mc-top">
+                <div>
+                    <h1>Mes finances</h1>
+                    <div class="sub">Revenu Coins Québec et statut Driven. Ce n’est pas le tableau de bord interne Finance.</div>
+                </div>
+            </div>
+            <div class="mc-kpis">
+                <div class="mc-kpi"><span>Revenu CQ (résas) <t t-if="demo_mode">· démo</t></span><b><t t-out="'%.2f' % (finance.get('revenue') or 0)"/> $</b></div>
+                <div class="mc-kpi"><span>Commissions <t t-if="demo_mode">· démo</t></span><b><t t-out="'%.2f' % (finance.get('commission') or 0)"/> $</b></div>
+                <div class="mc-kpi"><span>Paiements reçus</span><b t-out="len(finance.get('lines') or [])"/></div>
+                <div class="mc-kpi">
+                    <span>Driven</span>
+                    <b t-if="finance.get('driven')">Actif</b>
+                    <b t-else="">Aucun dossier</b>
+                </div>
+            </div>
+            <div class="mc-panel">
+                <h3>Historique des paiements reçus</h3>
+                <table class="mc-table">
+                    <thead><tr><th>Réf.</th><th>Date</th><th>Montant</th><th>Commission</th><th>Paiement</th></tr></thead>
+                    <tbody>
+                        <t t-foreach="finance.get('lines') or []" t-as="line">
+                            <tr>
+                                <td><t t-if="line.get('demo')">[DÉMO] </t><t t-out="line['name']"/></td>
+                                <td t-out="line['date']"/>
+                                <td t-out="'%.2f $' % (line['amount'] or 0)"/>
+                                <td t-out="'%.2f $' % (line['commission'] or 0)"/>
+                                <td t-out="line['payment']"/>
+                            </tr>
+                        </t>
+                        <t t-if="not finance.get('lines')">
+                            <tr><td colspan="5">Aucune réservation liée à votre fiche — total 0 $ (chiffre réel).</td></tr>
+                        </t>
+                        <t t-if="finance.get('extra_demo')">
+                            <tr class="demo-line">
+                                <td colspan="5">
+                                    <t t-out="finance['extra_demo']['label']"/>
+                                    — <t t-out="finance['extra_demo']['name']"/>
+                                    (<t t-out="'%.2f $' % (finance['extra_demo']['amount'] or 0)"/>)
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+            </div>
+            <div class="mc-panel">
+                <h3>Statut Driven</h3>
+                <t t-if="finance.get('driven')">
+                    <p>
+                        Dossier <t t-out="finance['driven']['name']"/>
+                        — étape <t t-out="finance['driven']['stage'] or 'ouverte'"/>
+                        — montant <t t-out="'%.2f $' % (finance['driven']['amount'] or 0)"/>
+                        — revenu mensuel déclaré <t t-out="'%.2f $' % (finance['driven']['monthly'] or 0)"/>
+                    </p>
+                </t>
+                <t t-else="">
+                    <p>Pas encore de lead Driven. L’onglet Driven des boosts en crée un dans l’entonnoir existant.</p>
+                    <a class="btn btn-amber" href="/mon-coin/boosts?tab=driven">Ouvrir l’onglet Driven</a>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <template id="mon_coin_paiement" name="Mon Coin paiement">
+        <t t-call="coins_quebec.mon_coin_layout">
+            <div class="mc-top">
+                <div>
+                    <h1>Terminal de paiement</h1>
+                    <div class="sub">Authorize.net CAD — votre compte marchand, pas les clés Doorway. Les identifiants restent sur le serveur.</div>
+                </div>
+            </div>
+            <div class="mc-panel">
+                    <p t-if="demo_mode">Mode démo — aucun terminal réel. Les clés Authorize.net ne sont ni demandées ni stockées.</p>
+                    <p t-elif="fiche.authorize_connected">
+                    Compte marchand <strong>connecté</strong>. Les clés ne sont pas réaffichées. Les paiements de réservations et forfaits iront vers ce compte.
+                </p>
+                <p t-else="">Aucun compte marchand enregistré pour l’instant.</p>
+                <form t-if="not demo_mode" method="post" action="/mon-coin/paiement" autocomplete="off">
+                    <input type="hidden" name="csrf_token" t-att-value="csrf_token"/>
+                    <label>API Login ID</label>
+                    <input type="text" name="authorize_login" autocomplete="off" placeholder="Saisir pour remplacer"/>
+                    <label>Transaction Key</label>
+                    <input type="password" name="authorize_trans_key" autocomplete="new-password" placeholder="Saisir pour remplacer"/>
+                    <div class="btn-row">
+                        <button class="btn" type="submit">Enregistrer côté serveur</button>
+                        <button class="btn btn-ghost" type="submit" name="clear" value="1">Retirer les identifiants</button>
+                    </div>
+                </form>
+            </div>
+        </t>
+    </template>
+
+    <template id="mon_coin_apercu" name="Mon Coin aperçu">
+        <t t-call="coins_quebec.mon_coin_layout">
+            <div class="mc-top">
+                <div>
+                    <h1>Aperçu public</h1>
+                    <div class="sub">
+                        <t t-if="fiche.publish_state == 'published'">Visible sur la carte.</t>
+                        <t t-else="">Brouillon / modération — pas encore sur la carte publique.</t>
+                    </div>
+                </div>
+            </div>
+            <div class="mc-panel">
+                <h3 t-out="fiche.name"/>
+                <p t-out="fiche.description or 'Pas encore de description.'"/>
+                <p t-out="listing.get('address')"/>
+                <t t-if="fiche.video_url">
+                    <p><a t-att-href="fiche.video_url" target="_blank">Voir la vidéo</a></p>
+                </t>
+                <div class="photos">
+                    <t t-foreach="fiche.photo_ids" t-as="photo">
+                        <img t-attf-src="/web/image/coins.quebec.partenariat.photo/#{photo.id}/image" alt="photo"/>
+                    </t>
+                </div>
+                <h3>Services</h3>
+                <ul>
+                    <t t-foreach="fiche.service_ids" t-as="s">
+                        <li><t t-out="s.name"/> — <t t-out="s.price"/> $ <t t-out="s.unit or ''"/></li>
+                    </t>
+                </ul>
+                <h3>Forfaits</h3>
+                <ul>
+                    <t t-foreach="fiche.offer_ids" t-as="o">
+                        <li><t t-out="o.name"/> — <t t-out="o.price"/> $ <t t-out="o.unit or ''"/></li>
+                    </t>
+                </ul>
+            </div>
+        </t>
+    </template>
+
+    <template id="mon_coin_inventaire" name="Mon Coin inventaire">
+        <t t-call="coins_quebec.mon_coin_layout">
+            <div class="panel-head">
+                <div class="eyebrow">Stock &amp; projections</div>
+                <h1>Inventaire</h1>
+                <p>Données précises par SKU, issues du système de caisse — pas d’estimation affichée</p>
+            </div>
+            <div class="card">
+                <t t-if="ops.get('stock')">
+                    <table class="ops-table">
+                        <thead>
+                            <tr>
+                                <th>SKU</th><th>Produit</th><th>Catégorie</th><th>Écoulement</th>
+                                <th>Tendance (7j)</th><th>Stock</th><th>Réassort typique</th><th/>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="ops.get('stock')" t-as="s">
+                                <tr>
+                                    <td class="sku" t-out="s.get('sku')"/>
+                                    <td><t t-if="s.get('bold')"><b t-out="s['name']"/></t><t t-else="" t-out="s['name']"/></td>
+                                    <td t-out="s['cat']"/>
+                                    <td t-out="s['flow']"/>
+                                    <td><span t-attf-class="delta #{'up' if s.get('up') else 'down'}" t-out="s['trend']"/></td>
+                                    <td t-out="s['qty']"/>
+                                    <td t-out="s['reorder']"/>
+                                    <td><span t-attf-class="q-badge #{s['badge']}" t-out="s['badge_label']"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                    <t t-foreach="ops.get('alerts') or []" t-as="al">
+                        <div t-attf-class="callout #{'is-driven' if 'Driven' in (al.get('motif') or '') else ''} #{'is-boost' if 'Boost' in (al.get('motif') or '') else ''} #{'is-itex' if 'ITEX' in (al.get('motif') or '') else ''}">
+                            <div class="mark" t-out="al['mark']"/>
+                            <div style="flex:1">
+                                <div t-if="al.get('motif')" t-attf-class="motif-tag #{'motif-driven' if 'Driven' in (al.get('motif') or '') else ''} #{'motif-boost' if 'Boost' in (al.get('motif') or '') else ''} #{'motif-itex' if 'ITEX' in (al.get('motif') or '') else ''}" t-out="al['motif']"/>
+                                <h4 t-out="al['title']"/>
+                                <p t-out="al['text']"/>
+                                <t t-if="al.get('bar') is not None">
+                                    <div class="stock-bar"><i t-attf-style="width:#{al['bar']}%"/></div>
+                                </t>
+                                <div class="callout-btns" style="margin-top:12px;">
+                                    <t t-foreach="al.get('actions') or []" t-as="act">
+                                        <a t-att-href="act['href']" t-attf-class="btn-mini #{'gold' if act.get('gold') else 'ghost'}" t-out="act['label']"/>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+                <p t-else="" class="empty-hint">Branchez votre caisse pour voir le stock, les vedettes et les alertes de rupture.</p>
+            </div>
+        </t>
+    </template>
+
+    <template id="mon_coin_staff" name="Mon Coin staff">
+        <t t-call="coins_quebec.mon_coin_layout">
+            <div class="panel-head">
+                <div class="eyebrow">Équipe</div>
+                <h1>Staff</h1>
+                <p>Horaires, qualité des appels, pointage. Pas de comptes portail par employé.</p>
+            </div>
+            <t t-if="ops.get('shifts')">
+                <div class="card" style="margin-bottom:18px;">
+                    <h2 class="card-h">Horaires — semaine en cours</h2>
+                    <div class="week-grid">
+                        <div class="head"/>
+                        <t t-foreach="ops.get('week_days')" t-as="d">
+                            <div t-att-class="'head today' if d_index == ops.get('week_today') else 'head'" t-out="d"/>
+                        </t>
+                        <t t-foreach="ops.get('shifts')" t-as="sh">
+                            <div class="name" t-out="sh['name']"/>
+                            <t t-foreach="sh['cells']" t-as="cell">
+                                <div t-att-class="'today' if cell_index == ops.get('week_today') else None">
+                                    <span t-if="cell" class="shift" t-out="cell"/>
+                                </div>
+                            </t>
+                        </t>
+                    </div>
+                </div>
+                <div class="g2">
+                    <div class="card">
+                        <h2 class="card-h">Suivi de performance</h2>
+                        <t t-foreach="ops.get('staff_perf')" t-as="p">
+                            <div class="staff-row">
+                                <div class="avatar" t-out="p['ini']"/>
+                                <div class="info"><b t-out="p['name']"/><span t-out="p['detail']"/></div>
+                                <span t-attf-class="q-badge #{p['q']}" t-out="p['q_label']"/>
+                            </div>
+                        </t>
+                    </div>
+                    <div class="card">
+                        <h2 class="card-h">Pointage — aujourd'hui</h2>
+                        <t t-foreach="ops.get('clock')" t-as="c">
+                            <div class="staff-row">
+                                <div class="avatar" t-out="c['ini']"/>
+                                <div class="info"><b t-out="c['name']"/><span t-out="c['detail']"/></div>
+                                <span t-attf-class="clock-badge #{'late' if c.get('late') else 'on'}" t-out="c['label']"/>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </t>
+            <div t-else="" class="card">
+                <p class="empty-hint">Ajoutez l’équipe pour voir les horaires, le pointage et la qualité des appels par personne.</p>
+            </div>
+        </t>
+    </template>
+
+    <template id="mon_coin_boutique" name="Mon Coin boutique">
+        <t t-call="coins_quebec.mon_coin_layout">
+            <div class="panel-head">
+                <div class="eyebrow">Distribution produit</div>
+                <h1>Boutique en ligne</h1>
+                <p>Catalogue produit — pas d’hébergement ni de services. Synchro prévue Channable / EasyChannel.</p>
+            </div>
+            <div class="g2">
+                <div class="card">
+                    <h2 class="card-h">Canaux</h2>
+                    <p class="card-sub">Seuil minimum de produits actifs avant activation</p>
+                    <t t-foreach="ops.get('channels') or []" t-as="ch">
+                        <div class="channel-row">
+                            <div class="ch-logo" t-out="ch['mark']"/>
+                            <div class="ch-info">
+                                <b t-out="ch['name']"/>
+                                <span t-out="ch['detail']"/>
+                                <div t-if="ch.get('threshold')" class="threshold" t-out="ch['threshold']"/>
+                            </div>
+                            <span t-attf-class="ch-status #{ch['status']}" t-out="ch['status_label']"/>
+                        </div>
+                    </t>
+                </div>
+                <div class="card">
+                    <h2 class="card-h">Commandes récentes</h2>
+                    <t t-if="ops.get('orders')">
+                        <table class="ops-table">
+                            <thead><tr><th>Produit</th><th>Canal</th><th>Montant</th></tr></thead>
+                            <tbody>
+                                <t t-foreach="ops.get('orders')" t-as="o">
+                                    <tr><td t-out="o['product']"/><td t-out="o['channel']"/><td t-out="o['amount']"/></tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </t>
+                    <p t-else="" class="empty-hint">Aucune commande en ligne pour l’instant.</p>
+                </div>
+            </div>
+            <div t-if="ops.get('catalog')" class="card" style="margin-top:18px;">
+                <h2 class="card-h">Catalogue — statut par canal</h2>
+                <table class="ops-table">
+                    <thead>
+                        <tr>
+                            <th>SKU</th><th>Produit</th><th>Amazon.ca</th>
+                            <th>Etsy</th><th>Marketplace</th><th>bol.com</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="ops.get('catalog')" t-as="row">
+                            <tr>
+                                <td class="sku" t-out="row['sku']"/>
+                                <td t-out="row['name']"/>
+                                <td class="chan-cell"><span t-attf-class="#{row['amazon_cls']}" t-out="row['amazon']"/></td>
+                                <td class="chan-cell"><span t-attf-class="#{row['etsy_cls']}" t-out="row['etsy']"/></td>
+                                <td class="chan-cell"><span t-attf-class="#{row['fb_cls']}" t-out="row['fb']"/></td>
+                                <td class="chan-cell"><span t-attf-class="#{row['bol_cls']}" t-out="row['bol']"/></td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+                <p class="scope-note">Outil de synchro pas encore choisi. Channable et EasyChannel sont envisagés. Aucune intégration réelle dans cette démo.</p>
+            </div>
+        </t>
+    </template>
+
+    <template id="mon_coin_fidelite" name="Mon Coin fidelite">
+        <t t-call="coins_quebec.mon_coin_layout">
+            <div class="panel-head">
+                <div class="eyebrow">Caisse fidélité</div>
+                <h1>Fidélité</h1>
+            </div>
+            <div class="card">
+                <form class="search-bar" action="/mon-coin/fidelite" method="get">
+                    <input type="text" name="q" placeholder="Téléphone ou courriel du client" t-att-value="ops.get('fid_query')"/>
+                    <button type="submit">Chercher</button>
+                </form>
+                <t t-if="ops.get('fid')">
+                    <div class="fid-profile">
+                        <div class="avatar" t-out="ops['fid']['ini']"/>
+                        <div>
+                            <b t-out="ops['fid']['name']"/>
+                            <span t-out="ops['fid']['since']"/>
+                        </div>
+                        <div class="fid-points-big">
+                            <b t-out="ops['fid']['points']"/>
+                            <span t-out="ops['fid']['perk']"/>
+                        </div>
+                    </div>
+                    <table class="ops-table">
+                        <thead><tr><th>Date</th><th>Source</th><th>Montant</th><th>Points</th></tr></thead>
+                        <tbody>
+                            <t t-foreach="ops.get('fid_hist') or []" t-as="h">
+                                <tr>
+                                    <td t-out="h['date']"/>
+                                    <td t-out="h['src']"/>
+                                    <td t-out="h['amount']"/>
+                                    <td t-out="h['pts']"/>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </t>
+                <p t-else="" class="empty-hint">Cherchez un client par téléphone ou courriel une fois la caisse fidélité branchée.</p>
+            </div>
+        </t>
+    </template>
+</odoo>

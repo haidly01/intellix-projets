@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pe_coaching_session_tree" model="ir.ui.view">
+        <field name="name">pe.coaching.session.tree</field>
+        <field name="model">pe.coaching.session</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="employee_id"/>
+                <field name="session_type"/>
+                <field name="status" widget="badge"/>
+                <field name="manager_id"/>
+                <field name="claude_generated_at"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pe_coaching_session_form" model="ir.ui.view">
+        <field name="name">pe.coaching.session.form</field>
+        <field name="model">pe.coaching.session</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_generate_claude" type="object" string="Générer avec Claude" class="btn-primary" invisible="status not in ('draft', 'generating', 'pending_manager')" groups="people_engine.group_manager"/>
+                    <button name="action_create_manual" type="object" string="Mode manuel" invisible="status != 'draft'" groups="people_engine.group_manager"/>
+                    <button name="action_manager_review" type="object" string="Marquer révisé" invisible="status != 'pending_manager'" groups="people_engine.group_manager"/>
+                    <button name="action_manager_approve" type="object" string="Approuver (gestionnaire)" class="btn-primary" invisible="status not in ('pending_manager', 'draft')" groups="people_engine.group_manager"/>
+                    <button name="action_hr_validate" type="object" string="Valider RH" invisible="status != 'pending_hr' or not hr_validation_required" groups="people_engine.group_hr"/>
+                    <button name="action_deliver" type="object" string="Communiquer à l'employé" class="btn-primary" invisible="status != 'approved'" groups="people_engine.group_manager"/>
+                    <button name="action_cancel" type="object" string="Annuler" invisible="status in ('delivered', 'acknowledged', 'cancelled')" groups="people_engine.group_manager"/>
+                    <field name="status" widget="statusbar" statusbar_visible="draft,pending_manager,pending_hr,approved,delivered"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-warning" role="alert" invisible="not hr_validation_required">
+                        <p>Action formelle : validation RH obligatoire avant envoi.</p>
+                    </div>
+                    <group>
+                        <field name="profile_id" readonly="status not in ('draft', 'generating')"/>
+                        <field name="employee_id"/>
+                        <field name="session_type"/>
+                        <field name="trigger_type"/>
+                        <field name="trigger_score" readonly="1"/>
+                        <field name="manager_id"/>
+                        <field name="hr_validation_required" readonly="1"/>
+                    </group>
+                    <group string="Conformité légale" invisible="not compliance_blockers and not compliance_warnings">
+                        <field name="compliance_ok" readonly="1"/>
+                        <field name="compliance_blockers" readonly="1"/>
+                        <field name="compliance_warnings" readonly="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Claude" name="claude">
+                            <field name="claude_analysis" readonly="1"/>
+                            <field name="claude_draft" readonly="status == 'delivered'"/>
+                            <field name="claude_action_plan" readonly="1"/>
+                            <field name="claude_legal_refs" readonly="1"/>
+                            <field name="claude_model_used" readonly="1"/>
+                        </page>
+                        <page string="Révision humaine" name="review">
+                            <field name="manager_edits"/>
+                            <field name="final_message" readonly="status == 'delivered'"/>
+                            <field name="manager_approved" readonly="1"/>
+                            <field name="hr_validated" readonly="1"/>
+                            <field name="hr_comments" groups="people_engine.group_hr"/>
+                        </page>
+                        <page string="Livraison" name="delivery">
+                            <field name="delivery_method"/>
+                            <field name="delivered_at" readonly="1"/>
+                            <field name="employee_acknowledged"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_pe_coaching_plan_form" model="ir.ui.view">
+        <field name="name">pe.coaching.plan.form</field>
+        <field name="model">pe.coaching.plan</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_generate_ai" type="object" string="Générer plan (Claude)" invisible="status != 'draft'" groups="people_engine.group_manager"/>
+                    <button name="action_activate" type="object" string="Activer" class="btn-primary" invisible="status != 'draft'" groups="people_engine.group_manager"/>
+                    <button name="action_complete" type="object" string="Compléter" invisible="status != 'active'" groups="people_engine.group_manager"/>
+                    <field name="status" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="profile_id"/>
+                        <field name="manager_id"/>
+                        <field name="plan_type"/>
+                        <field name="duration_days"/>
+                        <field name="date_start"/>
+                        <field name="date_end"/>
+                        <field name="score_at_start"/>
+                        <field name="score_target"/>
+                        <field name="completion_rate"/>
+                    </group>
+                    <field name="claude_plan_content"/>
+                    <field name="claude_success_criteria"/>
+                    <field name="claude_risk_factors"/>
+                    <field name="objective_ids"/>
+                    <field name="progress_note_ids"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_pe_coaching_wizard_form" model="ir.ui.view">
+        <field name="name">pe.coaching.wizard.form</field>
+        <field name="model">pe.coaching.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Coaching People Engine">
+                <group>
+                    <field name="profile_id" readonly="1"/>
+                    <field name="wizard_mode"/>
+                    <field name="use_ai"/>
+                </group>
+                <group invisible="wizard_mode != 'session'">
+                    <field name="session_type"/>
+                    <field name="trigger_type"/>
+                    <field name="trigger_details"/>
+                    <field name="compliance_preview" invisible="not compliance_preview"/>
+                </group>
+                <group invisible="wizard_mode != 'plan'">
+                    <field name="name"/>
+                    <field name="plan_type"/>
+                    <field name="duration_days"/>
+                    <field name="score_target"/>
+                </group>
+                <footer>
+                    <button name="action_create" type="object" string="Créer" class="btn-primary"/>
+                    <button string="Annuler" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_pe_coaching_sessions" model="ir.actions.act_window">
+        <field name="name">Sessions coaching IA</field>
+        <field name="res_model">pe.coaching.session</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_pe_coaching_plan_tree" model="ir.ui.view">
+        <field name="name">pe.coaching.plan.tree</field>
+        <field name="model">pe.coaching.plan</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="plan_type"/>
+                <field name="status" widget="badge"/>
+                <field name="completion_rate" widget="progressbar"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_pe_coaching_plans" model="ir.actions.act_window">
+        <field name="name">Plans de développement</field>
+        <field name="res_model">pe.coaching.plan</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

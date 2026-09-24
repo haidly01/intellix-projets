@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_jt_police_list" model="ir.ui.view">
+    <field name="name">jt.police.list</field>
+    <field name="model">jt.police</field>
+    <field name="arch" type="xml">
+      <list string="Polices">
+        <field name="policy_number" string="N° police"/>
+        <field name="client_id"/>
+        <field name="institution" string="Assureur"/>
+        <field name="product_family" string="Type" widget="badge"
+          decoration-info="product_family == 'vie'"
+          decoration-warning="product_family == 'accident_accis'"
+          decoration-danger="product_family == 'maladie_grave'"/>
+        <field name="product" string="Produit"/>
+        <field name="policy_status" string="Statut" widget="badge"
+          decoration-success="policy_status == 'en_force'"
+          decoration-warning="policy_status == 'en_traitement'"
+          decoration-danger="policy_status in ['refuse','echu']"/>
+        <field name="amount_label" string="Libellé" column_invisible="1"/>
+        <field name="face_amount" string="Montant / couverture ($)" sum="Total"/>
+        <field name="annual_premium" string="Prime ($)" sum="Total primes"/>
+        <field name="premium" string="Prime ($)" optional="hide"/>
+        <field name="payment_mode" string="Fréquence"/>
+        <field name="premium_label" string="Type prime" optional="hide"/>
+        <field name="eff_date" string="Entrée en vigueur"/>
+        <field name="term_date" string="Échéance"/>
+        <field name="address_group" string="Adresse" optional="show"/>
+        <field name="source" optional="hide"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="view_jt_police_search" model="ir.ui.view">
+    <field name="name">jt.police.search</field>
+    <field name="model">jt.police</field>
+    <field name="arch" type="xml">
+      <search string="Polices">
+        <field name="policy_number"/>
+        <field name="client_id"/>
+        <field name="product"/>
+        <field name="address_group" string="Adresse"/>
+        <field name="owner_address" string="Adresse propriétaire"/>
+        <separator/>
+        <filter name="en_force" string="En force" domain="[('policy_status','=','en_force')]"/>
+        <filter name="renew_30" string="Renouvellement 30 jours"
+                domain="[('renew_within_30_days','=',True)]"/>
+        <filter name="with_address" string="Avec adresse"
+                domain="[('address_group','!=',False)]"/>
+        <filter name="institution_av" string="Assomption Vie" domain="[('institution','=','assomption_vie')]"/>
+        <filter name="institution_ago" string="AGO" domain="[('institution','=','ago')]"/>
+        <filter name="institution_inalco" string="Inalco" domain="[('institution','=','inalco')]"/>
+        <separator/>
+        <filter name="family_vie" string="Assurance vie" domain="[('product_family','=','vie')]"/>
+        <filter name="family_accis" string="Accis / accident" domain="[('product_family','=','accident_accis')]"/>
+        <filter name="family_ci" string="Maladie grave" domain="[('product_family','=','maladie_grave')]"/>
+        <separator/>
+        <filter name="group_institution" string="Institution" context="{'group_by': 'institution'}"/>
+        <filter name="group_family" string="Type de produit" context="{'group_by': 'product_family'}"/>
+        <filter name="group_status" string="Statut" context="{'group_by': 'policy_status'}"/>
+        <filter name="group_address" string="Adresse" context="{'group_by': 'address_group'}"/>
+      </search>
+    </field>
+  </record>
+
+  <record id="view_jt_police_form" model="ir.ui.view">
+    <field name="name">jt.police.form</field>
+    <field name="model">jt.police</field>
+    <field name="arch" type="xml">
+      <form>
+        <sheet>
+          <group>
+            <group string="Identité police">
+              <field name="policy_number"/>
+              <field name="client_id"/>
+              <field name="institution"/>
+              <field name="product_family"/>
+              <field name="product"/>
+              <field name="product_code"/>
+              <field name="policy_status"/>
+              <field name="contract_type"/>
+              <field name="agent_code"/>
+              <field name="courtier"/>
+              <field name="coverage_number"/>
+              <field name="assomption_account"/>
+            </group>
+            <group string="Dates &amp; montants">
+              <field name="submission_date"/>
+              <field name="eff_date" string="Entrée en vigueur"/>
+              <field name="term_date" string="Échéance / renouvellement"/>
+              <field name="amount_label" invisible="1"/>
+              <field name="premium_label" invisible="1"/>
+              <field name="face_amount" string="Capital assuré ($)"
+                invisible="product_family != 'vie'"/>
+              <field name="face_amount" string="Montant de couverture ($)"
+                invisible="product_family == 'vie'"/>
+              <field name="annual_premium" string="Prime annuelle ($)"
+                invisible="product_family in ('accident_accis', 'maladie_grave')"/>
+              <field name="annual_premium" string="Prime mensuelle ($)"
+                invisible="product_family not in ('accident_accis', 'maladie_grave')"/>
+              <field name="premium" string="Prime ($)" optional="hide"/>
+              <field name="payment_mode" string="Fréquence"/>
+              <field name="coverage_summary" string="Détail des couvertures"
+                invisible="product_family == 'vie'"/>
+              <field name="underwriting_status"/>
+              <field name="source"/>
+              <field name="insured_names" string="Assuré(s) (I)"/>
+              <field name="owner_name" string="Propriétaire (O)"/>
+              <field name="payer_name" string="Payeur (P)"/>
+              <field name="owner_address" string="Adresse propriétaire"/>
+              <field name="payer_address" string="Adresse payeur"/>
+              <field name="address_group" string="Adresse (groupe)" readonly="1"/>
+              <field name="co_owner_name" string="Co-propriétaire"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Transactions">
+              <field name="transaction_ids">
+                <list>
+                  <field name="event_date"/>
+                  <field name="event_type"/>
+                  <field name="source"/>
+                  <field name="reference"/>
+                  <field name="pdf_url" widget="url"/>
+                </list>
+              </field>
+            </page>
+            <page string="Activités souscription">
+              <field name="activite_ids">
+                <list>
+                  <field name="opened"/>
+                  <field name="activity_type"/>
+                  <field name="activity_subtype"/>
+                  <field name="closed"/>
+                  <field name="user_code"/>
+                </list>
+              </field>
+            </page>
+          </notebook>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+
+  <record id="action_jt_police" model="ir.actions.act_window">
+    <field name="name">Polices</field>
+    <field name="res_model">jt.police</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+  <record id="action_jt_police_renewals" model="ir.actions.act_window">
+    <field name="name">Renouvellements 30 jours</field>
+    <field name="res_model">jt.police</field>
+    <field name="view_mode">list,form</field>
+    <field name="domain">[('renew_within_30_days','=',True)]</field>
+  </record>
+</odoo>

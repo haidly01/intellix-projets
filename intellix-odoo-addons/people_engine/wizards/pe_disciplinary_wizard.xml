@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pe_disciplinary_procedure_wizard_form" model="ir.ui.view">
+        <field name="name">pe.disciplinary.procedure.wizard.form</field>
+        <field name="model">pe.disciplinary.procedure.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Créer procédure disciplinaire">
+                <group>
+                    <field name="incident_id" readonly="1"/>
+                    <field name="employee_id" readonly="1"/>
+                    <field name="type_sanction"/>
+                    <field name="description_faits"/>
+                    <field name="impact_paie"/>
+                    <field name="jours_mise_a_pied" invisible="type_sanction != 'mise_a_pied'"/>
+                    <field name="heures_deduction" invisible="not impact_paie"/>
+                    <field name="generate_convocation"/>
+                </group>
+                <footer>
+                    <button name="action_create_procedure" type="object" string="Créer procédure" class="btn-primary"/>
+                    <button string="Annuler" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_pe_disciplinary_sanction_wizard_form" model="ir.ui.view">
+        <field name="name">pe.disciplinary.sanction.wizard.form</field>
+        <field name="model">pe.disciplinary.sanction.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Appliquer sanction">
+                <group>
+                    <field name="procedure_id" readonly="1"/>
+                    <field name="type_sanction"/>
+                    <field name="generate_letter"/>
+                    <field name="letter_type" invisible="not generate_letter"/>
+                    <field name="apply_payroll"/>
+                    <field name="jours_mise_a_pied" invisible="type_sanction != 'mise_a_pied'"/>
+                    <field name="heures_deduction" invisible="not apply_payroll"/>
+                </group>
+                <footer>
+                    <button name="action_apply" type="object" string="Appliquer" class="btn-primary"/>
+                    <button string="Annuler" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

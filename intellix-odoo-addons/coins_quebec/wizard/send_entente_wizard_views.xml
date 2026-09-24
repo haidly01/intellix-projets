@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_cq_send_entente_wizard" model="ir.ui.view">
+        <field name="name">coins.quebec.send.entente.wizard.form</field>
+        <field name="model">coins.quebec.send.entente.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Envoyer l'entente" class="o_cq_entente_wizard">
+                <div class="o_cq_entente_top">
+                    <div class="eyebrow">Coins Québec · Entente visibilité</div>
+                    <h1>Envoyer l'entente</h1>
+                    <p>Signature électronique — commission seulement sur ce qui est généré.</p>
+                </div>
+                <group>
+                    <field name="partenariat_id" invisible="1"/>
+                    <field name="etablissement"/>
+                    <field name="type_label"/>
+                    <field name="commission_pct"/>
+                    <field name="contact"/>
+                    <field name="statut"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" type="object"
+                            string="Envoyer l'entente"
+                            class="btn-primary o_cq_btn_entente"/>
+                    <button string="Annuler" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

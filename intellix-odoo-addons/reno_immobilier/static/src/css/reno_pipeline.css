@@ -1,0 +1,203 @@
+/* Chrome app Réno — scoped html.o_reno_brand (navbar + Nouveau). */
+html.o_reno_brand {
+  --reno-slate: #1B2430;
+  --reno-orange: #EC6A2B;
+  --reno-paper: #faf6ee;
+  --reno-ink: #262220;
+  --o-navbar-bg: #1B2430;
+  --NavBar-background: #1B2430;
+  --NavBar-color: #faf6ee;
+  --btn-primary-bg: #EC6A2B;
+  --btn-primary-border: #EC6A2B;
+  --btn-primary-color: #fff;
+  --o-community-color: #EC6A2B;
+  --o-brand: #1B2430;
+  --o-brand-primary: #EC6A2B;
+  --primary: #EC6A2B;
+  --o-color-primary: #EC6A2B;
+  --o-cc1-btn-primary: #EC6A2B;
+  color-scheme: light;
+}
+
+html.o_reno_brand header.o_navbar,
+html.o_reno_brand .o_navbar,
+html.o_reno_brand .o_main_navbar,
+html.o_reno_brand .o_navbar .o_main_navbar {
+  background: #1B2430 !important;
+  background-color: #1B2430 !important;
+  background-image: none !important;
+  color: #faf6ee !important;
+}
+
+html.o_reno_brand .o_navbar a,
+html.o_reno_brand .o_navbar button,
+html.o_reno_brand .o_main_navbar a,
+html.o_reno_brand .o_menu_sections,
+html.o_reno_brand .o_menu_systray {
+  color: #faf6ee !important;
+}
+
+html.o_reno_brand .btn-primary,
+html.o_reno_brand .o_control_panel .btn-primary,
+html.o_reno_brand .o_list_button_add {
+  background: #EC6A2B !important;
+  border-color: #EC6A2B !important;
+  color: #fff !important;
+}
+
+html.o_reno_brand .o_action_manager,
+html.o_reno_brand .o_content,
+html.o_reno_brand .o_list_view,
+html.o_reno_brand .o_control_panel {
+  background: #faf6ee !important;
+  color: #262220 !important;
+}
+
+html.o_reno_brand .o_list_table thead th {
+  background: #efe6d4 !important;
+  color: #1B2430 !important;
+}
+
+html.o_reno_light_pipeline {
+  color-scheme: light !important;
+}
+html.o_reno_light_pipeline body,
+html.o_reno_light_pipeline .o_web_client,
+html.o_reno_light_pipeline .o_action_manager,
+html.o_reno_light_pipeline .o_action,
+html.o_reno_light_pipeline .o_kanban_view,
+html.o_reno_light_pipeline .o_kanban_renderer,
+html.o_reno_light_pipeline .o_content,
+html.o_reno_light_pipeline .o_control_panel {
+  background: #faf6ee !important;
+  color: #262220 !important;
+  color-scheme: light !important;
+}
+
+.o_action:has(.o_reno_immo_kanban),
+.o_action:has(.o_reno_immo_dash) {
+  --coins-cream: #faf6ee;
+  --coins-gold: #b5732f;
+  --coins-gold-2: #e6b876;
+  --coins-line: #e6ddcc;
+  --coins-charcoal: #262220;
+  --coins-muted: #8a8172;
+  --o-view-background-color: #faf6ee;
+  --Kanban-background: #faf6ee;
+  --Kanban-Record-background: transparent;
+  --Kanban-Record-padding: 0px;
+  --Kanban-Record-margin-bottom: 8px;
+  background: #faf6ee !important;
+  color: #262220 !important;
+  font-family: "Jost", "Segoe UI", sans-serif;
+}
+
+.o_action:has(.o_reno_immo_kanban) .o_control_panel,
+.o_action:has(.o_reno_immo_dash) .o_control_panel,
+.o_action:has(.o_reno_immo_kanban) .o_content,
+.o_action:has(.o_reno_immo_kanban) .o_kanban_view,
+.o_reno_immo_kanban,
+.o_reno_immo_dash {
+  background: #faf6ee !important;
+  color: #262220 !important;
+}
+
+.o_reno_immo_kanban::before {
+  display: block;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: #262220;
+  margin: 4px 4px 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e6ddcc;
+  content: "Réno Immobilier — Leads Gestion";
+}
+
+.o_reno_immo_kanban .o_kanban_group,
+.o_reno_immo_dash .o_kanban_group {
+  background: transparent !important;
+}
+
+.o_reno_immo_kanban .o_kanban_header,
+.o_reno_immo_kanban .o_column_title,
+.o_reno_immo_dash .o_kanban_header {
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #8a8172 !important;
+  background: transparent !important;
+}
+
+.o_reno_immo_kanban .o_kanban_record,
+.o_reno_immo_dash .o_kanban_record {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin-bottom: 8px !important;
+}
+
+.o_reno_immo_kanban .o_column_folded {
+  display: none !important;
+}
+
+.o_reno_lead_card,
+.o_coins_lead_card.o_reno_lead_card {
+  background: #ffffff !important;
+  border: 1px solid #e6ddcc !important;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: #262220 !important;
+}
+
+.o_reno_lead_card.hot {
+  background: #fdeceb !important;
+  border-color: #f3c8c3 !important;
+}
+.o_reno_lead_card.won {
+  background: #eef4e6 !important;
+  border-color: #d3e0bd !important;
+}
+
+.o_reno_lead_name,
+.o_reno_lead_name .o_field_widget {
+  font-weight: 600 !important;
+  color: #262220 !important;
+  line-height: 1.3;
+}
+.o_reno_lead_sub,
+.o_reno_lead_sub .o_field_widget {
+  font-size: 11px !important;
+  color: #8a8172 !important;
+  margin-top: 2px;
+}
+
+.o_reno_lead_badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 8px;
+}
+.o_reno_badge {
+  display: inline-block;
+  font-size: 10px;
+  letter-spacing: 0.03em;
+  padding: 2px 7px;
+  border-radius: 999px;
+  line-height: 1.4;
+}
+.o_reno_badge_cat {
+  background: #f4ead6;
+  color: #8a5a24;
+}
+.o_reno_badge_user {
+  background: #e8eef6;
+  color: #3d5270;
+}
+.o_reno_badge_relance {
+  background: #fde8e4;
+  color: #9b2c1a;
+}

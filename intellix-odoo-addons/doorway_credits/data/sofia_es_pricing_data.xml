@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="0">
+    <record id="price_sofia_es_call" model="doorway.ai.pricing">
+        <field name="service">sofia_es_call</field>
+        <field name="real_cost">0.11</field>
+        <field name="client_price">0.22</field>
+        <field name="unit">par minute (facturé à la seconde)</field>
+    </record>
+</odoo>

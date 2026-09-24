@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="cat_decouverte" model="coins.quebec.property.category">
+        <field name="name">Découverte</field>
+        <field name="code">decouverte</field>
+        <field name="sequence">10</field>
+        <field name="description">Vendu à l’unité, prix fixe, carte publique.</field>
+    </record>
+    <record id="cat_privatisation" model="coins.quebec.property.category">
+        <field name="name">Privatisation</field>
+        <field name="code">privatisation</field>
+        <field name="sequence">20</field>
+        <field name="description">Confidentiel, sur devis.</field>
+    </record>
+    <record id="cat_evenements" model="coins.quebec.property.category">
+        <field name="name">Événements</field>
+        <field name="code">evenements</field>
+        <field name="sequence">30</field>
+    </record>
+    <record id="cat_bien_etre" model="coins.quebec.property.category">
+        <field name="name">Bien-être</field>
+        <field name="code">bien_etre</field>
+        <field name="sequence">40</field>
+    </record>
+    <record id="cat_hebergement" model="coins.quebec.property.category">
+        <field name="name">Hébergement</field>
+        <field name="code">hebergement</field>
+        <field name="sequence">50</field>
+    </record>
+</odoo>

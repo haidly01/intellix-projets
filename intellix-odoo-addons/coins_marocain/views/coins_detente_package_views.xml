@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_coins_detente_package_form" model="ir.ui.view">
+        <field name="name">coins.detente_package.form</field>
+        <field name="model">coins.detente_package</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml"><form string="Forfait détente">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_bookings" type="object" class="oe_stat_button" icon="fa-calendar-check-o">
+                            <field name="booking_count" widget="statinfo" string="Réservations"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Test limité" bg_color="text-bg-warning" invisible="not is_limited_test"/>
+                    <div class="alert alert-warning" role="alert" invisible="not is_limited_test">
+                        <strong>Palier 8 — test limité.</strong>
+                        Ne pas activer en vente large avant validation légale terrain
+                        (bruit, alcool, sécurité nocturne).
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Ex. Forfait Détente Essentiel"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="package_type"/>
+                            <field name="is_limited_test" invisible="1"/>
+                            <field name="min_participants"/>
+                            <field name="active"/>
+                            <field name="currency_id"/>
+                            <field name="sale_price"/>
+                        </group>
+                        <group string="Marge (auto)">
+                            <field name="estimated_cost"/>
+                            <field name="estimated_margin" decoration-success="estimated_margin &gt; 0" decoration-danger="estimated_margin &lt; 0"/>
+                            <field name="margin_percent" widget="progressbar"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Composition" name="partners">
+                            <div class="alert alert-info" role="alert" invisible="not suggested_chef_ids">
+                                <strong>Chef multi-service disponible</strong> —
+                                un prestataire BBQ + cours de cuisine est déjà sourcé.
+                                <button name="action_add_suggested_chef" type="object" string="Ajouter le chef suggéré" class="btn btn-sm btn-primary ms-2"/>
+                            </div>
+                            <field name="suggested_chef_ids" invisible="1"/>
+                            <field name="partner_ids" context="{'default_verdict': 'prioritaire'}">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="partner_type"/>
+                                    <field name="neighborhood"/>
+                                    <field name="is_chef_multi_service" optional="show"/>
+                                    <field name="partner_price_pool" optional="hide"/>
+                                    <field name="partner_price_hammam_massage" optional="hide"/>
+                                    <field name="partner_price_dinner_show" optional="hide"/>
+                                    <field name="partner_price_bbq_chef" optional="show"/>
+                                    <field name="partner_price_cours_cuisine" optional="show"/>
+                                    <field name="partner_price_sortie_soiree" optional="hide"/>
+                                    <field name="partner_price_fermette_journee" optional="hide"/>
+                                    <field name="partner_price_dj_soiree" optional="hide"/>
+                                    <field name="verdict"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Description" name="desc">
+                            <field name="description" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form></field>
+    </record>
+
+    <record id="view_coins_detente_package_list" model="ir.ui.view">
+        <field name="name">coins.detente_package.list</field>
+        <field name="model">coins.detente_package</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml"><list decoration-warning="is_limited_test">
+                <field name="name"/>
+                <field name="package_type"/>
+                <field name="min_participants"/>
+                <field name="sale_price"/>
+                <field name="estimated_cost"/>
+                <field name="estimated_margin"/>
+                <field name="margin_percent" widget="progressbar"/>
+                <field name="is_limited_test" optional="show"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="booking_count"/>
+            </list></field>
+    </record>
+
+    <record id="view_coins_detente_package_search" model="ir.ui.view">
+        <field name="name">coins.detente_package.search</field>
+        <field name="model">coins.detente_package</field>
+        <field name="type">search</field>
+        <field name="arch" type="xml"><search>
+                <field name="name"/>
+                <filter name="p1" string="Palier 1" domain="[('package_type', '=', 'palier_1_detente')]"/>
+                <filter name="p2" string="Palier 2" domain="[('package_type', '=', 'palier_2_cross_sell')]"/>
+                <filter name="p3" string="Palier 3" domain="[('package_type', '=', 'palier_3_combo_complet')]"/>
+                <filter name="p4" string="Palier 4 Villa BBQ" domain="[('package_type', '=', 'palier_4_villa_bbq')]"/>
+                <filter name="p5" string="Palier 5 Villa cuisine" domain="[('package_type', '=', 'palier_5_villa_cuisine')]"/>
+                <filter name="p6" string="Palier 6 + soirée" domain="[('package_type', '=', 'palier_6_villa_soiree_option')]"/>
+                <filter name="p7" string="Palier 7 Fermette DJ" domain="[('package_type', '=', 'palier_7_fermette_dj')]"/>
+                <filter name="p8" string="Palier 8 Camping (test)" domain="[('package_type', '=', 'palier_8_fermette_camping')]"/>
+                <filter name="limited" string="Tests limités" domain="[('is_limited_test', '=', True)]"/>
+                <group>
+                    <filter name="group_type" string="Palier" context="{'group_by': 'package_type'}"/>
+                </group>
+            </search></field>
+    </record>
+
+</odoo>

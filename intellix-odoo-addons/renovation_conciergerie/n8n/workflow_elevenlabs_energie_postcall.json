@@ -1,0 +1,112 @@
+{
+  "name": "Énergie Pro — Post-appel ElevenLabs + Claude + Odoo",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "elevenlabs-energie-postcall",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "ep1-webhook",
+      "name": "Webhook Post-Call EL",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 300],
+      "webhookId": "elevenlabs-energie-postcall-doorway"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json;\nconst body = raw.body || raw;\nconst data = body.data || body;\nconst analysis = data.analysis || body.analysis || {};\nconst dcRaw = analysis.data_collection_results || data.data_collection || body.data_collection || {};\nfunction dcVal(key) {\n  const o = dcRaw[key];\n  if (o && typeof o === 'object' && 'value' in o) return o.value;\n  return dcRaw[key] ?? '';\n}\nlet transcript = data.transcript || body.transcript || '';\nif (Array.isArray(transcript)) {\n  transcript = transcript.map(t => {\n    if (typeof t === 'string') return t;\n    return (t.role || '') + ': ' + (t.message || t.content || '');\n  }).join('\\n');\n}\nconst dyn = (data.conversation_initiation_client_data || {}).dynamic_variables || {};\nconst leadId = String(dyn.lead_id_odoo || dcVal('lead_id_odoo') || body.lead_id_odoo || body.lead_id || '').replace(/\\D/g, '') || '';\nreturn [{\n  json: {\n    conversation_id: data.conversation_id || body.conversation_id || body.call_id || '',\n    lead_id: leadId,\n    transcript,\n    call_duration_seconds: data.metadata?.call_duration_secs || data.call_duration_seconds || body.duration || 0,\n    call_successful: (data.status || body.status) !== 'failed',\n    data_collection: dcRaw,\n    lead_name: dyn.lead_name || dcVal('lead_name') || '',\n    lead_site: dyn.lead_site || dcVal('lead_site') || '',\n    lead_city: dyn.lead_city || dcVal('lead_city') || '',\n    current_heating: dyn.current_heating || dcVal('current_heating') || '',\n    project_type: dyn.project_type || dcVal('project_type') || 'multi',\n    phone: dyn.phone || dcVal('phone') || ''\n  }\n}];"
+      },
+      "id": "ep2-parse",
+      "name": "Parser payload EL",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [260, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const p = $('Parser payload EL').first().json;\nconst apiKey = '{{ANTHROPIC_API_KEY}}';\nconst prompt = `Tu es expert qualification leads rénovation énergétique Québec (thermopompes, isolation, portes/fenêtres, subventions LogisVert/Rénoclimat). Analyse et retourne UNIQUEMENT un JSON valide sans markdown.\\n\\nLead:\\n- Nom: ${p.lead_name}\\n- Ville: ${p.lead_city}\\n- Site: ${p.lead_site}\\n- Projet: ${p.project_type}\\n- Chauffage actuel: ${p.current_heating}\\n- Durée appel: ${p.call_duration_seconds}s\\n- Transcript (extrait): ${(p.transcript || '').slice(0, 2000)}\\n\\nHOT: projet < 3 mois, propriétaire, budget confirmé, veut soumission/visite.\\nWARM: intéressé, timing flexible.\\nCOLD: curieux, pas de budget, locataire.\\n\\nRéponds: {\"score\":\"hot|warm|cold\",\"score_numeric\":0-100,\"transfer_now\":true|false,\"programmes_eligibles\":[\"logisvert\",\"renoclimat\"],\"subvention_estimee\":0,\"summary\":\"2 phrases\",\"next_action\":\"...\",\"odoo_stage\":\"Qualifié|En développement|Nouveau\"}`;\nlet parsed = { score: 'warm', score_numeric: 50, transfer_now: false, summary: '', next_action: '', odoo_stage: 'En développement', programmes_eligibles: [], subvention_estimee: 0 };\nif (!apiKey || apiKey.startsWith('{{')) {\n  const dur = parseInt(p.call_duration_seconds || 0, 10);\n  if (dur < 15) parsed = { ...parsed, score: 'cold', score_numeric: 20, odoo_stage: 'Nouveau' };\n  return [{ json: { ...p, ...parsed } }];\n}\ntry {\n  const res = await this.helpers.httpRequest({\n    method: 'POST',\n    url: 'https://api.anthropic.com/v1/messages',\n    headers: { 'x-api-key': apiKey, 'anthropic-version': '2023-06-01', 'Content-Type': 'application/json' },\n    body: { model: 'claude-sonnet-4-20250514', max_tokens: 500, messages: [{ role: 'user', content: prompt }] },\n    json: true,\n  });\n  let text = (res.content && res.content[0] && res.content[0].text) || '';\n  const match = text.match(/\\{[\\s\\S]*\\}/);\n  if (match) parsed = { ...parsed, ...JSON.parse(match[0]) };\n} catch (e) {\n  parsed.summary = 'Scoring fallback: ' + String(e.message || e);\n}\nreturn [{ json: { ...p, ...parsed } }];"
+      },
+      "id": "ep3-claude",
+      "name": "Claude Scoring",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [520, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "leftValue": "={{ $json.score }}",
+              "rightValue": "hot",
+              "operator": { "type": "string", "operation": "equals" }
+            }
+          ]
+        }
+      },
+      "id": "ep4-if-hot",
+      "name": "IF Hot?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [780, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const j = $input.first().json;\nconst token = '{{ENERGIE_WEBHOOK_TOKEN}}';\nconst progs = Array.isArray(j.programmes_eligibles) ? j.programmes_eligibles.join(',') : (j.programmes_eligibles || '');\nconst body = {\n  lead_id: parseInt(j.lead_id, 10),\n  score: j.score,\n  score_numeric: j.score_numeric,\n  transfer_now: true,\n  summary: j.summary,\n  next_action: j.next_action,\n  conversation_id: j.conversation_id,\n  transcript: j.transcript,\n  programmes_eligibles: progs,\n  subvention_estimee: j.subvention_estimee || 0,\n  increment_call_attempt: true,\n  nurture_active: false\n};\nconst res = await this.helpers.httpRequest({\n  method: 'POST',\n  url: 'https://intellixcrm.com/api/energie/lead/update',\n  headers: { 'X-Energie-Webhook-Token': token, 'Content-Type': 'application/json' },\n  body,\n  json: true,\n});\nreturn [{ json: { ...j, odoo: res } }];"
+      },
+      "id": "ep5-odoo-hot",
+      "name": "Odoo Update HOT",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1040, 180]
+    },
+    {
+      "parameters": {
+        "jsCode": "const j = $input.first().json;\nconst token = '{{ENERGIE_WEBHOOK_TOKEN}}';\nconst progs = Array.isArray(j.programmes_eligibles) ? j.programmes_eligibles.join(',') : (j.programmes_eligibles || '');\nconst body = {\n  lead_id: parseInt(j.lead_id, 10),\n  score: j.score,\n  score_numeric: j.score_numeric,\n  transfer_now: false,\n  summary: j.summary,\n  next_action: j.next_action,\n  conversation_id: j.conversation_id,\n  transcript: j.transcript,\n  programmes_eligibles: progs,\n  subvention_estimee: j.subvention_estimee || 0,\n  increment_call_attempt: true,\n  nurture_active: true\n};\nconst res = await this.helpers.httpRequest({\n  method: 'POST',\n  url: 'https://intellixcrm.com/api/energie/lead/update',\n  headers: { 'X-Energie-Webhook-Token': token, 'Content-Type': 'application/json' },\n  body,\n  json: true,\n});\nreturn [{ json: { ...j, odoo: res } }];"
+      },
+      "id": "ep6-odoo-warm",
+      "name": "Odoo Update WARM/COLD",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1040, 420]
+    },
+    {
+      "parameters": {
+        "jsCode": "const j = $('Claude Scoring').first().json;\nconst phone = j.phone || '';\nif (!phone || j.score !== 'hot') return [{ json: j }];\nconst sid = '{{TWILIO_ACCOUNT_SID}}';\nconst auth = Buffer.from(sid + ':{{TWILIO_AUTH_TOKEN}}').toString('base64');\nconst from = '{{TWILIO_FROM_ENERGIE}}';\nconst first = (j.lead_name || '').split(' ')[0] || 'Bonjour';\nconst site = j.lead_site || 'Énergie Pro';\nawait this.helpers.httpRequest({\n  method: 'POST',\n  url: `https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`,\n  headers: { Authorization: 'Basic ' + auth, 'Content-Type': 'application/x-www-form-urlencoded' },\n  body: `To=${encodeURIComponent(phone)}&From=${encodeURIComponent(from)}&Body=${encodeURIComponent(first + ', merci pour votre appel ' + site + '! Un conseiller Énergie Pro vous contacte sous peu pour votre soumission gratuite.')}`,\n});\nreturn [{ json: j }];"
+      },
+      "id": "ep7-sms-hot",
+      "name": "SMS HOT transfert",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1300, 180]
+    },
+    {
+      "parameters": {
+        "jsCode": "const j = $('Claude Scoring').first().json;\nconst phone = j.phone || '';\nif (!phone || j.score === 'hot') return [{ json: j }];\nconst sid = '{{TWILIO_ACCOUNT_SID}}';\nconst auth = Buffer.from(sid + ':{{TWILIO_AUTH_TOKEN}}').toString('base64');\nconst from = '{{TWILIO_FROM_ENERGIE}}';\nconst first = (j.lead_name || '').split(' ')[0] || 'Bonjour';\nconst sub = j.subvention_estimee ? ` Estimation subventions: ~${j.subvention_estimee}$.` : '';\nawait this.helpers.httpRequest({\n  method: 'POST',\n  url: `https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`,\n  headers: { Authorization: 'Basic ' + auth, 'Content-Type': 'application/x-www-form-urlencoded' },\n  body: `To=${encodeURIComponent(phone)}&From=${encodeURIComponent(from)}&Body=${encodeURIComponent(first + ' — Énergie Pro: on prépare votre dossier subventions (LogisVert/Rénoclimat).' + sub + ' Répondez OUI pour fixer un rappel.')}`,\n});\nreturn [{ json: j }];"
+      },
+      "id": "ep8-sms-warm",
+      "name": "SMS WARM relance",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1300, 420]
+    }
+  ],
+  "connections": {
+    "Webhook Post-Call EL": { "main": [[{ "node": "Parser payload EL", "type": "main", "index": 0 }]] },
+    "Parser payload EL": { "main": [[{ "node": "Claude Scoring", "type": "main", "index": 0 }]] },
+    "Claude Scoring": { "main": [[{ "node": "IF Hot?", "type": "main", "index": 0 }]] },
+    "IF Hot?": {
+      "main": [
+        [{ "node": "Odoo Update HOT", "type": "main", "index": 0 }],
+        [{ "node": "Odoo Update WARM/COLD", "type": "main", "index": 0 }]
+      ]
+    },
+    "Odoo Update HOT": { "main": [[{ "node": "SMS HOT transfert", "type": "main", "index": 0 }]] },
+    "Odoo Update WARM/COLD": { "main": [[{ "node": "SMS WARM relance", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "tags": [{ "name": "energie-pro" }, { "name": "elevenlabs" }]
+}

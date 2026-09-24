@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="group_renovation_partner" model="res.groups">
+        <field name="name">Partenaire Rénovation</field>
+        <field name="comment">Partenaires rénovation — segment B2C (pipeline Rénovation).</field>
+        <field name="implied_ids" eval="[(4, ref('base.group_user')),
+                                          (4, ref('group_doorway_b2c')),
+                                          (4, ref('group_doorway_role_user'))]"/>
+        <field name="share" eval="False"/>
+    </record>
+
+    <record id="rule_crm_lead_partner_only" model="ir.rule">
+        <field name="name">CRM Lead: partenaire voit ses leads</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="domain_force">['|', ('assigned_partner_id', '=', user.partner_id.id), ('service_assignment_ids.partner_id', '=', user.partner_id.id)]</field>
+        <field name="groups" eval="[(4, ref('renovation_conciergerie.group_renovation_partner'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_calendar_event_partner_only" model="ir.rule">
+        <field name="name">Calendrier: partenaire voit ses visites</field>
+        <field name="model_id" ref="calendar.model_calendar_event"/>
+        <field name="domain_force">['|', ('opportunity_id.assigned_partner_id', '=', user.partner_id.id), ('opportunity_id.service_assignment_ids.partner_id', '=', user.partner_id.id)]</field>
+        <field name="groups" eval="[(4, ref('renovation_conciergerie.group_renovation_partner'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_service_assignment_partner_only" model="ir.rule">
+        <field name="name">Attribution service: partenaire voit ses lignes</field>
+        <field name="model_id" ref="renovation_conciergerie.model_renovation_lead_service_assignment"/>
+        <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
+        <field name="groups" eval="[(4, ref('renovation_conciergerie.group_renovation_partner'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_twilio_call_log_partner_only" model="ir.rule">
+        <field name="name">Twilio log: partenaire voit ses appels</field>
+        <field name="model_id" ref="renovation_conciergerie.model_renovation_twilio_call_log"/>
+        <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
+        <field name="groups" eval="[(4, ref('renovation_conciergerie.group_renovation_partner'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_res_partner_partner_write_own" model="ir.rule">
+        <field name="name">Contact: partenaire modifie sa fiche uniquement</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="domain_force">[('id', 'child_of', user.partner_id.id)]</field>
+        <field name="groups" eval="[(4, ref('renovation_conciergerie.group_renovation_partner'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_res_partner_partner_read_linked_leads" model="ir.rule">
+        <field name="name">Contact: partenaire lit contacts lies aux leads</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="domain_force">['|', ('id', 'child_of', user.partner_id.id), '|', ('opportunity_ids.assigned_partner_id', '=', user.partner_id.id), ('opportunity_ids.service_assignment_ids.partner_id', '=', user.partner_id.id)]</field>
+        <field name="groups" eval="[(4, ref('renovation_conciergerie.group_renovation_partner'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- Lecture globale des contacts retirée : les partenaires ne voient que leur fiche,
+         les contacts liés à leurs leads, et les administrateurs Doorway (voir code Python). -->
+    <delete model="ir.rule" search="[('name', '=', 'Contact: partenaire lecture seule globale')]"/>
+
+    <record id="rule_partner_package_partner_only" model="ir.rule">
+        <field name="name">Forfaits: partenaire voit ses forfaits</field>
+        <field name="model_id" ref="renovation_conciergerie.model_renovation_partner_package"/>
+        <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
+        <field name="groups" eval="[(4, ref('renovation_conciergerie.group_renovation_partner'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_account_move_partner_only" model="ir.rule">
+        <field name="name">Facture: partenaire voit ses factures</field>
+        <field name="model_id" ref="account.model_account_move"/>
+        <field name="domain_force">[('partner_id', 'child_of', user.partner_id.id)]</field>
+        <field name="groups" eval="[(4, ref('renovation_conciergerie.group_renovation_partner'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_sale_order_partner_only" model="ir.rule">
+        <field name="name">Commande: partenaire voit ses commandes</field>
+        <field name="model_id" ref="sale.model_sale_order"/>
+        <field name="domain_force">[('partner_id', 'child_of', user.partner_id.id)]</field>
+        <field name="groups" eval="[(4, ref('renovation_conciergerie.group_renovation_partner'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_sale_order_line_partner_only" model="ir.rule">
+        <field name="name">Ligne commande: partenaire voit ses lignes</field>
+        <field name="model_id" ref="sale.model_sale_order_line"/>
+        <field name="domain_force">[('order_partner_id', 'child_of', user.partner_id.id)]</field>
+        <field name="groups" eval="[(4, ref('renovation_conciergerie.group_renovation_partner'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+</odoo>

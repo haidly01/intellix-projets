@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <function model="renovation.meta.immo.webhook" name="_ensure_meta_immo_webhook_token"/>
+
+    <!-- Tags qualification Meta / immobilier -->
+    <record id="crm_tag_immo_eval_marchande" model="crm.tag">
+        <field name="name">immo-eval-marchande</field>
+        <field name="color">3</field>
+    </record>
+    <record id="crm_tag_meta_ads_immo" model="crm.tag">
+        <field name="name">meta-ads-immo</field>
+        <field name="color">6</field>
+    </record>
+    <record id="crm_tag_score_hot" model="crm.tag">
+        <field name="name">score-hot</field>
+        <field name="color">10</field>
+    </record>
+    <record id="crm_tag_score_warm" model="crm.tag">
+        <field name="name">score-warm</field>
+        <field name="color">4</field>
+    </record>
+    <record id="crm_tag_score_cold" model="crm.tag">
+        <field name="name">score-cold</field>
+        <field name="color">1</field>
+    </record>
+    <record id="crm_tag_transfert_humain" model="crm.tag">
+        <field name="name">transfert-humain</field>
+        <field name="color">2</field>
+    </record>
+    <record id="crm_tag_warm_nurture_passif" model="crm.tag">
+        <field name="name">warm-nurture-passif</field>
+        <field name="color">4</field>
+    </record>
+    <record id="crm_tag_cold_ferme" model="crm.tag">
+        <field name="name">cold-fermé</field>
+        <field name="color">1</field>
+    </record>
+    <record id="crm_tag_nurture_passif" model="crm.tag">
+        <field name="name">nurture-passif</field>
+        <field name="color">3</field>
+    </record>
+    <record id="crm_tag_pas_repondu" model="crm.tag">
+        <field name="name">pas-répondu</field>
+        <field name="color">8</field>
+    </record>
+
+    <!-- Étapes supplémentaires pipeline Rénovation (flow Meta immo) -->
+    <record id="crm_stage_renovation_immo_called" model="crm.stage">
+        <field name="name">Appelé</field>
+        <field name="sequence">7</field>
+        <field name="team_ids" eval="[(6, 0, [ref('crm_team_renovation')])]"/>
+    </record>
+    <record id="crm_stage_renovation_immo_qualified" model="crm.stage">
+        <field name="name">Qualifié (IA)</field>
+        <field name="sequence">8</field>
+        <field name="team_ids" eval="[(6, 0, [ref('crm_team_renovation')])]"/>
+    </record>
+    <record id="crm_stage_renovation_immo_development" model="crm.stage">
+        <field name="name">En développement</field>
+        <field name="sequence">9</field>
+        <field name="team_ids" eval="[(6, 0, [ref('crm_team_renovation')])]"/>
+    </record>
+    <record id="crm_stage_renovation_immo_unqualified" model="crm.stage">
+        <field name="name">Non qualifié</field>
+        <field name="sequence">10</field>
+        <field name="fold" eval="True"/>
+        <field name="team_ids" eval="[(6, 0, [ref('crm_team_renovation')])]"/>
+    </record>
+</odoo>

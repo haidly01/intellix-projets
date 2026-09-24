@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="campaign_renovation" model="doorway.campaign">
+        <field name="name">Rénovation — sortants</field>
+        <field name="vicidial_campaign_id">DW_RENOV</field>
+        <field name="pipeline">renovation</field>
+        <field name="campaign_mode">mixed</field>
+        <field name="state">ready</field>
+    </record>
+    <record id="campaign_driven" model="doorway.campaign">
+        <field name="name">Driven — sortants</field>
+        <field name="vicidial_campaign_id">DW_DRIVN</field>
+        <field name="pipeline">driven</field>
+        <field name="campaign_mode">ia_agent</field>
+        <field name="state">ready</field>
+    </record>
+    <record id="campaign_marketing" model="doorway.campaign">
+        <field name="name">Marketing — sortants</field>
+        <field name="vicidial_campaign_id">DW_MKT</field>
+        <field name="pipeline">marketing</field>
+        <field name="state">ready</field>
+    </record>
+    <record id="campaign_assurance" model="doorway.campaign">
+        <field name="name">Assurance — sortants</field>
+        <field name="vicidial_campaign_id">DW_ASSUR</field>
+        <field name="pipeline">assurance</field>
+        <field name="state">ready</field>
+    </record>
+    <record id="campaign_france_b2c" model="doorway.campaign">
+        <field name="name">France B2C — RénoFacile</field>
+        <field name="vicidial_campaign_id">DW_FRB2C</field>
+        <field name="pipeline">renovation</field>
+        <field name="campaign_mode">mixed</field>
+        <field name="state">active</field>
+        <field name="ia_agent_id" ref="doorway_agents_dashboard.agent_sofia_renofacile_fr"/>
+        <field name="ia_transfer_on_interest" eval="False"/>
+        <field name="ia_max_call_duration">120</field>
+        <field name="amd_enabled" eval="True"/>
+        <field name="amd_action">hangup</field>
+        <field name="description">Sofia RénoFacile — qualification FR 4 questions — rappel Karine (sans transfert live)</field>
+    </record>
+    <record id="campaign_france_b2b" model="doorway.campaign">
+        <field name="name">France B2B — Twilio manual</field>
+        <field name="vicidial_campaign_id">DW_FRB2B</field>
+        <field name="pipeline">driven</field>
+        <field name="campaign_mode">human_agent</field>
+        <field name="state">ready</field>
+        <field name="description">Opérateur humain — manual dial Twilio (+1 581 890 0456)</field>
+    </record>
+    <record id="campaign_france_b2ac" model="doorway.campaign">
+        <field name="name">France B2B — Africa-Con manual</field>
+        <field name="vicidial_campaign_id">DW_FRAC</field>
+        <field name="pipeline">driven</field>
+        <field name="campaign_mode">human_agent</field>
+        <field name="state">ready</field>
+        <field name="description">Opérateur humain — manual dial Africa-Con (33424436337)</field>
+    </record>
+    <record id="campaign_quebec_b2c" model="doorway.campaign">
+        <field name="name">Québec B2C — Door_App0 (Estrie)</field>
+        <field name="vicidial_campaign_id">DW_QCB2C</field>
+        <field name="pipeline">renovation</field>
+        <field name="campaign_mode">mixed</field>
+        <field name="state">ready</field>
+        <field name="ia_agent_id" ref="doorway_agents_dashboard.agent_lea_qc"/>
+        <field name="amd_enabled" eval="True"/>
+        <field name="description">Prospection QC mixed — Léa IA (86013) + Zakaria humain (86027) — ne pas activer les deux en auto-dial simultané</field>
+    </record>
+    <record id="campaign_se_renov_qc" model="doorway.campaign">
+        <field name="name">SoumissionEntrepreneurs QC Rénovation</field>
+        <field name="vicidial_campaign_id">SE_RENOV_QC</field>
+        <field name="pipeline">renovation</field>
+        <field name="campaign_mode">ia_agent</field>
+        <field name="state">ready</field>
+        <field name="ia_agent_id" ref="doorway_agents_dashboard.agent_sofia_soumission_qc"/>
+        <field name="amd_enabled" eval="True"/>
+        <field name="description">Agent IA Émilie — propriétaires + projets rénovation QC — Africa-Con</field>
+    </record>
+    <record id="campaign_mr_immo_qc" model="doorway.campaign">
+        <field name="name">MaisonRecherchee QC Vendeurs</field>
+        <field name="vicidial_campaign_id">MR_IMMO_QC</field>
+        <field name="pipeline">immobilier</field>
+        <field name="campaign_mode">ia_agent</field>
+        <field name="state">ready</field>
+        <field name="ia_agent_id" ref="doorway_agents_dashboard.agent_maison_recherchee"/>
+        <field name="amd_enabled" eval="True"/>
+        <field name="description">Agent IA Sophie — intention vente immobilier QC — Africa-Con</field>
+    </record>
+    <record id="campaign_quebec_b2b" model="doorway.campaign">
+        <field name="name">Québec B2B — Driven Alex</field>
+        <field name="vicidial_campaign_id">DW_QCB2B</field>
+        <field name="pipeline">driven</field>
+        <field name="campaign_mode">ia_agent</field>
+        <field name="state">ready</field>
+        <field name="ia_agent_id" ref="doorway_agents_dashboard.agent_alex_driven_b2b_qc"/>
+        <field name="amd_enabled" eval="True"/>
+        <field name="description">Agent IA Alex — qualification financement PME Driven — ext 86023 — auto_dial OFF jusqu'au lancement</field>
+    </record>
+    <record id="campaign_rappel_quebec" model="doorway.campaign">
+        <field name="name">B2C Rappels Québec — sortants</field>
+        <field name="vicidial_campaign_id">DW_RAPQC</field>
+        <field name="pipeline">thermopompe</field>
+        <field name="campaign_mode">ia_agent</field>
+        <field name="state">ready</field>
+        <field name="description">Rappels B2C Québec — liste RAPPEL_B2C_QC, trunk SIP Door_App0</field>
+    </record>
+    <record id="campaign_espagne_renovation" model="doorway.campaign">
+        <field name="name">Espagne rénovation — sortants</field>
+        <field name="vicidial_campaign_id">DW_ESREN</field>
+        <field name="pipeline">renovation</field>
+        <field name="campaign_mode">ia_agent</field>
+        <field name="state">draft</field>
+        <field name="ia_agent_id" ref="doorway_agents_dashboard.agent_sofia_renov"/>
+        <field name="amd_enabled" eval="True"/>
+        <field name="description">Espagne rénovation — liste ESPAGNE_RENOVATION, trunk TrustSIP, agent Sofía</field>
+    </record>
+    <record id="campaign_coins_qc_monteregie" model="doorway.campaign">
+        <field name="name">Coins Québec — Rosalie Montérégie</field>
+        <field name="vicidial_campaign_id">CQMTG01</field>
+        <field name="pipeline">coins_quebec</field>
+        <field name="campaign_mode">ia_agent</field>
+        <field name="state">active</field>
+        <field name="amd_enabled" eval="True"/>
+        <field name="description">Agent IA Rosalie — partenariats restos / hôtels / spas CQMTG01 — ext 86047. Qualif + rappel sur coins.quebec.partenariat.</field>
+    </record>
+</odoo>

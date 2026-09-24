@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_doorway_wa_wizard_form" model="ir.ui.view">
+        <field name="name">doorway.wa.wizard.form</field>
+        <field name="model">doorway.wa.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Envoyer WhatsApp">
+                <group>
+                    <field name="lead_id"/>
+                    <field name="partner_id"/>
+                    <field name="phone"/>
+                    <field name="body"/>
+                    <field name="use_n8n"/>
+                    <field name="fallback_twilio"/>
+                </group>
+                <footer>
+                    <button name="action_send" type="object" string="Envoyer" class="btn-primary"/>
+                    <button string="Annuler" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_doorway_wa_wizard" model="ir.actions.act_window">
+        <field name="name">WhatsApp rapide</field>
+        <field name="res_model">doorway.wa.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

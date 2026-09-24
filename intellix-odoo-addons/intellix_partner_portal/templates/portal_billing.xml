@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_billing" name="Portail — Facturation">
+        <t t-call="intellix_partner_portal.ipp_portal_layout">
+            <h1 class="ipp-page-title">Facturation</h1>
+            <p class="ipp-page-sub">Factures et paiements liés à vos blocs de leads.</p>
+
+            <div class="ipp-card">
+                <div class="ipp-card-title">Factures</div>
+                <t t-if="not invoices">
+                    <div class="ipp-empty">
+                        Aucune facture pour le moment.<br/>
+                        <span style="font-size:14px;color:#8a8aa8">Les factures de blocs de leads apparaîtront ici.</span>
+                    </div>
+                </t>
+                <t t-else="">
+                    <div style="display:flex;flex-direction:column;gap:10px">
+                        <t t-foreach="invoices" t-as="inv">
+                            <div style="display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.08)">
+                                <div>
+                                    <div style="font-weight:700;font-size:15px" t-esc="inv.name"/>
+                                    <div style="font-size:13px;color:#b4b4d0" t-esc="inv.invoice_date"/>
+                                </div>
+                                <div style="text-align:right">
+                                    <div style="font-weight:700;color:#f59e0b" t-esc="inv.amount_total"/>
+                                    <div style="font-size:13px;color:#b4b4d0" t-esc="inv.payment_state"/>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+            </div>
+        </t>
+    </template>
+</odoo>

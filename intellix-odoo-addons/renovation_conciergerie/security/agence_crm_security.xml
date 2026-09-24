@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="group_agence_doorway_crm" model="res.groups">
+        <field name="name">Agence Doorway — Pipelines CRM (vue globale)</field>
+        <field name="comment">Karine uniquement : tous les pipelines, tous les leads (tous vendeurs), multi-sociétés.</field>
+        <field name="implied_ids" eval="[(4, ref('sales_team.group_sale_manager'))]"/>
+    </record>
+
+    <!-- Martin / Zakaria : tous les onglets pipelines, mais leads = les leurs seulement (pas de sale_manager). -->
+    <record id="group_agence_doorway_crm_sales" model="res.groups">
+        <field name="name">Agence Doorway — Pipelines CRM (mes leads)</field>
+        <field name="comment">Vendeurs Doorway : tous les pipelines visibles, leads assignés à soi (+ non assignés). Pas de leads des autres vendeurs (Martin ↔ Zakaria).</field>
+        <field name="implied_ids" eval="[(4, ref('sales_team.group_sale_salesman')),
+                                          (4, ref('group_pipeline_tab_renovation')),
+                                          (4, ref('group_pipeline_tab_immobilier')),
+                                          (4, ref('group_pipeline_tab_marketing')),
+                                          (4, ref('group_pipeline_tab_driven')),
+                                          (4, ref('group_pipeline_tab_doorway_b2b')),
+                                          (4, ref('group_pipeline_tab_assurance'))]"/>
+    </record>
+</odoo>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <template id="portal_police_detail" name="JT Portal — Police">
+    <t t-call="jt_client_portal.portal_layout">
+      <div class="jt-page-header">
+        <h1><t t-out="police.product"/></h1>
+        <span class="jt-badge jt-badge-force" t-if="police.policy_status == 'en_force'">En force</span>
+      </div>
+
+      <div class="jt-detail-grid">
+        <div class="jt-detail-card">
+          <h3>Détails de la couverture</h3>
+          <table class="jt-table">
+            <tr><td>Numéro de police</td><td><t t-out="police.policy_number"/></td></tr>
+            <tr><td>Institution</td><td><t t-out="police.institution"/></td></tr>
+            <tr><td>Capital assuré</td><td><strong><t t-out="'{:,.0f} $'.format(police.face_amount or 0)"/></strong></td></tr>
+            <tr><td>Prime annuelle</td><td><t t-out="'{:,.2f} $'.format(police.annual_premium or police.premium or 0)"/></td></tr>
+            <tr><td>Entrée en vigueur</td><td><t t-out="police.eff_date or police.submission_date or '—'"/></td></tr>
+            <tr><td>Date d'échéance</td><td><t t-out="police.term_date or '—'"/></td></tr>
+            <tr t-if="police.insured_names"><td>Assuré(s)</td><td><t t-out="police.insured_names"/></td></tr>
+            <tr t-if="police.co_owner_name"><td>Co-propriétaire</td><td><t t-out="police.co_owner_name"/></td></tr>
+          </table>
+        </div>
+      </div>
+
+      <section class="jt-section" t-if="transactions">
+        <h2>Mes relevés annuels</h2>
+        <div class="jt-pdf-list">
+          <t t-foreach="transactions" t-as="tx">
+            <a t-att-href="tx.pdf_url" target="_blank" rel="noopener" class="jt-pdf-item">
+              <span class="jt-pdf-icon">📄</span>
+              <span class="jt-pdf-date"><t t-out="tx.event_date"/></span>
+              <span class="jt-pdf-label">Relevé annuel</span>
+              <span class="jt-pdf-dl">Télécharger</span>
+            </a>
+          </t>
+        </div>
+      </section>
+
+      <div class="jt-actions">
+        <a t-attf-href="/portail/#{token}/polices" class="jt-btn-secondary">← Retour</a>
+        <a t-attf-href="/portail/#{token}/contact" class="jt-btn-primary">Questions sur cette police</a>
+      </div>
+    </t>
+  </template>
+</odoo>

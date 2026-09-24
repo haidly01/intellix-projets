@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_crm_lead_form_coins_voyageur" model="ir.ui.view">
+        <field name="name">crm.lead.form.coins.voyageur</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <field name="coins_is_voyageur_lead" invisible="1"/>
+                <field name="coins_has_coordonnees" invisible="1"/>
+                <field name="coins_voy_relance_date" invisible="1"/>
+                <field name="coins_voy_coordonnees_incompletes" invisible="1"/>
+                <button name="action_coins_qualifier"
+                        type="object"
+                        string="Qualifier"
+                        class="btn-secondary"
+                        invisible="not coins_is_voyageur_lead"/>
+                <button name="action_coins_envoyer_message"
+                        type="object"
+                        string="Envoyer un message"
+                        class="btn-secondary"
+                        invisible="not coins_is_voyageur_lead"/>
+                <button name="action_coins_marquer_transfert_chaud"
+                        type="object"
+                        string="Transfert à chaud"
+                        class="btn-primary"
+                        invisible="not coins_is_voyageur_lead"/>
+                <button name="action_coins_voy_envoyer_accuse"
+                        type="object"
+                        string="Envoyer accusé"
+                        class="btn-secondary"
+                        invisible="not coins_is_voyageur_lead"/>
+                <button name="action_coins_planifier_evenement"
+                        type="object"
+                        string="Planifier l'événement"
+                        class="o_coins_btn_planifier"
+                        invisible="not coins_is_voyageur_lead"/>
+            </xpath>
+            <xpath expr="//sheet" position="before">
+                <div class="alert alert-danger" role="alert"
+                     invisible="not coins_is_voyageur_lead or not coins_urgence">
+                    Urgence détectée — rappel dans l'heure. WhatsApp / téléphone obligatoire.
+                </div>
+                <div class="o_coins_relance_banner" role="status"
+                     invisible="not coins_is_voyageur_lead or not coins_voy_relance_date">
+                    <span class="o_coins_relance_banner_text">
+                        <field name="coins_voy_relance_label" nolabel="1"/>
+                    </span>
+                    <button name="action_coins_voy_relance_faite"
+                            type="object"
+                            string="Relance faite"
+                            class="btn btn-sm btn-primary"/>
+                    <button name="action_coins_voy_envoyer_accuse"
+                            type="object"
+                            string="Envoyer accusé"
+                            class="btn btn-sm btn-secondary"/>
+                </div>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Voyageur" name="coins_voyageur" invisible="not coins_is_voyageur_lead">
+                    <group>
+                        <group string="Coordonnées">
+                            <field name="contact_name" string="Nom"/>
+                            <field name="coins_whatsapp" string="WhatsApp / téléphone"/>
+                            <field name="phone" string="Téléphone"/>
+                            <field name="email_from" string="Email"/>
+                            <field name="coins_canal_origine"/>
+                            <field name="assignee_kind" widget="radio" options="{'horizontal': true}"/>
+                            <field name="coins_commercial_assigne"
+                                   invisible="assignee_kind != 'humain'"
+                                   options="{'no_create': True}"/>
+                            <field name="coins_agent_ia_id"
+                                   invisible="assignee_kind != 'ia'"
+                                   options="{'no_create': True}"
+                                   domain="[('external_agent_id', 'not ilike', 'draft-')]"/>
+                            <field name="coins_urgence"/>
+                        </group>
+                        <group string="Demande">
+                            <field name="coins_service_demande"/>
+                            <field name="coins_type_evenement"/>
+                            <field name="coins_voy_taille_groupe"/>
+                            <field name="coins_nombre_personnes"/>
+                            <field name="coins_date_souhaitee"/>
+                            <field name="coins_date_flexible"/>
+                            <field name="coins_voy_date_event_raw"/>
+                            <field name="coins_voy_relance_date"/>
+                            <field name="coins_voyageur_budget"/>
+                            <field name="coins_conversation_id"/>
+                            <button name="action_open_coins_conversation"
+                                    type="object"
+                                    string="Ouvrir le fil"
+                                    class="btn-link"
+                                    invisible="not coins_conversation_id"/>
+                        </group>
+                    </group>
+                    <group string="Intérêt autres services Coins Marocain">
+                        <group>
+                            <field name="coins_xsell_bienetre"/>
+                            <field name="coins_xsell_hebergement"/>
+                            <field name="coins_xsell_evenements"/>
+                        </group>
+                        <group>
+                            <field name="coins_xsell_restaurant"/>
+                            <field name="coins_xsell_excursions"/>
+                            <field name="coins_xsell_transport"/>
+                        </group>
+                    </group>
+                    <group string="Réservations liées">
+                        <field name="coins_reservation_ids" nolabel="1" colspan="2"
+                               groups="coins_marocain.group_coins_user">
+                            <list>
+                                <field name="name"/>
+                                <field name="property_id"/>
+                                <field name="check_in"/>
+                                <field name="state" widget="badge"
+                                       decoration-warning="state == 'draft'"
+                                       decoration-success="state in ('confirmed', 'in_progress', 'done')"
+                                       decoration-danger="state == 'cancelled'"/>
+                                <field name="amount_total"/>
+                            </list>
+                        </field>
+                    </group>
+                    <button name="action_coins_nouvelle_reservation"
+                            type="object"
+                            string="+ Nouvelle réservation"
+                            class="btn-primary"
+                            invisible="not coins_is_voyageur_lead"/>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_crm_lead_kanban_coins_voyageur" model="ir.ui.view">
+        <field name="name">crm.lead.kanban.coins.voyageur</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" eval="False"/>
+        <field name="mode">primary</field>
+        <field name="priority">8</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="stage_id"
+                    class="o_coins_pipeline_kanban o_coins_pipeline_voyageur o_kanban_small_column"
+                    records_draggable="1"
+                    groups_draggable="false"
+                    group_create="false"
+                    group_delete="false"
+                    quick_create="true"
+                    on_create="quick_create">
+                    <field name="coins_kanban_title"/>
+                    <field name="coins_kanban_subtitle"/>
+                    <field name="coins_kanban_tone"/>
+                    <field name="coins_voy_relance_label"/>
+                    <field name="coins_voy_relance_date"/>
+                    <field name="stage_id" readonly="0"/>
+                    <templates>
+                        <t t-name="card">
+                            <div t-attf-class="o_coins_lead_card {{ record.coins_kanban_tone.raw_value or '' }}">
+                                <div class="o_coins_lead_name">
+                                    <field name="coins_kanban_title"/>
+                                </div>
+                                <div class="o_coins_lead_sub">
+                                    <field name="coins_kanban_subtitle"/>
+                                </div>
+                                <div class="o_coins_lead_relance"
+                                     t-if="record.coins_voy_relance_label.raw_value">
+                                    <field name="coins_voy_relance_label"/>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_crm_lead_list_coins_voyageur" model="ir.ui.view">
+        <field name="name">crm.lead.list.coins.voyageur</field>
+        <field name="model">crm.lead</field>
+        <field name="priority">8</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="coins_kanban_title" string="Voyageur"/>
+                <field name="coins_service_demande"/>
+                <field name="coins_type_evenement"/>
+                <field name="coins_voy_taille_groupe"/>
+                <field name="coins_date_souhaitee"/>
+                <field name="coins_voy_relance_date" string="Relance"/>
+                <field name="coins_whatsapp" string="WhatsApp"/>
+                <field name="coins_voy_coordonnees_incompletes" string="Incomplet"/>
+                <field name="coins_has_coordonnees" string="Téléphone"/>
+                <field name="coins_urgence"/>
+                <field name="coins_assignee_display" string="Assigné"/>
+                <field name="stage_id"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Priority 32 : ne pas voler default_view(crm.lead, form) après ITEX. -->
+    <record id="view_crm_lead_form_coins_voyageur_fiche" model="ir.ui.view">
+        <field name="name">crm.lead.form.coins.voyageur.fiche</field>
+        <field name="model">crm.lead</field>
+        <field name="priority">32</field>
+        <field name="arch" type="xml">
+            <form class="o_coins_fiche" string="Fiche voyageur">
+                <header>
+                    <button name="action_coins_qualifier" type="object" string="Qualifier" class="btn-secondary"/>
+                    <button name="action_coins_envoyer_message" type="object" string="Envoyer un message" class="btn-secondary"/>
+                    <button name="action_coins_voy_envoyer_accuse" type="object" string="Envoyer accusé" class="btn-secondary"/>
+                    <button name="action_coins_marquer_transfert_chaud" type="object" string="Transfert à chaud" class="btn-primary"/>
+                    <button name="action_coins_planifier_evenement"
+                            type="object"
+                            string="Planifier l'événement"
+                            class="o_coins_btn_planifier"
+                            invisible="coins_evt_resume"/>
+                    <button name="action_coins_planifier_evenement"
+                            type="object"
+                            string="Reprendre le brouillon"
+                            class="o_coins_btn_planifier"
+                            invisible="not coins_evt_resume"/>
+                    <field name="coins_evt_resume" invisible="1"/>
+                    <field name="stage_id" widget="statusbar" options="{'clickable': '1', 'fold_field': 'fold'}"/>
+                </header>
+                <sheet class="o_coins_fiche_sheet">
+                    <field name="team_id" invisible="1"/>
+                    <field name="type" invisible="1"/>
+                    <field name="coins_fiche_type" invisible="1"/>
+                    <field name="coins_urgence" invisible="1"/>
+                    <field name="coins_has_coordonnees" invisible="1"/>
+                    <field name="coins_voy_coordonnees_incompletes" invisible="1"/>
+                    <field name="coins_is_voyageur_lead" invisible="1"/>
+                    <div class="o_coins_pipeline_banner">Pipeline voyageurs — fiche voyageur</div>
+                    <div class="o_coins_relance_banner" invisible="not coins_voy_relance_date">
+                        <span class="o_coins_relance_banner_text">
+                            <field name="coins_voy_relance_label" nolabel="1"/>
+                        </span>
+                        <button name="action_coins_voy_relance_faite" type="object"
+                                string="Relance faite" class="btn btn-sm btn-primary"/>
+                        <button name="action_coins_voy_envoyer_relance" type="object"
+                                string="Préparer relance" class="btn btn-sm btn-secondary"/>
+                    </div>
+                    <div class="o_coins_fiche_head">
+                        <div class="o_coins_avatar"><field name="coins_fiche_initials" nolabel="1"/></div>
+                        <div>
+                            <div class="o_coins_fiche_title">
+                                <field name="contact_name" placeholder="Nom du voyageur" required="1"/>
+                            </div>
+                            <div class="o_coins_fiche_sub">Fiche voyageur</div>
+                        </div>
+                    </div>
+                    <group>
+                        <group string="Coordonnées">
+                            <field name="coins_whatsapp" string="WhatsApp"/>
+                            <field name="phone" string="Téléphone"/>
+                            <field name="email_from" string="Email"/>
+                            <field name="coins_canal_origine"/>
+                            <field name="assignee_kind" widget="radio" options="{'horizontal': true}"/>
+                            <field name="coins_commercial_assigne"
+                                   invisible="assignee_kind != 'humain'"
+                                   options="{'no_create': True}"/>
+                            <field name="coins_agent_ia_id"
+                                   invisible="assignee_kind != 'ia'"
+                                   options="{'no_create': True}"
+                                   domain="[('external_agent_id', 'not ilike', 'draft-')]"/>
+                        </group>
+                        <group string="Demande">
+                            <field name="coins_service_demande" string="Service"/>
+                            <field name="coins_type_evenement"/>
+                            <field name="coins_voy_taille_groupe"/>
+                            <field name="coins_nombre_personnes"/>
+                            <field name="coins_date_souhaitee"/>
+                            <field name="coins_date_flexible"/>
+                            <field name="coins_voy_date_event_raw"/>
+                            <field name="coins_voy_relance_date"/>
+                            <field name="coins_voyageur_budget" string="Budget"/>
+                            <field name="name" string="Intitulé interne"/>
+                        </group>
+                    </group>
+                    <div class="o_coins_alert_hot" invisible="not coins_voy_coordonnees_incompletes">
+                        Coordonnées incomplètes — email et/ou téléphone manquant. Fiche importée : à compléter avant envoi.
+                    </div>
+                    <div class="o_coins_alert_hot" invisible="coins_has_coordonnees">
+                        Pas de WhatsApp ni téléphone — impossible de relancer. La note ci-dessous n’a pas été suivie.
+                    </div>
+                    <div class="o_coins_section_label">Note / conversation</div>
+                    <field name="description" nolabel="1"
+                           placeholder="Détail de la demande ou transcription Yasmine…"/>
+                    <div class="o_coins_section_label">Intérêt autres services Coins Marocain</div>
+                    <group class="o_coins_chips">
+                        <field name="coins_xsell_bienetre"/>
+                        <field name="coins_xsell_hebergement"/>
+                        <field name="coins_xsell_evenements"/>
+                        <field name="coins_xsell_restaurant"/>
+                        <field name="coins_xsell_excursions"/>
+                        <field name="coins_xsell_transport"/>
+                    </group>
+                    <div class="o_coins_section_label">Réservations liées</div>
+                    <field name="coins_reservation_ids" nolabel="1"
+                           groups="coins_marocain.group_coins_user">
+                        <list>
+                            <field name="name"/>
+                            <field name="check_in"/>
+                            <field name="state" widget="badge"
+                                   decoration-success="state in ('confirmed', 'in_progress', 'done')"
+                                   decoration-warning="state == 'draft'"
+                                   decoration-danger="state == 'cancelled'"/>
+                        </list>
+                    </field>
+                    <button name="action_coins_nouvelle_reservation"
+                            type="object"
+                            string="+ Nouvelle réservation"
+                            class="btn-primary o_coins_btn_gold"/>
+                    <div class="o_coins_section_label" invisible="not coins_evt_resume">
+                        Brouillon événement — interne, pas envoyé au voyageur
+                    </div>
+                    <field name="coins_evt_resume" nolabel="1" readonly="1"
+                           invisible="not coins_evt_resume"/>
+                    <div class="o_coins_alert_hot" invisible="not coins_urgence">
+                        Urgence détectée — rappel dans l'heure
+                    </div>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_pipeline_coins_voyageurs" model="ir.actions.act_window">
+        <field name="name">Voyageurs Coins Marocain</field>
+        <field name="path">cm-voyageurs</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">kanban,list,form,activity</field>
+        <field name="view_id" ref="view_crm_lead_kanban_coins_voyageur"/>
+        <field name="search_view_id" ref="view_crm_lead_search_coins_voyageur"/>
+        <field name="domain" eval="[('type', '=', 'opportunity'), ('coins_fiche_type', '=', 'voyageur')]"/>
+        <field name="context" eval="{
+            'default_type': 'opportunity',
+            'default_team_id': ref('crm_team_coins_voyageurs'),
+            'default_coins_fiche_type': 'voyageur',
+            'renovation_active_pipeline_team_id': ref('crm_team_coins_voyageurs'),
+            'show_user_team_stages': 0,
+            'coins_pipeline': 'voyageur',
+        }"/>
+        <field name="help" type="html"><p>Pipeline voyageurs — demandes individuelles uniquement.</p></field>
+    </record>
+    <record id="action_pipeline_coins_voyageurs_view_kanban" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="view_crm_lead_kanban_coins_voyageur"/>
+        <field name="act_window_id" ref="action_pipeline_coins_voyageurs"/>
+    </record>
+    <record id="action_pipeline_coins_voyageurs_view_list" model="ir.actions.act_window.view">
+        <field name="sequence" eval="2"/>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="view_crm_lead_list_coins_voyageur"/>
+        <field name="act_window_id" ref="action_pipeline_coins_voyageurs"/>
+    </record>
+    <record id="action_pipeline_coins_voyageurs_view_form" model="ir.actions.act_window.view">
+        <field name="sequence" eval="3"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_crm_lead_form_coins_voyageur_fiche"/>
+        <field name="act_window_id" ref="action_pipeline_coins_voyageurs"/>
+    </record>
+
+    <record id="action_pipeline_coins_voyageurs_relance_today" model="ir.actions.act_window">
+        <field name="name">À relancer aujourd'hui</field>
+        <field name="path">cm-voyageurs-relance-today</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">list,kanban,form,activity</field>
+        <field name="view_id" ref="view_crm_lead_list_coins_voyageur"/>
+        <field name="search_view_id" ref="view_crm_lead_search_coins_voyageur"/>
+        <field name="domain" eval="[('type', '=', 'opportunity'), ('coins_fiche_type', '=', 'voyageur')]"/>
+        <field name="context">{
+            'search_default_filter_relance_today': 1,
+            'default_type': 'opportunity',
+            'default_coins_fiche_type': 'voyageur',
+            'coins_pipeline': 'voyageur',
+        }</field>
+    </record>
+    <record id="action_pipeline_coins_voyageurs_relance_week" model="ir.actions.act_window">
+        <field name="name">À relancer cette semaine</field>
+        <field name="path">cm-voyageurs-relance-semaine</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">list,kanban,form,activity</field>
+        <field name="view_id" ref="view_crm_lead_list_coins_voyageur"/>
+        <field name="search_view_id" ref="view_crm_lead_search_coins_voyageur"/>
+        <field name="domain" eval="[('type', '=', 'opportunity'), ('coins_fiche_type', '=', 'voyageur')]"/>
+        <field name="context">{
+            'search_default_filter_relance_week': 1,
+            'default_type': 'opportunity',
+            'default_coins_fiche_type': 'voyageur',
+            'coins_pipeline': 'voyageur',
+        }</field>
+    </record>
+</odoo>

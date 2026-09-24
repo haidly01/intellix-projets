@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_babinvest_concierge_visit_list" model="ir.ui.view">
+        <field name="name">babinvest.concierge.visit.list</field>
+        <field name="model">babinvest.concierge.visit</field>
+        <field name="arch" type="xml">
+            <list string="Visites">
+                <field name="lead_id"/>
+                <field name="project_id"/>
+                <field name="scheduled_date"/>
+                <field name="mode"/>
+                <field name="status"/>
+                <field name="transport_required"/>
+                <field name="transport_status"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_babinvest_concierge_visit_form" model="ir.ui.view">
+        <field name="name">babinvest.concierge.visit.form</field>
+        <field name="model">babinvest.concierge.visit</field>
+        <field name="arch" type="xml">
+            <form string="Visite">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="lead_id"/>
+                            <field name="project_id"/>
+                            <field name="scheduled_date"/>
+                            <field name="mode"/>
+                            <field name="visio_link" invisible="mode != 'visio'"/>
+                            <field name="status"/>
+                        </group>
+                        <group string="Transport" invisible="mode != 'physique'">
+                            <field name="transport_required"/>
+                            <field name="transport_mode" invisible="not transport_required"/>
+                            <field name="pickup_location" invisible="not transport_required"/>
+                            <field name="pickup_datetime" invisible="not transport_required"/>
+                            <field name="transport_provider" invisible="not transport_required"/>
+                            <field name="transport_status" invisible="not transport_required"/>
+                            <field name="transport_notes" invisible="not transport_required"/>
+                        </group>
+                    </group>
+                    <field name="notes_objections" placeholder="Objections relevées..."/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_babinvest_concierge_visit" model="ir.actions.act_window">
+        <field name="name">Visites</field>
+        <field name="res_model">babinvest.concierge.visit</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

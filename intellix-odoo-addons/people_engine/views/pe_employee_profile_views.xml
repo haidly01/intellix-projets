@@ -1,0 +1,604 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pe_employee_profile_tree" model="ir.ui.view">
+        <field name="name">pe.employee.profile.tree</field>
+        <field name="model">pe.employee.profile</field>
+        <field name="arch" type="xml">
+            <list string="Profils RH" decoration-danger="score_global &lt; 40" decoration-warning="score_global &lt; 60 and score_global &gt;= 40" decoration-success="score_global &gt;= 80">
+                <field name="display_name" string="Employé"/>
+                <field name="employee_id" column_invisible="1"/>
+                <field name="company_id" optional="hide" groups="base.group_multi_company"/>
+                <field name="department_id" optional="show"/>
+                <field name="doorway_segment" optional="show"/>
+                <field name="doorway_role" optional="show"/>
+                <field name="score_global" widget="progressbar" options="{'max_value': 100}"/>
+                <field name="score_trend" widget="badge"/>
+                <field name="pe_status" widget="badge"/>
+                <field name="alert_count"/>
+                <field name="last_score_update"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pe_employee_profile_kanban" model="ir.ui.view">
+        <field name="name">pe.employee.profile.kanban</field>
+        <field name="model">pe.employee.profile</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="performance_band" class="o_kanban_small_column">
+                <field name="display_name"/>
+                <field name="employee_id"/>
+                <field name="score_global"/>
+                <field name="performance_band"/>
+                <field name="score_trend"/>
+                <field name="alert_count"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click">
+                            <strong><field name="display_name"/></strong>
+                            <div>Score : <field name="score_global"/> / 100</div>
+                            <field name="score_trend" widget="badge"/>
+                            <t t-if="record.alert_count.raw_value">
+                                <span class="badge text-bg-danger">Alertes</span>
+                            </t>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_pe_employee_profile_form" model="ir.ui.view">
+        <field name="name">pe.employee.profile.form</field>
+        <field name="model">pe.employee.profile</field>
+        <field name="arch" type="xml">
+            <form string="Profil RH" class="pe-rh-theme">
+                <header>
+                    <button name="action_refresh_metrics" type="object" string="Actualiser métriques" class="btn-primary" groups="people_engine.group_manager"/>
+                    <button name="action_calculate_score" type="object" string="Calculer le score" groups="people_engine.group_manager"/>
+                    <button name="action_praise" type="object" string="Féliciter" groups="people_engine.group_hr,people_engine.group_manager"/>
+                    <button name="action_start_coaching" type="object" string="Coaching IA" class="btn-secondary" groups="people_engine.group_manager"/>
+                    <button name="action_open_learning_path_wizard" type="object" string="Parcours LMS" groups="people_engine.group_manager"/>
+                    <button name="action_open_evaluation_wizard" type="object" string="Créer évaluation" groups="people_engine.group_manager"/>
+                    <button name="action_personalize_document" type="object" string="Document personnalisé" class="btn-primary" groups="people_engine.group_hr,people_engine.group_manager"/>
+                    <button name="action_send_arrival_pack" type="object" string="Pack arrivée" class="btn-secondary" groups="people_engine.group_hr,people_engine.group_manager" invisible="lifecycle_stage_code != 'arrival'"/>
+                    <button name="action_open_onboarding_assistant" type="object" string="Assistant onboarding" class="btn-primary" groups="people_engine.group_hr"/>
+                    <button name="action_create_contract" type="object" string="Créer contrat" class="btn-secondary" groups="people_engine.group_hr"/>
+                    <button name="action_open_active_contract" type="object" string="Ouvrir contrat" class="btn-secondary" groups="people_engine.group_hr" invisible="not active_contract_id"/>
+                    <button name="action_generate_contract_cdd" type="object" string="Contrat CDD" class="btn-secondary" groups="people_engine.group_hr"/>
+                    <button name="action_generate_contract_cdi" type="object" string="Contrat CDI" class="btn-secondary" groups="people_engine.group_hr"/>
+                    <button name="action_generate_contract_freelance" type="object" string="Contrat Freelance" class="btn-secondary" groups="people_engine.group_hr"/>
+                    <field name="lifecycle_stage_code" invisible="1"/>
+                    <field name="active_contract_id" invisible="1"/>
+                    <field name="lifecycle_stage_id" widget="statusbar" options="{'clickable': '1'}" groups="people_engine.group_hr"/>
+                    <field name="pe_status" widget="statusbar" groups="people_engine.group_manager"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_documents" type="object"
+                                class="oe_stat_button" icon="fa-folder-open-o">
+                            <field name="document_count" widget="statinfo" string="Documents"/>
+                        </button>
+                        <button name="action_view_contracts" type="object"
+                                class="oe_stat_button" icon="fa-file-text-o"
+                                groups="people_engine.group_manager">
+                            <field name="contract_count" widget="statinfo" string="Contrats"/>
+                        </button>
+                        <button name="action_view_signatures" type="object"
+                                class="oe_stat_button" icon="fa-pen-square"
+                                groups="people_engine.group_hr,base.group_system">
+                            <field name="signature_count" widget="statinfo" string="Signatures"/>
+                        </button>
+                        <button name="action_view_disciplinary_dossier" type="object"
+                                class="oe_stat_button" icon="fa-gavel"
+                                groups="people_engine.group_manager">
+                            <div class="o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="disciplinary_incident_count"/>
+                                </span>
+                                <span class="o_stat_text">Incidents</span>
+                            </div>
+                        </button>
+                        <button name="action_open_hr_employee" type="object"
+                                class="oe_stat_button" icon="fa-id-card"
+                                string="Fiche technique Odoo"
+                                groups="base.group_system"/>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="display_name" readonly="1"/></h1>
+                        <field name="employee_id" invisible="1" groups="!people_engine.group_hr"/>
+                        <field name="employee_id" groups="people_engine.group_hr" readonly="id" required="1"/>
+                    </div>
+                    <group>
+                        <group string="Score global">
+                            <field name="score_global" widget="progressbar" options="{'max_value': 100}"/>
+                            <field name="objectives_achievement_pct" readonly="1"/>
+                            <field name="score_performance"/>
+                            <field name="score_engagement"/>
+                            <field name="score_growth"/>
+                            <field name="score_trend"/>
+                            <field name="score_trend_percent"/>
+                            <field name="last_score_update"/>
+                        </group>
+                        <group string="Période">
+                            <field name="metric_period_days"/>
+                            <field name="metric_period_start"/>
+                            <field name="metric_period_end"/>
+                            <field name="department_id"/>
+                            <field name="job_id"/>
+                            <field name="lifecycle_stage_id" groups="people_engine.group_manager"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Onboarding RH" name="onboarding">
+                            <group string="Identité &amp; accès RH">
+                                <group>
+                                    <field name="user_id" readonly="1"/>
+                                    <field name="department_id" groups="people_engine.group_hr"/>
+                                    <field name="job_id" groups="people_engine.group_hr"/>
+                                    <field name="parent_id" groups="people_engine.group_hr"/>
+                                </group>
+                                <group string="Doorway / CRM">
+                                    <field name="doorway_segment" readonly="1"/>
+                                    <field name="doorway_role" readonly="1"/>
+                                    <field name="doorway_assigned_pipeline_ids"
+                                           widget="many2many_tags"
+                                           groups="people_engine.group_hr,people_engine.group_manager"
+                                           invisible="not user_id"
+                                           domain="[('is_agence_doorway_pipeline', '=', True)]"
+                                           options="{'no_create': True}"/>
+                                    <field name="doorway_assigned_pipeline_ids"
+                                           widget="many2many_tags"
+                                           readonly="1"
+                                           groups="!people_engine.group_hr,!people_engine.group_manager"
+                                           invisible="not user_id"/>
+                                    <field name="doorway_permission_group_ids"
+                                           widget="many2many_tags"
+                                           groups="people_engine.group_hr,people_engine.group_manager"
+                                           invisible="not user_id"
+                                           options="{'no_create': True}"/>
+                                    <field name="doorway_permission_group_ids"
+                                           widget="many2many_tags"
+                                           readonly="1"
+                                           groups="!people_engine.group_hr,!people_engine.group_manager"
+                                           invisible="not user_id"/>
+                                    <div class="text-muted" colspan="2"
+                                         invisible="not user_id">
+                                        Segment et rôle sont calculés automatiquement.
+                                        Les pipelines et permissions sont synchronisés sur le compte utilisateur.
+                                    </div>
+                                    <field name="pe_group_summary" readonly="1" class="pe-rh-groups-summary"/>
+                                </group>
+                            </group>
+                            <div class="oe_button_box" groups="people_engine.group_hr,base.group_system">
+                                <button name="action_open_user_permissions" type="object"
+                                        string="Gérer les groupes RH"
+                                        class="btn-secondary"
+                                        invisible="not user_id"/>
+                                <button name="action_send_invitation" type="object"
+                                        string="Envoyer / renvoyer l'invitation"
+                                        class="btn-primary"
+                                        invisible="not user_id"/>
+                            </div>
+                            <group string="Rémunération &amp; contrat">
+                                <group>
+                                    <field name="type_remuneration" groups="people_engine.group_hr"/>
+                                    <field name="type_remuneration" invisible="1" groups="!people_engine.group_hr"/>
+                                    <field name="salaire_base" groups="people_engine.group_hr"/>
+                                    <div class="text-muted mb-2" groups="people_engine.group_hr"
+                                         invisible="type_remuneration != 'mixte'">
+                                        Part variable reliée aux objectifs KPI et primes de performance —
+                                        choisissez un modèle ou activez « Personnaliser ».
+                                    </div>
+                                    <field name="variable_prime_template_id" groups="people_engine.group_hr"
+                                           invisible="type_remuneration != 'mixte'"
+                                           domain="[('active', '=', True)]"
+                                           options="{'no_create': True}"/>
+                                    <field name="variable_prime_customize" groups="people_engine.group_hr"
+                                           invisible="type_remuneration != 'mixte'"
+                                           readonly="0"/>
+                                    <field name="montant_variable" groups="people_engine.group_hr"
+                                           invisible="type_remuneration != 'mixte'"
+                                           readonly="variable_prime_template_id and not variable_prime_customize"/>
+                                    <field name="taux_commission" groups="people_engine.group_hr"
+                                           invisible="type_remuneration != 'mixte'"
+                                           readonly="variable_prime_template_id and not variable_prime_customize"/>
+                                    <field name="description_variable" groups="people_engine.group_hr"
+                                           invisible="type_remuneration != 'mixte'"
+                                           readonly="variable_prime_template_id and not variable_prime_customize"/>
+                                    <field name="devise_remuneration" groups="people_engine.group_hr"/>
+                                    <field name="salaire_base" readonly="1" groups="!people_engine.group_hr"/>
+                                    <field name="variable_prime_template_id" readonly="1" groups="!people_engine.group_hr"
+                                           invisible="type_remuneration != 'mixte'"/>
+                                    <field name="montant_variable" readonly="1" groups="!people_engine.group_hr"
+                                           invisible="type_remuneration != 'mixte'"/>
+                                    <field name="taux_commission" readonly="1" groups="!people_engine.group_hr"
+                                           invisible="type_remuneration != 'mixte'"/>
+                                    <field name="description_variable" readonly="1" groups="!people_engine.group_hr"
+                                           invisible="type_remuneration != 'mixte'"/>
+                                    <field name="devise_remuneration" readonly="1" groups="!people_engine.group_hr"/>
+                                    <field name="regime_travail" groups="people_engine.group_hr"/>
+                                </group>
+                                <group>
+                                    <field name="active_contract_id" readonly="1"/>
+                                    <field name="contract_count" invisible="1"/>
+                                </group>
+                            </group>
+                            <div class="oe_button_box" groups="people_engine.group_hr">
+                                <button name="action_create_contract" type="object"
+                                        string="Créer / ouvrir contrat"
+                                        class="btn-primary"/>
+                                <button name="action_view_contracts" type="object"
+                                        string="Voir tous les contrats"
+                                        class="btn-secondary"/>
+                                <button name="action_generate_contract_cdd" type="object"
+                                        string="Générer CDD (modèle)"
+                                        class="btn-secondary"/>
+                                <button name="action_generate_contract_freelance" type="object" string="Contrat Freelance" class="btn btn-sm pe-emp-btn-outline"/>
+                                <button name="action_generate_contract_cdi" type="object"
+                                        string="Générer CDI (modèle)"
+                                        class="btn-secondary"/>
+                            </div>
+                            <group string="Intégration">
+                                <group>
+                                    <field name="lifecycle_stage_id" groups="people_engine.group_hr"/>
+                                    <field name="lifecycle_stage_id" readonly="1" groups="!people_engine.group_hr"/>
+                                </group>
+                                <group>
+                                    <field name="type_usager_pe" groups="people_engine.group_hr"/>
+                                    <field name="department_pe_id" groups="people_engine.group_hr"/>
+                                </group>
+                            </group>
+                            <div class="oe_button_box" groups="people_engine.group_hr,people_engine.group_manager">
+                                <button name="action_send_arrival_pack" type="object"
+                                        string="Pack arrivée"
+                                        class="btn-primary"
+                                        invisible="lifecycle_stage_code != 'arrival'"/>
+                                <button name="action_personalize_document" type="object"
+                                        string="Lettre / document personnalisé"
+                                        class="btn-secondary"/>
+                            </div>
+                            <group string="Objectifs">
+                                <div class="text-muted" groups="people_engine.group_hr,people_engine.group_manager">
+                                    Suivi opérationnel — les objectifs contractuels sont sur le contrat actif.
+                                </div>
+                                <field name="operational_objective_ids" groups="people_engine.group_manager"
+                                       context="{'default_profile_id': id, 'default_contract_id': False}">
+                                    <list editable="bottom" create="1" delete="1">
+                                        <field name="name"/>
+                                        <field name="objective_type"/>
+                                        <field name="period"/>
+                                        <field name="target_value"/>
+                                        <field name="current_value"/>
+                                        <field name="achievement_rate" widget="progressbar"/>
+                                        <field name="status"/>
+                                    </list>
+                                </field>
+                                <field name="operational_objective_ids" readonly="1" groups="people_engine.group_employee,!people_engine.group_manager">
+                                    <list>
+                                        <field name="name"/>
+                                        <field name="objective_type"/>
+                                        <field name="period"/>
+                                        <field name="target_value"/>
+                                        <field name="current_value"/>
+                                        <field name="achievement_rate" widget="progressbar"/>
+                                        <field name="status"/>
+                                    </list>
+                                </field>
+                            </group>
+                        </page>
+                        <page string="CRM" name="crm">
+                            <group>
+                                <field name="crm_leads_assigned"/>
+                                <field name="crm_leads_won"/>
+                                <field name="crm_conversion_rate"/>
+                                <field name="crm_revenue_generated"/>
+                            </group>
+                        </page>
+                        <page string="Projet" name="project">
+                            <group>
+                                <field name="project_tasks_assigned"/>
+                                <field name="project_tasks_done"/>
+                                <field name="project_ontime_rate"/>
+                            </group>
+                        </page>
+                        <page string="Agents IA" name="ia">
+                            <group>
+                                <field name="ia_calls_made"/>
+                                <field name="ia_avg_quality_score"/>
+                                <field name="ia_conversion_rate"/>
+                            </group>
+                        </page>
+                        <page string="Activité" name="activity">
+                            <group>
+                                <field name="activity_messages_sent"/>
+                                <field name="activity_tasks_created"/>
+                            </group>
+                        </page>
+                        <page string="Rémunération" name="remuneration" groups="people_engine.group_manager">
+                            <group>
+                                <group string="Salaire &amp; régime">
+                                    <field name="type_remuneration"/>
+                                    <field name="salaire_base"/>
+                                    <field name="variable_prime_template_id"
+                                           groups="people_engine.group_manager,!people_engine.group_hr"
+                                           invisible="type_remuneration != 'mixte'"
+                                           domain="[('active', '=', True)]"
+                                           options="{'no_create': True}"/>
+                                    <field name="variable_prime_customize"
+                                           groups="people_engine.group_manager,!people_engine.group_hr"
+                                           invisible="type_remuneration != 'mixte'"
+                                           readonly="0"/>
+                                    <field name="montant_variable"
+                                           groups="people_engine.group_manager,!people_engine.group_hr"
+                                           invisible="type_remuneration != 'mixte'"
+                                           readonly="variable_prime_template_id and not variable_prime_customize"/>
+                                    <field name="taux_commission"
+                                           groups="people_engine.group_manager,!people_engine.group_hr"
+                                           invisible="type_remuneration != 'mixte'"
+                                           readonly="variable_prime_template_id and not variable_prime_customize"/>
+                                    <field name="description_variable"
+                                           groups="people_engine.group_manager,!people_engine.group_hr"
+                                           invisible="type_remuneration != 'mixte'"
+                                           readonly="variable_prime_template_id and not variable_prime_customize"/>
+                                    <field name="devise_remuneration"/>
+                                    <field name="regime_travail"/>
+                                    <field name="coefficient_objectifs"/>
+                                    <field name="pays_affectation"/>
+                                </group>
+                                <group string="Contrat actif">
+                                    <field name="active_contract_id" readonly="1"/>
+                                    <field name="type_usager_pe"/>
+                                    <field name="department_pe_id"/>
+                                    <field name="hors_paie_maroc"/>
+                                    <field name="entite_paie_externe" invisible="not hors_paie_maroc"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Contrat" name="contract" groups="people_engine.group_manager">
+                            <field name="contract_ids" context="{'default_employee_id': employee_id, 'copy_profile_objectives': True}">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="contract_type"/>
+                                    <field name="modalite"/>
+                                    <field name="date_start"/>
+                                    <field name="date_end"/>
+                                    <field name="salaire_base"/>
+                                    <field name="devise"/>
+                                    <field name="objectifs_text" optional="hide"/>
+                                    <field name="statut" widget="badge"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Objectifs &amp; Primes" name="objectives">
+                            <div class="alert alert-info" role="alert" groups="people_engine.group_hr,people_engine.group_manager">
+                                <strong>Suivi opérationnel uniquement.</strong>
+                                Les objectifs contractuels (texte + KPI inscrits au contrat) se gèrent sur le
+                                contrat de travail — onglet « Objectifs &amp; performance ».
+                                Cette liste sert au suivi de performance, coaching et tableaux de bord.
+                            </div>
+                            <div class="mb-2" groups="people_engine.group_hr,people_engine.group_manager">
+                                <button name="action_apply_objective_template" type="object"
+                                        string="Appliquer modèle d'objectifs"
+                                        class="btn-primary"/>
+                                <button name="action_save_objectives_as_template" type="object"
+                                        string="Enregistrer comme modèle"
+                                        class="btn-secondary ms-2"/>
+                            </div>
+                            <field name="operational_objective_ids"
+                                   context="{'default_profile_id': id, 'default_contract_id': False}">
+                                <list editable="bottom" create="1" delete="1">
+                                    <field name="name"/>
+                                    <field name="objective_type"/>
+                                    <field name="period"/>
+                                    <field name="target_value"/>
+                                    <field name="current_value"/>
+                                    <field name="unit"/>
+                                    <field name="achievement_rate" widget="progressbar"/>
+                                    <field name="status"/>
+                                </list>
+                            </field>
+
+                            <separator string="Primes &amp; Rémunération variable"/>
+                            <group>
+                                <group string="Configuration primes">
+                                    <field name="variable_prime_template_id"
+                                           groups="people_engine.group_hr,people_engine.group_manager"/>
+                                    <field name="variable_prime_template_id" readonly="1"
+                                           groups="!people_engine.group_hr,!people_engine.group_manager"/>
+                                    <field name="montant_variable" readonly="1"/>
+                                    <field name="taux_commission" readonly="1"
+                                           invisible="taux_commission == 0"/>
+                                    <field name="devise_remuneration" readonly="1"/>
+                                </group>
+                                <group string="Modalités">
+                                    <field name="description_variable" readonly="1" nolabel="1"/>
+                                </group>
+                            </group>
+
+                        </page>
+                        <page string="Historique scores" name="scores">
+                            <field name="score_history_ids" readonly="1">
+                                <list>
+                                    <field name="period_end"/>
+                                    <field name="score_global"/>
+                                    <field name="trend"/>
+                                    <field name="calculated_by"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Évaluations" name="evaluations">
+                            <field name="evaluation_ids"/>
+                        </page>
+                        <page string="Coaching" name="coaching">
+                            <field name="coaching_session_ids" readonly="1">
+                                <list>
+                                    <field name="session_type"/>
+                                    <field name="status" widget="badge"/>
+                                    <field name="manager_id"/>
+                                </list>
+                            </field>
+                            <field name="coaching_plan_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="status" widget="badge"/>
+                                    <field name="plan_type"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Gamification" name="badges">
+                            <group>
+                                <field name="pe_level_name"/>
+                                <field name="pe_points_total"/>
+                                <field name="badge_award_count"/>
+                            </group>
+                            <field name="badge_award_ids" readonly="1">
+                                <list>
+                                    <field name="award_date"/>
+                                    <field name="badge_id"/>
+                                    <field name="reason"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Documents" name="documents">
+                            <field name="document_ids" readonly="1">
+                                <list>
+                                    <field name="sent_date"/>
+                                    <field name="name"/>
+                                    <field name="template_id"/>
+                                    <field name="stage_at_send_id"/>
+                                    <field name="sent_by_id"/>
+                                    <field name="state" widget="badge"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Dossier disciplinaire" name="disciplinary" groups="people_engine.group_manager">
+                            <group>
+                                <field name="disciplinary_incident_count" readonly="1"/>
+                                <field name="disciplinary_procedure_count" readonly="1"/>
+                            </group>
+                            <button name="action_view_disciplinary_dossier" type="object"
+                                    string="Voir incidents &amp; procédures" class="btn-primary"/>
+                        </page>
+                        <page string="Accès &amp; organisation" name="access" groups="people_engine.group_manager">
+                            <group>
+                                <group>
+                                    <field name="user_id" readonly="1"/>
+                                    <field name="company_id" groups="base.group_multi_company"/>
+                                    <field name="department_id" groups="people_engine.group_hr"/>
+                                    <field name="job_id" groups="people_engine.group_hr"/>
+                                    <field name="parent_id" groups="people_engine.group_hr"/>
+                                </group>
+                                <group string="Doorway / CRM">
+                                    <field name="doorway_segment" readonly="1"/>
+                                    <field name="doorway_role" readonly="1"/>
+                                    <field name="doorway_assigned_pipeline_ids"
+                                           widget="many2many_tags"
+                                           groups="people_engine.group_hr,people_engine.group_manager"
+                                           invisible="not user_id"
+                                           domain="[('is_agence_doorway_pipeline', '=', True)]"
+                                           options="{'no_create': True}"/>
+                                    <field name="doorway_assigned_pipeline_ids"
+                                           widget="many2many_tags"
+                                           readonly="1"
+                                           groups="!people_engine.group_hr,!people_engine.group_manager"
+                                           invisible="not user_id"/>
+                                    <field name="doorway_permission_group_ids"
+                                           widget="many2many_tags"
+                                           groups="people_engine.group_hr,people_engine.group_manager"
+                                           invisible="not user_id"
+                                           options="{'no_create': True}"/>
+                                    <field name="doorway_permission_group_ids"
+                                           widget="many2many_tags"
+                                           readonly="1"
+                                           groups="!people_engine.group_hr,!people_engine.group_manager"
+                                           invisible="not user_id"/>
+                                    <div class="text-muted" colspan="2"
+                                         invisible="not user_id">
+                                        Pipelines CRM et permissions IntelliX — synchronisés sur res.users à l'enregistrement.
+                                    </div>
+                                    <field name="pe_group_summary" readonly="1" class="pe-rh-groups-summary"/>
+                                    <field name="lifecycle_stage_id" groups="people_engine.group_hr"/>
+                                </group>
+                            </group>
+                            <div class="oe_button_box">
+                                <button name="action_send_invitation" type="object"
+                                        string="Envoyer / renvoyer l'invitation"
+                                        class="btn-primary"
+                                        invisible="not user_id"
+                                        groups="people_engine.group_hr"/>
+                                <button name="action_open_user_permissions" type="object"
+                                        string="Gérer les groupes RH"
+                                        class="btn-secondary"
+                                        invisible="not user_id"
+                                        groups="people_engine.group_hr,people_engine.group_admin,base.group_system"/>
+                                <button name="action_send_arrival_pack" type="object"
+                                        string="Pack arrivée / lettre de bienvenue"
+                                        class="btn-secondary"
+                                        invisible="lifecycle_stage_code != 'arrival'"
+                                        groups="people_engine.group_hr,people_engine.group_manager"/>
+                            </div>
+                        </page>
+                        <page string="Journal" name="log" groups="people_engine.group_manager">
+                            <field name="action_log_ids" readonly="1">
+                                <list>
+                                    <field name="date"/>
+                                    <field name="action_type"/>
+                                    <field name="description"/>
+                                    <field name="actor_id"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_pe_employee_profile_search" model="ir.ui.view">
+        <field name="name">pe.employee.profile.search</field>
+        <field name="model">pe.employee.profile</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="display_name"/>
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <filter string="Score &lt; 60" name="watch" domain="[('score_global', '&lt;', 60)]"/>
+                <filter string="Excellent" name="excellent" domain="[('score_global', '&gt;', 80)]"/>
+                <separator/>
+                <filter string="Surveillance" name="monitoring" domain="[('pe_status', '=', 'monitoring')]"/>
+                <filter string="Inactif" name="inactive" domain="[('pe_status', '=', 'inactive')]"/>
+                <separator/>
+                <filter string="Stade arrivée" name="stage_arrival" domain="[('lifecycle_stage_id.code', '=', 'arrival')]"/>
+                <filter string="Période d'essai" name="stage_probation" domain="[('lifecycle_stage_id.code', '=', 'probation')]"/>
+                <separator/>
+                <filter string="Segment B2C" name="b2c" domain="[('doorway_segment', '=', 'b2c')]"/>
+                <filter string="Segment B2B" name="b2b" domain="[('doorway_segment', '=', 'b2b')]"/>
+                <separator/>
+                <filter string="Rôle Utilisateur" name="role_user" domain="[('doorway_role', '=', 'user')]"/>
+                <filter string="Rôle Superviseur" name="role_supervisor" domain="[('doorway_role', '=', 'supervisor')]"/>
+                <filter string="Rôle Admin" name="role_admin" domain="[('doorway_role', '=', 'admin')]"/>
+                <group>
+                    <filter string="Département" name="group_dept" context="{'group_by': 'department_id'}"/>
+                    <filter string="Stade cycle de vie" name="group_lifecycle" context="{'group_by': 'lifecycle_stage_id'}"/>
+                    <filter string="Bande" name="group_band" context="{'group_by': 'performance_band'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_pe_team_profiles" model="ir.actions.server">
+        <field name="name">Profils &amp; équipe</field>
+        <field name="model_id" ref="model_pe_employee_profile"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_team_profiles()</field>
+    </record>
+
+    <!-- Legacy : redirige l'ancienne action fenêtre vers la liste PE -->
+    <record id="action_pe_employee_profile" model="ir.actions.act_window">
+        <field name="name">Profils employés</field>
+        <field name="res_model">pe.employee.profile</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_pe_employee_profile_search"/>
+    </record>
+</odoo>

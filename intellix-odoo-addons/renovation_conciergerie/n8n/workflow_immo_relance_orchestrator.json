@@ -1,0 +1,185 @@
+{
+  "name": "Immo Meta — Relances (appels Sophie + conformité CRTC)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "immo-relance-step",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "r1-webhook",
+      "name": "Webhook Relance",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 300],
+      "webhookId": "immo-relance-step"
+    },
+    {
+      "parameters": {
+        "url": "=https://intellixcrm.com/api/immo/lead/{{ ($json.body || $json).lead_id }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": { "response": { "response": { "neverError": true } } }
+      },
+      "id": "r0-odoo-lead",
+      "name": "0 GET lead Odoo",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [240, 300],
+      "credentials": { "httpHeaderAuth": { "id": "CONFIGURE_IN_N8N", "name": "Odoo Meta Immo Token" } }
+    },
+    {
+      "parameters": {
+        "jsCode": "const wh = $('Webhook Relance').first().json;\nconst body = wh.body || wh;\nconst lead = $input.first().json;\nconst merged = {\n  ...body,\n  lead_id: body.lead_id || lead.lead_id,\n  phone: body.phone || lead.phone || '',\n  first_name: body.first_name || lead.first_name || '',\n  property_address: body.property_address || body.full_address || lead.property_address || '',\n  neighborhood: body.neighborhood || lead.neighborhood || '',\n  do_not_call: body.do_not_call || lead.immo_do_not_call,\n  explicit_refusal: body.explicit_refusal || lead.immo_explicit_refusal,\n  total_call_attempts: body.total_call_attempts ?? lead.immo_total_call_attempts ?? 0,\n  last_call_timestamp: lead.immo_last_call_at || body.last_call_timestamp,\n};\nreturn [{ json: merged }];"
+      },
+      "id": "r0b-merge",
+      "name": "0b Fusionner lead",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = $input.first().json;\nconst body = item.body || item;\nconst {\n  total_call_attempts = 0,\n  last_call_timestamp,\n  do_not_call,\n  explicit_refusal\n} = body;\n\nif (do_not_call || explicit_refusal) {\n  return [{ json: { ...body, action: 'STOP_ALL_CONTACT', reason: 'explicit_refusal_or_dnc' } }];\n}\n\nconst maxDay = parseInt($env.MAX_CALLS_PER_DAY || '3', 10);\nif (total_call_attempts >= maxDay && last_call_timestamp) {\n  const hours = (Date.now() - new Date(last_call_timestamp)) / 3600000;\n  if (hours < 24) {\n    return [{ json: { ...body, action: 'WAIT', reason: 'max_daily_attempts', waitHours: 24 - hours } }];\n  }\n}\n\nconst maxTotal = parseInt($env.MAX_TOTAL_CALLS || '10', 10);\nif (total_call_attempts >= maxTotal) {\n  return [{ json: { ...body, action: 'ARCHIVE', reason: 'max_total_attempts' } }];\n}\n\nconst startH = parseInt($env.CALL_START_HOUR || '8', 10);\nconst endH = parseInt($env.CALL_END_HOUR || '20', 10);\nconst nowStr = new Date().toLocaleString('en-US', { timeZone: 'America/Toronto' });\nconst toronto = new Date(nowStr);\nconst h = toronto.getHours();\nif (h < startH || h >= endH) {\n  return [{ json: { ...body, action: 'WAIT', reason: 'outside_call_hours', torontoHour: h } }];\n}\n\nreturn [{ json: { ...body, action: 'PROCEED_TO_CALL' } }];"
+      },
+      "id": "r2-crtc",
+      "name": "CRTC Anti-harcèlement",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [720, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict" },
+          "conditions": [
+            {
+              "id": "proceed",
+              "leftValue": "={{ $json.action }}",
+              "rightValue": "PROCEED_TO_CALL",
+              "operator": { "type": "string", "operation": "equals" }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "r3-if-proceed",
+      "name": "Peut appeler?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [960, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $input.first().json;\nconst relance_number = parseInt(body.relance_number || 1, 10);\nconst agentMap = {\n  1: $env.ELEVENLABS_AGENT_ID_RELANCE_J1,\n  2: $env.ELEVENLABS_AGENT_ID_RELANCE_J3,\n  3: $env.ELEVENLABS_AGENT_ID_RELANCE_J7,\n  4: $env.ELEVENLABS_AGENT_ID_RELANCE_J14,\n};\nconst optimalHours = { 1: 10, 2: 10, 3: 16, 4: 10 };\nconst nowStr = new Date().toLocaleString('en-US', { timeZone: 'America/Toronto' });\nconst torontoHour = new Date(nowStr).getHours();\nconst torontoDay = new Date(nowStr).getDay();\nconst targetHour = optimalHours[relance_number] || 10;\nconst isOptimalWindow = (\n  (torontoHour >= 10 && torontoHour < 11) ||\n  (torontoHour >= 16 && torontoHour < 18)\n);\nfunction minutesToNext(hour) {\n  if (hour < 10) return (10 - hour) * 60;\n  if (hour >= 11 && hour < 16) return (16 - hour) * 60;\n  if (hour >= 18) return ((24 - hour) + 10) * 60;\n  return 0;\n}\nconst first = (body.first_name || body.lead_name || 'there').split(' ')[0];\nreturn [{\n  json: {\n    ...body,\n    agent_id: agentMap[relance_number] || $env.ELEVENLABS_AGENT_ID_IMMO,\n    agent_phone_number_id: $env.ELEVENLABS_PHONE_NUMBER_ID,\n    optimal_call_hour: targetHour,\n    isOptimalWindow,\n    isBusinessDay: torontoDay >= 1 && torontoDay <= 6,\n    delayMinutes: isOptimalWindow ? 0 : minutesToNext(torontoHour),\n    callRecommendation: isOptimalWindow ? 'call_now' : 'schedule_later',\n    dynamic_variables: {\n      lead_name: first,\n      property_address: body.property_address || body.full_address || '',\n      days_since_request: String(body.days_since_request || 0),\n      previous_call_attempts: String(body.previous_call_attempts || body.total_call_attempts || 0),\n      previous_attempts: String(body.previous_call_attempts || 0),\n      neighborhood: body.neighborhood || '',\n      market_insight: body.market_insight || '',\n      season: body.season || 'printemps',\n      lead_id_odoo: String(body.lead_id || ''),\n    }\n  }\n}];"
+      },
+      "id": "r4-agent-select",
+      "name": "Sélecteur agent + fenêtre",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [780, 220]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.elevenlabs.io/v1/convai/twilio/outbound-call",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [{ "name": "Content-Type", "value": "application/json" }]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"agent_id\": {{ JSON.stringify($json.agent_id) }},\n  \"agent_phone_number_id\": {{ JSON.stringify($json.agent_phone_number_id) }},\n  \"to_number\": {{ JSON.stringify($json.phone) }},\n  \"conversation_initiation_client_data\": {\n    \"dynamic_variables\": {{ JSON.stringify($json.dynamic_variables) }}\n  },\n  \"telephony_call_config\": { \"ringing_timeout_secs\": 25 }\n}",
+        "options": {}
+      },
+      "id": "r5-el-outbound",
+      "name": "ElevenLabs Outbound",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1040, 220],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "CONFIGURE_ELEVENLABS",
+          "name": "ElevenLabs API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://intellixcrm.com/api/immo/lead/update",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"lead_id\": {{ $('Sélecteur agent + fenêtre').item.json.lead_id }},\n  \"increment_call_attempt\": true,\n  \"relance_number\": {{ $('Sélecteur agent + fenêtre').item.json.relance_number }},\n  \"conversation_id\": {{ JSON.stringify($json.conversation_id || '') }},\n  \"event\": \"relance_call_started\"\n}",
+        "options": {}
+      },
+      "id": "r6-odoo-update",
+      "name": "Odoo Log Appel",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1300, 220],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "CONFIGURE_IN_N8N",
+          "name": "Odoo Meta Immo Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://intellixcrm.com/api/immo/lead/update",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"lead_id\": {{ $json.lead_id }},\n  \"do_not_call\": {{ $json.action === 'STOP_ALL_CONTACT' }},\n  \"final_status\": {{ JSON.stringify($json.action === 'ARCHIVE' ? 'not_interested' : '') }},\n  \"nurture_step\": {{ $json.action === 'ARCHIVE' ? 99 : $json.nurture_step || 0 }}\n}",
+        "options": {}
+      },
+      "id": "r7-odoo-stop",
+      "name": "Odoo Stop/Archive",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [780, 420],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "CONFIGURE_IN_N8N",
+          "name": "Odoo Meta Immo Token"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook Relance": {
+      "main": [[{ "node": "0 GET lead Odoo", "type": "main", "index": 0 }]]
+    },
+    "0 GET lead Odoo": {
+      "main": [[{ "node": "0b Fusionner lead", "type": "main", "index": 0 }]]
+    },
+    "0b Fusionner lead": {
+      "main": [[{ "node": "CRTC Anti-harcèlement", "type": "main", "index": 0 }]]
+    },
+    "CRTC Anti-harcèlement": {
+      "main": [[{ "node": "Peut appeler?", "type": "main", "index": 0 }]]
+    },
+    "Peut appeler?": {
+      "main": [
+        [{ "node": "Sélecteur agent + fenêtre", "type": "main", "index": 0 }],
+        [{ "node": "Odoo Stop/Archive", "type": "main", "index": 0 }]
+      ]
+    },
+    "Sélecteur agent + fenêtre": {
+      "main": [[{ "node": "ElevenLabs Outbound", "type": "main", "index": 0 }]]
+    },
+    "ElevenLabs Outbound": {
+      "main": [[{ "node": "Odoo Log Appel", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": { "executionOrder": "v1" },
+  "meta": { "templateCredsSetupCompleted": false }
+}

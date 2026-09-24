@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="library_maison_script_qualification" model="doorway.agent.library.item">
+        <field name="agent_id" ref="agent_maison_recherchee"/>
+        <field name="sequence">5</field>
+        <field name="name">Script qualification Meta — Sophie</field>
+        <field name="item_type">script</field>
+        <field name="language">fr</field>
+        <field name="content">Voir system_prompt agent + variables ElevenLabs: lead_name, property_address, selling_timeline, lead_id_odoo. Transfert humain +14389929200 si hot.</field>
+    </record>
+</odoo>

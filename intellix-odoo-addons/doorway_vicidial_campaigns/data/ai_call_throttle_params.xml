@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!--
+      Plafond horaire des appels DÉCLENCHÉS PAR L'IA (call_out_number /
+      non_agent_api). Démarrage prudent « qualité, pas quantité » : 30/h.
+      Modifiable sans redéploiement via Paramètres > Technique > Paramètres
+      système. Mettre <= 0 pour désactiver le plafond (illimité).
+      Les appels manuels des agents HUMAINS (dial_manual_*) ne sont jamais
+      concernés par ce plafond.
+    -->
+    <record id="ir_config_ai_calls_per_hour" model="ir.config_parameter">
+        <field name="key">doorway_vicidial_campaigns.ai_calls_per_hour</field>
+        <field name="value">30</field>
+    </record>
+</odoo>

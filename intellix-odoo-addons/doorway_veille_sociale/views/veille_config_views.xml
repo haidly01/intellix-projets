@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_veille_config_form" model="ir.ui.view">
+        <field name="name">doorway.veille.config.form</field>
+        <field name="model">doorway.veille.config</field>
+        <field name="arch" type="xml">
+            <form string="Paramètres veille">
+                <sheet>
+                    <group>
+                        <field name="actif"/>
+                        <field name="marche_quebec"/>
+                        <field name="marche_france"/>
+                    </group>
+                    <notebook>
+                        <page string="Supabase" name="supabase">
+                            <group>
+                                <field name="supabase_url"/>
+                                <field name="supabase_key" password="True"/>
+                            </group>
+                        </page>
+                        <page string="IA &amp; n8n" name="ia">
+                            <group>
+                                <field name="anthropic_api_key" password="True"/>
+                                <field name="anthropic_model"/>
+                                <field name="n8n_webhook_url"/>
+                            </group>
+                        </page>
+                        <page string="Webhook entrant" name="webhook">
+                            <group>
+                                <field name="webhook_url_entrant" readonly="1"/>
+                                <field name="webhook_token" password="True"/>
+                                <button name="action_regenerate_token" type="object"
+                                        string="Régénérer le token" class="btn-secondary"/>
+                            </group>
+                            <p class="text-muted">
+                                Configurez dans n8n l'URL ci-dessus avec l'en-tête
+                                <code>X-Doorway-Token</code> et la valeur du token.
+                            </p>
+                        </page>
+                        <page string="Alertes &amp; seuils" name="alertes">
+                            <group>
+                                <field name="seuil_score_hot"/>
+                                <field name="seuil_score_warm"/>
+                                <field name="email_alerte_hot"/>
+                            </group>
+                            <group string="Auto-lead CRM (Phase 3)">
+                                <field name="auto_lead_actif"/>
+                                <field name="auto_lead_score_min"/>
+                            </group>
+                            <group string="Refroidissement &amp; réactivation">
+                                <field name="refroidissement_actif"/>
+                                <field name="refroidissement_hot_heures"/>
+                                <field name="refroidissement_warm_heures"/>
+                                <field name="reactivation_auto_actif"/>
+                                <button name="action_migrer_signaux_reactivation" type="object"
+                                        string="Migrer les signaux existants"
+                                        class="btn-secondary"
+                                        confirm="Intégrer tous les signaux en attente dans le modèle de réactivation douce ?"/>
+                                <button name="action_resoudre_urls_signaux" type="object"
+                                        string="Résoudre les liens sources"
+                                        class="btn-secondary"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_veille_config" model="ir.actions.act_window">
+        <field name="name">Paramètres veille</field>
+        <field name="res_model">doorway.veille.config</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+    </record>
+</odoo>

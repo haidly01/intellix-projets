@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="group_pipeline_tab_coins_marocain" model="res.groups">
+        <field name="name">Onglet pipeline : Coins Marocain</field>
+        <field name="comment">Pipeline partenariats et relances Coins Marocain (Zakaria).</field>
+    </record>
+    <record id="group_devis_own_contacts" model="res.groups">
+        <field name="name">Contacts : créés ou attribués seulement</field>
+        <field name="comment">Dans le devis et les contacts, ne voit que les fiches qu’il a créées ou qu’on lui a attribuées (vendeur).</field>
+    </record>
+    <record id="group_devis_workspace" model="res.groups">
+        <field name="name">Espace devis — menus Zak</field>
+        <field name="comment">Apps visibles : CRM, Ventes, Hébergement, Coins Marocain, Messages.</field>
+    </record>
+</odoo>

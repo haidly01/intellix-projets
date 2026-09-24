@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_assign_campaign_wizard_form" model="ir.ui.view">
+        <field name="name">doorway.assign.campaign.wizard.form</field>
+        <field name="model">doorway.assign.campaign.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Assigner une campagne WhatsApp / SMS" class="o_doorway_assign_wizard">
+                <sheet>
+                    <div class="oe_title">
+                        <h2>Assigner plusieurs contacts à une campagne</h2>
+                        <p class="o_dwz_help">
+                            Sélectionnez vos contacts, choisissez WhatsApp et/ou SMS,
+                            puis le template Twilio approuvé à utiliser.
+                        </p>
+                    </div>
+
+                    <group>
+                        <group string="Campagne">
+                            <field name="mode" widget="radio"/>
+                            <field name="name"
+                                   placeholder="Ex : Relance prospects octobre"
+                                   invisible="mode != 'new'"
+                                   required="mode == 'new'"/>
+                            <field name="campaign_id"
+                                   invisible="mode != 'existing'"
+                                   required="mode == 'existing'"/>
+                        </group>
+                        <group string="Synthèse" class="o_dwz_synthese">
+                            <field name="nb_contacts"/>
+                            <field name="nb_destinataires"/>
+                        </group>
+                    </group>
+
+                    <group string="Importer des contacts (CSV / XLSX)">
+                        <field name="csv_template_name" invisible="1"/>
+                        <field name="import_filename" invisible="1"/>
+                        <field name="import_file" filename="import_filename"
+                               widget="binary"/>
+                        <div class="o_dwz_help" colspan="2">
+                            Colonnes attendues : <b>nom</b>, <b>téléphone</b>, <b>email</b>
+                            (les en-têtes comme name/phone/mobile/gsm/courriel sont reconnus).
+                            Séparateur « , » ou « ; ». Téléphone au format international (+33…).
+                            <field name="csv_template" filename="csv_template_name"
+                                   widget="binary" class="oe_inline"/>
+                            <span class="o_dwz_help"> ← télécharger le modèle CSV</span>
+                        </div>
+                        <div class="alert alert-success o_dwz_alert" role="status"
+                             colspan="2" invisible="not import_summary">
+                            <field name="import_summary" nolabel="1" readonly="1"/>
+                        </div>
+                    </group>
+
+                    <group string="Destinataires">
+                        <field name="lead_ids" widget="many2many_tags"
+                               options="{'no_create': True}"/>
+                        <field name="partner_ids" widget="many2many_tags"
+                               options="{'no_create': True}"/>
+                        <field name="phones_manuels"
+                               placeholder="+33612345678&#10;+33698765432"/>
+                    </group>
+
+                    <group string="Canaux et templates approuvés">
+                        <group>
+                            <field name="canal_whatsapp"/>
+                            <field name="whatsapp_template_id"
+                                   invisible="not canal_whatsapp"
+                                   options="{'no_create': True}"/>
+                            <field name="corps_whatsapp"
+                                   invisible="not canal_whatsapp or whatsapp_template_id"
+                                   placeholder="Message libre (fenêtre 24h uniquement)"/>
+                        </group>
+                        <group>
+                            <field name="canal_sms"/>
+                            <field name="sms_template_id"
+                                   invisible="not canal_sms"
+                                   options="{'no_create': True}"/>
+                            <field name="corps_sms"
+                                   invisible="not canal_sms or sms_template_id"
+                                   placeholder="Message SMS libre"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <field name="send_now"/>
+                    </group>
+
+                    <div class="alert alert-warning" role="alert"
+                         invisible="not warning">
+                        <field name="warning" nolabel="1" readonly="1"/>
+                    </div>
+                </sheet>
+                <footer>
+                    <button name="action_import_file" type="object"
+                            string="Importer le fichier" class="btn-secondary"
+                            invisible="not import_file"/>
+                    <button name="action_assign" type="object"
+                            string="Assigner à la campagne" class="btn-primary"/>
+                    <button special="cancel" string="Annuler"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_assign_campaign_wizard" model="ir.actions.act_window">
+        <field name="name">Campagne multi-contacts (WhatsApp / SMS)</field>
+        <field name="res_model">doorway.assign.campaign.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="action_assign_campaign_leads" model="ir.actions.act_window">
+        <field name="name">Assigner à une campagne WhatsApp / SMS</field>
+        <field name="res_model">doorway.assign.campaign.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="crm.model_crm_lead"/>
+        <field name="binding_view_types">list</field>
+    </record>
+
+    <record id="action_assign_campaign_partners" model="ir.actions.act_window">
+        <field name="name">Assigner à une campagne WhatsApp / SMS</field>
+        <field name="res_model">doorway.assign.campaign.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="base.model_res_partner"/>
+        <field name="binding_view_types">list</field>
+    </record>
+
+    <menuitem id="menu_assign_campaign"
+              name="Campagne multi-contacts"
+              parent="menu_messaging_root"
+              action="action_assign_campaign_wizard"
+              sequence="18"/>
+</odoo>

@@ -1,0 +1,930 @@
+/* Hub /activites — tokens alignés sur plein-air.css (crème / cuivre).
+   Ne pas inverser vers la palette activites.css. */
+.cm-act-hub {
+  --cream: #faf6ee;
+  --cream-deep: #f2ead9;
+  --gold-1: #b5732f;
+  --gold-2: #e6b876;
+  --gold-3: #8a4f22;
+  --ink: #262220;
+  --ink-soft: #6b6058;
+  --line: rgba(138, 79, 34, 0.22);
+  --white: #fffdf8;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: "Jost", sans-serif;
+  font-weight: 300;
+}
+
+.cm-act-hub h1,
+.cm-act-hub h2,
+.cm-act-hub h3 {
+  font-family: "Cormorant Garamond", "Playfair Display", Georgia, serif;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.cm-act-hub .eyebrow,
+.cm-act-hub .cm-act-kpi span,
+.cm-act-hub .cm-act-city .c {
+  font-family: "Jost", sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.cm-act-hub .wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 22px;
+}
+
+.cm-act-hub .section {
+  padding: 52px 0 60px;
+}
+.cm-act-hub .section h2 {
+  font-size: clamp(1.7rem, 3.2vw, 2.35rem);
+  margin: 0 0 10px;
+}
+.cm-act-hub .section .wrap > p {
+  color: var(--ink-soft);
+  max-width: 640px;
+  line-height: 1.55;
+  margin: 0;
+}
+.cm-act-hub .section a {
+  color: var(--gold-3);
+  text-underline-offset: 3px;
+}
+
+.cm-act-rule {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin: 0 0 22px;
+}
+.cm-act-rule::before,
+.cm-act-rule::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+  max-width: 120px;
+}
+.cm-act-disc {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: conic-gradient(from 200deg, var(--gold-2), var(--gold-1), var(--gold-3), var(--gold-2));
+  box-shadow: 0 0 0 2px var(--cream-deep);
+}
+
+/* Hero photo IA — hub Atlas/désert + 9 portes. Ken Burns sur la photo. */
+.cm-act-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 120px 0 76px;
+  background: #2a1c12;
+  color: var(--cream);
+}
+.cm-act-hero-art {
+  position: absolute;
+  inset: -14%;
+  pointer-events: none;
+  background: #2a1c12 url("/assets/img/cm-activites-hero.jpg") center 42% / cover no-repeat;
+  animation: cm-kb-zoom 36s ease-in-out infinite alternate;
+  will-change: transform;
+}
+.cm-act-door[data-act-door="marrakech"] .cm-act-hero-art {
+  background-image: url("/assets/img/porte-marrakech-hero.jpg");
+}
+.cm-act-door[data-act-door="essaouira"] .cm-act-hero-art {
+  background-image: url("/assets/img/porte-essaouira-hero.jpg");
+}
+.cm-act-door.cm-act-fiche .cm-act-hero-art {
+  background-image: none;
+  background-color: #1a100c;
+}
+.cm-act-door[data-act-door="fes"] .cm-act-hero-art {
+  background-image: url("/assets/img/porte-fes-hero.jpg");
+}
+.cm-act-door[data-act-door="chefchaouen"] .cm-act-hero-art {
+  background-image: url("/assets/img/porte-chefchaouen-hero.jpg");
+}
+.cm-act-door[data-act-door="casablanca"] .cm-act-hero-art {
+  background-image: url("/assets/img/porte-casablanca-hero.jpg");
+}
+.cm-act-door[data-act-door="desert"] .cm-act-hero-art {
+  background-image: url("/assets/img/porte-desert-hero.jpg");
+}
+.cm-act-door[data-act-door="rabat"] .cm-act-hero-art {
+  background-image: url("/assets/img/porte-rabat-hero.jpg");
+}
+.cm-act-door[data-act-door="tanger"] .cm-act-hero-art {
+  background-image: url("/assets/img/porte-tanger-hero.jpg");
+}
+.cm-act-door[data-act-door="agadir"] .cm-act-hero-art {
+  background-image: url("/assets/img/porte-agadir-hero.jpg");
+}
+.cm-act-hero-sun,
+.cm-act-dune {
+  display: none;
+}
+.cm-act-hero-veil {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 22%, rgba(26, 16, 12, 0.55) 68%, rgba(26, 16, 12, 0.92) 100%);
+}
+.cm-act-hero .wrap {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 16px;
+}
+.cm-act-hero h1 {
+  max-width: 18ch;
+  font-size: clamp(2rem, 4.6vw, 3.2rem);
+  line-height: 1.12;
+  color: var(--cream);
+  margin: 0;
+}
+.cm-act-hero p {
+  max-width: 620px;
+  color: rgba(250, 246, 238, 0.82);
+  line-height: 1.55;
+  margin: 0;
+}
+.cm-act-hero .eyebrow {
+  color: var(--gold-2);
+  margin: 0;
+  font-size: 0.72rem;
+}
+
+/* Bande Viator — juste sous le hero (porte Essaouira + fiche). */
+.cm-act-photo-strip {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 6px 22px 0;
+  background: var(--cream);
+}
+.cm-act-photo-strip[hidden] {
+  display: none;
+}
+.cm-act-photo-strip a,
+.cm-act-photo-strip .cm-act-photo {
+  position: relative;
+  display: block;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--cream-deep);
+}
+.cm-act-photo-strip img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.cm-act-photo-strip .cm-act-photo-more {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(26, 16, 12, 0.42);
+  color: #fffdf8;
+  font-family: "Jost", sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+.cm-act-fiche .cm-act-hero {
+  min-height: 420px;
+  display: flex;
+  align-items: flex-end;
+  padding: 120px 0 36px;
+}
+.cm-act-fiche .cm-act-hero h1 {
+  max-width: 22ch;
+}
+.cm-act-fiche .cm-act-hero .cm-act-fiche-crumb,
+.cm-act-fiche .cm-act-hero .cm-act-fiche-crumb a {
+  color: rgba(250, 246, 238, 0.82);
+}
+
+.cm-act-kpis {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+.cm-act-kpi {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 8px 14px 8px 12px;
+  border: 1px solid rgba(230, 184, 118, 0.55);
+  border-radius: 999px;
+  background: rgba(26, 16, 12, 0.35);
+  color: var(--gold-2);
+}
+.cm-act-kpi b {
+  font-family: "Jost", sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+}
+.cm-act-kpi span {
+  font-size: 11px;
+  color: var(--gold-2);
+  opacity: 0.9;
+}
+
+.cm-act-map-wrap {
+  height: 320px;
+  max-height: 36vh;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--cream-deep);
+  margin: 18px 0 0;
+  box-shadow: inset 0 0 90px 16px rgba(138, 79, 34, 0.12);
+}
+#cmActMap {
+  height: 100%;
+  width: 100%;
+}
+
+.cm-act-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 18px;
+  margin: 28px 0 24px;
+}
+.cm-act-city {
+  position: relative;
+  display: block;
+  min-height: 280px;
+  overflow: hidden;
+  border-radius: 14px;
+  text-decoration: none;
+  color: var(--cream);
+  border: 1px solid var(--line);
+  padding: 0;
+}
+.cm-act-city:hover {
+  transform: translateY(-2px);
+  border-color: var(--gold-1);
+}
+.cm-act-city-scene {
+  position: absolute;
+  inset: 0;
+}
+.cm-act-city--marrakech .cm-act-city-scene,
+.cm-act-city--essaouira .cm-act-city-scene,
+.cm-act-city--fes .cm-act-city-scene,
+.cm-act-city--chefchaouen .cm-act-city-scene,
+.cm-act-city--casablanca .cm-act-city-scene,
+.cm-act-city--desert .cm-act-city-scene,
+.cm-act-city--rabat .cm-act-city-scene,
+.cm-act-city--tanger .cm-act-city-scene,
+.cm-act-city--agadir .cm-act-city-scene {
+  inset: -18%;
+  will-change: transform;
+}
+.cm-act-city--marrakech .cm-act-city-scene {
+  background: #2a1c12 url("/assets/img/porte-marrakech-hero.jpg") center / cover no-repeat;
+  animation: cm-kb-ne 26s ease-in-out infinite alternate;
+}
+.cm-act-city--essaouira .cm-act-city-scene {
+  background: #1c2226 url("/assets/img/porte-essaouira-hero.jpg") center / cover no-repeat;
+  animation: cm-kb-out-w 30s ease-in-out infinite alternate;
+}
+.cm-act-city--fes .cm-act-city-scene {
+  background: #262220 url("/assets/img/porte-fes-hero.jpg") center / cover no-repeat;
+  animation: cm-kb-n 24s ease-in-out infinite alternate;
+}
+.cm-act-city--chefchaouen .cm-act-city-scene {
+  background: #2a1c12 url("/assets/img/porte-chefchaouen-hero.jpg") center / cover no-repeat;
+  animation: cm-kb-se 32s ease-in-out infinite alternate;
+}
+.cm-act-city--casablanca .cm-act-city-scene {
+  background: #262220 url("/assets/img/porte-casablanca-hero.jpg") center / cover no-repeat;
+  animation: cm-kb-sw 28s ease-in-out infinite alternate;
+}
+.cm-act-city--desert .cm-act-city-scene {
+  background: #1a100c url("/assets/img/porte-desert-hero.jpg") center / cover no-repeat;
+  animation: cm-kb-zoom 34s ease-in-out infinite alternate;
+}
+.cm-act-city--rabat .cm-act-city-scene {
+  background: #262220 url("/assets/img/porte-rabat-hero.jpg") center / cover no-repeat;
+  animation: cm-kb-e 27s ease-in-out infinite alternate;
+}
+.cm-act-city--tanger .cm-act-city-scene {
+  background: #262220 url("/assets/img/porte-tanger-hero.jpg") center / cover no-repeat;
+  animation: cm-kb-nw 31s ease-in-out infinite alternate;
+}
+.cm-act-city--agadir .cm-act-city-scene {
+  background: #1a100c url("/assets/img/porte-agadir-hero.jpg") center / cover no-repeat;
+  animation: cm-kb-s 29s ease-in-out infinite alternate;
+}
+@keyframes cm-kb-ne {
+  from { transform: scale(1.06) translate(0, 0); }
+  to { transform: scale(1.2) translate(-5%, 4%); }
+}
+@keyframes cm-kb-out-w {
+  from { transform: scale(1.2) translate(4%, 0); }
+  to { transform: scale(1.06) translate(-3%, 2%); }
+}
+@keyframes cm-kb-n {
+  from { transform: scale(1.1) translate(0, 4%); }
+  to { transform: scale(1.16) translate(0, -5%); }
+}
+@keyframes cm-kb-se {
+  from { transform: scale(1.08) translate(-4%, -3%); }
+  to { transform: scale(1.14) translate(5%, 4%); }
+}
+@keyframes cm-kb-sw {
+  from { transform: scale(1.04) translate(3%, -3%); }
+  to { transform: scale(1.18) translate(-4%, 4%); }
+}
+@keyframes cm-kb-zoom {
+  from { transform: scale(1.05) translate(0, 0); }
+  to { transform: scale(1.22) translate(2%, -3%); }
+}
+@keyframes cm-kb-e {
+  from { transform: scale(1.08) translate(-5%, 1%); }
+  to { transform: scale(1.14) translate(5%, -1%); }
+}
+@keyframes cm-kb-nw {
+  from { transform: scale(1.12) translate(3%, 4%); }
+  to { transform: scale(1.06) translate(-4%, -3%); }
+}
+@keyframes cm-kb-s {
+  from { transform: scale(1.07) translate(0, -4%); }
+  to { transform: scale(1.16) translate(2%, 5%); }
+}
+.cm-act-city-overlay {
+  position: relative;
+  z-index: 1;
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 22px 20px 20px;
+  background: linear-gradient(180deg, transparent 18%, rgba(26, 16, 12, 0.78) 72%, rgba(26, 16, 12, 0.94) 100%);
+}
+.cm-act-city .n {
+  font-family: "Cormorant Garamond", "Playfair Display", serif;
+  font-size: 26px;
+  color: var(--cream);
+}
+.cm-act-city .blurb {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.4;
+  color: rgba(250, 246, 238, 0.88);
+}
+.cm-act-city .c {
+  margin: 0;
+  color: var(--gold-2);
+  font-size: 11px;
+}
+
+.cm-pin-act {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--gold-1);
+  border: 2px solid #fffdf8;
+  box-shadow: 0 0 0 1px rgba(138, 79, 34, 0.35);
+}
+.cm-pin-act.cm-pin-sun {
+  width: 22px;
+  height: 22px;
+  border: 2px solid #2a1c12;
+  background: var(--gold-2);
+  box-shadow: 0 0 0 3px rgba(181, 115, 47, 0.28);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cm-pin-act.cm-pin-sun .cm-act-disc {
+  width: 9px;
+  height: 9px;
+  box-shadow: none;
+}
+
+.cm-act-hub .leaflet-popup-content-wrapper {
+  border-radius: 10px;
+  font-family: "Jost", sans-serif;
+}
+.cm-act-hub .leaflet-popup-content {
+  margin: 12px 14px;
+  color: var(--ink);
+}
+.cm-act-hub .leaflet-popup-content a {
+  color: var(--gold-3);
+}
+
+.cm-act-note {
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin-top: 8px;
+}
+
+/* Porte ville — gabarit (Marrakech pilote). Réutiliser body.cm-act-door. */
+.cm-act-door .cm-act-crumb {
+  margin: 0;
+  font-size: 13px;
+  color: rgba(250, 246, 238, 0.72);
+}
+.cm-act-door .cm-act-crumb a {
+  color: var(--gold-2);
+}
+.cm-act-city[class*="cm-act-city--fmt-"] .cm-act-city-scene {
+  inset: -18%;
+  will-change: transform;
+}
+.cm-act-city--fmt-agafay .cm-act-city-scene {
+  background: #2a1c12 url("/blog/assets/agafay-desert.jpg") center / cover no-repeat;
+  animation: cm-kb-ne 26s ease-in-out infinite alternate;
+}
+.cm-act-city--fmt-ourika .cm-act-city-scene {
+  background: #2a2418 url("/blog/assets/ourika-vallee.jpg") center / cover no-repeat;
+  animation: cm-kb-n 24s ease-in-out infinite alternate;
+}
+.cm-act-city--fmt-ouzoud .cm-act-city-scene {
+  background: #1a1814 url("/blog/assets/ourika-vallee.jpg") center / cover no-repeat;
+  animation: cm-kb-s 29s ease-in-out infinite alternate;
+}
+.cm-act-city--fmt-essaouira-journee .cm-act-city-scene {
+  background: #1c2226 url("/assets/img/porte-essaouira-hero.jpg") center / cover no-repeat;
+  animation: cm-kb-out-w 30s ease-in-out infinite alternate;
+}
+.cm-act-city--fmt-imlil .cm-act-city-scene {
+  background: #2a1c12 url("/blog/assets/ourika-vallee.jpg") center / cover no-repeat;
+  animation: cm-kb-se 32s ease-in-out infinite alternate;
+}
+.cm-act-city--fmt-medina .cm-act-city-scene {
+  background: #120e0c url("/assets/img/porte-marrakech-hero.jpg") center / cover no-repeat;
+  animation: cm-kb-sw 28s ease-in-out infinite alternate;
+}
+.cm-act-city--fmt-cuisine .cm-act-city-scene {
+  background: #262220 url("/assets/img/couple.jpg") center / cover no-repeat;
+  animation: cm-kb-e 27s ease-in-out infinite alternate;
+}
+.cm-act-city--fmt-hammam .cm-act-city-scene {
+  background: #2a1c12 url("/assets/img/surmesure.jpg") center / cover no-repeat;
+  animation: cm-kb-nw 31s ease-in-out infinite alternate;
+}
+.cm-act-city--fmt-cheval .cm-act-city-scene {
+  background: #1a100c url("/assets/img/desert.jpg") center / cover no-repeat;
+  animation: cm-kb-zoom 34s ease-in-out infinite alternate;
+}
+
+.cm-act-viator-ph {
+  margin-top: 36px;
+  padding: 28px 22px;
+  border-radius: 14px;
+  border: 1px dashed var(--line);
+  background:
+    radial-gradient(ellipse 70% 80% at 90% 10%, rgba(230, 184, 118, 0.22), transparent 55%),
+    linear-gradient(180deg, #fff9ef 0%, var(--cream) 100%);
+}
+.cm-act-viator-ph h2 {
+  margin: 0 0 8px;
+}
+.cm-act-viator-ph p {
+  margin: 0;
+  color: var(--ink-soft);
+  max-width: 56ch;
+}
+
+.cm-act-cross {
+  margin: 0 0 22px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: #fff6ea;
+}
+.cm-act-cross p {
+  margin: 0;
+  font-family: "Jost", sans-serif;
+  font-size: 0.95rem;
+  color: #262220;
+  line-height: 1.45;
+}
+.cm-act-cross a {
+  color: #8a4f22;
+  font-weight: 500;
+}
+
+.cm-act-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 18px;
+  margin: 22px 0 12px;
+}
+.cm-act-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: #fffdf8;
+  text-decoration: none;
+  color: inherit;
+}
+.cm-act-card:hover {
+  border-color: var(--gold-1);
+  transform: translateY(-2px);
+}
+.cm-act-card img {
+  width: 100%;
+  height: 168px;
+  object-fit: cover;
+  background: var(--cream-deep);
+  display: block;
+}
+.cm-act-card .body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px 16px;
+  flex: 1;
+}
+.cm-act-card h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.28;
+  font-family: "Cormorant Garamond", "Playfair Display", Georgia, serif;
+  font-weight: 600;
+}
+.cm-act-card .cm-act-meta {
+  margin-top: auto;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--gold-3);
+  font-weight: 500;
+}
+.cm-act-card .cm-act-go {
+  font-size: 13px;
+  color: var(--gold-3);
+  text-underline-offset: 3px;
+}
+.cm-act-fx {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+.cm-act-more {
+  appearance: none;
+  margin: 8px 0 0;
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: #fff9ef;
+  color: var(--gold-3);
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+.cm-act-more:hover {
+  border-color: var(--gold-1);
+}
+
+.cm-act-fiche-main {
+  padding-top: 108px;
+  padding-bottom: 72px;
+}
+.cm-act-fiche .cm-act-hero + .cm-act-photo-strip + .cm-act-fiche-main {
+  padding-top: 36px;
+}
+.cm-act-fiche-wrap {
+  display: grid;
+  gap: 18px;
+}
+.cm-act-fiche-crumb {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+.cm-act-fiche-crumb a {
+  color: var(--gold-3);
+}
+.cm-act-fiche .cm-act-fiche-main h1 {
+  margin: 0;
+  max-width: 22ch;
+  font-size: clamp(2rem, 4.2vw, 3rem);
+  line-height: 1.08;
+}
+.cm-act-gallery {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+.cm-act-gallery img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 14px;
+  background: var(--cream-deep);
+  display: block;
+}
+.cm-act-gallery--one {
+  grid-template-columns: 1fr;
+}
+.cm-act-gallery--one img {
+  min-height: 360px;
+  max-height: 460px;
+}
+.cm-act-gallery--two {
+  grid-template-columns: 1fr 1fr;
+}
+.cm-act-gallery--two img {
+  min-height: 280px;
+}
+.cm-act-gallery--mosaic {
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: minmax(118px, 16vw);
+}
+.cm-act-gallery--mosaic img:first-child {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+.cm-act-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cm-act-pills li {
+  display: grid;
+  gap: 2px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: #fff9ef;
+  min-width: 7.5rem;
+}
+.cm-act-pills span {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold-3);
+  font-weight: 500;
+}
+.cm-act-pills b {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+}
+.cm-act-note-viator {
+  margin: -6px 0 0;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+.cm-act-fiche-copy p {
+  max-width: 62ch;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  margin: 0;
+  font-size: 1.05rem;
+}
+.cm-act-fiche-main .cm-act-fx {
+  margin: 0;
+}
+.cm-act-pay {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 0;
+  padding: 13px 20px;
+  border-radius: 999px;
+  background: var(--gold-3);
+  color: #fffdf8 !important;
+  text-decoration: none;
+  font-weight: 500;
+}
+@media (max-width: 720px) {
+  .cm-act-gallery--mosaic {
+    grid-template-columns: 1fr 1fr;
+    grid-auto-rows: 120px;
+  }
+  .cm-act-gallery--one img,
+  .cm-act-gallery--two img {
+    min-height: 220px;
+  }
+}
+.cm-act-pay:hover {
+  background: var(--gold-1);
+}
+.cm-act-related{
+  margin: 36px 0 0;
+  padding-top: 28px;
+  border-top: 1px solid rgba(31, 28, 24, 0.12);
+}
+.cm-act-related h2{
+  font-size: 1.15rem;
+  margin: 0 0 12px;
+}
+.cm-act-related ul{
+  margin: 0 0 14px;
+  padding: 0;
+  list-style: none;
+}
+.cm-act-related li{margin: 0 0 8px;}
+.cm-act-related a{color: var(--gold-3); font-weight: 500;}
+.cm-act-related-doors{margin: 0; font-size: 14px; color: var(--ink-soft);}
+.cm-act-related-doors a{color: inherit;}
+
+/* Chrome live (nav.js) sans la feuille de base du site :
+   overlay hors-flux, un seul logo, footer en colonnes. Hub + 9 portes. */
+.cm-act-hub .site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background: transparent;
+}
+.cm-act-hub .site-header.solid {
+  background: var(--cream);
+  box-shadow: 0 1px 0 var(--line);
+}
+.cm-act-hub .header-inner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 76px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+.cm-act-hub .brand {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  line-height: 0;
+}
+.cm-act-hub .brand-logo {
+  display: block;
+  height: 56px;
+  width: auto;
+  max-width: 168px;
+  object-fit: contain;
+}
+.cm-act-hub .site-header .logo-light {
+  display: none;
+}
+.cm-act-hub .site-header .logo-dark {
+  display: block;
+}
+.cm-act-hub .header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+.cm-act-hub .burger {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.cm-act-hub .burger span {
+  display: block;
+  height: 2px;
+  width: 20px;
+  background: var(--ink);
+}
+.cm-act-hub .menu-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  background: rgba(26, 16, 12, 0.96);
+  color: var(--cream);
+}
+.cm-act-hub .menu-overlay:not(.on) {
+  display: none;
+}
+
+.cm-act-hub .site-footer {
+  background: #2a1c12;
+  color: rgba(250, 246, 238, 0.78);
+  padding: 48px 0 28px;
+}
+.cm-act-hub .site-footer .footer-cols {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  gap: 28px 36px;
+}
+.cm-act-hub .site-footer h4 {
+  margin: 0 0 12px;
+  color: var(--cream);
+  font-family: "Cormorant Garamond", "Playfair Display", Georgia, serif;
+  font-weight: 600;
+  font-size: 1rem;
+}
+.cm-act-hub .site-footer a {
+  display: block;
+  margin: 0 0 8px;
+  color: rgba(250, 246, 238, 0.78);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+.cm-act-hub .site-footer a:hover {
+  color: var(--gold-2);
+}
+.cm-act-hub .site-footer .foot-tag {
+  margin: 8px 0 0;
+  max-width: 28ch;
+  line-height: 1.5;
+  color: rgba(250, 246, 238, 0.62);
+}
+.cm-act-hub .site-footer .foot-brand img {
+  height: 44px;
+  width: auto;
+  display: block;
+}
+.cm-act-hub .site-footer .foot-bottom {
+  margin-top: 28px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(250, 246, 238, 0.14);
+  font-size: 0.82rem;
+  color: rgba(250, 246, 238, 0.55);
+}
+.cm-act-hub .site-footer .foot-legal {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 8px;
+  margin-top: 14px;
+}
+.cm-act-hub .site-footer .foot-legal a {
+  display: inline;
+  margin: 0 10px 0 0;
+}
+.cm-act-hub .site-footer .foot-legal a:not(:last-child)::after {
+  content: "·";
+  margin-left: 10px;
+  color: rgba(250, 246, 238, 0.35);
+}
+
+@media (max-width: 720px) {
+  .cm-act-hub .site-footer .footer-cols {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .cm-act-photo-strip {
+    grid-template-columns: repeat(3, 1fr);
+    padding: 6px 16px 0;
+  }
+}
+@media (max-width: 640px) {
+  .cm-act-hero {
+    padding: 104px 0 56px;
+  }
+  .cm-act-hero-sun {
+    width: 56px;
+    height: 56px;
+    top: 8%;
+    right: 8%;
+  }
+  .cm-act-hub .cm-act-city,
+  .cm-act-city-overlay {
+    min-height: 240px;
+  }
+  .cm-act-hub .wrap {
+    padding: 0 16px;
+  }
+  .cm-act-map-wrap {
+    height: 220px;
+    max-height: 28vh;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cm-act-city-scene,
+  .cm-act-hero-art {
+    animation: none !important;
+    inset: 0;
+    transform: none;
+    will-change: auto;
+  }
+}

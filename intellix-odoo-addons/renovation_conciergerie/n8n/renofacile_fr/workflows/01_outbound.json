@@ -1,0 +1,57 @@
+{
+  "name": "renofacile-fr — 01 Outbound",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "renofacile-fr/outbound",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        300
+      ],
+      "webhookId": "renofacile-fr-outbound"
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = $input.first().json;\nconst body = item.body || item;\n\nfunction normFr(p) {\n  if (!p) return '';\n  const s = String(p).trim();\n  const d = s.replace(/\\D/g, '');\n  if (d.startsWith('33') && d.length > 9) return '+' + d;\n  if (d.length === 9) return '+33' + d;\n  if (d.length === 10 && d.startsWith('0')) return '+33' + d.slice(1);\n  if (s.startsWith('+')) return '+' + d;\n  return d ? '+' + d : '';\n}\n\nconst phone = normFr(body.telephone || body.phone || body.phone_number);\nif (!phone) throw new Error('telephone requis');\n\nconst vicUrl = ($env.VICIDIAL_API_URL || '').replace(/\\/$/, '');\nconst user = $env.VICIDIAL_USER || '';\nconst pass = $env.VICIDIAL_PASS || '';\nconst campaign = $env.VICIDIAL_CAMPAIGN || 'DW_FRB2C';\nconst listId = $env.VICIDIAL_LIST || '1004';\n\nconst qs = new URLSearchParams({\n  source: 'doorway_n8n',\n  user,\n  pass,\n  function: 'external_dial',\n  value: phone,\n  phone_code: '1',\n  search: 'YES',\n  preview: 'NO',\n  focus: 'NO',\n  campaign_id: campaign,\n  dial_prefix: '',\n  group_alias: '',\n  alt_dial: 'SEARCH',\n  vendor_lead_code: body.lead_id || body.partner_id || '',\n  lead_id: body.lead_id || '',\n  phone_number: phone,\n  list_id: listId,\n});\n\nconst res = await this.helpers.httpRequest({\n  method: 'GET',\n  url: vicUrl + '?' + qs.toString(),\n  timeout: 30000,\n});\nconst text = typeof res === 'string' ? res : JSON.stringify(res);\nconst ok = /SUCCESS|started/i.test(text);\n\nreturn [{\n  json: {\n    ok,\n    telephone: phone,\n    campaign,\n    provider: 'vicidial',\n    agent_id: $env.AGENT_ID || 'marenofacile',\n    response: text.slice(0, 300),\n  },\n}];"
+      },
+      "name": "Outbound Dial",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Outbound Dial",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [
+    {
+      "name": "renofacile-fr"
+    },
+    {
+      "name": "sofia"
+    }
+  ]
+}

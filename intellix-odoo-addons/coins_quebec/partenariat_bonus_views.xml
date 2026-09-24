@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Champs validation Martin sur fiche partenariat -->
+    <record id="view_cq_partenariat_form_bonus" model="ir.ui.view">
+        <field name="name">coins.quebec.partenariat.form.bonus</field>
+        <field name="model">coins.quebec.partenariat</field>
+        <field name="inherit_id" ref="view_cq_partenariat_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='cq_notes']" position="before">
+                <page string="Validation Martin" name="cq_validation_martin">
+                    <group>
+                        <group string="Présence (Martin valide)">
+                            <field name="statut_presence"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group string="Vente">
+                            <field name="forfait_vendu_id" options="{'no_create': True}"/>
+                            <field name="montant_vendu"/>
+                        </group>
+                    </group>
+                    <p class="text-muted">
+                        Le bonus est crédité à l'agente indiquée dans « Responsable assigné »
+                        (<field name="coins_commercial_assigne" readonly="1" class="oe_inline"/>),
+                        pas à Martin. Martin remplit présence et montant après la visite.
+                    </p>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_cq_agent_bonus_month_list" model="ir.ui.view">
+        <field name="name">coins.quebec.agent.bonus.month.list</field>
+        <field name="model">coins.quebec.agent.bonus.month</field>
+        <field name="arch" type="xml">
+            <list string="Bonus agentes CQ" create="0" delete="0">
+                <header>
+                    <button name="action_refresh_month" type="object" string="Recalculer ce mois"
+                            class="btn-primary" display="always"/>
+                </header>
+                <field name="month"/>
+                <field name="agent_id"/>
+                <field name="jours_travailles"/>
+                <field name="rdv_presents"/>
+                <field name="rdv_absents"/>
+                <field name="moyenne_rdv_presents_jour"/>
+                <field name="bonus_presence"/>
+                <field name="revenu_total_mois"/>
+                <field name="bonus_revenu"/>
+                <field name="bonus_total" decoration-bf="1"/>
+                <field name="fiche_count"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_cq_agent_bonus_month_form" model="ir.ui.view">
+        <field name="name">coins.quebec.agent.bonus.month.form</field>
+        <field name="model">coins.quebec.agent.bonus.month</field>
+        <field name="arch" type="xml">
+            <form string="Bonus agente" create="0" delete="0">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="agent_id" readonly="1"/>
+                            <field name="month" readonly="1"/>
+                            <field name="fiche_count" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="jours_travailles" readonly="1"/>
+                            <field name="rdv_presents" readonly="1"/>
+                            <field name="rdv_absents" readonly="1"/>
+                            <field name="moyenne_rdv_presents_jour" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Bonus présence (DH)">
+                            <field name="bonus_presence" readonly="1"/>
+                            <field name="currency_dh_id" invisible="1"/>
+                        </group>
+                        <group string="Bonus revenu">
+                            <field name="revenu_total_mois" readonly="1"/>
+                            <field name="bonus_revenu" readonly="1"/>
+                            <field name="bonus_total" readonly="1"/>
+                            <field name="currency_cad_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <field name="note" readonly="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_cq_agent_bonus_month_search" model="ir.ui.view">
+        <field name="name">coins.quebec.agent.bonus.month.search</field>
+        <field name="model">coins.quebec.agent.bonus.month</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="agent_id"/>
+                <field name="month"/>
+                <filter name="current_month" string="Mois en cours"
+                        domain="[('month', '&gt;=', (context_today()).strftime('%Y-%m-01'))]"/>
+                <group expand="0" string="Grouper par">
+                    <filter name="group_agent" string="Agente" context="{'group_by': 'agent_id'}"/>
+                    <filter name="group_month" string="Mois" context="{'group_by': 'month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_cq_agent_bonus_month" model="ir.actions.act_window">
+        <field name="name">Bonus agentes CQ</field>
+        <field name="res_model">coins.quebec.agent.bonus.month</field>
+        <field name="view_mode">list,form</field>
+        <field name="path">cq-bonus-agentes</field>
+        <field name="context">{'search_default_current_month': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Bonus Leila / Yamina — calcul séparé par agente</p>
+            <p>Martin valide présence et montant sur chaque fiche. Le bonus est crédité à l'agente assignée.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_cq_agent_bonus"
+              name="Bonus agentes"
+              parent="menu_cq_root"
+              action="action_cq_agent_bonus_month"
+              sequence="11"
+              groups="group_coins_quebec_manager"/>
+</odoo>

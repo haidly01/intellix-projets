@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_doorway_crm_mailbox_setup,doorway.crm.mailbox.setup,model_doorway_crm_mailbox_setup,sales_team.group_sale_salesman,1,1,1,1
+access_doorway_crm_mailbox_internal,doorway.crm.mailbox.internal,model_doorway_crm_mailbox,base.group_user,1,1,1,0
+access_doorway_crm_mailbox_user,doorway.crm.mailbox.user,model_doorway_crm_mailbox,sales_team.group_sale_salesman,1,1,1,1
+access_doorway_crm_mailbox_manager,doorway.crm.mailbox.manager,model_doorway_crm_mailbox,sales_team.group_sale_manager,1,1,1,1
+access_doorway_business_card,dw.business.card,model_doorway_business_card,sales_team.group_sale_salesman,1,1,1,0
+access_doorway_crm_mailbox_messaging,doorway.crm.mailbox.messaging,model_doorway_crm_mailbox,doorway_messaging.group_messaging_user,1,1,1,0

@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="icp_reno_relance_business_days" model="ir.config_parameter">
+        <field name="key">renovation_conciergerie.relance_business_days</field>
+        <field name="value">3</field>
+    </record>
+    <record id="view_reno_immo_lead_kanban" model="ir.ui.view">
+        <field name="name">crm.lead.kanban.reno.immobilier</field>
+        <field name="model">crm.lead</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="reno_gestion_status"
+                    class="o_kanban_small_column o_reno_immo_kanban"
+                    records_draggable="1"
+                    quick_create="false">
+                <field name="reno_gestion_status"/>
+                <field name="reno_source_label"/>
+                <field name="reno_relance_due"/>
+                <field name="reno_card_title"/>
+                <field name="reno_card_subtitle"/>
+                <field name="reno_category_label"/>
+                <field name="reno_source_paused"/>
+                <field name="name"/>
+                <field name="contact_name"/>
+                <field name="partner_id"/>
+                <field name="team_id"/>
+                <field name="user_id"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="o_reno_immo_card">
+                            <div class="fw-bold"><field name="reno_card_title"/></div>
+                            <div class="text-muted small"><field name="reno_card_subtitle"/></div>
+                            <div class="mt-1 d-flex flex-wrap gap-1">
+                                <span class="badge text-bg-secondary">
+                                    <field name="reno_category_label"/>
+                                </span>
+                                <span class="badge text-bg-dark" t-if="record.user_id.raw_value">
+                                    <field name="user_id"/>
+                                </span>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_reno_immo_lead_search" model="ir.ui.view">
+        <field name="name">crm.lead.search.reno.immobilier</field>
+        <field name="model">crm.lead</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="Lead" filter_domain="[
+                    '|', '|', '|', '|',
+                    ('name', 'ilike', self),
+                    ('contact_name', 'ilike', self),
+                    ('partner_name', 'ilike', self),
+                    ('email_from', 'ilike', self),
+                    ('phone', 'ilike', self)]"/>
+                <field name="email_from" string="Email"/>
+                <field name="phone" string="Téléphone"/>
+                <field name="partner_id"/>
+                <field name="contact_name"/>
+                <field name="team_id"/>
+                <field name="source_id"/>
+                <filter name="leads_du_jour" string="Leads du jour"
+                        domain="[('create_date', '&gt;=', datetime.datetime.combine(context_today(), datetime.time(0, 0, 0)))]"/>
+                <filter name="a_relancer" string="À relancer"
+                        domain="[('reno_relance_due', '=', True)]"/>
+                <separator/>
+                <filter name="group_status" string="Statut" context="{'group_by': 'reno_gestion_status'}"/>
+                <filter name="group_partner" string="Partenaire" context="{'group_by': 'partner_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_reno_immobilier_leads" model="ir.actions.act_window">
+        <field name="name">Leads Gestion</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[('reno_immo_lead', '=', True), ('name', 'not ilike', 'RénoFacile'), ('name', 'not ilike', 'Renofacile')]</field>
+        <field name="context">{
+            'default_type': 'opportunity',
+        }</field>
+        <field name="search_view_id" ref="view_reno_immo_lead_search"/>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_reno_immo_lead_kanban')})]"/>
+    </record>
+
+    <record id="view_reno_immo_partner_kanban" model="ir.ui.view">
+        <field name="name">renovation.partner.package.kanban.reno.immobilier</field>
+        <field name="model">renovation.partner.package</field>
+        <field name="arch" type="xml">
+            <kanban class="o_reno_immo_partner_dash" default_group_by="health_status">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="leads_total"/>
+                <field name="leads_used"/>
+                <field name="leads_remaining"/>
+                <field name="leads_remaining_pct"/>
+                <field name="exhaustion_state"/>
+                <field name="state"/>
+                <field name="en_pause"/>
+                <field name="is_paused_now"/>
+                <field name="pause_badge"/>
+                <templates>
+                    <t t-name="card">
+                        <div>
+                            <div class="fw-bold"><field name="partner_id"/></div>
+                            <div class="text-muted small"><field name="name"/></div>
+                            <div class="mt-2">
+                                <div class="small">Leads restants : <field name="leads_remaining"/> / <field name="leads_total"/></div>
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar bg-success" t-att-style="'width: ' + (record.leads_remaining_pct.raw_value || 0) + '%'"/>
+                                </div>
+                            </div>
+                            <div class="mt-1">
+                                <span t-if="record.is_paused_now.raw_value" class="badge text-bg-warning">En pause</span>
+                                <span t-if="record.exhaustion_state.raw_value == 'sain'" class="badge text-bg-success">Actif — sain</span>
+                                <span t-if="record.exhaustion_state.raw_value == 'renouveler'" class="badge text-bg-warning">À renouveler bientôt</span>
+                                <span t-if="record.exhaustion_state.raw_value == 'epuise'" class="badge text-bg-danger">Épuisé</span>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="action_reno_immobilier_partenaires" model="ir.actions.act_window">
+        <field name="name">Partenaires</field>
+        <field name="res_model">renovation.partner.package</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_reno_immo_partner_kanban')})]"/>
+    </record>
+
+    <menuitem id="menu_reno_immobilier_root"
+              name="Réno Immobilier"
+              sequence="7"
+              action="action_reno_immobilier_partenaires"
+              web_icon="renovation_conciergerie,static/description/icon.png"
+              groups="base.group_user,sales_team.group_sale_salesman,sales_team.group_sale_manager"
+              active="False"/>
+
+    <menuitem id="menu_reno_immobilier_partenaires"
+              name="Partenaires"
+              parent="menu_reno_immobilier_root"
+              action="action_reno_immobilier_partenaires"
+              sequence="10"/>
+
+    <record id="action_reno_immobilier_leads_du_jour" model="ir.actions.act_window">
+        <field name="name">Leads du jour</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[('reno_immo_lead', '=', True), ('name', 'not ilike', 'RénoFacile'), ('name', 'not ilike', 'Renofacile')]</field>
+        <field name="context">{
+            'default_type': 'opportunity',
+            'search_default_leads_du_jour': 1,
+        }</field>
+        <field name="search_view_id" ref="view_reno_immo_lead_search"/>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_reno_immo_lead_kanban')})]"/>
+    </record>
+
+    <menuitem id="menu_reno_immobilier_leads"
+              name="Leads Gestion"
+              parent="menu_reno_immobilier_root"
+              action="action_reno_immobilier_leads"
+              sequence="20"/>
+
+    <menuitem id="menu_reno_immobilier_leads_jour"
+              name="Leads du jour"
+              parent="menu_reno_immobilier_root"
+              action="action_reno_immobilier_leads_du_jour"
+              sequence="21"/>
+</odoo>

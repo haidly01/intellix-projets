@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pe_employee_profile_team_list" model="ir.ui.view">
+        <field name="name">pe.employee.profile.team.list</field>
+        <field name="model">pe.employee.profile</field>
+        <field name="priority">5</field>
+        <field name="arch" type="xml">
+            <list string="Équipe"
+                  js_class="people_engine_team_dashboard"
+                  class="pe-team-list-table"
+                  create="0"
+                  edit="0"
+                  delete="0"
+                  decoration-danger="score_global &lt; 40"
+                  decoration-warning="score_global &lt; 60 and score_global &gt;= 40"
+                  decoration-success="score_global &gt;= 80">
+                <field name="pe_avatar_initials" column_invisible="1"/>
+                <field name="pe_avatar_gradient" column_invisible="1"/>
+                <field name="pe_team_period_score" column_invisible="1"/>
+                <field name="employee_id" column_invisible="1"/>
+                <field name="display_name" column_invisible="1"/>
+                <field name="job_id" column_invisible="1"/>
+                <field name="pe_team_employee_cell" string="Employé" widget="html"/>
+                <field name="department_id" string="Département"/>
+                <field name="pe_team_score_cell" string="Score" widget="html"/>
+                <field name="score_performance" string="Perf /40"/>
+                <field name="score_engagement" string="Engagement /30"/>
+                <field name="objectives_achievement_pct" string="Taux qual." digits="[16,0]"/>
+                <field name="pe_status" string="Statut" widget="badge"/>
+                <field name="score_trend" string="Tendance" widget="badge"/>
+                <field name="score_global" column_invisible="1"/>
+                <field name="score_trend_percent" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_pe_team_dashboard" model="ir.actions.server">
+        <field name="name">Équipe</field>
+        <field name="model_id" ref="model_pe_employee_profile"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_team_profiles()</field>
+    </record>
+</odoo>

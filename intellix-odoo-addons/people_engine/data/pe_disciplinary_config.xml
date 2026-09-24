@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Seuils disciplinaires validés — Maroc / Call Center — Juin 2026 -->
+    <record id="pe_disciplinary_fenetre_recidive" model="ir.config_parameter">
+        <field name="key">people_engine.disciplinary.fenetre_recidive_jours</field>
+        <field name="value">30</field>
+    </record>
+    <record id="pe_disciplinary_prescription_jours" model="ir.config_parameter">
+        <field name="key">people_engine.disciplinary.prescription_jours</field>
+        <field name="value">30</field>
+    </record>
+    <record id="pe_disciplinary_alerte_prescription" model="ir.config_parameter">
+        <field name="key">people_engine.disciplinary.alerte_prescription_jours</field>
+        <field name="value">20</field>
+    </record>
+    <record id="pe_disciplinary_log_warning_h" model="ir.config_parameter">
+        <field name="key">people_engine.disciplinary.log_alerte_warning_heures</field>
+        <field name="value">4</field>
+    </record>
+    <record id="pe_disciplinary_log_critique_h" model="ir.config_parameter">
+        <field name="key">people_engine.disciplinary.log_alerte_critique_heures</field>
+        <field name="value">24</field>
+    </record>
+    <record id="pe_disciplinary_crm_incident_min" model="ir.config_parameter">
+        <field name="key">people_engine.disciplinary.crm_incident_minutes</field>
+        <field name="value">30</field>
+    </record>
+    <record id="pe_disciplinary_config_version" model="ir.config_parameter">
+        <field name="key">people_engine.disciplinary.config_version</field>
+        <field name="value">2026-06-maroc-callcenter-v1</field>
+    </record>
+</odoo>

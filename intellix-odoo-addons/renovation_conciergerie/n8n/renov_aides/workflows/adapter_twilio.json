@@ -1,0 +1,310 @@
+{
+  "name": "renov-aides — Adapter Twilio",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "telephony/twilio/start",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "tw-start",
+      "name": "Webhook Start",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        200
+      ],
+      "webhookId": "renov-twilio-start"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "telephony/twilio/amd",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "tw-amd",
+      "name": "Webhook AMD",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        400
+      ],
+      "webhookId": "renov-twilio-amd"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "telephony/twilio/recording",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "tw-rec",
+      "name": "Webhook Recording",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        600
+      ],
+      "webhookId": "renov-twilio-recording"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "telephony/twilio/transcribe",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "tw-trans",
+      "name": "Webhook Transcribe",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        800
+      ],
+      "webhookId": "renov-twilio-transcribe"
+    },
+    {
+      "parameters": {
+        "jsCode": "const b = $input.first().json.body || $input.first().json;\nfunction norm(p) {\n  if (!p) return '';\n  const s = String(p).trim();\n  if (s.startsWith('+')) return '+' + s.replace(/\\D/g, '');\n  const d = s.replace(/\\D/g, '');\n  if (d.length === 9) return '+34' + d;\n  return '+' + d;\n}\nconst callSid = b.CallSid || '';\nconst telephone = norm(b.To);\nconst sd = $getWorkflowStaticData('global');\nif (!sd.sofia_sessions) sd.sofia_sessions = {};\nsd.sofia_sessions[callSid] = {\n  etape: 'ouverture',\n  telephone,\n  duree_sec: 0,\n  hors_sujet_count: 0,\n  soft_limit: parseInt($env.AGENT_SOFT_LIMIT_SEC || '110', 10) || 110,\n  data: {\n    proprietaire: null, type_logement: null, code_postal: null, combles: null,\n    acces_combles: null, calefaccion: null, creneau_rappel: null, nom_contact: null, telephone_final: null,\n  },\n  transcript_log: [],\n  non_owner_count: 0,\n  silence_count: 0,\n};\nconst base = ($env.N8N_WEBHOOK_URL || '').replace(/\\/$/, '');\nconst bucket = ($env.STORAGE_BUCKET_URL || '').replace(/\\/$/, '');\nconst hook = bucket ? bucket + '/sofia_hook.mp3' : '';\nconst question = bucket ? bucket + '/sofia_question_propietario.mp3' : '';\nconst recTimeout = parseInt($env.SOFIA_RECORD_TIMEOUT || '5', 10) || 5;\nconst recMax = parseInt($env.SOFIA_RECORD_MAXLENGTH || '10', 10) || 10;\nconst pauseSec = parseInt($env.SOFIA_RECORD_PAUSE_SEC || '2', 10) || 2;\nlet twiml = '<?xml version=\"1.0\" encoding=\"UTF-8\"?><Response>';\nif (hook && question) {\n  twiml += '<Play>' + hook + '</Play>';\n  twiml += '<Play>' + question + '</Play>';\n} else if (bucket) {\n  twiml += '<Play>' + bucket + '/sofia_ouverture.mp3</Play>';\n}\ntwiml += '<Pause length=\"' + pauseSec + '\"/>';\ntwiml += '<Record action=\"' + base + '/telephony/twilio/transcribe\" maxLength=\"' + recMax + '\" timeout=\"' + recTimeout + '\" playBeep=\"false\" trim=\"trim-silence\"/>';\ntwiml += '</Response>';\nreturn [{ json: { twiml, call_sid: callSid, telephone } }];"
+      },
+      "id": "tw-norm-start",
+      "name": "Normalize + TwiML ouverture",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.twiml }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "text/xml"
+              }
+            ]
+          }
+        }
+      },
+      "id": "tw-resp-start",
+      "name": "Respond TwiML Start",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        560,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const b=$input.first().json.body||$input.first().json;\nconst ab=(b.AnsweredBy||'').toLowerCase();\nconst amd=['machine','fax'].some(x=>ab.includes(x))?(ab.includes('fax')?'fax':'machine'):'human';\nconst ev={event_type:'amd_result',call_sid:b.CallSid||'',from:'',to:'',recording_url:'',amd_result:amd,duration_sec:0,provider:'twilio',raw:b};\nreturn [{json:ev}];"
+      },
+      "id": "tw-norm-amd",
+      "name": "Normalize AMD",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ ($env.N8N_WEBHOOK_URL || '').replace(/\\/$/, '') + '/renov/conversation' }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "id": "tw-fwd-amd",
+      "name": "Forward → Conversation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        560,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const b = $input.first().json.body || $input.first().json;\nconst dur = parseInt(b.RecordingDuration || 0, 10) || 0;\nconst ev = {\n  event_type: dur > 25 ? 'call_ended' : 'recording_ready',\n  call_sid: b.CallSid || '',\n  from: b.From || '',\n  to: b.To || '',\n  recording_url: b.RecordingUrl || '',\n  amd_result: 'unknown',\n  duration_sec: dur,\n  provider: 'twilio',\n  raw: b,\n};\nreturn [{ json: ev }];"
+      },
+      "id": "tw-norm-rec",
+      "name": "Normalize Recording",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ ($env.N8N_WEBHOOK_URL || '').replace(/\\/$/, '') + '/renov/conversation' }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "id": "tw-fwd-rec",
+      "name": "Forward Recording",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        560,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const b = $input.first().json.body || $input.first().json;\nconst recUrlRaw = b.RecordingUrl || '';\nconst recUrl = recUrlRaw && !recUrlRaw.endsWith('.mp3') ? recUrlRaw + '.mp3' : recUrlRaw;\nconst ev = {\n  event_type: 'recording_ready',\n  call_sid: b.CallSid || '',\n  recording_url: recUrlRaw,\n  duration_sec: parseInt(b.RecordingDuration || 0, 10) || 0,\n  provider: 'twilio',\n  to: b.To || '',\n  from: b.From || '',\n  raw: b,\n};\nconst base = ($env.N8N_WEBHOOK_URL || '').replace(/\\/$/, '');\nconst recTimeout = parseInt($env.SOFIA_RECORD_TIMEOUT || '5', 10) || 5;\nconst recMax = parseInt($env.SOFIA_RECORD_MAXLENGTH || '10', 10) || 10;\nlet recording_b64 = '';\nconst twSid = ($env.TWILIO_ACCOUNT_SID || '').trim();\nconst twToken = ($env.TWILIO_AUTH_TOKEN || '').trim();\nconst mp3Url = recUrl || (recUrlRaw ? (recUrlRaw.endsWith('.mp3') ? recUrlRaw : recUrlRaw + '.mp3') : '');\nif (mp3Url && twSid && twToken) {\n  try {\n    const audioBuf = await this.helpers.httpRequest({\n      method: 'GET',\n      url: mp3Url,\n      headers: {\n        Authorization: 'Basic ' + Buffer.from(twSid + ':' + twToken).toString('base64'),\n      },\n      encoding: 'arraybuffer',\n    });\n    recording_b64 = Buffer.from(audioBuf).toString('base64');\n  } catch (e) {\n    recording_b64 = '';\n  }\n}\nif (recording_b64) ev.recording_b64 = recording_b64;\nconst res = await this.helpers.httpRequest({\n  method: 'POST',\n  url: base + '/renov/conversation',\n  body: ev,\n  json: true,\n  timeout: 30000,\n});\nconst audio = res.audio_url || '';\nconst action = res.action || 'play_audio';\nlet twiml = '<?xml version=\"1.0\" encoding=\"UTF-8\"?><Response>';\nif (audio) {\n  twiml += '<Play>' + audio + '</Play>';\n}\nconst pauseSec = parseInt($env.SOFIA_RECORD_PAUSE_SEC || '2', 10) || 2;\nif (action === 'hangup' || res.qualified) {\n  twiml += '<Hangup/>';\n} else if (audio) {\n  twiml += '<Pause length=\"' + pauseSec + '\"/><Record action=\"' + base + '/telephony/twilio/transcribe\" maxLength=\"' + recMax + '\" timeout=\"' + recTimeout + '\" playBeep=\"false\" trim=\"trim-silence\"/>';\n} else {\n  twiml += '<Hangup/>';\n}\ntwiml += '</Response>';\nreturn [{ json: { twiml, normalized: ev, engine: res } }];"
+      },
+      "id": "tw-engine-trans",
+      "name": "Engine + TwiML réponse",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.twiml }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "text/xml"
+              }
+            ]
+          }
+        }
+      },
+      "id": "tw-resp-trans",
+      "name": "Respond TwiML Transcribe",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        560,
+        800
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Start": {
+      "main": [
+        [
+          {
+            "node": "Normalize + TwiML ouverture",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize + TwiML ouverture": {
+      "main": [
+        [
+          {
+            "node": "Respond TwiML Start",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook AMD": {
+      "main": [
+        [
+          {
+            "node": "Normalize AMD",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize AMD": {
+      "main": [
+        [
+          {
+            "node": "Forward → Conversation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook Recording": {
+      "main": [
+        [
+          {
+            "node": "Normalize Recording",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Recording": {
+      "main": [
+        [
+          {
+            "node": "Forward Recording",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook Transcribe": {
+      "main": [
+        [
+          {
+            "node": "Engine + TwiML réponse",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Engine + TwiML réponse": {
+      "main": [
+        [
+          {
+            "node": "Respond TwiML Transcribe",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [
+    {
+      "name": "renov-aides"
+    },
+    {
+      "name": "telephony-twilio"
+    }
+  ]
+}

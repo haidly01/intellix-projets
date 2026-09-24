@@ -1,0 +1,592 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="doorway_agents_dashboard.AgentWizard">
+        <div class="ix-agent-wizard o_action o_intellix_client_action">
+            <header class="ix-wiz-header">
+                <div class="ix-wiz-header__top">
+                    <h1 t-esc="wizardTitle"/>
+                    <div class="ix-wiz-completion">
+                        <span t-esc="state.completionPct"/>% complété
+                    </div>
+                </div>
+                <nav class="ix-wiz-steps" aria-label="Étapes">
+                    <t t-foreach="steps" t-as="step" t-key="step.id">
+                        <button type="button"
+                                t-att-class="stepClass(step)"
+                                t-att-disabled="!canJumpTo(step.id)"
+                                t-att-data-step-id="step.id"
+                                t-on-click="onGoToStepClick">
+                            <span class="ix-wiz-step__icon" t-if="isStepDone(step.id)">✓</span>
+                            <span class="ix-wiz-step__label" t-esc="step.label"/>
+                        </button>
+                    </t>
+                </nav>
+            </header>
+
+            <main class="ix-wiz-body">
+                <t t-if="state.loading">
+                    <div class="ix-wiz-loading"><i class="fa fa-spinner fa-spin"/> Chargement…</div>
+                </t>
+                <t t-else="">
+                    <!-- Étape 1 — Identité -->
+                    <t t-if="state.currentStep === 'identity'">
+                        <section class="ix-wiz-panel">
+                            <h2>Identité de l'agent</h2>
+                            <label class="ix-wiz-field">
+                                <span>Nom de l'agent</span>
+                                <input type="text" t-att-value="state.form.name"
+                                       data-field="name"
+                                       t-on-input="onFormInput"
+                                       placeholder="Ex: Sophie — Qualification Immo"/>
+                            </label>
+                            <label class="ix-wiz-field">
+                                <span>Pipeline cible</span>
+                                <select data-field="pipeline" t-on-change="onFormInput">
+                                    <t t-foreach="state.pipelines" t-as="p" t-key="p.value">
+                                        <option t-att-value="p.value"
+                                                t-att-selected="state.form.pipeline === p.value"
+                                                t-esc="p.label"/>
+                                    </t>
+                                </select>
+                            </label>
+                            <fieldset class="ix-wiz-radio-group">
+                                <legend>Type d'agent</legend>
+                                <label><input type="radio" name="agent_type" value="inbound"
+                                    t-att-checked="state.form.agent_type === 'inbound'"
+                                    t-on-change="onFormInput" data-field="agent_type"/> Inbound</label>
+                                <label><input type="radio" name="agent_type" value="outbound"
+                                    t-att-checked="state.form.agent_type === 'outbound'"
+                                    t-on-change="onFormInput" data-field="agent_type"/> Outbound</label>
+                                <label><input type="radio" name="agent_type" value="followup"
+                                    t-att-checked="state.form.agent_type === 'followup'"
+                                    t-on-change="onFormInput" data-field="agent_type"/> Followup</label>
+                            </fieldset>
+                            <label class="ix-wiz-field">
+                                <span>Langue</span>
+                                <select data-field="language" t-on-change="onFormInput">
+                                    <option value="fr" t-att-selected="state.form.language === 'fr'">Français</option>
+                                    <option value="en" t-att-selected="state.form.language === 'en'">Anglais</option>
+                                    <option value="es" t-att-selected="state.form.language === 'es'">Español</option>
+                                    <option value="bilingual" t-att-selected="state.form.language === 'bilingual'">Multilingue</option>
+                                </select>
+                            </label>
+                        </section>
+                    </t>
+
+                    <!-- Étape 2 — Voix -->
+                    <t t-if="state.currentStep === 'voice'">
+                        <section class="ix-wiz-panel">
+                            <h2>Voix ElevenLabs</h2>
+                            <p class="ix-wiz-hint">
+                                Langue agent : <strong t-esc="languageLabel"/> —
+                                les voix suggérées correspondent à cette langue.
+                            </p>
+                            <div class="ix-wiz-inline-fields">
+                                <fieldset class="ix-wiz-radio-group ix-wiz-gender-group">
+                                    <legend>Genre de voix</legend>
+                                    <label><input type="radio" name="voice_gender" value="female"
+                                        t-att-checked="state.form.voice_gender === 'female'"
+                                        t-on-change="onVoiceGenderChange"/> Femme</label>
+                                    <label><input type="radio" name="voice_gender" value="male"
+                                        t-att-checked="state.form.voice_gender === 'male'"
+                                        t-on-change="onVoiceGenderChange"/> Homme</label>
+                                    <label><input type="radio" name="voice_gender" value="any"
+                                        t-att-checked="state.form.voice_gender === 'any'"
+                                        t-on-change="onVoiceGenderChange"/> Toutes</label>
+                                </fieldset>
+                                <t t-if="state.form.language === 'fr'">
+                                    <label class="ix-wiz-field">
+                                        <span>Région / accent</span>
+                                        <select t-on-change="onVoiceLocaleChange">
+                                            <option value="" t-att-selected="!state.form.voice_locale">Toutes (français)</option>
+                                            <option value="fr-FR" t-att-selected="state.form.voice_locale === 'fr-FR'">France</option>
+                                            <option value="fr-CA" t-att-selected="state.form.voice_locale === 'fr-CA'">Québec / Canada</option>
+                                        </select>
+                                    </label>
+                                </t>
+                            </div>
+
+                            <div class="ix-wiz-clone-panel">
+                                <h3><i class="fa fa-copy"/> Cloner ma voix</h3>
+                                <p class="ix-wiz-hint">
+                                    Enregistrez 30 s à 2 min de votre voix (WAV, MP3, M4A),
+                                    puis créez un clone ElevenLabs personnalisé.
+                                </p>
+                                <label class="ix-wiz-field">
+                                    <span>Nom de la voix clonée</span>
+                                    <input type="text" data-field="voice_name"
+                                           t-att-value="state.form.voice_name"
+                                           t-att-placeholder="state.form.name"
+                                           t-on-input="onFormInput"/>
+                                </label>
+                                <label class="ix-wiz-field">
+                                    <span>Échantillon audio</span>
+                                    <input type="file" accept="audio/*,.m4a,.mp3,.wav,.ogg,.webm"
+                                           t-on-change="onVoiceFileChange"/>
+                                    <t t-if="state.form.has_voice_sample">
+                                        <span class="ix-wiz-file-ok">
+                                            <i class="fa fa-check"/> <t t-esc="state.form.voice_sample_filename"/>
+                                        </span>
+                                    </t>
+                                </label>
+                                <button type="button"
+                                        class="ix-wiz-btn ix-wiz-btn--secondary"
+                                        t-att-disabled="!state.form.has_voice_sample or state.voiceCloning"
+                                        t-on-click="onCreateVoiceClone">
+                                    <i class="fa fa-magic"/>
+                                    <t t-if="state.voiceCloning"> Clonage en cours…</t>
+                                    <t t-else=""> Créer et sélectionner ma voix</t>
+                                </button>
+                            </div>
+
+                            <h3 class="ix-wiz-voice-grid-title">Bibliothèque ElevenLabs</h3>
+                            <p class="ix-wiz-hint" t-if="state.voices.length &lt;= 1">
+                                Aucune voix prédéfinie chargée. Vérifiez la clé API ElevenLabs
+                                ou changez le filtre région / genre.
+                            </p>
+                            <div class="ix-wiz-voice-grid">
+                                <t t-foreach="state.voices" t-as="voice" t-key="voice.voice_id">
+                                    <article t-att-class="'ix-wiz-voice-card' + (state.form.voice_id === voice.voice_id ? ' ix-wiz-voice-card--selected' : '') + (voice.is_clone ? ' ix-wiz-voice-card--clone' : '')"
+                                             t-att-data-voice-id="voice.voice_id"
+                                             t-on-click="onSelectVoiceClick">
+                                        <div class="ix-wiz-voice-card__avatar">
+                                            <i class="fa fa-microphone"/>
+                                        </div>
+                                        <h3>
+                                            <t t-if="voice.gender === 'male'">♂ </t>
+                                            <t t-if="voice.gender === 'female'">♀ </t>
+                                            <t t-esc="voice.name"/>
+                                        </h3>
+                                        <p t-esc="voice.description || voice.category"/>
+                                        <button type="button" class="ix-wiz-voice-play"
+                                                t-att-data-voice-id="voice.voice_id"
+                                                t-on-click="onPlayVoiceClick">
+                                            <i class="fa fa-play"/> Aperçu
+                                        </button>
+                                    </article>
+                                </t>
+                            </div>
+                            <div class="ix-wiz-sliders">
+                                <label>Vitesse <span t-esc="state.form.voice_speed"/>x
+                                    <input type="range" min="0.8" max="1.2" step="0.05"
+                                           data-field="voice_speed"
+                                           t-att-value="state.form.voice_speed"
+                                           t-on-input="onFormInput"/>
+                                </label>
+                                <label>Stabilité <span t-esc="stabilityPercent"/>%
+                                    <input type="range" min="0" max="1" step="0.05"
+                                           data-field="voice_stability"
+                                           t-att-value="state.form.voice_stability"
+                                           t-on-input="onFormInput"/>
+                                </label>
+                            </div>
+                        </section>
+                    </t>
+
+                    <!-- Étape 3 — Latence -->
+                    <t t-if="state.currentStep === 'latency'">
+                        <section class="ix-wiz-panel">
+                            <h2>Latence &amp; qualité</h2>
+                            <div class="ix-wiz-latency">
+                                <t t-foreach="state.latencyModes" t-as="mode" t-key="mode.value">
+                                    <button type="button"
+                                            t-att-class="'ix-wiz-latency-btn' + (state.form.latency_mode === mode.value ? ' ix-wiz-latency-btn--active' : '')"
+                                            t-att-data-latency-mode="mode.value"
+                                            t-on-click="onLatencyModeClick">
+                                        <strong t-esc="mode.label"/>
+                                        <span class="ix-wiz-latency-ms" t-esc="mode.ms + ' ms'"/>
+                                    </button>
+                                </t>
+                            </div>
+                            <p class="ix-wiz-hint" t-esc="latencyHint"/>
+                        </section>
+                    </t>
+
+                    <!-- Étape 4 — Prompt -->
+                    <t t-if="state.currentStep === 'prompt'">
+                        <section class="ix-wiz-panel ix-wiz-panel--prompt">
+                            <div class="ix-wiz-prompt-layout">
+                                <aside class="ix-wiz-vars">
+                                    <h3>Variables</h3>
+                                    <t t-foreach="state.variables" t-as="v" t-key="v.key">
+                                        <button type="button" class="ix-wiz-var-btn"
+                                                t-att-data-token="v.token"
+                                                t-on-click="onInsertVariableClick"
+                                                t-esc="v.token"/>
+                                    </t>
+                                </aside>
+                                <div class="ix-wiz-prompt-editor">
+                                    <h2>Prompt système</h2>
+                                    <p t-if="state.promptSource === 'linked'" class="ix-wiz-prompt-linked">
+                                        Script hérité de <strong t-esc="state.promptLinkedName"/>.
+                                        Enregistrez cette étape pour l'assigner à cet agent.
+                                    </p>
+                                    <p t-elif="state.promptSource === 'elevenlabs'" class="ix-wiz-prompt-linked">
+                                        Script chargé depuis ElevenLabs (<t t-esc="state.promptLinkedName"/>).
+                                        Enregistrez pour le copier dans Odoo.
+                                    </p>
+                                    <textarea rows="14"
+                                              data-field="system_prompt"
+                                              t-att-value="state.form.system_prompt"
+                                              t-on-input="onFormInput"
+                                              placeholder="Décrivez le rôle, le ton et les objectifs de l'agent…"/>
+                                    <div class="ix-wiz-prompt-footer">
+                                        <div class="ix-wiz-prompt-actions">
+                                            <button type="button" class="ix-wiz-btn ix-wiz-btn--primary"
+                                                    t-att-disabled="state.deploying"
+                                                    t-on-click="startWebTestFromPrompt">
+                                                <i class="fa fa-microphone"/> Appel web (micro)
+                                            </button>
+                                            <button type="button" class="ix-wiz-btn ix-wiz-btn--secondary"
+                                                    t-on-click="openPromptTest">Tester ce prompt</button>
+                                        </div>
+                                        <span class="ix-wiz-tokens">~<t t-esc="tokenEstimate"/> tokens</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </t>
+
+                    <!-- Étape 5 — Actions -->
+                    <t t-if="state.currentStep === 'actions'">
+                        <section class="ix-wiz-panel">
+                            <h2>Actions post-appel</h2>
+                            <div class="ix-wiz-actions">
+                                <t t-foreach="state.actions" t-as="action" t-key="action.id">
+                                    <label class="ix-wiz-action-item">
+                                        <input type="checkbox"
+                                               t-att-checked="isActionChecked(action.id)"
+                                               t-att-data-action-id="action.id"
+                                               t-on-change="onActionToggle"/>
+                                        <div>
+                                            <strong t-esc="action.name"/>
+                                            <p t-esc="action.description"/>
+                                        </div>
+                                    </label>
+                                </t>
+                            </div>
+                            <t t-if="hasN8nAction">
+                                <label class="ix-wiz-field">
+                                    <span>URL webhook n8n</span>
+                                    <input type="url" data-field="n8n_webhook_url"
+                                           t-att-value="state.form.n8n_webhook_url"
+                                           t-on-input="onFormInput"
+                                           placeholder="https://n8n.intellixcrm.com/webhook/…"/>
+                                </label>
+                            </t>
+                            <div class="ix-wiz-sheets-panel">
+                                <h3><i class="fa fa-table"/> Google Sheets</h3>
+                                <label class="ix-wiz-toggle">
+                                    <input type="checkbox" data-field="export_calls_google_sheet"
+                                           t-att-checked="state.form.export_calls_google_sheet"
+                                           t-on-change="onFormInput"/>
+                                    Exporter les appels vers Google Sheet (sans pipeline CRM)
+                                </label>
+                                <p class="ix-wiz-hint">
+                                    Enregistre transcription, coordonnées, durée et URL d'enregistrement
+                                    à chaque fin d'appel. Configurez le Sheet global dans Paramètres → Agents IA.
+                                </p>
+                                <t t-if="state.form.export_calls_google_sheet">
+                                    <label class="ix-wiz-field">
+                                        <span>Spreadsheet ID (optionnel, par agent)</span>
+                                        <input type="text" data-field="google_sheets_spreadsheet_id"
+                                               t-att-value="state.form.google_sheets_spreadsheet_id"
+                                               t-on-input="onFormInput"
+                                               placeholder="ID du Google Sheet dédié"/>
+                                    </label>
+                                </t>
+                            </div>
+                        </section>
+                    </t>
+
+                    <!-- Étape 6 — Bibliothèque -->
+                    <t t-if="state.currentStep === 'library'">
+                        <section class="ix-wiz-panel">
+                            <h2>Bibliothèque &amp; templates</h2>
+                            <label class="ix-wiz-toggle">
+                                <input type="checkbox" data-field="is_template"
+                                       t-att-checked="state.form.is_template"
+                                       t-on-change="onFormInput"/>
+                                Sauvegarder comme template réutilisable
+                            </label>
+                            <t t-if="state.form.is_template">
+                                <label class="ix-wiz-field">
+                                    <span>Nom du template</span>
+                                    <input type="text" data-field="template_name"
+                                           t-att-value="state.form.template_name"
+                                           t-on-input="onFormInput"/>
+                                </label>
+                            </t>
+                            <h3>Partir d'un template existant</h3>
+                            <div class="ix-wiz-template-grid">
+                                <t t-foreach="state.templates" t-as="tpl" t-key="tpl.id">
+                                    <article class="ix-wiz-template-card"
+                                             t-att-data-template-id="tpl.id"
+                                             t-on-click="onLoadTemplateClick">
+                                        <h4 t-esc="tpl.template_name || tpl.name"/>
+                                        <span t-esc="tpl.pipeline"/> · <span t-esc="tpl.agent_type"/>
+                                    </article>
+                                </t>
+                            </div>
+                        </section>
+                    </t>
+
+                    <!-- Étape 7 — Téléphonie -->
+                    <t t-if="state.currentStep === 'telephony'">
+                        <section class="ix-wiz-panel">
+                            <h2>Numéro de téléphone</h2>
+                            <p class="ix-wiz-hint">
+                                Assignez un numéro existant, achetez-en un via Twilio,
+                                ou connectez un SIP trunk indépendant (BYOC).
+                            </p>
+                            <t t-if="state.telephony.phone_number">
+                                <div class="ix-wiz-phone-current">
+                                    <strong>Numéro actuel :</strong>
+                                    <span t-esc="state.telephony.phone_number"/>
+                                    <t t-if="state.telephony.elevenlabs_phone_number_id">
+                                        <span class="ix-wiz-badge">Lié ElevenLabs</span>
+                                    </t>
+                                    <button type="button" class="ix-wiz-btn ix-wiz-btn--ghost ix-wiz-btn--sm"
+                                            t-on-click="removePhone">Retirer</button>
+                                </div>
+                            </t>
+                            <div class="ix-wiz-telephony-tabs">
+                                <label class="ix-wiz-telephony-tab">
+                                    <input type="radio" name="telephony_mode" value="existing"
+                                           t-att-checked="state.telephonyMode === 'existing'"
+                                           t-on-change="onTelephonyModeChange"/>
+                                    Numéro existant
+                                </label>
+                                <label class="ix-wiz-telephony-tab" t-if="state.twilioConfigured">
+                                    <input type="radio" name="telephony_mode" value="twilio_owned"
+                                           t-att-checked="state.telephonyMode === 'twilio_owned'"
+                                           t-on-change="onTelephonyModeChange"/>
+                                    Mon compte Twilio
+                                </label>
+                                <label class="ix-wiz-telephony-tab" t-if="state.twilioConfigured">
+                                    <input type="radio" name="telephony_mode" value="twilio_purchase"
+                                           t-att-checked="state.telephonyMode === 'twilio_purchase'"
+                                           t-on-change="onTelephonyModeChange"/>
+                                    Acheter (Twilio)
+                                </label>
+                                <label class="ix-wiz-telephony-tab">
+                                    <input type="radio" name="telephony_mode" value="sip_trunk"
+                                           t-att-checked="state.telephonyMode === 'sip_trunk'"
+                                           t-on-change="onTelephonyModeChange"/>
+                                    SIP trunk indépendant
+                                </label>
+                            </div>
+
+                            <t t-if="state.telephonyMode === 'existing'">
+                                <label class="ix-wiz-field">
+                                    <span>Numéro E.164</span>
+                                    <input type="tel" t-att-value="state.phoneInput"
+                                           t-on-input="onPhoneInput"
+                                           placeholder="+15141234567"/>
+                                </label>
+                            </t>
+
+                            <t t-if="state.telephonyMode === 'twilio_owned'">
+                                <p class="ix-wiz-hint">Sélectionnez un numéro déjà sur votre compte Twilio.</p>
+                                <div class="ix-wiz-number-grid">
+                                    <t t-foreach="state.twilioOwnedNumbers" t-as="num" t-key="num.sid">
+                                        <button type="button" class="ix-wiz-number-card"
+                                                t-att-data-phone="num.phone_number"
+                                                t-att-data-sid="num.sid"
+                                                t-on-click="onSelectTwilioOwnedClick">
+                                            <strong t-esc="num.phone_number"/>
+                                            <span t-esc="num.friendly_name"/>
+                                        </button>
+                                    </t>
+                                </div>
+                                <label class="ix-wiz-field">
+                                    <span>Ou saisir manuellement</span>
+                                    <input type="tel" t-att-value="state.phoneInput"
+                                           t-on-input="onPhoneInput"
+                                           placeholder="+15141234567"/>
+                                </label>
+                            </t>
+
+                            <t t-if="state.telephonyMode === 'twilio_purchase'">
+                                <div class="ix-wiz-inline-fields">
+                                    <label class="ix-wiz-field">
+                                        <span>Pays</span>
+                                        <select t-on-change="onSearchCountryChange">
+                                            <option value="CA" t-att-selected="state.searchCountry === 'CA'">Canada</option>
+                                            <option value="US" t-att-selected="state.searchCountry === 'US'">États-Unis</option>
+                                            <option value="FR" t-att-selected="state.searchCountry === 'FR'">France</option>
+                                        </select>
+                                    </label>
+                                    <label class="ix-wiz-field">
+                                        <span>Indicatif régional</span>
+                                        <input type="text" t-att-value="state.searchAreaCode"
+                                               t-on-input="onSearchAreaCodeInput"
+                                               placeholder="514"/>
+                                    </label>
+                                    <button type="button" class="ix-wiz-btn ix-wiz-btn--secondary"
+                                            t-att-disabled="state.searchingNumbers"
+                                            t-on-click="searchTwilioNumbers">
+                                        <i class="fa fa-search"/> Rechercher
+                                    </button>
+                                </div>
+                                <div class="ix-wiz-number-grid">
+                                    <t t-foreach="state.twilioSearchResults" t-as="num" t-key="num.phone_number">
+                                        <button type="button" class="ix-wiz-number-card"
+                                                t-att-data-phone="num.phone_number"
+                                                t-on-click="onSelectTwilioSearchClick">
+                                            <strong t-esc="num.phone_number"/>
+                                            <span t-esc="num.locality"/> <span t-esc="num.region"/>
+                                        </button>
+                                    </t>
+                                </div>
+                            </t>
+
+                            <t t-if="state.telephonyMode === 'sip_trunk'">
+                                <label class="ix-wiz-field">
+                                    <span>Numéro sur le trunk</span>
+                                    <input type="tel" t-att-value="state.phoneInput"
+                                           t-on-input="onPhoneInput"
+                                           placeholder="+15141234567"/>
+                                </label>
+                                <label class="ix-wiz-field">
+                                    <span>SIP trunk existant</span>
+                                    <select t-on-change="onSipTrunkSelectChange">
+                                        <option value="">— Nouveau ou sélection —</option>
+                                        <t t-foreach="state.sipTrunks" t-as="trunk" t-key="trunk.id">
+                                            <option t-att-value="trunk.id"
+                                                    t-att-selected="state.telephony.trunk_id === trunk.id"
+                                                    t-esc="trunk.name"/>
+                                        </t>
+                                    </select>
+                                </label>
+                                <h3>Nouveau SIP trunk</h3>
+                                <label class="ix-wiz-field">
+                                    <span>Nom du trunk</span>
+                                    <input type="text" data-trunk-field="name"
+                                           t-att-value="state.trunkForm.name"
+                                           t-on-input="onTrunkFormInput"
+                                           placeholder="Mon fournisseur SIP"/>
+                                </label>
+                                <label class="ix-wiz-field">
+                                    <span>Twilio Trunk SID (TK…)</span>
+                                    <input type="text" data-trunk-field="twilio_trunk_sid"
+                                           t-att-value="state.trunkForm.twilio_trunk_sid"
+                                           t-on-input="onTrunkFormInput"
+                                           placeholder="TK… (BYOC Twilio)"/>
+                                </label>
+                                <label class="ix-wiz-field">
+                                    <span>URI terminaison SIP</span>
+                                    <input type="text" data-trunk-field="termination_uri"
+                                           t-att-value="state.trunkForm.termination_uri"
+                                           t-on-input="onTrunkFormInput"
+                                           placeholder="sip.fournisseur.com"/>
+                                </label>
+                                <button type="button" class="ix-wiz-btn ix-wiz-btn--secondary"
+                                        t-on-click="createSipTrunk">
+                                    Enregistrer le trunk
+                                </button>
+                            </t>
+
+                            <div class="ix-wiz-telephony-actions">
+                                <button type="button" class="ix-wiz-btn ix-wiz-btn--primary"
+                                        t-att-disabled="state.assigningPhone"
+                                        t-on-click="assignPhone">
+                                    <i class="fa fa-phone"/> Assigner le numéro
+                                </button>
+                            </div>
+                            <t t-if="!state.twilioConfigured">
+                                <p class="ix-wiz-hint ix-wiz-hint--warn">
+                                    Twilio non configuré — seuls le numéro manuel et le SIP trunk sont disponibles.
+                                    Configurez Account SID / Auth Token dans Paramètres.
+                                </p>
+                            </t>
+                        </section>
+                    </t>
+
+                    <!-- Récapitulatif -->
+                    <t t-if="state.currentStep === 'summary'">
+                        <section class="ix-wiz-panel">
+                            <h2>Récapitulatif</h2>
+                            <div class="ix-wiz-summary">
+                                <div class="ix-wiz-summary-row"><span>Agent</span><strong t-esc="state.form.name"/></div>
+                                <div class="ix-wiz-summary-row"><span>Pipeline</span><strong t-esc="state.form.pipeline"/></div>
+                                <div class="ix-wiz-summary-row"><span>Type</span><strong t-esc="state.form.agent_type"/></div>
+                                <div class="ix-wiz-summary-row"><span>Voix</span><strong><t t-esc="voiceGenderLabel"/> · <t t-esc="selectedVoiceName"/></strong></div>
+                                <div class="ix-wiz-summary-row"><span>Google Sheet</span><strong t-esc="state.form.export_calls_google_sheet ? 'Activé' : 'Désactivé'"/></div>
+                                <div class="ix-wiz-summary-row"><span>Latence</span><strong t-esc="state.form.latency_mode"/></div>
+                                <div class="ix-wiz-summary-row"><span>Actions</span><strong t-esc="selectedActionsLabel"/></div>
+                                <div class="ix-wiz-summary-row"><span>Téléphone</span><strong t-esc="telephonySummary"/></div>
+                            </div>
+                            <div class="ix-wiz-test-block">
+                                <h3>Tester l'agent</h3>
+                                <p class="ix-wiz-hint">
+                                    Test web : utilisez le micro du navigateur (sans téléphone).
+                                    Autorisez le micro et vérifiez que l'onglet Odoo n'est pas muet.
+                                </p>
+                                <button type="button" class="ix-wiz-btn ix-wiz-btn--primary"
+                                        t-att-disabled="state.deploying"
+                                        t-on-click="startWebTest">
+                                    <i class="fa fa-microphone"/> Test web (micro)
+                                </button>
+                            </div>
+                            <label class="ix-wiz-field ix-wiz-test-phone">
+                                <span>Numéro pour appel téléphonique (optionnel)</span>
+                                <input type="tel" t-att-value="state.testPhone"
+                                       t-on-input="onTestPhoneInput"
+                                       placeholder="+15141234567"/>
+                            </label>
+                            <div class="ix-wiz-summary-actions">
+                                <button type="button" class="ix-wiz-btn ix-wiz-btn--secondary"
+                                        t-att-disabled="state.deploying"
+                                        t-on-click="startTestCall">
+                                    <i class="fa fa-phone"/> Appel test téléphone
+                                </button>
+                                <button type="button" class="ix-wiz-btn ix-wiz-btn--accent"
+                                        t-att-disabled="state.deploying"
+                                        t-on-click="deployAgent">
+                                    Déployer l'agent
+                                </button>
+                            </div>
+                        </section>
+                    </t>
+                </t>
+            </main>
+
+            <footer class="ix-wiz-footer" t-if="!state.loading and state.currentStep !== 'summary'">
+                <button type="button" class="ix-wiz-btn ix-wiz-btn--ghost"
+                        t-att-disabled="!canGoBack"
+                        t-on-click="goBack">Retour</button>
+                <button type="button" class="ix-wiz-btn ix-wiz-btn--primary"
+                        t-on-click="goNext">Suivant</button>
+            </footer>
+
+            <!-- Modal test prompt -->
+            <t t-if="state.showPromptModal">
+                <div class="ix-wiz-modal-backdrop" t-on-click="closePromptTest"/>
+                <div class="ix-wiz-modal">
+                    <h3>Tester le prompt</h3>
+                    <label class="ix-wiz-field">
+                        <span>Message simulé</span>
+                        <input type="text" t-att-value="state.promptTestMessage"
+                               t-on-input="onPromptTestMessageInput"/>
+                    </label>
+                    <div class="ix-wiz-modal-actions">
+                        <button type="button" class="ix-wiz-btn ix-wiz-btn--primary"
+                                t-att-disabled="state.deploying"
+                                t-on-click="startWebTestFromPrompt">
+                            <i class="fa fa-microphone"/> Appel web (micro)
+                        </button>
+                        <button type="button" class="ix-wiz-btn ix-wiz-btn--secondary"
+                                t-on-click="runPromptTest">Générer réponse texte</button>
+                    </div>
+                    <div class="ix-wiz-modal-reply" t-if="state.promptTestReply">
+                        <strong>Réponse agent :</strong>
+                        <p t-esc="state.promptTestReply"/>
+                    </div>
+                    <button type="button" class="ix-wiz-btn ix-wiz-btn--ghost ix-wiz-modal-close"
+                            t-on-click="closePromptTest">Fermer</button>
+                </div>
+            </t>
+        </div>
+    </t>
+</templates>

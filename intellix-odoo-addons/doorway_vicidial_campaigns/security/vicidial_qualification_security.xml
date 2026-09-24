@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="group_vicidial_qualifier" model="res.groups">
+        <field name="name">Appels — Qualification CRM</field>
+        <field name="comment">Poste de travail qualification temps réel (tous agents d'appels).</field>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="group_vicidial_supervisor" model="res.groups">
+        <field name="name">Appels — Superviseur</field>
+        <field name="comment">Tableau Superviseurs (Karine, Zakaria, Martin) : stats globales campagnes, agents et coaching.</field>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+</odoo>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_riad_table_list" model="ir.ui.view">
+        <field name="name">intellix.riad.table.list</field>
+        <field name="model">intellix.riad.table</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="establishment_id"/>
+                <field name="name"/>
+                <field name="seats"/>
+                <field name="zone"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_riad_table" model="ir.actions.act_window">
+        <field name="name">Restaurant — tables</field>
+        <field name="res_model">intellix.riad.table</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="view_riad_ticket_list" model="ir.ui.view">
+        <field name="name">intellix.riad.table.ticket.list</field>
+        <field name="model">intellix.riad.table.ticket</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="date"/>
+                <field name="table_id"/>
+                <field name="guest_name"/>
+                <field name="guest_kind"/>
+                <field name="amount"/>
+                <field name="tip_amount"/>
+                <field name="tip_mode"/>
+                <field name="charge_to_room"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+</odoo>

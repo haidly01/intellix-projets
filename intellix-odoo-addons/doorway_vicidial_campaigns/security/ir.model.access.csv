@@ -1,0 +1,16 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_doorway_campaign_user,doorway.campaign.user,model_doorway_campaign,base.group_user,1,0,0,0
+access_doorway_campaign_manager,doorway.campaign.manager,model_doorway_campaign,base.group_system,1,1,1,1
+access_doorway_campaign_contact_user,doorway.campaign.contact.user,model_doorway_campaign_contact,base.group_user,1,1,1,0
+access_doorway_campaign_contact_manager,doorway.campaign.contact.manager,model_doorway_campaign_contact,base.group_system,1,1,1,1
+access_doorway_campaign_agent_user,doorway.campaign.agent.user,model_doorway_campaign_agent_user,base.group_user,1,0,0,0
+access_doorway_campaign_agent_manager,doorway.campaign.agent.manager,model_doorway_campaign_agent_user,base.group_system,1,1,1,1
+access_doorway_call_log_user,doorway.call.log.user,model_doorway_call_log,base.group_user,1,0,0,0
+access_doorway_call_log_manager,doorway.call.log.manager,model_doorway_call_log,base.group_system,1,1,1,1
+access_doorway_file_import_wizard,doorway.file.import.wizard,model_doorway_file_import_wizard,base.group_user,1,1,1,1
+access_doorway_user_config_wizard,doorway.user.config.wizard,model_doorway_user_config_wizard,base.group_user,1,1,1,1
+access_doorway_vicidial_call_sync_user,doorway.vicidial.call.sync.user,model_doorway_vicidial_call_sync,base.group_user,1,0,0,0
+access_doorway_vicidial_call_sync_qualifier,doorway.vicidial.call.sync.qualifier,model_doorway_vicidial_call_sync,doorway_vicidial_campaigns.group_vicidial_qualifier,1,0,0,0
+access_doorway_vicidial_call_sync_manager,doorway.vicidial.call.sync.manager,model_doorway_vicidial_call_sync,base.group_system,1,1,1,1
+access_doorway_vicidial_agent_session_user,doorway.vicidial.agent.session.user,model_doorway_vicidial_agent_session,doorway_vicidial_campaigns.group_vicidial_qualifier,1,1,1,0
+access_doorway_vicidial_agent_session_manager,doorway.vicidial.agent.session.manager,model_doorway_vicidial_agent_session,base.group_system,1,1,1,1

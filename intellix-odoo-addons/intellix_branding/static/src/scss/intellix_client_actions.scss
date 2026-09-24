@@ -1,0 +1,110 @@
+// Intellix — actions client OWL (Agents IA, Veille, VICIdial, …)
+// Racine = .o_action (jamais .o_action_manager)
+// cache-bust 2026-06-17 prod
+
+.o_web_client .o_action.o_intellix_client_action,
+.o_web_client .o_action.o_agents_dashboard_client {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: auto !important;
+    width: 100% !important;
+    background-color: var(--ix-bg) !important;
+    color: var(--ix-text) !important;
+}
+
+// Odoo peut injecter .o_content vide autour de certaines vues — masquer si vide
+.o_web_client .o_action.o_intellix_client_action > .o_content:empty {
+    display: none !important;
+}
+
+// Messaging Hub — layout horizontal.
+// Le hub combine .o_action.o_intellix_client_action ET .dmsg-hub sur le MÊME
+// élément (pas de wrapper enfant), donc :has(> .dmsg-hub) ne matchait jamais.
+// On cible aussi l'élément fusionné pour rétablir le flex horizontal.
+.o_web_client .o_action.o_intellix_client_action:has(> .dmsg-hub),
+.o_web_client .o_action.o_intellix_client_action.dmsg-hub,
+.o_web_client .o_action.o_intellix_client_action.pe-rh-hub {
+    flex-direction: row !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+}
+
+// Poste d'appels — même racine fusionnée (.o_vphub.o_action.o_intellix_client_action).
+.o_web_client .o_action.o_intellix_client_action.o_vphub {
+    flex-direction: column !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    background: unset !important;
+    color: unset !important;
+}
+
+// RH Hub — layout horizontal ; suit désormais le thème via les tokens.
+.o_web_client .o_action.o_intellix_client_action.pe-rh-hub {
+    background-color: var(--ix-bg) !important;
+    color: var(--ix-text) !important;
+}
+.o_web_client .o_action.o_intellix_client_action > .dmsg-hub {
+    flex: 1 !important;
+    min-height: 0 !important;
+    height: 100% !important;
+}
+
+// Fix o_action_manager pour messaging hub
+.o_action_manager:has(.dmsg-hub),
+.o_action_manager:has(.o_vphub),
+.o_action_manager:has(.ix-fullscreen-dashboard) {
+    position: relative !important;
+    height: calc(100vh - 46px) !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+// ─── Fullscreen dashboards (Mon coaching, Vue Équipe RH, …) ─────────
+// cache-bust 2026-06-18
+
+.o_action_manager:has(.ix-fullscreen-dashboard) > .o_action {
+    height: 100% !important;
+    max-height: none !important;
+    padding: 0 !important;
+}
+
+// Client action OWL — racine fusionnée (.o_action.ix-fullscreen-dashboard)
+.o_web_client .o_action.o_intellix_client_action.ix-fullscreen-dashboard,
+.o_web_client .o_action:has(> .ix-fullscreen-dashboard) {
+    flex-direction: column !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    background: unset !important;
+    color: unset !important;
+}
+
+// List views (Vue Équipe RH — pe_team_list_controller)
+.o_action_manager:has(.o_pe_team_dashboard.ix-fullscreen-dashboard) {
+    .o_control_panel {
+        flex-shrink: 0;
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+        min-height: auto !important;
+    }
+
+    .o_content {
+        padding: 0 !important;
+        overflow: auto !important;
+        height: 100% !important;
+    }
+
+    .o_view_controller {
+        height: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        min-height: 0 !important;
+    }
+}

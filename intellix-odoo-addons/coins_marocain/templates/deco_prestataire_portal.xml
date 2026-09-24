@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="deco_prestataire_portal_unknown" name="Lien prestataire déco inconnu">
+        <html lang="fr">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <title>Lien introuvable — Coins Marocain</title>
+                <link rel="preconnect" href="https://fonts.googleapis.com"/>
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
+                <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,500&amp;family=Playfair+Display:wght@600&amp;family=Jost:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+                <link rel="stylesheet" href="/coins_marocain/static/src/css/deco_prestataire_portal.css"/>
+            </head>
+            <body>
+                <div class="cm-wrap">
+                    <div class="cm-hero">
+                        <p class="cm-kicker">Coins Marocain · prestataire déco</p>
+                        <h1>Ce lien n’est plus valable</h1>
+                        <p>Demandez un nouveau lien à Zakaria — +212 6 60 15 91 77</p>
+                    </div>
+                </div>
+            </body>
+        </html>
+    </template>
+
+    <template id="deco_prestataire_portal_page" name="Portail prestataire déco Coins">
+        <html lang="fr">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <title>Compléter ma fiche déco — <t t-out="deco.name"/> — Coins Marocain</title>
+                <link rel="preconnect" href="https://fonts.googleapis.com"/>
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
+                <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,500&amp;family=Playfair+Display:wght@600&amp;family=Jost:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+                <link rel="stylesheet" href="/coins_marocain/static/src/css/deco_prestataire_portal.css"/>
+            </head>
+            <body>
+                <div class="cm-wrap">
+                    <header class="cm-hero">
+                        <p class="cm-kicker">Coins Marocain · espace prestataire déco</p>
+                        <h1><t t-out="deco.name"/></h1>
+                        <p>Complétez votre fiche. Au moins 3 photos par thème coché. Rien n’est publié sans validation.</p>
+                    </header>
+
+                    <t t-if="submitted">
+                        <div class="cm-ok">
+                            Merci. Votre fiche est en attente de validation.
+                            Nous vous écrivons dès qu’elle est relue.
+                        </div>
+                    </t>
+                    <t t-if="error">
+                        <div class="cm-err"><t t-out="error"/></div>
+                    </t>
+
+                    <form class="cm-card" method="post" enctype="multipart/form-data"
+                          t-attf-action="/prestataire-deco/{{ token }}" id="cm-deco-form">
+                        <input type="hidden" name="csrf_token" t-att-value="csrf_token"/>
+
+                        <h2>Types de service</h2>
+                        <p class="cm-note">Cochez tout ce qui s’applique — un prestataire peut proposer plusieurs services.</p>
+                        <div class="cm-cats">
+                            <t t-foreach="all_types" t-as="typ">
+                                <label class="cm-cat">
+                                    <input type="checkbox" name="deco_type" t-att-value="typ.code"
+                                           t-att-checked="typ.code in selected_types and 'checked' or None"/>
+                                    <t t-out="typ.name"/>
+                                </label>
+                            </t>
+                        </div>
+
+                        <h2>Votre atelier</h2>
+                        <label for="name">Nom</label>
+                        <input id="name" type="text" name="name" required="required"
+                               t-att-value="deco.name"/>
+                        <div class="cm-row">
+                            <div>
+                                <label for="street">Adresse</label>
+                                <input id="street" type="text" name="street"
+                                       t-att-value="deco.street"/>
+                            </div>
+                            <div>
+                                <label for="zone_couverture">Zone de couverture</label>
+                                <input id="zone_couverture" type="text" name="zone_couverture"
+                                       t-att-value="deco.zone_couverture"/>
+                            </div>
+                        </div>
+
+                        <h2>Contact</h2>
+                        <div class="cm-row">
+                            <div>
+                                <label for="contact_name">Personne à contacter</label>
+                                <input id="contact_name" type="text" name="contact_name"
+                                       t-att-value="deco.contact_name"/>
+                            </div>
+                            <div>
+                                <label for="phone">Téléphone / WhatsApp</label>
+                                <input id="phone" type="tel" name="phone"
+                                       t-att-value="deco.phone"/>
+                            </div>
+                        </div>
+                        <label for="email">Email</label>
+                        <input id="email" type="email" name="email"
+                               t-att-value="deco.email"/>
+
+                        <h2>Thèmes</h2>
+                        <p class="cm-note">Chaque thème coché exige au moins <t t-out="photos_min"/> photos pour la publication.</p>
+                        <div class="cm-cats">
+                            <t t-foreach="all_themes" t-as="theme">
+                                <label class="cm-cat">
+                                    <input type="checkbox" name="deco_theme" t-att-value="theme.code"
+                                           t-att-checked="theme.code in selected_themes and 'checked' or None"/>
+                                    <t t-out="theme.name"/>
+                                </label>
+                            </t>
+                        </div>
+
+                        <div id="cm-block-fleuriste" class="cm-kind-block"
+                             t-att-hidden="None if show_fleuriste else 'hidden'">
+                            <h2>Fleuriste</h2>
+                            <label for="fl_types_arrangements">Types d’arrangements</label>
+                            <textarea id="fl_types_arrangements" name="fl_types_arrangements"
+                                      t-out="deco.fl_types_arrangements"/>
+                            <label for="fl_prix">Prix (pièce / forfait)</label>
+                            <textarea id="fl_prix" name="fl_prix" t-out="deco.fl_prix"/>
+                            <div class="cm-row">
+                                <div>
+                                    <label for="fl_prix_piece">Prix à la pièce</label>
+                                    <input id="fl_prix_piece" type="text" name="fl_prix_piece"
+                                           t-att-value="deco.fl_prix_piece or ''"/>
+                                </div>
+                                <div>
+                                    <label for="fl_prix_forfait">Prix forfait</label>
+                                    <input id="fl_prix_forfait" type="text" name="fl_prix_forfait"
+                                           t-att-value="deco.fl_prix_forfait or ''"/>
+                                </div>
+                            </div>
+                            <label for="fl_fleurs_origine">Origine des fleurs</label>
+                            <select id="fl_fleurs_origine" name="fl_fleurs_origine">
+                                <option value="">—</option>
+                                <option value="locales" t-att-selected="deco.fl_fleurs_origine == 'locales' and 'selected' or None">Fleurs locales</option>
+                                <option value="importees" t-att-selected="deco.fl_fleurs_origine == 'importees' and 'selected' or None">Fleurs importées</option>
+                                <option value="mixte" t-att-selected="deco.fl_fleurs_origine == 'mixte' and 'selected' or None">Locales et importées</option>
+                            </select>
+                        </div>
+
+                        <div id="cm-block-mobilier" class="cm-kind-block"
+                             t-att-hidden="None if show_mobilier else 'hidden'">
+                            <h2>Mobilier</h2>
+                            <label for="mob_inventaire">Inventaire</label>
+                            <textarea id="mob_inventaire" name="mob_inventaire"
+                                      t-out="deco.mob_inventaire"/>
+                            <label for="mob_prix">Prix</label>
+                            <textarea id="mob_prix" name="mob_prix" t-out="deco.mob_prix"/>
+                            <label class="cm-check-line">
+                                <input type="checkbox" name="mob_livraison_incluse" value="1"
+                                       t-att-checked="deco.mob_livraison_incluse and 'checked' or None"/>
+                                Livraison incluse
+                            </label>
+                        </div>
+
+                        <div id="cm-block-chapiteau" class="cm-kind-block"
+                             t-att-hidden="None if show_chapiteau else 'hidden'">
+                            <h2>Chapiteau</h2>
+                            <label for="chap_tailles_disponibles">Tailles disponibles</label>
+                            <textarea id="chap_tailles_disponibles" name="chap_tailles_disponibles"
+                                      t-out="deco.chap_tailles_disponibles"/>
+                            <label for="chap_prix_par_taille">Prix par taille</label>
+                            <textarea id="chap_prix_par_taille" name="chap_prix_par_taille"
+                                      t-out="deco.chap_prix_par_taille"/>
+                            <label for="chap_delai_montage">Délai de montage</label>
+                            <input id="chap_delai_montage" type="text" name="chap_delai_montage"
+                                   t-att-value="deco.chap_delai_montage"/>
+                            <label for="chap_contraintes_terrain">Contraintes de terrain</label>
+                            <textarea id="chap_contraintes_terrain" name="chap_contraintes_terrain"
+                                      t-out="deco.chap_contraintes_terrain"/>
+                        </div>
+
+                        <div id="cm-block-decoration" class="cm-kind-block"
+                             t-att-hidden="None if show_decoration else 'hidden'">
+                            <h2>Décoration générale</h2>
+                            <label for="dec_services_inclus">Services inclus</label>
+                            <textarea id="dec_services_inclus" name="dec_services_inclus"
+                                      t-out="deco.dec_services_inclus"/>
+                            <label for="dec_prix">Prix</label>
+                            <textarea id="dec_prix" name="dec_prix" t-out="deco.dec_prix"/>
+                        </div>
+
+                        <h2>Tarification</h2>
+                        <div class="cm-row">
+                            <div>
+                                <label for="prix_minimum_commande">Minimum de commande</label>
+                                <input id="prix_minimum_commande" type="text" name="prix_minimum_commande"
+                                       t-att-value="deco.prix_minimum_commande or ''"/>
+                            </div>
+                            <div>
+                                <label for="delai_reservation_min">Délai de réservation (jours)</label>
+                                <input id="delai_reservation_min" type="number" min="0" name="delai_reservation_min"
+                                       t-att-value="deco.delai_reservation_min or ''"/>
+                            </div>
+                        </div>
+                        <label for="inclus_prix_base">Inclus dans le prix de base</label>
+                        <textarea id="inclus_prix_base" name="inclus_prix_base"
+                                  t-out="deco.inclus_prix_base"/>
+                        <label for="commission">Commission Coins (%)</label>
+                        <input id="commission" type="text" name="commission"
+                               t-att-value="deco.commission or ''"/>
+
+                        <h2>Photos par thème</h2>
+                        <p class="cm-note">Ajoutez des photos pour chaque thème coché. Minimum <t t-out="photos_min"/> par thème.</p>
+                        <t t-foreach="all_themes" t-as="theme">
+                            <div class="cm-theme-photos" t-att-data-theme="theme.code">
+                                <h3>
+                                    <t t-out="theme.name"/>
+                                    <span class="cm-photo-count">
+                                        <t t-out="len(photos_by_theme.get(theme.code) or [])"/> / <t t-out="photos_min"/>
+                                    </span>
+                                </h3>
+                                <div class="cm-gallery">
+                                    <t t-foreach="photos_by_theme.get(theme.code) or []" t-as="photo">
+                                        <figure>
+                                            <img t-att-src="'/web/image/coins.deco.prestataire.photo/%s/image' % photo.id"
+                                                 t-att-alt="photo.legende or theme.name"/>
+                                            <figcaption><t t-out="photo.legende or ''"/></figcaption>
+                                        </figure>
+                                    </t>
+                                </div>
+                                <label>Ajouter des photos — <t t-out="theme.name"/></label>
+                                <input type="file" t-att-name="'photos_%s' % theme.code" accept="image/*" multiple="multiple"/>
+                            </div>
+                        </t>
+
+                        <p class="cm-note">La fiche reste privée jusqu’à validation humaine. Aucune mise en ligne automatique.</p>
+                        <button class="cm-btn" type="submit">Envoyer pour validation</button>
+                    </form>
+
+                    <footer class="cm-foot">
+                        <em>Coins Marocain</em><br/>
+                        Digital Doorway SARL · Marrakech
+                    </footer>
+                </div>
+                <script>
+                    (function () {
+                        var form = document.getElementById("cm-deco-form");
+                        var map = {
+                            fleuriste: "cm-block-fleuriste",
+                            mobilier: "cm-block-mobilier",
+                            chapiteau: "cm-block-chapiteau",
+                            decoration_generale: "cm-block-decoration"
+                        };
+                        function syncTypes() {
+                            if (!form) return;
+                            form.querySelectorAll('input[name="deco_type"]').forEach(function (cb) {
+                                var el = document.getElementById(map[cb.value]);
+                                if (el) el.hidden = !cb.checked;
+                            });
+                        }
+                        if (form) {
+                            form.addEventListener("change", function (ev) {
+                                if (ev.target &amp;&amp; ev.target.name === "deco_type") syncTypes();
+                            });
+                            syncTypes();
+                        }
+                    })();
+                </script>
+            </body>
+        </html>
+    </template>
+</odoo>

@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_veille_signal_list" model="ir.ui.view">
+        <field name="name">doorway.veille.signal.list</field>
+        <field name="model">doorway.veille.signal</field>
+        <field name="arch" type="xml">
+            <list string="Signaux de veille"
+                  decoration-danger="temperature == 'hot' and statut == 'en_attente'"
+                  decoration-warning="temperature == 'warm' and statut == 'en_attente'"
+                  decoration-muted="statut in ('ignore', 'cree_odoo', 'repondu')">
+                <field name="temperature" widget="badge"
+                       decoration-danger="temperature == 'hot'"
+                       decoration-warning="temperature == 'warm'"
+                       decoration-info="temperature == 'cold'"/>
+                <field name="plateforme"/>
+                <field name="source" optional="show"/>
+                <field name="url" widget="url" optional="show"/>
+                <field name="resume"/>
+                <button name="action_repondre" type="object" string="Répondre"
+                        icon="fa-reply" title="Répondre"/>
+                <button name="action_reactivation_douce" type="object" string="♻"
+                        icon="fa-recycle" title="Réactivation douce"
+                        invisible="reactivation_statut not in ('eligible', 'planifie')"/>
+                <button name="action_ignorer" type="object" string="Ignorer"
+                        icon="fa-ban" title="Ignorer ce signal"
+                        invisible="statut != 'en_attente'"/>
+                <button name="action_open_url" type="object" string="Lien"
+                        icon="fa-external-link" title="Ouvrir le post"
+                        invisible="not url"/>
+                <field name="score_intention" string="Score"/>
+                <field name="type_projet" optional="show"/>
+                <field name="marche" optional="hide"/>
+                <field name="statut" widget="badge"/>
+                <field name="reactivation_statut" widget="badge" optional="show"/>
+                <field name="age_minutes" string="Âge (min)"/>
+                <field name="date_detection" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_veille_signal_form" model="ir.ui.view">
+        <field name="name">doorway.veille.signal.form</field>
+        <field name="model">doorway.veille.signal</field>
+        <field name="arch" type="xml">
+            <form string="Signal de veille">
+                <header>
+                    <button name="action_repondre" type="object" string="Répondre"
+                            class="btn-primary"
+                            invisible="statut in ('ignore', 'cree_odoo')"/>
+                    <button name="action_sync_conversation" type="object"
+                            string="Actualiser conversation"
+                            invisible="statut == 'ignore'"/>
+                    <button name="action_creer_lead" type="object" string="Créer lead CRM"
+                            invisible="statut == 'cree_odoo'"/>
+                    <button name="action_planifier_reponse" type="object" string="Planifier réponse"
+                            invisible="statut in ('ignore', 'cree_odoo')"/>
+                    <button name="action_accepter" type="object" string="Qualifier (opportunité)"
+                            invisible="statut not in ('en_attente', 'repondu')"
+                            confirm="Qualifier ce signal comme opportunité ? Un lead CRM peut être créé automatiquement si l'option est activée."/>
+                    <button name="action_ignorer" type="object" string="Ignorer"
+                            class="btn-secondary"
+                            invisible="statut not in ('en_attente', 'accepte', 'repondu')"
+                            confirm="Ignorer ce signal ? Aucune opportunité CRM ne sera créée."/>
+                    <button name="action_reactivation_douce" type="object"
+                            string="Réactivation douce"
+                            class="btn-secondary"
+                            invisible="statut in ('ignore', 'cree_odoo') or reactivation_statut == 'effectue'"/>
+                    <button name="action_assigner_automatisation" type="object"
+                            string="Marquer éligible"
+                            class="btn-secondary"
+                            invisible="statut in ('ignore', 'cree_odoo') or reactivation_statut in ('eligible', 'planifie', 'effectue')"/>
+                    <button name="action_open_url" type="object" string="Ouvrir la source"
+                            invisible="not url"/>
+                    <field name="statut" widget="statusbar"
+                           statusbar_visible="en_attente,repondu,accepte,cree_odoo,ignore"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_lead" type="object"
+                                class="oe_stat_button" icon="fa-handshake-o"
+                                invisible="not odoo_lead_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Lead CRM</span>
+                            </div>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="🔥 HOT" bg_color="text-bg-danger"
+                            invisible="temperature != 'hot'"/>
+                    <group>
+                        <group>
+                            <field name="temperature" widget="badge"/>
+                            <field name="source"/>
+                            <field name="plateforme"/>
+                            <field name="auteur"/>
+                            <field name="marche"/>
+                        </group>
+                        <group>
+                            <field name="score_final"/>
+                            <field name="score_intention"/>
+                            <field name="pre_score"/>
+                            <field name="type_projet"/>
+                            <field name="age_minutes"/>
+                            <field name="date_detection"/>
+                            <field name="date_post"/>
+                            <field name="date_refroidi"/>
+                            <field name="reactivation_statut"/>
+                            <field name="reactivation_planifiee"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="titre"/>
+                        <field name="resume"/>
+                        <field name="action_suggeree"/>
+                            <field name="url" widget="url"/>
+                            <field name="url_editeur" widget="url" readonly="1" optional="show"/>
+                            <field name="url_resolue" widget="url" readonly="1" optional="hide"/>
+                            <field name="url_enrichie" widget="url"/>
+                            <field name="canal_soumission"/>
+                            <field name="categorie_lead"/>
+                            <field name="reponse_publique"/>
+                            <field name="message_prive"/>
+                    </group>
+                    <notebook>
+                        <page string="Conversation" name="conversation">
+                            <group>
+                                <field name="can_reply_api" invisible="1"/>
+                                <field name="reply_channel_hint" readonly="1" nolabel="1"/>
+                                <field name="conversation_synced_at" readonly="1"/>
+                            </group>
+                            <field name="conversation_message_ids" nolabel="1">
+                                <list decoration-info="direction == 'outbound'">
+                                    <field name="posted_at"/>
+                                    <field name="direction" widget="badge"/>
+                                    <field name="author_name"/>
+                                    <field name="body"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Contenu" name="content">
+                            <field name="texte" nolabel="1"/>
+                        </page>
+                        <page string="Liens" name="links">
+                            <field name="external_object_id" readonly="1"/>
+                            <field name="external_comment_id" readonly="1"/>
+                            <field name="odoo_lead_id" readonly="1"/>
+                            <field name="reactivation_automation_id" readonly="1"/>
+                            <field name="reactivation_derniere_action" readonly="1"/>
+                            <field name="task_id" readonly="1"/>
+                            <field name="signal_id_externe" readonly="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_veille_signal_kanban" model="ir.ui.view">
+        <field name="name">doorway.veille.signal.kanban</field>
+        <field name="model">doorway.veille.signal</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="temperature" class="o_kanban_small_column">
+                <field name="temperature"/>
+                <field name="statut"/>
+                <field name="plateforme"/>
+                <field name="resume"/>
+                <field name="score_intention"/>
+                <field name="type_projet"/>
+                <field name="age_minutes"/>
+                <field name="url"/>
+                <field name="source"/>
+                <field name="reactivation_statut"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_content">
+                            <div class="d-flex justify-content-between mb-1">
+                                <strong>
+                                    <field name="plateforme"/> · <field name="age_minutes"/> min
+                                </strong>
+                                <span t-if="record.temperature.raw_value == 'hot'"
+                                      class="badge text-bg-danger">🔥 Hot</span>
+                                <span t-if="record.temperature.raw_value == 'warm'"
+                                      class="badge text-bg-warning">🌡 Warm</span>
+                                <span t-if="record.temperature.raw_value == 'cold'"
+                                      class="badge text-bg-secondary">❄ Cold</span>
+                            </div>
+                            <div class="text-muted small mb-1">
+                                Score <field name="score_intention"/>/10
+                                <t t-if="record.type_projet.value"> · <field name="type_projet"/></t>
+                            </div>
+                            <div class="mb-2"><field name="resume"/></div>
+                            <div class="text-muted small mb-1" t-if="record.url.raw_value">
+                                <i class="fa fa-link"/> Lien disponible
+                            </div>
+                            <div class="d-flex gap-1 flex-wrap">
+                                <a t-if="record.statut.raw_value != 'ignore' &amp;&amp; record.statut.raw_value != 'cree_odoo'"
+                                   role="button" type="object" name="action_repondre"
+                                   class="btn btn-sm btn-primary">💬 Répondre</a>
+                                <a t-if="record.url.raw_value"
+                                   role="button" type="object" name="action_open_url"
+                                   class="btn btn-sm btn-outline-secondary">↗ Post</a>
+                                <a t-if="record.statut.raw_value != 'cree_odoo'"
+                                   role="button" type="object" name="action_creer_lead"
+                                   class="btn btn-sm btn-secondary">✚ Lead</a>
+                                <a t-if="record.statut.raw_value != 'ignore' &amp;&amp; record.statut.raw_value != 'cree_odoo'"
+                                   role="button" type="object" name="action_planifier_reponse"
+                                   class="btn btn-sm btn-secondary">📅 Planifier</a>
+                                <a t-if="record.reactivation_statut.raw_value in ['eligible', 'planifie']"
+                                   role="button" type="object" name="action_reactivation_douce"
+                                   class="btn btn-sm btn-outline-primary">♻ Réactiver</a>
+                                <a t-if="record.statut.raw_value == 'en_attente'"
+                                   role="button" type="object" name="action_ignorer"
+                                   class="btn btn-sm btn-outline-danger"
+                                   title="Ignorer">✕ Ignorer</a>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_veille_signal_search" model="ir.ui.view">
+        <field name="name">doorway.veille.signal.search</field>
+        <field name="model">doorway.veille.signal</field>
+        <field name="arch" type="xml">
+            <search string="Signaux">
+                <field name="titre"/>
+                <field name="resume"/>
+                <field name="auteur"/>
+                <field name="plateforme"/>
+                <field name="type_projet"/>
+                <separator/>
+                <filter name="filter_hot" string="🔥 Hot" domain="[('temperature', '=', 'hot')]"/>
+                <filter name="filter_warm" string="🌡 Warm" domain="[('temperature', '=', 'warm')]"/>
+                <filter name="filter_cold" string="❄ Cold" domain="[('temperature', '=', 'cold')]"/>
+                <filter name="filter_quebec" string="Québec" domain="[('marche', '=', 'quebec')]"/>
+                <filter name="filter_france" string="France" domain="[('marche', '=', 'france')]"/>
+                <filter name="filter_en_attente" string="En attente"
+                        domain="[('statut', '=', 'en_attente')]"/>
+                <filter name="filter_repondu" string="Répondus"
+                        domain="[('statut', '=', 'repondu')]"/>
+                <filter name="filter_reactivation" string="Réactivation douce"
+                        domain="[('reactivation_statut', 'in', ['eligible', 'planifie'])]"/>
+                <filter name="filter_ignore" string="Ignorés"
+                        domain="[('statut', '=', 'ignore')]"/>
+                <separator/>
+                <filter name="filter_facebook" string="Facebook"
+                        domain="[('source', '=', 'facebook')]"/>
+                <filter name="filter_instagram" string="Instagram"
+                        domain="[('source', '=', 'instagram')]"/>
+                <filter name="filter_google_alerts" string="Google Alerts"
+                        domain="[('source', '=', 'google_alerts')]"/>
+                <filter name="filter_reddit" string="Reddit"
+                        domain="[('source', '=', 'reddit')]"/>
+                <filter name="filter_avec_lien" string="Avec lien"
+                        domain="[('url', '!=', False)]"/>
+                <filter name="filter_sans_lien" string="Sans lien"
+                        domain="[('url', '=', False)]"/>
+                <filter name="filter_today" string="Aujourd'hui"
+                        domain="[('date_detection', '&gt;=', context_today().strftime('%Y-%m-%d 00:00:00')), ('date_detection', '&lt;=', context_today().strftime('%Y-%m-%d 23:59:59'))]"/>
+                <filter name="filter_week" string="Cette semaine"
+                        domain="[('date_detection', '&gt;=', (context_today() - relativedelta(days=7)).strftime('%Y-%m-%d 00:00:00'))]"/>
+                <separator/>
+                <filter name="filter_cree_odoo" string="Leads créés"
+                        domain="[('statut', '=', 'cree_odoo')]"/>
+                <group>
+                    <filter name="group_temperature" string="Température" context="{'group_by': 'temperature'}"/>
+                    <filter name="group_source" string="Source" context="{'group_by': 'source'}"/>
+                    <filter name="group_statut" string="Statut" context="{'group_by': 'statut'}"/>
+                    <filter name="group_marche" string="Marché" context="{'group_by': 'marche'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_veille_signal_all" model="ir.actions.act_window">
+        <field name="name">Tous les signaux</field>
+        <field name="res_model">doorway.veille.signal</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_veille_signal_search"/>
+        <field name="context">{}</field>
+    </record>
+
+    <record id="action_veille_signal_hot" model="ir.actions.act_window">
+        <field name="name">En attente (Hot)</field>
+        <field name="res_model">doorway.veille.signal</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_veille_signal_search"/>
+        <field name="domain">[('temperature', '=', 'hot'), ('statut', '=', 'en_attente')]</field>
+        <field name="context">{'search_default_filter_en_attente': 1}</field>
+    </record>
+
+    <record id="action_veille_signal_created" model="ir.actions.act_window">
+        <field name="name">Leads créés</field>
+        <field name="res_model">doorway.veille.signal</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('statut', '=', 'cree_odoo')]</field>
+    </record>
+</odoo>

@@ -1,0 +1,62 @@
+/* home-dashboard-act-window 19.0.2.3.3 */
+/* Doorway Social IA */
+
+.o_doorway_social_accounts .doorway_social_account_card {
+    min-height: 140px;
+    padding: 12px;
+}
+
+.o_doorway_social_kanban .doorway_social_post_card {
+    padding: 10px;
+    min-width: 260px;
+}
+
+.doorway_social_thumb {
+    max-width: 100%;
+    max-height: 120px;
+    border-radius: 6px;
+    object-fit: cover;
+}
+
+/* Calendrier — lisibilité thème sombre */
+.o_calendar_view[data-model="doorway.social.post"] .fc,
+.o_calendar_view[data-model="doorway.social.post"] .fc-toolbar-title,
+.o_calendar_view[data-model="doorway.social.post"] .fc-col-header-cell-cushion,
+.o_calendar_view[data-model="doorway.social.post"] .fc-daygrid-day-number,
+.o_calendar_view[data-model="doorway.social.post"] .fc-list-day-text,
+    .o_calendar_view[data-model="doorway.social.post"] .fc-list-day-side-text {
+    color: var(--ix-text, #e8eaed) !important;
+}
+
+.o_calendar_view[data-model="doorway.social.post"] .fc-event-title,
+.o_calendar_view[data-model="doorway.social.post"] .fc-event-time {
+    color: #fff !important;
+}
+
+.o_calendar_view[data-model="doorway.social.post"] .fc-event.fc-bg-success {
+    background-color: #22c55e !important;
+    border-color: #16a34a !important;
+}
+
+.o_calendar_view[data-model="doorway.social.post"] .fc-event.fc-bg-info {
+    background-color: #6366f1 !important;
+    border-color: #4f46e5 !important;
+}
+
+.o_form_view[data-model^="doorway.social."] .o_form_label,
+.o_form_view[data-model^="doorway.social."] .o_field_widget,
+.o_form_view[data-model^="doorway.social."] .oe_title h1,
+    .o_list_view[data-model^="doorway.social."] .o_list_table {
+    --table-color: var(--ix-text, #e8eaed);
+}
+
+.o_form_view[data-model^="doorway.social."] .o_form_label,
+.o_form_view[data-model^="doorway.social."] .o_field_widget,
+    .o_form_view[data-model^="doorway.social."] .oe_title h1 {
+    color: var(--ix-text, #e8eaed) !important;
+}
+
+.o_list_view[data-model^="doorway.social."] tbody td,
+    .o_list_view[data-model^="doorway.social."] thead th {
+    color: var(--ix-text, #e8eaed) !important;
+}

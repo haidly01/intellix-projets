@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="doorway_veille_sociale.Dashboard">
+        <div class="o_doorway_veille_dashboard o_action o_intellix_client_action p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="mb-0">VEILLE — Triage temps réel</h1>
+                <button class="btn btn-outline-primary" t-on-click="refreshStats">Actualiser</button>
+            </div>
+            <div t-if="state.loading" class="text-muted">Chargement…</div>
+            <div t-else="">
+                <div class="row g-3 mb-4">
+                    <div class="col-md-3 col-lg">
+                        <div class="ix-veille-stat ix-veille-hot p-3 mb-0">
+                            <strong>🔥 Hot</strong>
+                            <div class="fs-2" t-esc="state.hot"/>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-lg">
+                        <div class="ix-veille-stat ix-veille-warm p-3 mb-0">
+                            <strong>🌡 Warm</strong>
+                            <div class="fs-2" t-esc="state.warm"/>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-lg">
+                        <div class="ix-veille-stat ix-veille-cold p-3 mb-0">
+                            <strong>❄ Cold</strong>
+                            <div class="fs-2" t-esc="state.cold"/>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-lg">
+                        <div class="ix-veille-stat ix-veille-pending p-3 mb-0">
+                            <strong>En attente</strong>
+                            <div class="fs-2" t-esc="state.pending"/>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-lg">
+                        <div class="ix-veille-stat ix-veille-reactivation p-3 mb-0">
+                            <strong>♻ Réactivation</strong>
+                            <div class="fs-2" t-esc="state.reactivation"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-lg-8">
+                        <h3>Signaux à trier</h3>
+                        <div class="table-responsive">
+                            <table class="table table-hover table-sm align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Score</th>
+                                        <th>Temp.</th>
+                                        <th>Source</th>
+                                        <th>Titre / auteur</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="state.signals" t-as="sig" t-key="sig.id"
+                                        class="cursor-pointer" t-on-click="() => this.openSignal(sig.id)">
+                                        <td t-esc="sig.score_final || 0"/>
+                                        <td t-esc="tempLabel(sig.temperature)"/>
+                                        <td t-esc="sourceLabel(sig.source)"/>
+                                        <td>
+                                            <span t-esc="sig.resume || sig.titre || sig.auteur || '—'"/>
+                                        </td>
+                                        <td class="text-nowrap" t-on-click.stop="">
+                                            <button class="btn btn-sm btn-outline-danger me-1"
+                                                    t-on-click="(ev) => this.ignoreSignal(ev, sig.id)"
+                                                    title="Ignorer">✕</button>
+                                            <button class="btn btn-sm ix-btn-cta me-1"
+                                                    t-on-click="(ev) => this.replySignal(ev, sig.id)"
+                                                    title="Répondre">💬</button>
+                                            <button class="btn btn-sm btn-outline-primary me-1"
+                                                    t-on-click="(ev) => this.reactivateSignal(ev, sig.id)"
+                                                    title="Réactivation douce">♻</button>
+                                            <button class="btn btn-sm btn-link"
+                                                    t-on-click="() => this.openSignal(sig.id)">
+                                                Ouvrir
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr t-if="!state.signals.length">
+                                        <td colspan="5" class="text-muted text-center">Aucun signal en attente.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <h3>Actions</h3>
+                        <div class="d-flex flex-wrap gap-2 mb-3">
+                            <button class="btn ix-btn-cta" t-on-click="openHot">🔥 Hot en attente</button>
+                            <button class="btn btn-primary" t-on-click="openAll">Tous les signaux</button>
+                            <button class="btn btn-outline-primary" t-on-click="openReactivation">♻ Réactivation</button>
+                            <button class="btn btn-outline-secondary" t-on-click="openCreated">Leads créés</button>
+                        </div>
+                        <h3 class="mt-4">Communauté</h3>
+                        <div class="d-flex flex-wrap gap-2">
+                            <button class="btn btn-primary" t-on-click="openCalendar">Calendrier</button>
+                            <button class="btn btn-outline-secondary" t-on-click="openNewPost">Nouveau post</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

@@ -1,0 +1,21 @@
+/* Bannières entonnoir Finance — même carte / colonne que Coins Marocain. */
+.o_coins_pipeline_itex::before,
+.o_coins_pipeline_finance::before {
+  display: block;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  color: #262220;
+  margin: 4px 4px 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e6ddcc;
+  pointer-events: none;
+}
+.o_coins_pipeline_itex::before {
+  content: "Entonnoir ITEX — 8 étapes";
+}
+.o_coins_pipeline_finance::before {
+  content: "Entonnoir financement";
+}

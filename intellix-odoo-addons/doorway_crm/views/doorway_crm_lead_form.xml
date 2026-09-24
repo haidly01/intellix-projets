@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="doorway_crm_lead_form" model="ir.ui.view">
+        <field name="name">crm.lead.form.doorway</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="priority">30</field>
+        <field name="arch" type="xml">
+
+            <!-- Navigation ← / → dans le header -->
+            <xpath expr="//header" position="inside">
+                <field name="doorway_coins_partner_lead" invisible="1"/>
+                <button name="action_open_business_card_scan" type="object"
+                        class="btn btn-primary o_doorway_bcard_header_btn"
+                        string="📷 Carte de visite"
+                        title="Photographier une carte de visite pour remplir le contact"
+                        invisible="type == 'lead'"/>
+                <div class="o_doorway_nav_buttons d-flex align-items-center gap-2 ms-auto"
+                     invisible="type == 'lead'">
+                    <button name="action_prev_lead" type="object"
+                            class="btn btn-sm btn-outline-secondary"
+                            title="Opportunité précédente"
+                            string="← Préc."/>
+                    <span class="text-muted small">
+                        <field name="nav_position" readonly="1" class="oe_inline"/>
+                    </span>
+                    <button name="action_next_lead" type="object"
+                            class="btn btn-sm btn-outline-secondary"
+                            title="Opportunité suivante"
+                            string="Suiv. →"/>
+                </div>
+            </xpath>
+
+            <!-- Layout B2C + Activités (opportunités) -->
+            <xpath expr="//div[hasclass('oe_title')]" position="after">
+                <div class="row doorway_crm_sheet_row mt-2" invisible="type == 'lead'">
+                    <div class="col-lg-7">
+                        <group name="doorway_contact_b2c" string="Contact" class="o_contact_primary">
+                            <field name="contact_name"
+                                   placeholder="Prénom Nom du contact"
+                                   class="o_field_highlight"/>
+                            <label for="phone" string="Téléphone"/>
+                            <div class="d-flex gap-2 align-items-center">
+                                <field name="phone" widget="phone" class="flex-grow-1"
+                                       placeholder="Téléphone"/>
+                                <button name="action_doorway_phone_call" type="object"
+                                        class="btn btn-sm btn-outline-primary"
+                                        title="Appeler" string="📞 Appeler"/>
+                            </div>
+                            <label for="email_from" string="Email"/>
+                            <div class="d-flex gap-2 align-items-center">
+                                <field name="email_from" widget="email" class="flex-grow-1"
+                                       placeholder="Email"/>
+                                <button name="action_doorway_send_email" type="object"
+                                        class="btn btn-sm btn-outline-secondary"
+                                        title="Envoyer un email" string="✉ Email"/>
+                                <button name="action_send_coins_hotel_email" type="object"
+                                        class="btn btn-sm btn-primary"
+                                        title="Vidéo + explication Channel Manager — avant l entente"
+                                        string="✉ Email prospection hôtels"
+                                        invisible="not doorway_coins_partner_lead"/>
+                            </div>
+                            <field name="city" placeholder="Ville / région"/>
+                            <field name="state_id" placeholder="Province" options="{'no_open': True}"/>
+                        </group>
+                        <group name="doorway_company_optional" string="Entreprise (optionnel)"
+                               class="o_company_section">
+                            <field name="partner_id"
+                                   string="Entreprise liée"
+                                   widget="res_partner_many2one"
+                                   domain="[('is_company', '=', True)]"
+                                   context="{
+                                       'default_is_company': True,
+                                       'default_name': partner_name,
+                                       'default_phone': phone,
+                                       'default_email': email_from,
+                                   }"/>
+                            <field name="partner_name" string="Nom entreprise (si non liée)"
+                                   placeholder="Nom de l'entreprise"/>
+                            <field name="website" widget="url" placeholder="https://"/>
+                        </group>
+                    </div>
+                    <div class="col-lg-5">
+                        <group name="doorway_activities_panel" string="Activités"
+                               class="doorway-activities-panel">
+                            <div class="mb-2">
+                                <button name="action_doorway_schedule_activity" type="object"
+                                        class="btn btn-primary btn-sm"
+                                        string="+ Nouvelle activité"/>
+                            <p class="text-muted small mb-2">
+                                Dictée : bouton « Note + activité » ou « rappeler demain à 10 h ».
+                            </p>
+                            </div>
+                            <field name="activity_ids" nolabel="1"
+                                   context="{'default_res_model': 'crm.lead', 'default_res_id': id}">
+                                <list string="Activités" create="false" delete="false"
+                                      decoration-success="state == 'done'"
+                                      decoration-danger="state == 'overdue'"
+                                      decoration-warning="state == 'today'">
+                                    <field name="activity_type_id"/>
+                                    <field name="summary"/>
+                                    <field name="doorway_scheduled_start" string="Planifié le" optional="show"/>
+                                    <field name="date_deadline"/>
+                                    <field name="user_id" widget="many2one_avatar_user"/>
+                                    <field name="state" column_invisible="1"/>
+                                    <button name="action_done" type="object"
+                                            string="✓" class="btn btn-sm btn-success"
+                                            title="Marquer comme fait"/>
+                                </list>
+                            </field>
+                        </group>
+                    </div>
+                </div>
+            </xpath>
+
+            <!-- Masquer les champs contact dupliqués dans opportunity_partner -->
+            <xpath expr="//group[@name='opportunity_partner']/field[@name='partner_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//group[@name='opportunity_partner']/label[@for='email_from']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//group[@name='opportunity_partner']/div[hasclass('o_row')][field[@name='email_from']]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//group[@name='opportunity_partner']/label[@for='phone']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//group[@name='opportunity_partner']/div[hasclass('o_row')][field[@name='phone']]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

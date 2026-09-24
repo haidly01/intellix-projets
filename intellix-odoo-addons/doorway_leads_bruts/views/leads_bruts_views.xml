@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_leads_bruts_tree" model="ir.ui.view">
+        <field name="name">doorway.leads.bruts.tree</field>
+        <field name="model">doorway.leads.bruts</field>
+        <field name="arch" type="xml">
+            <list default_order="create_date desc">
+                <field name="name"/>
+                <field name="phone"/>
+                <field name="email"/>
+                <field name="city"/>
+                <field name="source_id"/>
+                <field name="campagne_id"/>
+                <field name="has_phone"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_leads_bruts_form" model="ir.ui.view">
+        <field name="name">doorway.leads.bruts.form</field>
+        <field name="model">doorway.leads.bruts</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_import_crm" string="Importer CRM" type="object"
+                            invisible="state == 'importe'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="phone"/>
+                        <field name="email"/>
+                        <field name="website"/>
+                        <field name="address"/>
+                        <field name="city"/>
+                        <field name="source_id"/>
+                        <field name="campagne_id"/>
+                        <field name="crm_lead_id"/>
+                        <field name="notes"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_leads_bruts_search" model="ir.ui.view">
+        <field name="name">doorway.leads.bruts.search</field>
+        <field name="model">doorway.leads.bruts</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="phone"/>
+                <field name="email"/>
+                <field name="campagne_id"/>
+                <filter string="Centres d'appels" name="sector_callcenter"
+                        domain="['|', ('campagne_id.mot_cle', 'ilike', 'appel'), ('name', 'ilike', 'appel')]"/>
+                <filter string="Panneaux solaires" name="sector_solar"
+                        domain="['|', '|', ('campagne_id.mot_cle', 'ilike', 'solaire'), ('campagne_id.mot_cle', 'ilike', 'panneau'), ('name', 'ilike', 'solaire')]"/>
+                <separator/>
+                <filter name="with_phone" string="Avec téléphone" domain="[('has_phone', '=', True)]"/>
+                <filter name="brut" string="Bruts" domain="[('state', '=', 'brut')]"/>
+                <filter name="nettoye" string="Enrichis / nettoyés" domain="[('state', '=', 'nettoye')]"/>
+                <filter name="qualifie" string="Qualifiés" domain="[('state', '=', 'qualifie')]"/>
+                <filter name="importe" string="Importés CRM" domain="[('state', '=', 'importe')]"/>
+                <separator/>
+                <filter string="Tous" name="all" domain="[]"/>
+                <filter string="Créés ce mois" name="create_date_month" date="create_date" default_period="month"/>
+                <group>
+                    <filter string="Campagne" name="group_campagne" context="{'group_by': 'campagne_id'}"/>
+                    <filter string="Source" name="group_source" context="{'group_by': 'source_id'}"/>
+                    <filter string="État" name="group_state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_leads_bruts_campagne" model="ir.actions.act_window">
+        <field name="name">Leads de l'extraction</field>
+        <field name="res_model">doorway.leads.bruts</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('campagne_id', '=', active_id)]</field>
+    </record>
+
+    <record id="action_leads_bruts_list" model="ir.actions.act_window">
+        <field name="name">Extracteur — leads extraits</field>
+        <field name="res_model">doorway.leads.bruts</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_leads_bruts_search"/>
+        <field name="context">{'search_default_group_campagne': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucun lead extrait pour le moment
+            </p>
+            <p>
+                Tous les leads issus d'extractions passées sont listés ici,
+                regroupés par campagne. Les nouvelles extractions ignorent
+                automatiquement les doublons déjà présents.
+            </p>
+        </field>
+    </record>
+</odoo>

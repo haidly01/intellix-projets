@@ -1,0 +1,601 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Extension vues campagne : panneau optimisation -->
+    <record id="view_campaign_form_optimization" model="ir.ui.view">
+        <field name="name">doorway.traffic.campaign.form.optimization</field>
+        <field name="model">doorway.traffic.campaign</field>
+        <field name="inherit_id" ref="view_campaign_form"/>
+        <field name="arch" type="xml">
+            <button name="action_sync_insights" position="before">
+                <button name="action_sync_and_optimize" type="object"
+                        string="Sync + Optimiser (7j)" class="btn-primary"
+                        invisible="ai_status not in ('approved', 'active', 'paused')"/>
+                <button name="action_analyze_optimization" type="object"
+                        string="Recalculer optimisation"
+                        invisible="ai_status not in ('approved', 'active', 'paused')"/>
+                <button name="action_synthesize_human_strategy" type="object"
+                        string="Synthétiser stratégie"
+                        class="btn-secondary"
+                        invisible="ai_status not in ('approved', 'active', 'paused')"/>
+                <button name="action_apply_human_strategy_realignment" type="object"
+                        string="Appliquer réajustement"
+                        class="btn-primary"
+                        invisible="ai_status not in ('approved', 'active', 'paused')"/>
+                <button name="action_regenerate_targeting_suggestions" type="object"
+                        string="Relancer ciblage"
+                        class="btn-secondary"
+                        invisible="ai_status not in ('approved', 'active', 'paused')"/>
+                <button name="action_regenerate_creative_suggestions" type="object"
+                        string="Relancer créatifs"
+                        class="btn-secondary"
+                        invisible="ai_status not in ('approved', 'active', 'paused')"/>
+            </button>
+            <sheet position="inside">
+                <div class="alert alert-danger doorway_opt_alert mb-2" role="alert"
+                     invisible="optimization_health not in ('critical', 'inactive', 'unlinked')">
+                    <strong>Action requise — </strong>
+                    <field name="optimization_summary" readonly="1" nolabel="1"/>
+                </div>
+                <div class="alert alert-warning doorway_opt_alert mb-2" role="alert"
+                     invisible="optimization_health != 'warning'">
+                    <strong>Attention — </strong>
+                    <field name="optimization_summary" readonly="1" nolabel="1"/>
+                </div>
+                <div class="alert alert-success doorway_opt_alert mb-2" role="alert"
+                     invisible="optimization_health not in ('excellent', 'good')">
+                    <field name="optimization_summary" readonly="1" nolabel="1"/>
+                </div>
+            </sheet>
+            <xpath expr="//group[@name='perf_group']" position="after">
+                <group string="Optimisation" name="optimization_panel">
+                    <group string="Réglages humains">
+                        <field name="optimization_target_cpa" string="CPA cible"/>
+                        <field name="target_cpa" readonly="1" string="CPA fondation (réf.)"/>
+                        <field name="optimization_budget_daily" string="Budget jour cible"/>
+                        <field name="budget_daily" string="Budget jour actuel"/>
+                        <field name="optimization_monthly_budget" string="Budget mois cible"/>
+                        <field name="foundation_monthly_budget" readonly="1"/>
+                        <button name="action_apply_budget_targets" type="object"
+                                string="Appliquer CPA + budgets" class="btn-primary"/>
+                    </group>
+                    <group string="Diagnostic">
+                        <field name="optimization_health" widget="badge"
+                               decoration-success="optimization_health in ('excellent', 'good')"
+                               decoration-warning="optimization_health == 'warning'"
+                               decoration-danger="optimization_health in ('critical', 'inactive', 'unlinked')"/>
+                        <field name="optimization_summary" readonly="1"/>
+                        <field name="cpa_variance_pct" string="Écart CPA vs cible"/>
+                        <field name="spend_pacing_pct"/>
+                        <field name="ai_action_pending"/>
+                        <field name="pending_creative_count" string="Créatifs proposés"/>
+                    </group>
+                    <group string="Dépenses Meta">
+                        <label for="spend" string="7 jours"/>
+                        <div class="o_row">
+                            <field name="spend" readonly="1" class="oe_inline"/> € ·
+                            <field name="conversions" readonly="1" class="oe_inline"/> leads ·
+                            CPA <field name="cpa" readonly="1" class="oe_inline"/> €
+                        </div>
+                        <label for="spend_30d" string="30 jours"/>
+                        <div class="o_row">
+                            <field name="spend_30d" readonly="1" class="oe_inline"/> € ·
+                            <field name="conversions_30d" readonly="1" class="oe_inline"/> leads ·
+                            CPA <field name="cpa_30d" readonly="1" class="oe_inline"/> €
+                        </div>
+                        <field name="meta_campaign_name" readonly="1"/>
+                        <field name="ai_recommendation" readonly="1" widget="text"
+                               invisible="not ai_recommendation"/>
+                    </group>
+                </group>
+            </xpath>
+            <xpath expr="//page[@name='audiences']" position="before">
+                <page string="Optimisation" name="optimization">
+                    <group>
+                        <group>
+                            <field name="optimization_health" widget="badge"/>
+                            <field name="optimization_summary" readonly="1"/>
+                            <field name="optimization_customized" readonly="1"/>
+                        </group>
+                        <group string="Dépenses (lecture seule)">
+                            <field name="spend" readonly="1"/>
+                            <field name="spend_30d" readonly="1"/>
+                            <field name="conversions" readonly="1"/>
+                            <field name="conversions_30d" readonly="1"/>
+                            <field name="cpa" readonly="1"/>
+                            <field name="cpa_30d" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Analyse humaine &amp; réajustement stratégie" name="human_strategy_panel">
+                        <group colspan="2">
+                            <field name="human_analysis" nolabel="1" colspan="2"
+                                   placeholder="Vos constats : ce qui fonctionne, ce qui bloque, hypothèses testées, décisions prises…"/>
+                            <field name="strategy_adjustment_notes" colspan="2"
+                                   placeholder="Réajustement souhaité : ex. baisser budget 20 %, pivoter sur remarketing 14j, nouveau angle subventions…"/>
+                        </group>
+                        <div class="mb-2" colspan="2">
+                            <button name="action_synthesize_human_strategy" type="object"
+                                    string="Synthétiser le réajustement stratégique" class="btn-primary"/>
+                            <button name="action_apply_human_strategy_realignment" type="object"
+                                    string="Appliquer et relancer toutes les suggestions"
+                                    class="btn-success ms-2"
+                                    confirm="Relancer créatifs, audiences, remarketing et placements selon la stratégie réajustée ?"/>
+                        </div>
+                        <group colspan="2" invisible="not strategy_adjusted">
+                            <field name="strategy_adjusted" nolabel="1" colspan="2"/>
+                            <field name="strategy_action_plan" widget="text" colspan="2"/>
+                            <field name="strategy_adjusted_by" readonly="1"/>
+                            <field name="strategy_adjusted_at" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Diagnostic automatique (IA)" colspan="2">
+                        <field name="optimization_summary" readonly="1"/>
+                        <field name="ai_recommendation" widget="text" readonly="1"
+                               invisible="not ai_recommendation"/>
+                    </group>
+                    <group string="Marque &amp; Offre" name="brand_offer_panel">
+                        <group>
+                            <field name="foundation_id" readonly="1"/>
+                            <field name="brand_value_prop" widget="text"/>
+                            <field name="brand_differentiator" widget="text"/>
+                            <field name="brand_competitive_advantage" widget="text"/>
+                        </group>
+                        <group>
+                            <field name="brand_persona" widget="text"/>
+                            <field name="brand_strategy" widget="text"/>
+                            <field name="brand_voice_guide" widget="text"/>
+                            <field name="brand_best_content" widget="text"
+                                   invisible="not brand_best_content"/>
+                            <field name="brand_worst_content" widget="text"
+                                   invisible="not brand_worst_content"/>
+                        </group>
+                    </group>
+                    <group string="Analyse créatifs (marque + offre + performance)">
+                        <div class="mb-2" colspan="2">
+                            <button name="action_analyze_brand_creatives" type="object"
+                                    string="Analyser marque &amp; créatifs" class="btn-primary"/>
+                        </div>
+                        <field name="creative_brand_analysis" nolabel="1" colspan="2"
+                               invisible="not creative_brand_analysis"/>
+                        <field name="creative_angles_suggested" widget="text"
+                               invisible="not creative_angles_suggested"/>
+                    </group>
+                    <group string="Budgets cibles (réajustement humain)">
+                        <group>
+                            <field name="foundation_monthly_budget" readonly="1"/>
+                            <field name="optimization_monthly_budget"
+                                   placeholder="Override budget mensuel"/>
+                            <field name="budget_total"/>
+                            <field name="budget_adjustment_notes"
+                                   placeholder="Motif du réajustement budget…"/>
+                        </group>
+                        <group>
+                            <field name="budget_daily"/>
+                            <field name="optimization_budget_daily"
+                                   placeholder="Budget journalier cible"/>
+                            <field name="optimization_target_cpa"
+                                   placeholder="CPA cible override"/>
+                            <field name="target_cpa" readonly="1" string="CPA fondation"/>
+                            <field name="spend_pacing_pct" readonly="1"/>
+                        </group>
+                        <div class="mb-2" colspan="2">
+                            <button name="action_apply_budget_targets" type="object"
+                                    string="Appliquer CPA + budgets cibles" class="btn-primary"/>
+                        </div>
+                    </group>
+                    <group string="Brief créatif &amp; paramètres">
+                        <group colspan="2">
+                            <field name="optimization_brief"
+                                   placeholder="Ex. : Insister sur subventions 2026, ton rassurant, format vidéo 30s, éviter le mot « gratuit »…"
+                                   nolabel="1" colspan="2"/>
+                        </group>
+                        <div class="mt-2" colspan="2">
+                            <button name="action_regenerate_creative_suggestions" type="object"
+                                    string="Relancer les suggestions créatifs" class="btn-primary"/>
+                            <button name="action_analyze_optimization" type="object"
+                                    string="Recalculer diagnostic" class="btn-secondary ms-2"/>
+                            <button name="action_reset_optimization" type="object"
+                                    string="Réinitialiser" class="btn-link ms-2"
+                                    confirm="Réinitialiser analyse humaine, stratégie réajustée et personnalisations ?"/>
+                        </div>
+                    </group>
+                    <group string="Action opérationnelle">
+                        <field name="ai_action_pending"/>
+                        <div class="mt-2" invisible="ai_action_pending == 'none'">
+                            <button name="action_apply_ai_recommendation" type="object"
+                                    string="Appliquer l'action" class="btn-success"/>
+                            <button name="action_ignore_recommendation" type="object"
+                                    string="Ignorer" class="btn-secondary ms-2"/>
+                        </div>
+                    </group>
+                    <group string="Ciblage — Audiences, Remarketing &amp; Placements">
+                        <div class="mb-2" colspan="2">
+                            <button name="action_analyze_targeting_strategy" type="object"
+                                    string="Analyser ciblage" class="btn-primary"/>
+                            <button name="action_regenerate_targeting_suggestions" type="object"
+                                    string="Relancer audiences + remarketing + placements"
+                                    class="btn-secondary ms-2"/>
+                        </div>
+                        <field name="targeting_strategy_analysis" nolabel="1" colspan="2"
+                               invisible="not targeting_strategy_analysis"/>
+                    </group>
+                    <group string="Audiences prospection suggérées">
+                        <field name="pending_audience_count" readonly="1"/>
+                        <field name="audience_ids" nolabel="1"
+                               domain="[('ai_status', '=', 'proposed'), ('audience_type', '!=', 'retargeting')]">
+                            <list editable="bottom">
+                                <field name="name"/>
+                                <field name="audience_type"/>
+                                <field name="platform"/>
+                                <field name="estimated_size"/>
+                                <field name="targeting_rationale"/>
+                                <field name="description" optional="hide"/>
+                                <button name="action_approve" type="object"
+                                        string="Approuver" icon="fa-check"/>
+                                <button name="action_reject" type="object"
+                                        string="Ignorer" icon="fa-times"/>
+                            </list>
+                        </field>
+                    </group>
+                    <group string="Remarketing suggéré">
+                        <field name="pending_remarketing_count" readonly="1"/>
+                        <field name="audience_ids" nolabel="1"
+                               domain="[('ai_status', '=', 'proposed'), ('audience_type', '=', 'retargeting')]">
+                            <list editable="bottom">
+                                <field name="name"/>
+                                <field name="remarketing_source"/>
+                                <field name="window_days"/>
+                                <field name="targeting_rationale"/>
+                                <field name="description" optional="hide"/>
+                                <button name="action_approve" type="object"
+                                        string="Approuver" icon="fa-check"/>
+                                <button name="action_reject" type="object"
+                                        string="Ignorer" icon="fa-times"/>
+                            </list>
+                        </field>
+                    </group>
+                    <group string="Placements Meta suggérés">
+                        <field name="pending_placement_count" readonly="1"/>
+                        <field name="placement_ids" nolabel="1"
+                               domain="[('ai_status', '=', 'proposed')]">
+                            <list editable="bottom">
+                                <field name="name"/>
+                                <field name="placement_group"/>
+                                <field name="priority"/>
+                                <field name="placement_rationale"/>
+                                <button name="action_approve" type="object"
+                                        string="Approuver" icon="fa-check"/>
+                                <button name="action_reject" type="object"
+                                        string="Ignorer" icon="fa-times"/>
+                            </list>
+                        </field>
+                    </group>
+                    <group string="Créatifs — visuels, vidéos &amp; validation">
+                        <field name="pending_creative_count" readonly="1"/>
+                        <field name="creative_ids" nolabel="1" mode="kanban,list"
+                               domain="[('ai_status', 'in', ('proposed', 'approved'))]">
+                            <kanban class="o_doorway_traffic_creatives">
+                                <field name="preview_image"/>
+                                <field name="headline"/>
+                                <field name="format"/>
+                                <field name="video_url"/>
+                                <field name="ai_status"/>
+                                <field name="write_date"/>
+                                <templates>
+                                    <t t-name="card" class="flex-row">
+                                        <aside class="o_kanban_aside_full">
+                                            <t t-if="record.preview_image.raw_value">
+                                                <div class="o_kanban_image_fill position-relative w-100 doorway_creative_media">
+                                                    <field name="preview_image" class="h-100 w-100"
+                                                           widget="image"
+                                                           options="{'img_class': 'object-fit-cover'}"/>
+                                                </div>
+                                            </t>
+                                            <t t-else="">
+                                                <div class="doorway_creative_no_media doorway_creative_media">
+                                                    <i class="fa fa-image fa-2x"/>
+                                                </div>
+                                            </t>
+                                        </aside>
+                                        <main class="ps-2 flex-grow-1">
+                                            <strong><field name="headline"/></strong>
+                                            <div><field name="format"/> · <field name="ai_status" widget="badge"/></div>
+                                            <button name="action_generate_video" type="object"
+                                                    string="Vidéo IA" class="btn btn-sm btn-primary mt-1"
+                                                    invisible="format not in ('video','reel','story')"/>
+                                            <button name="action_generate_canva_design" type="object"
+                                                    string="Canva" class="btn btn-sm btn-secondary mt-1"
+                                                    invisible="format in ('video','reel','story')"/>
+                                        </main>
+                                    </t>
+                                </templates>
+                            </kanban>
+                            <list editable="bottom">
+                                <field name="preview_image" widget="image"/>
+                                <field name="format"/>
+                                <field name="headline"/>
+                                <field name="body"/>
+                                <field name="video_url" widget="url" optional="show"/>
+                                <field name="media_status"/>
+                                <field name="validation_notes"/>
+                                <field name="ai_status" widget="badge"/>
+                                <button name="action_generate_canva_design" type="object"
+                                        string="Canva" icon="fa-paint-brush"/>
+                                <button name="action_generate_video" type="object"
+                                        string="Vidéo" icon="fa-video-camera"/>
+                                <button name="action_approve" type="object"
+                                        string="Valider" icon="fa-check"/>
+                            </list>
+                        </field>
+                    </group>
+                    <group string="Guide des actions" colspan="2">
+                        <div class="doorway_opt_guide">
+                            <ul>
+                                <li><b>Augmenter le budget</b> — CPA sous la cible, volume OK</li>
+                                <li><b>Réduire le budget</b> — CPA trop élevé, limiter les pertes</li>
+                                <li><b>Nouveau créatif</b> — CTR faible ou 0 lead malgré dépense</li>
+                                <li><b>Corriger lien Meta</b> — mauvaise campagne ou campagne en pause</li>
+                                <li><b>Pause</b> — stopper une campagne non rentable</li>
+                            </ul>
+                        </div>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_campaign_kanban_optimization" model="ir.ui.view">
+        <field name="name">doorway.traffic.campaign.kanban.optimization</field>
+        <field name="model">doorway.traffic.campaign</field>
+        <field name="inherit_id" ref="view_campaign_kanban"/>
+        <field name="arch" type="xml">
+            <field name="spend" position="after">
+                <field name="optimization_health"/>
+                <field name="optimization_summary"/>
+                <field name="conversions"/>
+                <field name="cpa_variance_pct"/>
+            </field>
+            <div class="mt-2" position="after">
+                <div class="mt-1">
+                    <field name="optimization_health" widget="badge"
+                           decoration-success="optimization_health in ('excellent', 'good')"
+                           decoration-warning="optimization_health == 'warning'"
+                           decoration-danger="optimization_health in ('critical', 'inactive', 'unlinked')"/>
+                    <span class="ms-1 small">
+                        7j: <field name="spend"/>€ · 30j: <field name="spend_30d"/>€ ·
+                        <field name="conversions"/> leads
+                    </span>
+                </div>
+                <div t-if="record.optimization_summary.raw_value"
+                     class="small text-muted mt-1">
+                    <field name="optimization_summary"/>
+                </div>
+            </div>
+            <div class="mt-2" t-if="record.ai_action_pending.raw_value != 'none'" position="attributes">
+                <attribute name="class">mt-2 doorway_opt_actions</attribute>
+            </div>
+        </field>
+    </record>
+
+    <record id="view_campaign_list_optimization" model="ir.ui.view">
+        <field name="name">doorway.traffic.campaign.list.optimization</field>
+        <field name="model">doorway.traffic.campaign</field>
+        <field name="inherit_id" ref="view_campaign_list"/>
+        <field name="arch" type="xml">
+            <field name="ai_status" position="after">
+                <field name="optimization_health" widget="badge"
+                       decoration-success="optimization_health in ('excellent', 'good')"
+                       decoration-warning="optimization_health == 'warning'"
+                       decoration-danger="optimization_health in ('critical', 'inactive', 'unlinked')"/>
+                <field name="optimization_summary" optional="show"/>
+                <field name="spend_30d" optional="show"/>
+                <field name="conversions_30d" optional="show"/>
+                <field name="pending_audience_count" optional="show"/>
+                <field name="pending_remarketing_count" optional="show"/>
+                <field name="pending_placement_count" optional="show"/>
+                <field name="pending_creative_count" optional="show"/>
+                <field name="meta_campaign_name" optional="hide"/>
+                <field name="conversions"/>
+                <field name="optimization_target_cpa" string="CPA cible" optional="show"/>
+                <field name="optimization_budget_daily" optional="show"/>
+                <field name="cpa_variance_pct" optional="show"/>
+            </field>
+            <list position="attributes">
+                <attribute name="editable">bottom</attribute>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_campaign_search_optimization" model="ir.ui.view">
+        <field name="name">doorway.traffic.campaign.search.optimization</field>
+        <field name="model">doorway.traffic.campaign</field>
+        <field name="inherit_id" ref="view_campaign_search"/>
+        <field name="arch" type="xml">
+            <filter name="filter_pending_ai" position="after">
+                <filter name="filter_needs_action" string="À optimiser"
+                        domain="[('ai_action_pending', '!=', 'none')]"/>
+                <filter name="filter_critical" string="Critique / Inactif"
+                        domain="[('optimization_health', 'in', ['critical', 'inactive', 'unlinked'])]"/>
+                <filter name="filter_excellent" string="Performant"
+                        domain="[('optimization_health', 'in', ['excellent', 'good'])]"/>
+            </filter>
+            <filter name="group_status" position="after">
+                <filter name="group_health" string="Santé perf."
+                        context="{'group_by': 'optimization_health'}"/>
+            </filter>
+        </field>
+    </record>
+
+    <!-- Vue formulaire dédiée : champs modifiables en premier -->
+    <record id="view_campaign_form_optimization_focus" model="ir.ui.view">
+        <field name="name">doorway.traffic.campaign.form.optimization.focus</field>
+        <field name="model">doorway.traffic.campaign</field>
+        <field name="priority">5</field>
+        <field name="arch" type="xml">
+            <form string="Optimisation campagne">
+                <header>
+                    <button name="action_apply_budget_targets" type="object"
+                            string="Appliquer CPA + budgets" class="btn-primary"/>
+                    <button name="action_sync_and_optimize" type="object"
+                            string="Sync + Optimiser" class="btn-secondary"/>
+                    <button name="action_apply_human_strategy_realignment" type="object"
+                            string="Relancer toutes les suggestions" class="btn-secondary"/>
+                    <field name="ai_status" widget="statusbar"
+                           statusbar_visible="approved,active,paused"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                        <h3><field name="foundation_id" readonly="1"/></h3>
+                    </div>
+                    <group string="Paramètres ajustables par l'humain">
+                        <group>
+                            <field name="optimization_target_cpa" string="CPA cible"/>
+                            <field name="target_cpa" readonly="1" string="CPA fondation"/>
+                            <field name="optimization_budget_daily" string="Budget journalier cible"/>
+                            <field name="budget_daily" string="Budget journalier actuel"/>
+                            <field name="budget_adjustment_notes"/>
+                        </group>
+                        <group>
+                            <field name="optimization_monthly_budget" string="Budget mensuel cible"/>
+                            <field name="foundation_monthly_budget" readonly="1"/>
+                            <field name="budget_total" string="Budget total actuel"/>
+                            <field name="ai_action_pending"/>
+                            <field name="optimization_brief"/>
+                        </group>
+                    </group>
+                    <group string="Analyse humaine">
+                        <field name="human_analysis" nolabel="1" colspan="2"/>
+                        <field name="strategy_adjustment_notes" colspan="2"/>
+                    </group>
+                    <group string="Performance (lecture seule)">
+                        <group>
+                            <field name="spend" readonly="1"/>
+                            <field name="cpa" readonly="1"/>
+                            <field name="conversions" readonly="1"/>
+                            <field name="cpa_variance_pct" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="spend_30d" readonly="1"/>
+                            <field name="cpa_30d" readonly="1"/>
+                            <field name="conversions_30d" readonly="1"/>
+                            <field name="optimization_summary" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Créatifs &amp; médias" name="opt_creatives">
+                            <field name="creative_ids" mode="kanban,list"
+                                   domain="[('ai_status', 'in', ('proposed', 'approved'))]"
+                                   context="{'default_campaign_id': id}">
+                                <kanban class="o_doorway_traffic_creatives">
+                                    <field name="preview_image"/>
+                                    <field name="headline"/>
+                                    <field name="format"/>
+                                    <field name="video_url"/>
+                                    <field name="ai_status"/>
+                                    <field name="write_date"/>
+                                    <templates>
+                                        <t t-name="card" class="flex-row">
+                                            <aside class="o_kanban_aside_full">
+                                                <t t-if="record.preview_image.raw_value">
+                                                    <div class="o_kanban_image_fill position-relative w-100 doorway_creative_media">
+                                                        <field name="preview_image" class="h-100 w-100"
+                                                               widget="image"
+                                                               options="{'img_class': 'object-fit-cover'}"/>
+                                                    </div>
+                                                </t>
+                                                <t t-else="">
+                                                    <div class="doorway_creative_no_media doorway_creative_media">
+                                                        <i class="fa fa-image fa-2x"/>
+                                                    </div>
+                                                </t>
+                                            </aside>
+                                            <main class="ps-2 flex-grow-1">
+                                                <strong class="d-block"><field name="headline"/></strong>
+                                                <field name="format"/> · <field name="ai_status" widget="badge"/>
+                                            </main>
+                                        </t>
+                                    </templates>
+                                </kanban>
+                                <list editable="bottom">
+                                    <field name="preview_image" widget="image"/>
+                                    <field name="format"/>
+                                    <field name="headline"/>
+                                    <field name="body"/>
+                                    <field name="video_url" widget="url" optional="show"/>
+                                    <field name="media_status"/>
+                                    <button name="action_generate_canva_design" type="object"
+                                            string="Canva" icon="fa-paint-brush"/>
+                                    <button name="action_generate_video" type="object"
+                                            string="Vidéo" icon="fa-video-camera"/>
+                                    <button name="action_approve" type="object"
+                                            string="Valider" icon="fa-check"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Ciblage" name="opt_targeting">
+                            <field name="audience_ids"
+                                   domain="[('ai_status', '=', 'proposed')]">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="audience_type"/>
+                                    <field name="remarketing_source"/>
+                                    <field name="window_days"/>
+                                    <field name="targeting_rationale"/>
+                                    <button name="action_approve" type="object"
+                                            string="Valider" icon="fa-check"/>
+                                </list>
+                            </field>
+                            <field name="placement_ids"
+                                   domain="[('ai_status', '=', 'proposed')]">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="placement_group"/>
+                                    <field name="priority"/>
+                                    <field name="placement_rationale"/>
+                                    <button name="action_approve" type="object"
+                                            string="Valider" icon="fa-check"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Détails complets" name="opt_full">
+                            <group>
+                                <field name="creative_brand_analysis" readonly="1"/>
+                                <field name="targeting_strategy_analysis" readonly="1"/>
+                                <field name="strategy_adjusted" readonly="1"/>
+                                <field name="ai_recommendation" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_campaign_optimization" model="ir.actions.act_window">
+        <field name="name">Optimisation campagnes</field>
+        <field name="res_model">doorway.traffic.campaign</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_campaign_kanban_optimization')}),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_campaign_list_optimization')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_campaign_form_optimization_focus')})]"/>
+        <field name="context">{'search_default_filter_needs_action': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucune action d'optimisation en attente.
+            </p>
+            <p>Utilisez « Sync + Optimiser » sur chaque campagne ou
+               « Corriger liens Meta » depuis Analyse marque.</p>
+        </field>
+    </record>
+
+    <record id="action_server_sync_optimize_all" model="ir.actions.server">
+        <field name="name">Sync + optimiser tout (7j)</field>
+        <field name="model_id" ref="model_doorway_traffic_campaign"/>
+        <field name="binding_model_id" ref="model_doorway_traffic_campaign"/>
+        <field name="binding_view_types">list,kanban</field>
+        <field name="state">code</field>
+        <field name="code">env['doorway.traffic.ads.service'].sync_optimize_all()</field>
+    </record>
+</odoo>

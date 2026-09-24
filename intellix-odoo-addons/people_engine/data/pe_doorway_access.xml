@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Accès PE automatique quand un utilisateur reçoit un rôle Doorway admin / superviseur -->
+    <record id="renovation_conciergerie.group_doorway_role_supervisor" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('people_engine.group_manager'))]"/>
+    </record>
+
+    <record id="renovation_conciergerie.group_doorway_role_admin" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('people_engine.group_admin'))]"/>
+    </record>
+
+    <record id="renovation_conciergerie.group_pipeline_supervisor" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('people_engine.group_manager'))]"/>
+    </record>
+
+    <record id="renovation_conciergerie.group_pipeline_admin" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('people_engine.group_admin'))]"/>
+    </record>
+
+    <record id="renovation_conciergerie.group_agence_doorway_crm" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('people_engine.group_admin'))]"/>
+    </record>
+
+    <function model="res.users" name="_init_sync_people_engine_access"/>
+</odoo>

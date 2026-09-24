@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Premier déploiement : propriété lue via ICP, pas de nom en dur dans le Python. -->
+    <function model="intellix.riad.establishment" name="seed_from_icp">
+        <value eval="'coins.riadanna.property_id'"/>
+        <value eval="[
+            {'sequence': 10, 'name': 'Suite Anna Sweety', 'emplacement': 'etage', 'price_per_night': 160.0, 'breakfast_included': True},
+            {'sequence': 20, 'name': 'Suite Rose de Paris', 'emplacement': 'etage', 'price_per_night': 150.0, 'breakfast_included': True},
+            {'sequence': 30, 'name': &quot;Suite Jasmin d'Orient&quot;, 'emplacement': 'etage', 'price_per_night': 150.0, 'breakfast_included': True},
+            {'sequence': 40, 'name': 'Suite Perle de Marrakech', 'emplacement': 'rdc', 'price_per_night': 130.0, 'breakfast_included': True},
+            {'sequence': 50, 'name': &quot;Secret d'Amour&quot;, 'emplacement': 'rdc', 'price_per_night': 130.0, 'breakfast_included': True},
+        ]"/>
+        <value eval="{
+            'wellness_start': 10.0,
+            'wellness_end': 17.0,
+            'restaurant_start': 18.0,
+            'restaurant_end': 23.0,
+            'wellness_label': 'Transats &amp; massage',
+            'restaurant_label': 'Restaurant',
+        }"/>
+        <value eval="'anna_sweety_coach'"/>
+    </function>
+</odoo>

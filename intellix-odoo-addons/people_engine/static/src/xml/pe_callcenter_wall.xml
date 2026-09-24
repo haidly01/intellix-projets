@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="people_engine.PeCallcenterWall">
+        <div class="o_pe_callcenter_wall o_action p-4" style="background:#0f172a;color:#f8fafc;min-height:100vh;">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="mb-0">🏆 Call Center — Classement du jour</h1>
+                <div class="text-end">
+                    <div class="small opacity-75" t-if="state.refreshedAt">
+                        Mise à jour <t t-esc="formatTime(state.refreshedAt)"/>
+                    </div>
+                    <div>
+                        📞 En appel : <strong t-esc="state.stats.on_call || 0"/>
+                        | Démos : <strong t-esc="state.stats.demos_today || 0"/>
+                        | En ligne : <strong t-esc="state.stats.agents_online || 0"/>
+                    </div>
+                </div>
+            </div>
+
+            <t t-if="state.loading">
+                <div class="text-center py-5 opacity-75">
+                    <i class="fa fa-spinner fa-spin fa-3x"/>
+                </div>
+            </t>
+            <t t-else="">
+                <div class="row g-4">
+                    <div class="col-lg-7">
+                        <div class="card bg-dark text-white border-0 shadow">
+                            <div class="card-body">
+                                <table class="table table-dark table-borderless mb-0 fs-5">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Agent</th>
+                                            <th>Points</th>
+                                            <th>Démos</th>
+                                            <th>Appels</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-if="!state.leaderboard.length">
+                                            <tr><td colspan="5" class="opacity-50">Aucune donnée aujourd'hui.</td></tr>
+                                        </t>
+                                        <tr t-foreach="state.leaderboard" t-as="row" t-key="row.name">
+                                            <td>
+                                                <span t-if="row.rank === 1">🥇</span>
+                                                <span t-elif="row.rank === 2">🥈</span>
+                                                <span t-elif="row.rank === 3">🥉</span>
+                                                <t t-else="" t-esc="row.rank"/>
+                                            </td>
+                                            <td t-esc="row.name"/>
+                                            <td class="fw-bold" t-esc="row.points"/>
+                                            <td t-esc="row.demos"/>
+                                            <td t-esc="row.appels"/>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <div class="card bg-dark text-white border-0 shadow mb-3" t-if="state.challenge">
+                            <div class="card-header border-secondary">Défi du jour</div>
+                            <div class="card-body">
+                                <div class="fw-bold mb-2" t-esc="state.challenge.name"/>
+                                <div class="progress mb-2" style="height:24px;">
+                                    <div class="progress-bar bg-warning"
+                                         t-att-style="'width:' + (state.challenge.pct || 0) + '%'"
+                                         t-esc="state.challenge.pct + '%'"/>
+                                </div>
+                                <div>
+                                    <t t-esc="state.challenge.current"/> / <t t-esc="state.challenge.target"/> appels
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card bg-dark text-white border-0 shadow">
+                            <div class="card-header border-secondary">🔥 Derniers badges</div>
+                            <div class="card-body">
+                                <t t-if="!state.recentBadges.length">
+                                    <div class="opacity-50">Aucun badge récent.</div>
+                                </t>
+                                <div t-foreach="state.recentBadges" t-as="badge" t-key="badge.date + badge.employee"
+                                     class="mb-2">
+                                    <span t-esc="badge.icon"/> <strong t-esc="badge.employee"/>
+                                    → <t t-esc="badge.badge"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </div>
+    </t>
+</templates>

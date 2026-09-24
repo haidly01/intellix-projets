@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_doorway_campaign_demo,demo.campaign,doorway_vicidial_campaigns.model_doorway_campaign,group_demo_call_center,1,1,1,0
+access_doorway_campaign_contact_demo,demo.campaign.contact,doorway_vicidial_campaigns.model_doorway_campaign_contact,group_demo_call_center,1,1,1,1
+access_doorway_sip_trunk_demo,demo.sip.trunk,doorway_agents_dashboard.model_doorway_sip_trunk,group_demo_call_center,1,1,1,0
+access_doorway_agent_phone_demo,demo.agent.phone,doorway_agents_dashboard.model_doorway_agent_phone_number,group_demo_call_center,1,1,1,0
+access_doorway_agent_profile_demo,demo.agent.profile,doorway_agents_dashboard.model_doorway_agent_profile,group_demo_call_center,1,1,1,0

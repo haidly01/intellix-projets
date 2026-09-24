@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <function model="crm.stage" name="_renovation_rename_retell_stages"/>
+</odoo>

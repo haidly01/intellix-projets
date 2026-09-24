@@ -1,0 +1,134 @@
+/* Blog Coins Marocain — listing + article */
+.blog-hero{padding:48px 0 40px}
+.blog-hero h1{max-width:18ch}
+.blog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:28px;
+  padding:40px 0 72px}
+.blog-card{background:var(--white);border-radius:var(--radius);overflow:hidden;
+  box-shadow:var(--shadow);border:1px solid rgba(224,212,191,.6);
+  display:flex;flex-direction:column;transition:transform .2s,box-shadow .2s}
+.blog-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-hover)}
+.blog-card-img{aspect-ratio:16/10;background:var(--sand);overflow:hidden}
+.blog-card-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s}
+.blog-card:hover .blog-card-img img{transform:scale(1.04)}
+.blog-card-body{padding:20px 22px 24px;display:flex;flex-direction:column;flex:1;gap:10px}
+.blog-card-date{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600}
+.blog-card-title{font-family:'Cardo',serif;font-size:1.35rem;line-height:1.25;margin:0;color:var(--ink)}
+.blog-card-title a:hover{color:var(--terracotta)}
+.blog-card-excerpt{margin:0;color:var(--muted);font-size:.95rem;line-height:1.55;flex:1}
+.blog-card-cta{font-weight:600;color:var(--terracotta);font-size:.9rem;margin-top:6px}
+
+.article-meta{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center;
+  font-size:.85rem;color:var(--muted);margin:0 0 18px}
+.article-meta time{font-weight:600}
+.article-body{font-size:1.05rem;line-height:1.75;color:var(--ink)}
+.article-body h2{font-size:1.65rem;margin:2.2em 0 .7em;line-height:1.2}
+.article-body h3{font-size:1.25rem;margin:1.6em 0 .5em;color:var(--teal)}
+.article-body p{margin:0 0 1.15em}
+.article-body ul,.article-body ol{margin:0 0 1.3em;padding-left:1.25em}
+.article-body li{margin:0 0 .45em}
+.article-body a{color:var(--terracotta);text-decoration:underline;text-underline-offset:3px}
+.article-body a:hover{color:var(--blue-700)}
+.article-body strong{font-weight:600}
+.article-body .lead{font-size:1.18rem;color:var(--muted);line-height:1.65}
+.article-table-wrap{overflow-x:auto;margin:1.5em 0 2em;border-radius:14px;border:1px solid var(--line)}
+.article-body table{width:100%;border-collapse:collapse;font-size:.95rem;background:#fff}
+.article-body th,.article-body td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+.article-body th{background:var(--sand-2);font-family:'Cardo',serif;font-weight:700;white-space:nowrap}
+.article-body tr:last-child td{border-bottom:none}
+.article-cta{margin:2.5em 0;padding:22px 24px;background:linear-gradient(135deg,#fbf5ea,#efe7d7);
+  border:1px solid #d8bd8a;border-radius:16px}
+.article-cta p{margin:0 0 14px}
+/* Spec .article-body a (or) battait .btn (blanc) → or-sur-or, libellé invisible.
+   Ivoire #faf6ee sur --gold-1 #b5732f. */
+.article-cta a.btn{
+  display:inline-block;
+  background:#b5732f;
+  color:#faf6ee;
+  text-decoration:none;
+}
+.article-cta a.btn:hover{
+  background:#9a6128;
+  color:#fff;
+  text-decoration:none;
+}
+
+.related-links{margin:48px 0 0;padding:28px 24px;background:#fff;border:1px solid var(--line);
+  border-radius:var(--radius)}
+.related-links h3{margin:0 0 16px;font-size:1.35rem}
+.related-links ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.related-links a{color:var(--terracotta);font-weight:600}
+.related-links a:hover{text-decoration:underline}
+
+.breadcrumb{font-size:.85rem;color:var(--muted);margin:0 0 18px}
+.breadcrumb a{color:var(--muted)}
+.breadcrumb a:hover{color:var(--terracotta)}
+.breadcrumb span{margin:0 6px;opacity:.5}
+
+@media(max-width:640px){
+  .article-body{font-size:1rem}
+  .article-body h2{font-size:1.4rem}
+}
+
+/* Article / fiche : hero photo + split texte | image */
+.article-wrap{max-width:1080px;margin:0 auto;padding:0 22px 72px}
+.article-hero{
+  padding:130px 0 48px;
+  background-size:cover;
+  background-position:center;
+  color:#fff;
+}
+.article-hero .article-wrap{padding-bottom:0;max-width:1080px}
+.article-hero .breadcrumb,
+.article-hero .breadcrumb a{color:rgba(255,255,255,.85)}
+.article-hero .breadcrumb a:hover{color:#fff}
+.article-hero .eyebrow{color:rgba(255,255,255,.9)}
+.article-hero h1{
+  color:#fff;font-size:clamp(1.85rem,3.8vw,2.75rem);max-width:22ch;
+  margin:8px 0 0;line-height:1.15;text-shadow:0 2px 18px rgba(0,0,0,.25)
+}
+.article-hero .article-meta{color:rgba(255,255,255,.85);margin-top:14px;margin-bottom:0}
+
+.article-split{
+  display:grid;grid-template-columns:1.15fr .85fr;gap:40px 48px;
+  align-items:start;padding:40px 0 0
+}
+.article-split-media{
+  position:sticky;top:96px;border-radius:var(--radius,16px);overflow:hidden;
+  box-shadow:var(--shadow);aspect-ratio:4/5;background:var(--sand);margin:0
+}
+.article-split-media img{width:100%;height:100%;object-fit:cover;display:block}
+.article-split-main .article-body{margin:0}
+.article-split .related-links{grid-column:1 / -1}
+/* Ancien gabarit : cover dupliquait le split — on laisse caché.
+   Photos milieu/fin des articles du jour : .article-photo (visible). */
+.article-cover{display:none}
+.article-photo{
+  display:block;
+  overflow:hidden;
+  border-radius:var(--radius,16px);
+  background:var(--sand);
+  margin:1.2em 0 1.5em
+}
+.article-photo picture,
+.article-photo img{width:100%;display:block}
+.article-photo img{height:100%;object-fit:cover}
+
+@media(max-width:860px){
+  .article-split{grid-template-columns:1fr;gap:24px}
+  .article-split-media{position:static;aspect-ratio:16/10;order:-1}
+  .article-hero{padding:110px 0 36px}
+  .article-hero h1{max-width:none}
+}
+
+/* Prix « à partir de » sur fiches incontournables */
+.blog-card-price{
+  margin:6px 0 4px;
+  font-size:.85rem;
+  color:var(--muted);
+}
+.blog-card-price b{
+  color:var(--terracotta);
+  font-family:'Cardo',serif;
+  font-size:1.15rem;
+  font-weight:700;
+}

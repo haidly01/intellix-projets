@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_doorway_tenant_form_demo" model="ir.ui.view">
+        <field name="name">doorway.tenant.form.demo</field>
+        <field name="model">doorway.tenant</field>
+        <field name="inherit_id" ref="doorway_credits.view_tenant_form_admin"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="Demo Call Center" groups="doorway_credits.group_doorway_credits_admin">
+                    <field name="demo_call_center"/>
+                    <field name="demo_flat_rate_eur" invisible="not demo_call_center"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

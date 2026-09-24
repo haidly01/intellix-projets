@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="doorway_vicidial_campaigns.MyCoachingDashboard">
+        <div class="o_my_coaching_dashboard o_action o_intellix_client_action ix-fullscreen-dashboard">
+            <div class="o_mc_page">
+
+                <!-- HEADER -->
+                <div class="o_mc_page-header">
+                    <div>
+                        <h1 class="o_mc_page-title">Mon coaching d'appel</h1>
+                        <p class="o_mc_page-sub" t-if="state.employeeName">
+                            Agent : <t t-esc="state.employeeName"/>
+                            · Analyse IA de tes performances sur la période
+                        </p>
+                    </div>
+                    <div class="o_mc_header-actions">
+                        <button type="button" class="o_mc_btn-outline" t-on-click="exportPdf">
+                            <i class="fa fa-download"/> Exporter PDF
+                        </button>
+                        <button type="button" class="o_mc_btn-outline" t-on-click="load">
+                            <i class="fa fa-refresh"/> Actualiser
+                        </button>
+                        <button type="button" class="o_mc_btn-primary" t-on-click="openTeamDashboard">
+                            <i class="fa fa-bar-chart"/> Dashboard global
+                        </button>
+                    </div>
+                </div>
+
+                <!-- DATE FILTER -->
+                <div class="o_mc_date-filter">
+                    <div class="o_mc_date-group">
+                        <span class="o_mc_date-label">Date début</span>
+                        <input type="date" class="o_mc_date-input"
+                               t-att-value="state.dateFrom"
+                               t-on-change="onDateFromChange"/>
+                    </div>
+                    <span class="o_mc_date-sep">→</span>
+                    <div class="o_mc_date-group">
+                        <span class="o_mc_date-label">Date fin</span>
+                        <input type="date" class="o_mc_date-input"
+                               t-att-value="state.dateTo"
+                               t-on-change="onDateToChange"/>
+                    </div>
+                    <div class="o_mc_period-btns">
+                        <button type="button"
+                                t-att-class="'o_mc_period-btn' + (isPeriodActive(7) ? ' active' : '')"
+                                t-on-click="() => this.setPeriod(7)">7j</button>
+                        <button type="button"
+                                t-att-class="'o_mc_period-btn' + (isPeriodActive(30) ? ' active' : '')"
+                                t-on-click="() => this.setPeriod(30)">30j</button>
+                        <button type="button"
+                                t-att-class="'o_mc_period-btn' + (isPeriodActive(90) ? ' active' : '')"
+                                t-on-click="() => this.setPeriod(90)">90j</button>
+                        <button type="button"
+                                t-att-class="'o_mc_period-btn' + (isPeriodActive('all') ? ' active' : '')"
+                                t-on-click="() => this.setPeriod('all')">Tout</button>
+                    </div>
+                </div>
+
+                <t t-if="state.loading">
+                    <div class="o_mc_loading">
+                        <i class="fa fa-spinner fa-spin fa-2x"/>
+                    </div>
+                </t>
+                <t t-else="">
+
+                    <!-- KPI ROW -->
+                    <div class="o_mc_kpi-row">
+                        <div class="o_mc_kpi-card">
+                            <div class="o_mc_kpi-label">Appels analysés</div>
+                            <div class="o_mc_kpi-val" style="color:#818cf8"
+                                 t-esc="state.kpis.total || 0"/>
+                            <div class="o_mc_kpi-trend neutral">Sur la période sélectionnée</div>
+                            <div class="o_mc_kpi-bar">
+                                <div class="o_mc_kpi-bar-fill"
+                                     t-att-style="'width:' + kpiBarWidth(state.kpis.total || 0, Math.max(state.kpis.total || 1, 60)) + ';background:#6366f1'"/>
+                            </div>
+                        </div>
+                        <div class="o_mc_kpi-card">
+                            <div class="o_mc_kpi-label">Score moyen /100</div>
+                            <div class="o_mc_kpi-val"
+                                 t-att-style="'color:' + (state.kpis.avg_score >= 75 ? '#34d399' : '#f59e0b')"
+                                 t-esc="state.kpis.avg_score || 0"/>
+                            <div class="o_mc_kpi-trend up" t-if="state.kpis.avg_score >= 70">Performance solide</div>
+                            <div class="o_mc_kpi-trend neutral" t-else="">Marge de progression</div>
+                            <div class="o_mc_kpi-bar">
+                                <div class="o_mc_kpi-bar-fill"
+                                     t-att-style="'width:' + kpiBarWidth(state.kpis.avg_score || 0) + ';background:#f59e0b'"/>
+                            </div>
+                        </div>
+                        <div class="o_mc_kpi-card">
+                            <div class="o_mc_kpi-label">Analyses IA</div>
+                            <div class="o_mc_kpi-val" style="color:#34d399"
+                                 t-esc="state.kpis.analysed || 0"/>
+                            <div class="o_mc_kpi-trend neutral">
+                                <t t-if="state.kpis.total">
+                                    <t t-esc="analysisCoveragePct()"/>% des appels couverts
+                                </t>
+                                <t t-else="">—</t>
+                            </div>
+                            <div class="o_mc_kpi-bar">
+                                <div class="o_mc_kpi-bar-fill"
+                                     t-att-style="'width:' + analysisCoveragePct() + '%;background:#10b981'"/>
+                            </div>
+                        </div>
+                        <div class="o_mc_kpi-card">
+                            <div class="o_mc_kpi-label">Taux qualification</div>
+                            <div class="o_mc_kpi-val" style="color:#06b6d4">
+                                <t t-esc="state.kpis.qualification_rate || 0"/>
+                                <span style="font-size:16px;color:#9898b8">%</span>
+                            </div>
+                            <div class="o_mc_kpi-trend neutral">Qualifiés + RDV</div>
+                            <div class="o_mc_kpi-bar">
+                                <div class="o_mc_kpi-bar-fill"
+                                     t-att-style="'width:' + (state.kpis.qualification_rate || 0) + '%;background:#06b6d4'"/>
+                            </div>
+                        </div>
+                        <div class="o_mc_kpi-card">
+                            <div class="o_mc_kpi-label">À lire / réviser</div>
+                            <div class="o_mc_kpi-val" style="color:#f87171"
+                                 t-esc="state.kpis.unread || 0"/>
+                            <div class="o_mc_kpi-trend neutral">Insights non lus</div>
+                            <div class="o_mc_kpi-bar">
+                                <div class="o_mc_kpi-bar-fill"
+                                     t-att-style="'width:' + kpiBarWidth(state.kpis.unread || 0, Math.max(state.kpis.total || 1, 20)) + ';background:#ef4444'"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MAIN GRID -->
+                    <div class="o_mc_main-grid">
+
+                        <!-- TABLE -->
+                        <div class="o_mc_panel">
+                            <div class="o_mc_panel-header">
+                                <div>
+                                    <div class="o_mc_panel-title">Analyses de mes appels</div>
+                                    <div class="o_mc_panel-sub">
+                                        <t t-esc="state.kpis.total || 0"/> appels
+                                        · Clique sur une ligne pour voir le détail + transcript IA
+                                    </div>
+                                </div>
+                            </div>
+                            <t t-if="!state.calls.length">
+                                <div class="o_mc_empty">
+                                    Aucune analyse sur la période. Les appels qualifiés
+                                    apparaîtront ici après enregistrement.
+                                </div>
+                            </t>
+                            <t t-else="">
+                                <div class="o_mc_table-wrap">
+                                    <table class="o_mc_table">
+                                        <thead>
+                                            <tr>
+                                                <th>Date &amp; heure</th>
+                                                <th>Prospect</th>
+                                                <th>Durée</th>
+                                                <th>Score IA</th>
+                                                <th>Disposition</th>
+                                                <th>Points clés</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="state.calls" t-as="call" t-key="call.id">
+                                                <tr t-att-class="selectedCall and selectedCall.id === call.id ? 'selected' : ''"
+                                                    t-on-click="(ev) => this.selectCall(call.id, ev)">
+                                                    <td style="color:#9898b8;font-size:11px">
+                                                        <t t-esc="formatCallDate(call.date_appel)"/>
+                                                    </td>
+                                                    <td>
+                                                        <div style="font-weight:600;font-size:12px"
+                                                             t-esc="call.lead_name"/>
+                                                        <div style="font-size:10px;color:#9898b8"
+                                                             t-if="call.lead_subtitle"
+                                                             t-esc="call.lead_subtitle"/>
+                                                    </td>
+                                                    <td style="font-size:11px" t-esc="call.duree"/>
+                                                    <td>
+                                                        <span t-att-class="'o_mc_score-badge ' + scoreClass(call.score_global)">
+                                                            <t t-esc="scoreIcon(call.score_global)"/>
+                                                            <t t-esc="call.score_global || '—'"/>
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <span t-att-class="'o_mc_status-pill ' + statusClass(call.qualification)">
+                                                            <t t-esc="statusPrefix(call.qualification)"/>
+                                                            <t t-esc="call.qualification_label"/>
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <t t-set="insight" t-value="insightsLabel(call)"/>
+                                                        <span t-if="insight.text !== '—'"
+                                                              t-att-class="'o_mc_ai-btn ' + (insight.className || '')"
+                                                              t-esc="insight.text"/>
+                                                        <span t-else="" style="font-size:10px;color:#5a5a7a">—</span>
+                                                    </td>
+                                                    <td>
+                                                        <div style="display:flex;gap:4px">
+                                                            <a t-if="call.audio_url"
+                                                               t-att-href="call.audio_url"
+                                                               target="_blank"
+                                                               rel="noopener"
+                                                               class="o_mc_listen-btn"
+                                                               title="Écouter"
+                                                               t-on-click.stop="">
+                                                                <i class="fa fa-volume-up"/>
+                                                            </a>
+                                                            <button t-if="call.lead_id"
+                                                                    type="button"
+                                                                    class="o_mc_listen-btn"
+                                                                    title="Fiche CRM"
+                                                                    t-on-click="(ev) => this.openLead(call.lead_id, ev)">
+                                                                <i class="fa fa-user"/>
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </t>
+                        </div>
+
+                        <!-- RIGHT COLUMN -->
+                        <div class="o_mc_right-col">
+                            <div class="o_mc_radar-panel">
+                                <div class="o_mc_radar-title">Score moyen par critère</div>
+                                <div class="o_mc_criteria-list">
+                                    <t t-foreach="state.criteriaAverages" t-as="crit" t-key="crit.name">
+                                        <div class="o_mc_criterion">
+                                            <div class="o_mc_criterion-header">
+                                                <span class="o_mc_criterion-name" t-esc="crit.name"/>
+                                                <span class="o_mc_criterion-score"
+                                                      t-att-style="'color:' + criterionColor(crit.score)"
+                                                      t-esc="crit.score + '/100'"/>
+                                            </div>
+                                            <div class="o_mc_criterion-bar">
+                                                <div class="o_mc_criterion-fill"
+                                                     t-att-style="'width:' + crit.score + '%;background:' + (crit.color || criterionColor(crit.score))"/>
+                                            </div>
+                                        </div>
+                                    </t>
+                                    <t t-if="!state.criteriaAverages.length">
+                                        <div class="o_mc_empty" style="padding:16px">
+                                            Pas encore de scores sur la période.
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+
+                            <div class="o_mc_coaching-panel">
+                                <div class="o_mc_coaching-header">
+                                    <div class="o_mc_ai-icon">🤖</div>
+                                    <div>
+                                        <div class="o_mc_coaching-title">Coaching IA — Cette période</div>
+                                        <div class="o_mc_coaching-sub">
+                                            Analyse Claude · <t t-esc="state.kpis.total || 0"/> appels
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="o_mc_coaching-body">
+                                    <div class="o_mc_insight-item strength">
+                                        <div class="o_mc_insight-label">✓ Point fort</div>
+                                        <div class="o_mc_insight-text"
+                                             t-esc="state.insights.strength || '—'"/>
+                                    </div>
+                                    <div class="o_mc_insight-item improve">
+                                        <div class="o_mc_insight-label">▲ À améliorer</div>
+                                        <div class="o_mc_insight-text"
+                                             t-esc="state.insights.improve || '—'"/>
+                                    </div>
+                                    <div class="o_mc_insight-item tip">
+                                        <div class="o_mc_insight-label">💡 Conseil</div>
+                                        <div class="o_mc_insight-text"
+                                             t-esc="state.insights.tip || '—'"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BOTTOM GRID -->
+                    <div class="o_mc_bottom-grid">
+
+                        <!-- DETAIL PANEL -->
+                        <div class="o_mc_detail-panel">
+                            <t t-if="selectedCall">
+                                <div class="o_mc_detail-header">
+                                    <div>
+                                        <div class="o_mc_detail-caller">
+                                            <t t-esc="selectedCall.lead_name"/>
+                                            · Score <t t-esc="selectedCall.score_global || '—'"/>/100
+                                        </div>
+                                        <div class="o_mc_detail-meta"
+                                             t-esc="formatDetailMeta(selectedCall)"/>
+                                    </div>
+                                    <span t-if="selectedCall.needs_review"
+                                          t-att-class="'o_mc_score-badge ' + scoreClass(selectedCall.score_global)"
+                                          style="font-size:12px">▲ À réviser</span>
+                                </div>
+                                <div class="o_mc_detail-body">
+                                    <div class="o_mc_section-label">Extrait transcript</div>
+                                    <div class="o_mc_transcript-block">
+                                        <t t-if="selectedCall.transcript_lines and selectedCall.transcript_lines.length">
+                                            <t t-foreach="selectedCall.transcript_lines" t-as="line" t-key="line_index">
+                                                <div class="o_mc_transcript-line">
+                                                    <span t-att-class="'o_mc_transcript-speaker ' + line.speaker"
+                                                          t-esc="line.label + ' :'"/>
+                                                    <span t-att-class="'o_mc_transcript-text' + (line_index === 2 ? ' o_mc_highlight-moment' : '')"
+                                                          t-esc="line.text"/>
+                                                </div>
+                                            </t>
+                                        </t>
+                                        <t t-elif="selectedCall.transcript_excerpt">
+                                            <div class="o_mc_transcript-line">
+                                                <span class="o_mc_transcript-text"
+                                                      t-esc="selectedCall.transcript_excerpt"/>
+                                            </div>
+                                        </t>
+                                        <t t-else="">
+                                            <div class="o_mc_transcript-line">
+                                                <span class="o_mc_transcript-text">Transcript non disponible.</span>
+                                            </div>
+                                        </t>
+                                    </div>
+                                    <div class="o_mc_section-label">Moments clés identifiés par Claude</div>
+                                    <div class="o_mc_key-moments">
+                                        <t t-if="selectedCall.key_moments and selectedCall.key_moments.length">
+                                            <t t-foreach="selectedCall.key_moments" t-as="moment" t-key="moment_index">
+                                                <div class="o_mc_moment-item">
+                                                    <span t-esc="moment.icon"/>
+                                                    <span t-if="moment.time" class="o_mc_moment-time"
+                                                          t-esc="moment.time"/>
+                                                    <span class="o_mc_moment-text" t-esc="moment.text"/>
+                                                </div>
+                                            </t>
+                                        </t>
+                                        <t t-else="">
+                                            <div class="o_mc_moment-item">
+                                                <span>💡</span>
+                                                <span class="o_mc_moment-text"
+                                                      t-esc="selectedCall.conseil_claude || 'Aucun moment clé identifié pour cet appel.'"/>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                            </t>
+                            <t t-else="">
+                                <div class="o_mc_empty-detail">
+                                    Sélectionne un appel dans le tableau pour voir le détail.
+                                </div>
+                            </t>
+                        </div>
+
+                        <!-- GAMIFICATION -->
+                        <div class="o_mc_objectifs-panel">
+                            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+                                <div class="o_mc_objectifs-title">Objectifs &amp; badges du mois</div>
+                                <div style="display:flex;align-items:center;gap:6px">
+                                    <span style="font-size:10px;color:#9898b8">Niveau</span>
+                                    <span class="o_mc_level-badge">
+                                        ⭐ <t t-esc="state.gamification.level_num || 1"/>
+                                    </span>
+                                </div>
+                            </div>
+                            <div style="margin-bottom:14px">
+                                <div style="font-size:10px;color:#9898b8;margin-bottom:6px">Score Elite ce mois</div>
+                                <div style="display:flex;align-items:center;gap:10px">
+                                    <div class="o_mc_elite-bar-wrap">
+                                        <div class="o_mc_elite-bar-fill"
+                                             t-att-style="'width:' + (state.gamification.score_elite || 0) + '%'"/>
+                                    </div>
+                                    <span style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;color:#f59e0b">
+                                        <t t-esc="state.gamification.score_elite || 0"/> / 100
+                                    </span>
+                                </div>
+                                <div style="display:flex;justify-content:space-between;font-size:9px;color:#5a5a7a;margin-top:4px">
+                                    <span>Bronze · 50pts</span>
+                                    <span>Silver · 75pts</span>
+                                    <span>Gold · 90pts</span>
+                                </div>
+                            </div>
+                            <t t-if="state.gamification.objectives and state.gamification.objectives.length">
+                                <t t-foreach="state.gamification.objectives" t-as="obj" t-key="obj.id">
+                                    <div class="o_mc_objectif-item">
+                                        <div class="o_mc_objectif-icon" t-esc="obj.icon"/>
+                                        <div class="o_mc_objectif-content">
+                                            <div class="o_mc_objectif-name" t-esc="obj.name"/>
+                                            <div class="o_mc_objectif-progress">
+                                                <div class="o_mc_objectif-bar">
+                                                    <div class="o_mc_objectif-bar-fill"
+                                                         t-att-style="'width:' + objectivePct(obj.pct) + '%'"/>
+                                                </div>
+                                                <span class="o_mc_objectif-nums">
+                                                    <t t-esc="obj.current"/> / <t t-esc="obj.target"/>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <span t-if="obj.badge_label"
+                                              t-att-class="'o_mc_badge-earned ' + (obj.badge_style || 'pending')"
+                                              t-esc="obj.badge_label"/>
+                                    </div>
+                                </t>
+                            </t>
+                            <t t-elif="state.plans.length">
+                                <t t-foreach="state.plans" t-as="plan" t-key="plan.id">
+                                    <div class="o_mc_objectif-item">
+                                        <div class="o_mc_objectif-icon">📋</div>
+                                        <div class="o_mc_objectif-content">
+                                            <div class="o_mc_objectif-name" t-esc="plan.name"/>
+                                            <div class="o_mc_objectif-progress">
+                                                <div class="o_mc_objectif-bar">
+                                                    <div class="o_mc_objectif-bar-fill"
+                                                         t-att-style="'width:' + plan.progress_pct + '%'"/>
+                                                </div>
+                                                <span class="o_mc_objectif-nums"
+                                                      t-esc="plan.progress_pct + '%'"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                            </t>
+                            <t t-else="">
+                                <div class="o_mc_empty-detail">
+                                    Objectifs PE non configurés — contacte ton superviseur.
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+            </div>
+        </div>
+    </t>
+</templates>

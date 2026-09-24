@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" href="/favicon.ico?v=cm126" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32.png?v=cm126">
+  <link rel="icon" type="image/png" sizes="192x192" href="/assets/img/favicon-192.png?v=cm126">
+  <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png?v=cm126">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Activités au Maroc — neuf portes | Coins Marocain</title>
+  <meta name="description" content="Activités au Maroc : Marrakech, Essaouira, Fès, Chefchaouen, Casablanca, Désert, Rabat, Tanger, Agadir. Carte des portes, puis la fiche.">
+  <link rel="canonical" href="https://coinsmarocain.com/activites">
+  <meta property="og:title" content="Activités au Maroc — la carte d’abord">
+  <meta property="og:description" content="Neuf portes : Marrakech, Essaouira, Fès, Chefchaouen, Casablanca, Désert, Rabat, Tanger, Agadir.">
+  <meta property="og:url" content="https://coinsmarocain.com/activites">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://coinsmarocain.com/assets/img/og-default.jpg?v=cm127">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Coins Marocain">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@graph":[
+    {"@type":"CollectionPage","name":"Activités au Maroc","url":"https://coinsmarocain.com/activites","inLanguage":"fr-FR","about":{"@type":"Country","name":"Maroc"}},
+    {"@type":"BreadcrumbList","itemListElement":[
+      {"@type":"ListItem","position":1,"name":"Coins Marocain","item":"https://coinsmarocain.com/"},
+      {"@type":"ListItem","position":2,"name":"Activités","item":"https://coinsmarocain.com/activites"}
+    ]},
+    {"@type":"ItemList","name":"Portes — activités au Maroc","numberOfItems":9,"itemListElement":[
+      {"@type":"ListItem","position":1,"name":"Marrakech","url":"https://coinsmarocain.com/activites/marrakech"},
+      {"@type":"ListItem","position":2,"name":"Essaouira","url":"https://coinsmarocain.com/activites/essaouira"},
+      {"@type":"ListItem","position":3,"name":"Fès","url":"https://coinsmarocain.com/activites/fes"},
+      {"@type":"ListItem","position":4,"name":"Chefchaouen","url":"https://coinsmarocain.com/activites/chefchaouen"},
+      {"@type":"ListItem","position":5,"name":"Casablanca","url":"https://coinsmarocain.com/activites/casablanca"},
+      {"@type":"ListItem","position":6,"name":"Désert","url":"https://coinsmarocain.com/activites/desert"},
+      {"@type":"ListItem","position":7,"name":"Rabat","url":"https://coinsmarocain.com/activites/rabat"},
+      {"@type":"ListItem","position":8,"name":"Tanger","url":"https://coinsmarocain.com/activites/tanger"},
+      {"@type":"ListItem","position":9,"name":"Agadir","url":"https://coinsmarocain.com/activites/agadir"}
+    ]}
+  ]}
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Playfair+Display:wght@500;600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <link rel="stylesheet" href="/assets/plein-air.css?v=cm-hub3">
+  <link rel="stylesheet" href="/assets/activites-hub.css?v=cm-hub18">
+  <link rel="stylesheet" href="/assets/cookies.css?v=cm148">
+  <link rel="stylesheet" href="/assets/cm-chrome.css?v=cm148">
+</head>
+<body class="cm-plein-air-page cm-act-hub" data-header="solid">
+  <header class="site-header solid" id="siteHeader">
+    <div class="wrap header-inner">
+      <a class="brand" href="/">
+        <img src="/assets/img/logo-emblem-white.png" alt="Coins Marocain" class="brand-logo logo-light">
+        <img src="/assets/img/logo-emblem.png" alt="Coins Marocain" class="brand-logo logo-dark">
+      </a>
+      <button class="burger" id="burger" aria-label="Ouvrir le menu" data-i18n-aria="nav_open"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+  <nav class="menu-overlay" id="menuOverlay">
+    <button class="menu-close" id="menuClose" aria-label="Fermer le menu" data-i18n-aria="nav_close">&times;</button>
+    <p class="m-eyebrow">Coins Marocain</p>
+    <a href="/" data-i18n="nav_home">Accueil</a>
+    <a href="/activites" data-i18n="nav_activities">Activités</a>
+    <a href="/villas-riads-marrakech">Hébergement, piscines et rooftop</a>
+    <a href="/evenements">Événements</a>
+    <a href="/blog/" data-i18n="nav_blog">Blog</a>
+    <a href="/partenaires" data-i18n="nav_partners">Partenaires</a>
+    <a class="btn m-cta" href="https://wa.me/212660159177?text=Bonjour%20Yasmine%2C%20je%20souhaite%20des%20infos%20sur%20les%20activit%C3%A9s%20Coins%20Marocain." target="_blank" rel="noopener noreferrer">WhatsApp</a>
+  </nav>
+
+  <main>
+  <section class="cm-act-hero">
+    <div class="cm-act-hero-art" aria-hidden="true">
+      <span class="cm-act-hero-sun"></span>
+      <span class="cm-act-dune cm-act-dune-a"></span>
+      <span class="cm-act-dune cm-act-dune-b"></span>
+      <span class="cm-act-dune cm-act-dune-c"></span>
+      <span class="cm-act-hero-veil"></span>
+    </div>
+    <div class="wrap">
+      <p class="eyebrow">Expériences · Maroc</p>
+      <h1>Activités au Maroc — neuf portes, la carte d’abord.</h1>
+      <p>On choisit une porte, on lit, on réserve. Marrakech n’est plus le centre de tout le pays. Les formats privés déjà racontés (Agafay, Ourika, Ouzoud…) rejoignent la porte Marrakech — pas cette page.</p>
+      <div class="cm-act-kpis">
+        <div class="cm-act-kpi"><b>9</b><span>portes</span></div>
+        <div class="cm-act-kpi"><b>14&nbsp;226</b><span>activités Viator au Maroc</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section cm-act-map-section">
+    <div class="wrap">
+      <div class="cm-act-rule" aria-hidden="true"><span class="cm-act-disc"></span></div>
+      <h2>Carte du Maroc</h2>
+      <p>Neuf portes d’entrée. Le pin ouvre la ville — ou le désert, une seule porte pour Merzouga et Ouarzazate.</p>
+      <div class="cm-act-map-wrap"><div id="cmActMap" role="application" aria-label="Carte des activités au Maroc"></div></div>
+    </div>
+  </section>
+
+  <section class="section cm-act-choose">
+    <div class="wrap">
+      <div class="cm-act-rule" aria-hidden="true"><span class="cm-act-disc"></span></div>
+      <h2>Comment choisir</h2>
+      <!-- Compteurs statiques — étape 0, 30 août 2026, totalCount Viator EUR. Désert = 270+106. -->
+      <div class="cm-act-grid" id="cmActCities">
+        <a class="cm-act-city cm-act-city--marrakech" href="/activites/marrakech">
+          <span class="cm-act-city-scene" aria-hidden="true"></span>
+          <div class="cm-act-city-overlay">
+            <div class="n">Marrakech</div>
+            <p class="blurb">Médina, Atlas proche, Agafay — la porte la plus dense.</p>
+            <div class="c">7&nbsp;460 expériences</div>
+          </div>
+        </a>
+        <a class="cm-act-city cm-act-city--essaouira" href="/activites/essaouira">
+          <span class="cm-act-city-scene" aria-hidden="true"></span>
+          <div class="cm-act-city-overlay">
+            <div class="n">Essaouira</div>
+            <p class="blurb">Remparts, port, vent — une journée océan.</p>
+            <div class="c">372 expériences</div>
+          </div>
+        </a>
+        <a class="cm-act-city cm-act-city--fes" href="/activites/fes">
+          <span class="cm-act-city-scene" aria-hidden="true"></span>
+          <div class="cm-act-city-overlay">
+            <div class="n">Fès</div>
+            <p class="blurb">Médina artisanale, portes vers le Moyen Atlas.</p>
+            <div class="c">1&nbsp;647 expériences</div>
+          </div>
+        </a>
+        <a class="cm-act-city cm-act-city--chefchaouen" href="/activites/chefchaouen">
+          <span class="cm-act-city-scene" aria-hidden="true"></span>
+          <div class="cm-act-city-overlay">
+            <div class="n">Chefchaouen</div>
+            <p class="blurb">La médina bleue, les marches, le Rif.</p>
+            <div class="c">170 expériences</div>
+          </div>
+        </a>
+        <a class="cm-act-city cm-act-city--casablanca" href="/activites/casablanca">
+          <span class="cm-act-city-scene" aria-hidden="true"></span>
+          <div class="cm-act-city-overlay">
+            <div class="n">Casablanca</div>
+            <p class="blurb">Ville-porte : Hassan II, Corniche, départs.</p>
+            <div class="c">1&nbsp;230 expériences</div>
+          </div>
+        </a>
+        <a class="cm-act-city cm-act-city--desert" href="/activites/desert">
+          <span class="cm-act-city-scene" aria-hidden="true"></span>
+          <div class="cm-act-city-overlay">
+            <div class="n">Désert</div>
+            <p class="blurb">Merzouga et Ouarzazate — une porte, pas deux cartes.</p>
+            <div class="c">374 expériences</div>
+          </div>
+        </a>
+        <a class="cm-act-city cm-act-city--rabat" href="/activites/rabat">
+          <span class="cm-act-city-scene" aria-hidden="true"></span>
+          <div class="cm-act-city-overlay">
+            <div class="n">Rabat</div>
+            <p class="blurb">Capitale, Kasbah des Oudayas, mer.</p>
+            <div class="c">281 expériences</div>
+          </div>
+        </a>
+        <a class="cm-act-city cm-act-city--tanger" href="/activites/tanger">
+          <span class="cm-act-city-scene" aria-hidden="true"></span>
+          <div class="cm-act-city-overlay">
+            <div class="n">Tanger</div>
+            <p class="blurb">Détroit, Kasbah, cap Spartel.</p>
+            <div class="c">900 expériences</div>
+          </div>
+        </a>
+        <a class="cm-act-city cm-act-city--agadir" href="/activites/agadir">
+          <span class="cm-act-city-scene" aria-hidden="true"></span>
+          <div class="cm-act-city-overlay">
+            <div class="n">Agadir</div>
+            <p class="blurb">Atlantique, Anti-Atlas, Taghazout tout près.</p>
+            <div class="c">1&nbsp;666 expériences</div>
+          </div>
+        </a>
+      </div>
+      <p class="cm-act-note">La <a href="/carte">carte</a> et <a href="/carte?theme=experiences">/carte?theme=experiences</a> filment les lieux du réseau. <a href="/carte/experiences">/carte/experiences</a> reste la landing vidéo + widget. Ici, on oriente les neuf portes — sans grille catalogue.</p>
+    </div>
+  </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-cols">
+      <div>
+        <div class="foot-brand"><img src="/assets/img/logo-emblem-white.png" alt="Coins Marocain"></div>
+        <p class="foot-tag" data-i18n="foot_tag">Voyages &amp; expériences curatés au Maroc — chaque adresse choisie et racontée.</p>
+      </div>
+      <div>
+        <h4 data-i18n="foot_explore">Explorer</h4>
+        <a href="/activites" data-i18n="nav_activities">Activités</a>
+        <a href="/villas-riads-marrakech">Hébergement, piscines et rooftop</a>
+        <a href="/evenements">Événements</a>
+        <a href="/blog/" data-i18n="nav_blog">Blog</a>
+        <a href="/partenaires" data-i18n="nav_partners">Partenaires</a>
+      </div>
+      <div>
+        <h4 data-i18n="foot_contact">Contact</h4>
+        <a href="#" style="cursor:default" data-i18n="foot_marrakech">Marrakech, Maroc</a>
+        <a href="mailto:info@coinsmarocain.com">info@coinsmarocain.com</a>
+        <div class="foot-legal">
+          <h4 data-i18n="foot_legal">Légal</h4>
+          <a href="/confidentialite" data-i18n="foot_privacy">Politique de confidentialité et cookies</a>
+          <a href="/affiliation" data-i18n="foot_affiliation">Affiliation</a>
+        </div>
+      </div>
+    </div>
+    <div class="wrap foot-bottom">
+      <p class="disclosure">Compteurs d’activités : totaux Viator du 30 août 2026 (EUR), figés dans la page. Désert = Merzouga + Ouarzazate, 374 uniques (2 codes en double). Les neuf formats privés Marrakech restent au-dessus du catalogue.</p>
+      <p data-i18n="foot_copy">© 2026 Coins Marocain — propriété de Digital Doorway SARL</p>
+      <nav class="foot-legal" aria-label="Liens utiles"></nav>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="/assets/activites-hub.js?v=cm-hub8" defer></script>
+  <script src="/assets/nav.js?v=cm148" defer></script>
+  <script src="/assets/concierge.js?v=cm15" defer></script>
+  <script src="/assets/i18n-map.js?v=cm20" defer></script>
+  <script src="/assets/i18n.js?v=cm47" defer></script>
+  <script src="/assets/cookies.js?v=cm148" defer></script>
+</body>
+</html>

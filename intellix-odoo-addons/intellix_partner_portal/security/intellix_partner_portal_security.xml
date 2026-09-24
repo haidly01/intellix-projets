@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="group_intellix_partner_portal" model="res.groups">
+        <field name="name">Portail Partenaire IntelliX</field>
+        <field name="implied_ids" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="comment">Accès au portail web /my/leads et /my/profil.</field>
+    </record>
+
+    <!-- Mandats : partenaire voit les siens -->
+    <record id="rule_mandate_portal_partner" model="ir.rule">
+        <field name="name">Mandat lead — portail partenaire</field>
+        <field name="model_id" ref="model_intellix_partner_lead_mandate"/>
+        <field name="domain_force">[('partner_id', 'child_of', user.commercial_partner_id.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal')), (4, ref('renovation_conciergerie.group_renovation_partner'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- Blocs -->
+    <record id="rule_bloc_portal_partner" model="ir.rule">
+        <field name="name">Bloc leads — portail partenaire</field>
+        <field name="model_id" ref="model_intellix_partner_lead_bloc"/>
+        <field name="domain_force">[('partner_id', 'child_of', user.commercial_partner_id.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal')), (4, ref('renovation_conciergerie.group_renovation_partner'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- Tentatives -->
+    <record id="rule_attempt_portal_partner" model="ir.rule">
+        <field name="name">Tentative contact — portail partenaire</field>
+        <field name="model_id" ref="model_intellix_partner_lead_attempt"/>
+        <field name="domain_force">[('mandate_id.partner_id', 'child_of', user.commercial_partner_id.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal')), (4, ref('renovation_conciergerie.group_renovation_partner'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <!-- Activités CRM (Appel/Tâche/RDV) -->
+    <record id="rule_activity_portal_partner" model="ir.rule">
+        <field name="name">Activité lead — portail partenaire</field>
+        <field name="model_id" ref="model_intellix_partner_lead_activity"/>
+        <field name="domain_force">[('mandate_id.partner_id', 'child_of', user.commercial_partner_id.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal')), (4, ref('renovation_conciergerie.group_renovation_partner'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- res.partner : lecture/écriture profil partenaire -->
+    <record id="rule_partner_portal_self" model="ir.rule">
+        <field name="name">Partenaire — profil portail</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="domain_force">['|', ('id', 'child_of', user.commercial_partner_id.id), ('id', '=', user.partner_id.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal')), (4, ref('renovation_conciergerie.group_renovation_partner'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+</odoo>

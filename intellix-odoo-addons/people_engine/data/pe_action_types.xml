@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="action_type_praise" model="pe.action.type">
+        <field name="code">praise</field>
+        <field name="name">Félicitations</field>
+    </record>
+    <record id="action_type_coaching" model="pe.action.type">
+        <field name="code">coaching</field>
+        <field name="name">Coaching</field>
+    </record>
+    <record id="action_type_warning" model="pe.action.type">
+        <field name="code">warning</field>
+        <field name="name">Avertissement informel</field>
+    </record>
+    <record id="action_type_formal_warn" model="pe.action.type">
+        <field name="code">formal_warn</field>
+        <field name="name">Avertissement formel</field>
+    </record>
+    <record id="action_type_pip" model="pe.action.type">
+        <field name="code">pip</field>
+        <field name="name">Plan d'amélioration</field>
+    </record>
+    <record id="action_type_termination" model="pe.action.type">
+        <field name="code">termination</field>
+        <field name="name">Mise à pied / Congédiement</field>
+    </record>
+</odoo>

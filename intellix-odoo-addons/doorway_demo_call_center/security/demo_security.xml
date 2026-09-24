@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="group_demo_call_center" model="res.groups">
+        <field name="name">Demo Call Center</field>
+        <field name="comment">Espace demo isolé : campagnes, agents, produits et crédits propres à la société.</field>
+        <field name="implied_ids" eval="[
+            (4, ref('doorway_vicidial_campaigns.group_vicidial_qualifier')),
+            (4, ref('renovation_conciergerie.group_doorway_b2c')),
+            (4, ref('renovation_conciergerie.group_doorway_role_user')),
+            (4, ref('renovation_conciergerie.group_doorway_pipeline_assigned')),
+            (4, ref('people_engine.group_employee')),
+            (4, ref('sales_team.group_sale_salesman')),
+        ]"/>
+    </record>
+
+    <record id="rule_demo_campaign_company" model="ir.rule">
+        <field name="name">Demo CC : campagnes de sa société</field>
+        <field name="model_id" ref="doorway_vicidial_campaigns.model_doorway_campaign"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('group_demo_call_center'))]"/>
+    </record>
+
+    <record id="rule_demo_agent_profile_company" model="ir.rule">
+        <field name="name">Demo CC : agents IA de sa société</field>
+        <field name="model_id" ref="doorway_agents_dashboard.model_doorway_agent_profile"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('group_demo_call_center'))]"/>
+    </record>
+
+    <record id="rule_demo_product_company" model="ir.rule">
+        <field name="name">Demo CC : produits de sa société</field>
+        <field name="model_id" ref="product.model_product_template"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('group_demo_call_center'))]"/>
+    </record>
+
+    <record id="rule_demo_sale_template_company" model="ir.rule">
+        <field name="name">Demo CC : modèles de devis de sa société</field>
+        <field name="model_id" ref="sale_management.model_sale_order_template"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('group_demo_call_center'))]"/>
+    </record>
+
+    <record id="rule_demo_crm_lead_company" model="ir.rule">
+        <field name="name">Demo CC : leads de sa société</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('group_demo_call_center'))]"/>
+    </record>
+
+    <record id="rule_demo_partner_company" model="ir.rule">
+        <field name="name">Demo CC : contacts de sa société</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('group_demo_call_center'))]"/>
+    </record>
+
+    <record id="rule_demo_campaign_contact_company" model="ir.rule">
+        <field name="name">Demo CC : contacts campagne de sa société</field>
+        <field name="model_id" ref="doorway_vicidial_campaigns.model_doorway_campaign_contact"/>
+        <field name="domain_force">[('campaign_id.company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('group_demo_call_center'))]"/>
+    </record>
+
+    <record id="rule_demo_call_log_company" model="ir.rule">
+        <field name="name">Demo CC : journal appels de sa société</field>
+        <field name="model_id" ref="doorway_vicidial_campaigns.model_doorway_call_log"/>
+        <field name="domain_force">[('campaign_id.company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('group_demo_call_center'))]"/>
+    </record>
+
+    <record id="rule_demo_sip_trunk_company" model="ir.rule">
+        <field name="name">Demo CC : trunks SIP de sa société</field>
+        <field name="model_id" ref="doorway_agents_dashboard.model_doorway_sip_trunk"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('group_demo_call_center'))]"/>
+    </record>
+</odoo>

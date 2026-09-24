@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="product_category_intellix_base" model="product.category">
+        <field name="name">Intellix — Base</field>
+        <field name="parent_id" ref="product_category_intellix"/>
+    </record>
+    <record id="product_category_intellix_agent" model="product.category">
+        <field name="name">Agent IA</field>
+        <field name="parent_id" ref="product_category_intellix"/>
+    </record>
+    <record id="product_category_intellix_web" model="product.category">
+        <field name="name">Site web &amp; SEO</field>
+        <field name="parent_id" ref="product_category_intellix"/>
+    </record>
+
+    <record id="product_intellix_base" model="product.template">
+        <field name="name">Tout Intellix</field>
+        <field name="default_code">INTELLIX_BASE</field>
+        <field name="type">service</field>
+        <field name="list_price">300.0</field>
+        <field name="ix_price_mad">300.0</field>
+        <field name="ix_price_cad">50.0</field>
+        <field name="ix_billing_type">monthly</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="company_id" eval="False"/>
+        <field name="categ_id" ref="product_category_intellix_base"/>
+        <field name="description_sale">Abonnement mensuel incluant : CRM (contacts, leads, historique réservations), Comptabilité (suivi encaissements, exports, terminal de paiement inclus), Vente (disponibilités, devis rapides, pipeline), Réseaux sociaux (planification et publication multi-plateforme Instagram/TikTok/Facebook).</field>
+    </record>
+
+    <record id="product_agent_ia_abo" model="product.template">
+        <field name="name">Module Agent IA — abonnement</field>
+        <field name="default_code">AGENT_IA_ABO</field>
+        <field name="type">service</field>
+        <field name="list_price">150.0</field>
+        <field name="ix_price_mad">150.0</field>
+        <field name="ix_price_cad">25.0</field>
+        <field name="ix_billing_type">monthly</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="company_id" eval="False"/>
+        <field name="categ_id" ref="product_category_intellix_agent"/>
+        <field name="description_sale">Active le module Agent IA : automatisation du parcours post-réservation (confirmations, rappels, relances), qualification des leads, mise en avant prioritaire dans la roue gagnante. Hors usage (voir bundles). Quota de courtoisie : 30 minutes/mois offertes.</field>
+    </record>
+
+    <record id="product_agent_ia_conception_neuf" model="product.template">
+        <field name="name">Conception d'un nouvel agent IA sur mesure</field>
+        <field name="default_code">AGENT_IA_CONCEPTION_NEUF</field>
+        <field name="type">service</field>
+        <field name="list_price">12000.0</field>
+        <field name="ix_price_mad">12000.0</field>
+        <field name="ix_price_cad">2000.0</field>
+        <field name="ix_billing_type">one_time</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="company_id" eval="False"/>
+        <field name="categ_id" ref="product_category_intellix_agent"/>
+        <field name="description_sale">Agent conçu de zéro pour le partenaire : ton de marque propre, FAQ spécifiques à l'activité, scénarios de réponse dédiés, intégration téléphonie + WhatsApp/Messenger.</field>
+    </record>
+
+    <record id="product_agent_ia_conception_reprise" model="product.template">
+        <field name="name">Conception — reprise d'un agent métier Coins Marocain</field>
+        <field name="default_code">AGENT_IA_CONCEPTION_REPRISE</field>
+        <field name="type">service</field>
+        <field name="list_price">3000.0</field>
+        <field name="ix_price_mad">3000.0</field>
+        <field name="ix_price_cad">500.0</field>
+        <field name="ix_billing_type">one_time</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="company_id" eval="False"/>
+        <field name="categ_id" ref="product_category_intellix_agent"/>
+        <field name="description_sale">Le partenaire reprend un agent déjà entraîné pour son secteur (hôtel/riad, restaurant, bien-être, événementiel) dans la bibliothèque Coins Marocain, avec personnalisation légère (nom, ton, informations pratiques).</field>
+    </record>
+
+    <record id="product_agent_ia_bundle_s" model="product.template">
+        <field name="name">Bundle minutes IA — S (100 min/mois)</field>
+        <field name="default_code">AGENT_IA_BUNDLE_S</field>
+        <field name="type">service</field>
+        <field name="list_price">236.0</field>
+        <field name="ix_price_mad">236.0</field>
+        <field name="ix_price_cad">35.0</field>
+        <field name="ix_billing_type">monthly</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="company_id" eval="False"/>
+        <field name="categ_id" ref="product_category_intellix_agent"/>
+        <field name="description_sale">Forfait mensuel de 100 minutes d'usage de l'agent IA (voix + texte, téléphonie incluse). Sans rabais — adapté à un petit riad avec peu de sollicitations. Minutes non reportables au mois suivant.</field>
+    </record>
+
+    <record id="product_agent_ia_bundle_m" model="product.template">
+        <field name="name">Bundle minutes IA — M (300 min/mois)</field>
+        <field name="default_code">AGENT_IA_BUNDLE_M</field>
+        <field name="type">service</field>
+        <field name="list_price">634.0</field>
+        <field name="ix_price_mad">634.0</field>
+        <field name="ix_price_cad">95.0</field>
+        <field name="ix_billing_type">monthly</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="company_id" eval="False"/>
+        <field name="categ_id" ref="product_category_intellix_agent"/>
+        <field name="description_sale">Forfait mensuel de 300 minutes, rabais de 10% vs tarif à la minute. Volume standard pour un hôtel/auberge actif. Minutes non reportables.</field>
+    </record>
+
+    <record id="product_agent_ia_bundle_l" model="product.template">
+        <field name="name">Bundle minutes IA — L (600 min/mois)</field>
+        <field name="default_code">AGENT_IA_BUNDLE_L</field>
+        <field name="type">service</field>
+        <field name="list_price">1204.0</field>
+        <field name="ix_price_mad">1204.0</field>
+        <field name="ix_price_cad">180.0</field>
+        <field name="ix_billing_type">monthly</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="company_id" eval="False"/>
+        <field name="categ_id" ref="product_category_intellix_agent"/>
+        <field name="description_sale">Forfait mensuel de 600 minutes, rabais de 15% vs tarif à la minute. Pour fort volume (événementiel, gros riad). Minutes non reportables.</field>
+    </record>
+
+    <record id="product_agent_ia_depassement" model="product.template">
+        <field name="name">Dépassement du bundle — minute additionnelle</field>
+        <field name="default_code">AGENT_IA_DEPASSEMENT</field>
+        <field name="type">service</field>
+        <field name="list_price">2.36</field>
+        <field name="ix_price_mad">2.36</field>
+        <field name="ix_price_cad">0.35</field>
+        <field name="ix_billing_type">usage</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="company_id" eval="False"/>
+        <field name="categ_id" ref="product_category_intellix_agent"/>
+        <field name="description_sale">Facturation à la minute réelle utilisée au-delà du bundle souscrit, pour ne jamais interrompre le service en cours de mois.</field>
+    </record>
+
+    <record id="product_site_web_simple" model="product.template">
+        <field name="name">Site web — Simple</field>
+        <field name="default_code">SITE_WEB_SIMPLE</field>
+        <field name="type">service</field>
+        <field name="list_price">4500.0</field>
+        <field name="ix_price_mad">4500.0</field>
+        <field name="ix_price_cad">750.0</field>
+        <field name="ix_billing_type">one_time</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="company_id" eval="False"/>
+        <field name="categ_id" ref="product_category_intellix_web"/>
+        <field name="description_sale">Site vitrine une page ou quelques sections, connecté au moteur de réservation Coins Marocain, une langue.</field>
+    </record>
+
+    <record id="product_site_web_standard" model="product.template">
+        <field name="name">Site web — Standard</field>
+        <field name="default_code">SITE_WEB_STANDARD</field>
+        <field name="type">service</field>
+        <field name="list_price">9000.0</field>
+        <field name="ix_price_mad">9000.0</field>
+        <field name="ix_price_cad">1500.0</field>
+        <field name="ix_billing_type">one_time</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="company_id" eval="False"/>
+        <field name="categ_id" ref="product_category_intellix_web"/>
+        <field name="description_sale">Site multi-pages, bilingue FR/EN, SEO on-page inclus au setup, connecté au moteur de réservation.</field>
+    </record>
+
+    <record id="product_site_web_premium" model="product.template">
+        <field name="name">Site web — Premium</field>
+        <field name="default_code">SITE_WEB_PREMIUM</field>
+        <field name="type">service</field>
+        <field name="list_price">18000.0</field>
+        <field name="ix_price_mad">18000.0</field>
+        <field name="ix_price_cad">3000.0</field>
+        <field name="ix_billing_type">one_time</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="company_id" eval="False"/>
+        <field name="categ_id" ref="product_category_intellix_web"/>
+        <field name="description_sale">Site multi-langues, contenu riche (vidéos, galerie), intégrations avancées (Carnet du Voyageur, réseaux sociaux, avis clients). Au-delà (jusqu'à 30 000 dh / 5000 $CAD), sur devis pour projets très complexes.</field>
+    </record>
+
+    <record id="product_maintenance_site" model="product.template">
+        <field name="name">Maintenance technique du site</field>
+        <field name="default_code">MAINTENANCE_SITE</field>
+        <field name="type">service</field>
+        <field name="list_price">300.0</field>
+        <field name="ix_price_mad">300.0</field>
+        <field name="ix_price_cad">50.0</field>
+        <field name="ix_billing_type">monthly</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="company_id" eval="False"/>
+        <field name="categ_id" ref="product_category_intellix_web"/>
+        <field name="description_sale">Hébergement, mises à jour, disponibilité du site web.</field>
+    </record>
+
+    <record id="product_seo_essentiel" model="product.template">
+        <field name="name">Abonnement SEO actif — Essentiel</field>
+        <field name="default_code">SEO_ESSENTIEL</field>
+        <field name="type">service</field>
+        <field name="list_price">3000.0</field>
+        <field name="ix_price_mad">3000.0</field>
+        <field name="ix_price_cad">500.0</field>
+        <field name="ix_billing_type">monthly</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="company_id" eval="False"/>
+        <field name="categ_id" ref="product_category_intellix_web"/>
+        <field name="description_sale">Optimisation mensuelle basée sur Google Search Console, 4 articles de blog/mois, maillage interne, backlinks (netlinking), citations locales, sollicitation d'avis clients.</field>
+    </record>
+
+    <record id="product_seo_croissance" model="product.template">
+        <field name="name">Abonnement SEO actif — Croissance</field>
+        <field name="default_code">SEO_CROISSANCE</field>
+        <field name="type">service</field>
+        <field name="list_price">4200.0</field>
+        <field name="ix_price_mad">4200.0</field>
+        <field name="ix_price_cad">700.0</field>
+        <field name="ix_billing_type">monthly</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="company_id" eval="False"/>
+        <field name="categ_id" ref="product_category_intellix_web"/>
+        <field name="description_sale">Idem Essentiel avec volume de netlinking et de citations renforcé pour les marchés plus compétitifs.</field>
+    </record>
+
+    <record id="product_seo_intensif" model="product.template">
+        <field name="name">Abonnement SEO actif — Intensif</field>
+        <field name="default_code">SEO_INTENSIF</field>
+        <field name="type">service</field>
+        <field name="list_price">5400.0</field>
+        <field name="ix_price_mad">5400.0</field>
+        <field name="ix_price_cad">900.0</field>
+        <field name="ix_billing_type">monthly</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="company_id" eval="False"/>
+        <field name="categ_id" ref="product_category_intellix_web"/>
+        <field name="description_sale">Idem Croissance avec suivi hebdomadaire et priorité sur les acquisitions de backlinks/citations.</field>
+    </record>
+
+    <record id="product_personnalisation_intellix" model="product.template">
+        <field name="name">Personnalisation Intellix</field>
+        <field name="default_code">PERSONNALISATION_INTELLIX</field>
+        <field name="type">service</field>
+        <field name="list_price">0.0</field>
+        <field name="ix_price_mad">0.0</field>
+        <field name="ix_price_cad">0.0</field>
+        <field name="ix_billing_type">quote_only</field>
+        <field name="ix_quote_only" eval="True"/>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="company_id" eval="False"/>
+        <field name="categ_id" ref="product_category_intellix_base"/>
+        <field name="description_sale">Adaptations hors standard : agent IA multilingue, intégrations tierces (PMS existant, outils compta externes), workflows sur mesure. Sur devis.</field>
+    </record>
+</odoo>

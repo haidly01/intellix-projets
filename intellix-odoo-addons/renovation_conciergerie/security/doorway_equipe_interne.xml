@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Allowlist défis / classement / annonces. Pas share=False (ça inclut les partenaires). -->
+    <record id="group_doorway_equipe_interne" model="res.groups">
+        <field name="name">Doorway — équipe interne</field>
+        <field name="comment">Employés Doorway uniquement. Les partenaires (comptes internes share=False) n'y sont pas.</field>
+    </record>
+</odoo>

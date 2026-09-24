@@ -1,0 +1,75 @@
+/* IntelliX — dictée vocale fiche CRM */
+.ix-voice-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
+  padding: 8px 10px;
+  background: #EEF2FF;
+  border: 1px solid #C7D2FE;
+  border-radius: 10px;
+  font-size: 13px;
+}
+.ix-voice-bar button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid #1B3A6B;
+  background: #1B3A6B;
+  color: #fff;
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
+}
+.ix-voice-bar button.ix-voice-note-btn {
+  background: #0f766e;
+  border-color: #0f766e;
+}
+.ix-voice-bar button.listening {
+  background: #dc2626;
+  border-color: #dc2626;
+  animation: ix-voice-pulse 1s ease infinite;
+}
+.ix-voice-bar .ix-voice-status {
+  color: #64748B;
+  font-size: 12px;
+}
+.ix-voice-bar .ix-voice-status.error {
+  color: #b91c1c;
+}
+.ix-voice-mic {
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid #CBD5E1;
+  background: #fff;
+  cursor: pointer;
+  display: inline-grid;
+  place-items: center;
+  font-size: 14px;
+  line-height: 1;
+  padding: 0;
+}
+.ix-voice-mic.listening {
+  background: #fee2e2;
+  border-color: #ef4444;
+  animation: ix-voice-pulse 1s ease infinite;
+}
+.ix-voice-field-wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  width: 100%;
+}
+.ix-voice-field-wrap .o_field_widget {
+  flex: 1;
+  min-width: 0;
+}
+@keyframes ix-voice-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.65; }
+}

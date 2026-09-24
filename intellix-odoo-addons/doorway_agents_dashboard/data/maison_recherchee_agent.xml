@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="agent_maison_recherchee" model="doorway.agent.profile">
+        <field name="name">Maison Recherchée · J+0 Qualification</field>
+        <field name="immo_agent_role">j0_qualification</field>
+        <field name="provider">elevenlabs</field>
+        <field name="external_agent_id">maison_recherchee</field>
+        <field name="pipeline">immobilier</field>
+        <field name="agent_type">inbound</field>
+        <field name="language">fr</field>
+        <field name="default_volet">reception</field>
+        <field name="status">active</field>
+        <field name="allow_human_transfer" eval="True"/>
+        <field name="transfer_phone">+14389929200</field>
+        <field name="system_prompt">Agent vocal Maison Recherchée (Immobilier). Trois volets : réception des appels entrants, qualification des leads, et appels à froid sortants. Ton professionnel, chaleureux, québécois.</field>
+    </record>
+
+    <record id="agent_maison_recherchee_phone" model="doorway.agent.phone.number">
+        <field name="agent_id" ref="agent_maison_recherchee"/>
+        <field name="name">Digital Doorway SIP</field>
+        <field name="phone_number">+14387905970</field>
+        <field name="sip_trunk_name">Digital Doorway-4387905970</field>
+        <field name="usage">inbound</field>
+        <field name="is_primary" eval="True"/>
+        <field name="notes">Trunk Twilio Digital Doorway-4387905970 — DID 438-790-5970</field>
+    </record>
+
+    <record id="agent_maison_recherchee_phone_out" model="doorway.agent.phone.number">
+        <field name="agent_id" ref="agent_maison_recherchee"/>
+        <field name="name">Digital Doorway SIP (sortant)</field>
+        <field name="phone_number">+14387905970</field>
+        <field name="sip_trunk_name">Digital Doorway-4387905970</field>
+        <field name="usage">outbound</field>
+        <field name="is_primary" eval="False"/>
+    </record>
+
+    <record id="agent_maison_volet_reception" model="doorway.agent.volet">
+        <field name="agent_id" ref="agent_maison_recherchee"/>
+        <field name="sequence">10</field>
+        <field name="code">reception</field>
+        <field name="prompt_hint">Accueillir l'appelant, identifier le besoin immobilier, proposer une suite (qualification ou rappel humain).</field>
+    </record>
+    <record id="agent_maison_volet_qualification" model="doorway.agent.volet">
+        <field name="agent_id" ref="agent_maison_recherchee"/>
+        <field name="sequence">20</field>
+        <field name="code">qualification</field>
+        <field name="prompt_hint">Qualifier le lead : type de bien, secteur, budget, échéance, coordonnées.</field>
+    </record>
+    <record id="agent_maison_volet_cold" model="doorway.agent.volet">
+        <field name="agent_id" ref="agent_maison_recherchee"/>
+        <field name="sequence">30</field>
+        <field name="code">cold_call</field>
+        <field name="prompt_hint">Appel sortant à froid : présentation Maison Recherchée, valeur ajoutée, prise de rendez-vous.</field>
+    </record>
+
+    <function model="doorway.agent.profile" name="_post_init_maison_recherchee"/>
+</odoo>

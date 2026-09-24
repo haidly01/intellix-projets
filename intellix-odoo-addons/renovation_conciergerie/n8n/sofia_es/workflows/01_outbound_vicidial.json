@@ -1,0 +1,57 @@
+{
+  "name": "sofia-es — 01 Outbound VICIdial",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "sofia-es/outbound",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "name": "Webhook Outbound",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        300
+      ],
+      "webhookId": "sofia-es-outbound"
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = $input.first().json;\nconst body = item.body || item;\nfunction norm(p) {\n  if (!p) return '';\n  const s = String(p).trim();\n  const d = s.replace(/\\D/g, '');\n  if (d.startsWith('34') && d.length > 9) return '+' + d;\n  if (d.length === 9) return '+34' + d;\n  if (s.startsWith('+')) return '+' + d;\n  return '+' + d;\n}\nconst phone = norm(body.telephone || body.phone || body.phone_number);\nif (!phone) throw new Error('telephone requis');\nconst odooUrl = ($env.ODOO_URL || 'https://intellixcrm.com').replace(/\\/$/, '');\nconst res = await this.helpers.httpRequest({\n  method: 'POST',\n  url: odooUrl + '/doorway/api/sofia-es/dial',\n  body: {\n    jsonrpc: '2.0',\n    method: 'call',\n    params: {\n      tenant_api_key: $env.DOORWAY_TENANT_API_KEY,\n      telephone: phone,\n      nombre: body.nombre || body.name || '',\n      partner_id: body.partner_id || body.lead_id || '',\n    },\n    id: Date.now(),\n  },\n  json: true,\n  timeout: 30000,\n});\nconst result = res.result || res;\nreturn [{\n  json: {\n    telephone: phone,\n    campaign: $env.VICIDIAL_CAMPAIGN || 'DW_ESREN',\n    provider: 'vicidial',\n    trunk: 'TrustSIP-Espagne',\n    ok: !!(result.ok || result.success),\n    ...result,\n  },\n}];"
+      },
+      "name": "Dial VICIdial TrustSIP",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Outbound": {
+      "main": [
+        [
+          {
+            "node": "Dial VICIdial TrustSIP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [
+    {
+      "name": "sofia-es"
+    },
+    {
+      "name": "vicidial"
+    }
+  ]
+}

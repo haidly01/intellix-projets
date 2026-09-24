@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="tag_prospect_callcenter" model="crm.tag">
+        <field name="name">Prospect Call Center</field>
+    </record>
+    <record id="tag_maroc" model="crm.tag">
+        <field name="name">Maroc</field>
+    </record>
+    <record id="tag_tunisie" model="crm.tag">
+        <field name="name">Tunisie</field>
+    </record>
+    <record id="tag_whatsapp_ok" model="crm.tag">
+        <field name="name">WhatsApp OK</field>
+    </record>
+    <record id="tag_telephone_only" model="crm.tag">
+        <field name="name">Téléphone seulement</field>
+    </record>
+    <record id="tag_landline" model="crm.tag">
+        <field name="name">Landline</field>
+    </record>
+    <record id="tag_qualifie_demo" model="crm.tag">
+        <field name="name">Qualifié Démo</field>
+    </record>
+    <record id="tag_ni_callcenter" model="crm.tag">
+        <field name="name">NI – Call Center</field>
+    </record>
+    <record id="tag_prospect_callcenter_maroc" model="crm.tag">
+        <field name="name">Prospect Call Center Maroc</field>
+    </record>
+    <record id="tag_casablanca" model="crm.tag">
+        <field name="name">Casablanca</field>
+    </record>
+    <record id="tag_marrakech" model="crm.tag">
+        <field name="name">Marrakech</field>
+    </record>
+    <record id="tag_defi_zakaria" model="crm.tag">
+        <field name="name">Défi Zakaria</field>
+    </record>
+    <record id="tag_cible_intellix_cc" model="crm.tag">
+        <field name="name">Cible IntelliX Call Center</field>
+    </record>
+    <record id="tag_linkedin_sales_nav" model="crm.tag">
+        <field name="name">LinkedIn Sales Nav</field>
+    </record>
+
+    <record id="stage_cc_nouveau" model="crm.stage">
+        <field name="name">Nouveau</field>
+        <field name="sequence">5</field>
+        <field name="team_ids" eval="[(4, ref('renovation_conciergerie.crm_team_marketing'))]"/>
+    </record>
+    <record id="stage_cc_contacte_j0" model="crm.stage">
+        <field name="name">Contacté J0</field>
+        <field name="sequence">6</field>
+        <field name="team_ids" eval="[(4, ref('renovation_conciergerie.crm_team_marketing'))]"/>
+    </record>
+    <record id="stage_cc_contacte_j2" model="crm.stage">
+        <field name="name">Contacté J2</field>
+        <field name="sequence">7</field>
+        <field name="team_ids" eval="[(4, ref('renovation_conciergerie.crm_team_marketing'))]"/>
+    </record>
+    <record id="stage_cc_dernier_contact" model="crm.stage">
+        <field name="name">Dernier Contact</field>
+        <field name="sequence">8</field>
+        <field name="team_ids" eval="[(4, ref('renovation_conciergerie.crm_team_marketing'))]"/>
+    </record>
+    <record id="stage_cc_qualifie_demo" model="crm.stage">
+        <field name="name">Qualifié Démo</field>
+        <field name="sequence">9</field>
+        <field name="team_ids" eval="[(4, ref('renovation_conciergerie.crm_team_marketing'))]"/>
+    </record>
+    <record id="stage_cc_demo_planifiee" model="crm.stage">
+        <field name="name">Démo Planifiée</field>
+        <field name="sequence">10</field>
+        <field name="team_ids" eval="[(4, ref('renovation_conciergerie.crm_team_marketing'))]"/>
+    </record>
+    <record id="stage_cc_demo_faite" model="crm.stage">
+        <field name="name">Démo Faite</field>
+        <field name="sequence">11</field>
+        <field name="team_ids" eval="[(4, ref('renovation_conciergerie.crm_team_marketing'))]"/>
+    </record>
+    <record id="stage_cc_ni" model="crm.stage">
+        <field name="name">NI</field>
+        <field name="sequence">99</field>
+        <field name="fold" eval="True"/>
+        <field name="team_ids" eval="[(4, ref('renovation_conciergerie.crm_team_marketing'))]"/>
+    </record>
+    <record id="stage_cc_client" model="crm.stage">
+        <field name="name">Client</field>
+        <field name="sequence">12</field>
+        <field name="team_ids" eval="[(4, ref('renovation_conciergerie.crm_team_marketing'))]"/>
+    </record>
+    <record id="stage_cc_non_interesse" model="crm.stage">
+        <field name="name">Non Intéressé</field>
+        <field name="sequence">98</field>
+        <field name="fold" eval="True"/>
+        <field name="team_ids" eval="[(4, ref('renovation_conciergerie.crm_team_marketing'))]"/>
+    </record>
+</odoo>

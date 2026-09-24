@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <template id="jt_sidebar" name="JT Sidebar">
+    <aside class="jt-sidebar jt-sidebar-global" id="jt-global-sidebar">
+      <div class="jt-sidebar-brand">
+        <div class="jt-logo-shield">JT</div>
+        <div class="jt-brand-text">
+          <span class="jt-brand-name">Jason Thomas</span>
+          <span class="jt-brand-sub">ASSURANCE</span>
+        </div>
+      </div>
+      <div class="jt-sidebar-greeting">
+        <div class="jt-greeting-title">Bonjour 👋 <t t-esc="user_name"/></div>
+        <div class="jt-greeting-role"><t t-esc="user_role"/></div>
+      </div>
+      <nav class="jt-sidebar-nav">
+        <div class="jt-nav-section">PRINCIPAL</div>
+        <a t-att-href="nav_dashboard"
+           data-jt-dashboard="1"
+           t-att-data-action-id="action_dashboard_id"
+           t-attf-class="jt-nav-item #{active_action_id == action_dashboard_id and 'jt-nav-active' or ''}">
+          <i class="fa fa-th-large"/> Tableau de bord
+        </a>
+        <a t-att-href="nav_clients"
+           t-att-data-action-id="action_clients_id"
+           t-attf-class="jt-nav-item #{active_action_id == action_clients_id and 'jt-nav-active' or ''}">
+          <i class="fa fa-users"/> Clients
+          <span class="jt-nav-badge"><t t-esc="nb_clients_fmt"/></span>
+        </a>
+        <a t-att-href="nav_polices"
+           t-att-data-action-id="action_polices_id"
+           t-attf-class="jt-nav-item #{active_action_id == action_polices_id and 'jt-nav-active' or ''}">
+          <i class="fa fa-shield"/> Polices
+        </a>
+        <div class="jt-nav-section">ALERTES</div>
+        <a t-att-href="nav_anniversaires"
+           t-att-data-action-id="action_anniversaires_id"
+           t-attf-class="jt-nav-item #{active_action_id == action_anniversaires_id and 'jt-nav-active' or ''}">
+          <i class="fa fa-birthday-cake"/> Anniversaires
+          <span class="jt-nav-badge"><t t-esc="nb_anniversaires_fmt"/></span>
+        </a>
+        <a t-att-href="nav_renouvellements"
+           t-att-data-action-id="action_renouvellements_id"
+           t-attf-class="jt-nav-item #{active_action_id == action_renouvellements_id and 'jt-nav-active' or ''}">
+          <i class="fa fa-refresh"/> Renouvellements
+          <span class="jt-nav-badge" t-if="nb_renouvellements_30j"><t t-esc="nb_renouvellements_fmt"/></span>
+        </a>
+        <div class="jt-nav-section">CLIENT</div>
+        <a t-if="nav_portail"
+           t-att-href="nav_portail"
+           t-att-data-action-id="action_portail_id"
+           t-attf-class="jt-nav-item #{active_action_id == action_portail_id and 'jt-nav-active' or ''}">
+          <i class="fa fa-globe"/> Portail client
+        </a>
+        <div class="jt-nav-section">OUTILS</div>
+        <a t-if="nav_courriel"
+           t-att-href="nav_courriel"
+           t-att-data-action-id="action_courriel_id"
+           t-attf-class="jt-nav-item #{active_action_id == action_courriel_id and 'jt-nav-active' or ''}">
+          <i class="fa fa-envelope"/> Courriel
+        </a>
+        <a t-if="nav_taches"
+           t-att-href="nav_taches"
+           t-att-data-action-id="action_taches_id"
+           t-attf-class="jt-nav-item #{active_action_id == action_taches_id and 'jt-nav-active' or ''}">
+          <i class="fa fa-check-square-o"/> Tâches
+        </a>
+        <a t-if="nav_agents"
+           t-att-href="nav_agents"
+           t-att-data-action-id="action_agents_id"
+           t-attf-class="jt-nav-item #{active_action_id == action_agents_id and 'jt-nav-active' or ''}">
+          <i class="fa fa-magic"/> Agent IA
+        </a>
+        <a t-if="nav_messages"
+           t-att-href="nav_messages"
+           t-att-data-action-id="action_messages_id"
+           t-attf-class="jt-nav-item #{active_action_id == action_messages_id and 'jt-nav-active' or ''}">
+          <i class="fa fa-comments"/> Messages
+        </a>
+        <a t-if="nav_calendar"
+           t-att-href="nav_calendar"
+           t-att-data-action-id="action_calendar_id"
+           t-attf-class="jt-nav-item #{active_action_id == action_calendar_id and 'jt-nav-active' or ''}">
+          <i class="fa fa-calendar"/> Calendrier
+        </a>
+        <a href="/intellix/rdv/jason" target="_blank" rel="noopener" class="jt-nav-item">
+          <i class="fa fa-calendar-plus-o"/> Prise de RDV
+        </a>
+      </nav>
+      <div class="jt-sidebar-user">
+        <div class="jt-user-avatar">JT</div>
+        <div class="jt-user-info">
+          <div class="jt-user-name"><t t-esc="user_name"/></div>
+          <div class="jt-user-status"><span class="jt-dot-online"/> Connecté</div>
+        </div>
+        <a t-att-href="logout_url" class="jt-user-logout" title="Se déconnecter">
+          <i class="fa fa-sign-out"/> Déconnexion
+        </a>
+      </div>
+    </aside>
+  </template>
+</odoo>

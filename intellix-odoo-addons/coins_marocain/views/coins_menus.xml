@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_coins_root"
+              name="Coins Marocain"
+              web_icon="coins_marocain,static/description/icon.png"
+              sequence="1"
+              groups="group_coins_user,group_coins_manager,group_coins_agent_terrain"/>
+
+    <!-- Même XML id qu'avant : action remplacée → vue d'ensemble (plus le dashboard détente) -->
+    <menuitem id="menu_coins_detente_dashboard_top"
+              name="Tableau de bord"
+              parent="menu_coins_root"
+              action="action_coins_overview_dashboard_owl"
+              sequence="5"
+              groups="group_coins_user,group_coins_manager"/>
+
+    <menuitem id="menu_coins_reservation"
+              name="Réservations"
+              parent="menu_coins_root"
+              action="action_coins_reservation"
+              sequence="10"
+              groups="group_coins_user,group_coins_manager"/>
+
+    <!-- Biens : section parent + sous-menus fiches / dispos / audit -->
+    <record id="menu_coins_property" model="ir.ui.menu">
+        <field name="name">Biens</field>
+        <field name="parent_id" ref="menu_coins_root"/>
+        <field name="action" eval="False"/>
+        <field name="sequence">20</field>
+        <field name="group_ids" eval="[(4, ref('group_coins_user')), (4, ref('group_coins_manager'))]"/>
+    </record>
+
+    <menuitem id="menu_coins_property_fiches"
+              name="Fiches propriétés"
+              parent="menu_coins_property"
+              action="action_coins_property"
+              sequence="10"
+              groups="group_coins_user,group_coins_manager"/>
+
+    <menuitem id="menu_coins_fiche_video"
+              name="Vidéos fiches"
+              parent="menu_coins_property"
+              action="action_coins_fiche_video"
+              sequence="40"
+              groups="group_coins_user,group_coins_manager"/>
+
+    <menuitem id="menu_coins_property_disponibilites"
+              name="Disponibilités"
+              parent="menu_coins_property"
+              action="action_coins_property_disponibilite"
+              sequence="20"
+              groups="group_coins_user,group_coins_manager"/>
+
+    <menuitem id="menu_coins_property_ops_slots"
+              name="Agenda ops"
+              parent="menu_coins_property"
+              action="action_coins_property_ops_slot"
+              sequence="30"
+              groups="group_coins_user,group_coins_manager"/>
+
+    <menuitem id="menu_coins_property_blocages"
+              name="Blocages (audit)"
+              parent="menu_coins_property"
+              action="action_coins_property_blocage"
+              sequence="90"
+              groups="group_coins_manager"/>
+
+    <menuitem id="menu_coins_partner_activity"
+              name="Partenaires"
+              parent="menu_coins_root"
+              action="action_coins_partner_activity"
+              sequence="30"
+              groups="group_coins_user,group_coins_manager"/>
+
+    <menuitem id="menu_coins_evenement"
+              name="Événements"
+              parent="menu_coins_root"
+              action="action_coins_evenement"
+              sequence="35"
+              groups="group_coins_user,group_coins_manager"/>
+
+    <menuitem id="menu_coins_prestataire"
+              name="Prestataires CRM"
+              parent="menu_coins_root"
+              action="action_coins_prestataire"
+              sequence="36"
+              groups="group_coins_user,group_coins_manager"/>
+
+    <menuitem id="menu_coins_prestataire_tag"
+              name="Tags prestataires"
+              parent="menu_coins_root"
+              action="action_coins_prestataire_tag"
+              sequence="37"
+              groups="group_coins_manager"/>
+
+    <menuitem id="menu_coins_deco_prestataire"
+              name="Prestataires déco"
+              parent="menu_coins_root"
+              action="action_coins_deco_prestataire"
+              sequence="38"
+              groups="group_coins_user,group_coins_manager"/>
+
+    <menuitem id="menu_coins_driver"
+              name="Chauffeurs"
+              parent="menu_coins_root"
+              sequence="40"
+              groups="group_coins_user,group_coins_manager"/>
+
+    <menuitem id="menu_coins_driver_list"
+              name="Chauffeurs"
+              parent="menu_coins_driver"
+              action="action_coins_driver"
+              sequence="10"
+              groups="group_coins_user,group_coins_manager"/>
+
+    <menuitem id="menu_coins_driver_contrat"
+              name="Contrats"
+              parent="menu_coins_driver"
+              action="action_coins_driver_contrat"
+              sequence="20"
+              groups="group_coins_user,group_coins_manager"/>
+
+    <menuitem id="menu_coins_driver_mouvement"
+              name="Mouvements"
+              parent="menu_coins_driver"
+              action="action_coins_driver_mouvement"
+              sequence="30"
+              groups="group_coins_user,group_coins_manager"/>
+
+    <menuitem id="menu_coins_driver_remise"
+              name="Remises quotidiennes"
+              parent="menu_coins_driver"
+              action="action_coins_driver_remise"
+              sequence="40"
+              groups="group_coins_user,group_coins_manager"/>
+
+    <!-- Forfaits détente (hors Viator) -->
+    <menuitem id="menu_coins_detente_root"
+              name="Forfaits détente"
+              parent="menu_coins_root"
+              sequence="50"
+              groups="group_coins_user,group_coins_manager,group_coins_agent_terrain"/>
+
+    <menuitem id="menu_coins_detente_dashboard"
+              name="Dashboard détente"
+              parent="menu_coins_detente_root"
+              action="action_coins_detente_dashboard_owl"
+              sequence="5"
+              groups="group_coins_user,group_coins_manager"/>
+
+    <menuitem id="menu_coins_detente_booking"
+              name="Réservations"
+              parent="menu_coins_detente_root"
+              action="action_coins_detente_booking"
+              sequence="10"
+              groups="group_coins_user,group_coins_manager,group_coins_agent_terrain"/>
+
+    <menuitem id="menu_coins_detente_calendar"
+              name="Calendrier détente"
+              parent="menu_coins_detente_root"
+              action="action_coins_detente_booking_calendar"
+              sequence="12"
+              groups="group_coins_user,group_coins_manager,group_coins_agent_terrain"/>
+
+    <menuitem id="menu_coins_detente_partner_planning"
+              name="Planning partenaires"
+              parent="menu_coins_detente_root"
+              action="action_coins_detente_partner_planning"
+              sequence="15"
+              groups="group_coins_user,group_coins_manager"/>
+
+    <menuitem id="menu_coins_detente_package"
+              name="Forfaits"
+              parent="menu_coins_detente_root"
+              action="action_coins_detente_package"
+              sequence="20"
+              groups="group_coins_user,group_coins_manager"/>
+
+    <menuitem id="menu_coins_detente_partner"
+              name="Partenaires"
+              parent="menu_coins_detente_root"
+              action="action_coins_detente_partner"
+              sequence="30"
+              groups="group_coins_user,group_coins_manager,group_coins_agent_terrain"/>
+
+    <menuitem id="menu_coins_detente_analytics"
+              name="Analyse pivot"
+              parent="menu_coins_detente_root"
+              action="action_coins_detente_dashboard"
+              sequence="45"
+              groups="group_coins_user,group_coins_manager"/>
+
+    <!-- Activités / excursions (privatif + réf. Viator) -->
+    <menuitem id="menu_coins_activite_root"
+              name="Activités"
+              parent="menu_coins_root"
+              sequence="55"
+              groups="group_coins_user,group_coins_manager,group_coins_agent_terrain"/>
+
+    <menuitem id="menu_coins_activite_dashboard"
+              name="Dashboard activités"
+              parent="menu_coins_activite_root"
+              action="action_coins_activite_dashboard_owl"
+              sequence="5"
+              groups="group_coins_user,group_coins_manager"/>
+
+    <menuitem id="menu_coins_activite_booking"
+              name="Réservations"
+              parent="menu_coins_activite_root"
+              action="action_coins_activite_booking"
+              sequence="10"
+              groups="group_coins_user,group_coins_manager,group_coins_agent_terrain"/>
+
+    <menuitem id="menu_coins_activite_catalog"
+              name="Catalogue"
+              parent="menu_coins_activite_root"
+              action="action_coins_activite"
+              sequence="20"
+              groups="group_coins_user,group_coins_manager,group_coins_agent_terrain"/>
+
+    <!-- Conversations d'accueil Yasmine (remplace le quiz) -->
+    <menuitem id="menu_coins_yasmine_root"
+              name="Yasmine"
+              parent="menu_coins_root"
+              sequence="58"
+              groups="group_coins_user,group_coins_manager"/>
+
+    <menuitem id="menu_coins_yasmine_conversation"
+              name="Conversations accueil"
+              parent="menu_coins_yasmine_root"
+              action="action_coins_yasmine_conversation"
+              sequence="10"
+              groups="group_coins_user,group_coins_manager"/>
+
+    <menuitem id="menu_coins_wa_session"
+              name="Sessions WhatsApp"
+              parent="menu_coins_yasmine_root"
+              action="action_coins_wa_session"
+              sequence="20"
+              groups="group_coins_user,group_coins_manager"/>
+
+    <menuitem id="menu_coins_wa_log"
+              name="Journal WhatsApp"
+              parent="menu_coins_yasmine_root"
+              action="action_coins_wa_log"
+              sequence="30"
+              groups="group_coins_user,group_coins_manager"/>
+
+    <!-- Carnet du Voyageur + Ambassadeurs -->
+    <menuitem id="menu_coins_carnet_root"
+              name="Carnet &amp; Fidélité"
+              parent="menu_coins_root"
+              sequence="60"
+              groups="group_coins_user,group_coins_manager"/>
+
+    <menuitem id="menu_coins_carnet"
+              name="Carnets"
+              parent="menu_coins_carnet_root"
+              action="action_coins_carnet"
+              sequence="10"
+              groups="group_coins_user,group_coins_manager"/>
+
+    <menuitem id="menu_coins_carnet_badge"
+              name="Badges"
+              parent="menu_coins_carnet_root"
+              action="action_coins_carnet_badge"
+              sequence="20"
+              groups="group_coins_user,group_coins_manager"/>
+
+    <menuitem id="menu_coins_carnet_tier"
+              name="Paliers"
+              parent="menu_coins_carnet_root"
+              action="action_coins_carnet_tier"
+              sequence="30"
+              groups="group_coins_manager"/>
+
+    <menuitem id="menu_coins_ambassador"
+              name="Ambassadeurs"
+              parent="menu_coins_carnet_root"
+              action="action_coins_ambassador"
+              sequence="40"
+              groups="group_coins_user,group_coins_manager"/>
+
+    <menuitem id="menu_coins_ambassador_referral"
+              name="Parrainages"
+              parent="menu_coins_carnet_root"
+              action="action_coins_ambassador_referral"
+              sequence="50"
+              groups="group_coins_user,group_coins_manager"/>
+
+    <menuitem id="menu_coins_distribution"
+              name="Distribution OTA"
+              parent="menu_coins_root"
+              sequence="25"
+              groups="group_coins_user,group_coins_manager"/>
+
+    <menuitem id="menu_coins_channex_config"
+              name="Connexion Channex"
+              parent="menu_coins_distribution"
+              action="action_coins_channex_config"
+              sequence="10"
+              groups="group_coins_manager"/>
+
+    <menuitem id="menu_coins_channex_mapping"
+              name="Mapping propriétés"
+              parent="menu_coins_distribution"
+              action="action_coins_channex_mapping"
+              sequence="20"
+              groups="group_coins_manager"/>
+
+    <menuitem id="menu_coins_channex_calendar"
+              name="Calendrier tarifs OTA"
+              parent="menu_coins_distribution"
+              action="action_coins_channex_calendar"
+              sequence="25"
+              groups="group_coins_user,group_coins_manager"/>
+
+    <menuitem id="menu_coins_channex_push"
+              name="File fermeture OTA"
+              parent="menu_coins_distribution"
+              action="action_coins_channex_push"
+              sequence="30"
+              groups="group_coins_user,group_coins_manager"/>
+
+    <menuitem id="menu_coins_channex_revision"
+              name="Résas OTA inbound"
+              parent="menu_coins_distribution"
+              action="action_coins_channex_revision"
+              sequence="40"
+              groups="group_coins_user,group_coins_manager"/>
+</odoo>

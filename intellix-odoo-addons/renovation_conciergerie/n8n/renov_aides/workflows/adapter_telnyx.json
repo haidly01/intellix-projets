@@ -1,0 +1,51 @@
+{
+  "name": "renov-aides — Adapter Telnyx",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "telephony/telnyx/start",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "tx-start",
+      "name": "Webhook Telnyx",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 300],
+      "webhookId": "renov-telnyx-events"
+    },
+    {
+      "parameters": {
+        "jsCode": "const b=$input.first().json.body||$input.first().json;\nconst data=b.data||b;const payload=data.payload||data;\nconst et=(data.event_type||'').toLowerCase();\nconst map={'call.answered':'call_connected','call.recording.saved':'recording_ready','call.hangup':'call_ended','call.machine.detection.ended':'amd_result'};\nconst event_type=map[et]||'call_ended';\nlet amd='unknown';\nif(event_type==='amd_result'){const r=(payload.result||'').toLowerCase();amd=r.includes('machine')?'machine':r.includes('human')?'human':'unknown';}\nconst ev={event_type,call_sid:payload.call_control_id||payload.id||'',from:payload.from||'',to:payload.to||'',recording_url:payload.recording_urls?.mp3||payload.recording_url||'',amd_result:amd,duration_sec:payload.duration_secs||0,provider:'telnyx',raw:b};\nif(event_type==='call_connected'){\n  const bucket=($env.STORAGE_BUCKET_URL||'').replace(/\\/$/, '');\n  const texml='<?xml version=\"1.0\" encoding=\"UTF-8\"?><Response><Play>'+bucket+'/ouverture.mp3</Play><Record action=\"'+($env.N8N_WEBHOOK_URL||'').replace(/\\/$/, '')+'/telephony/telnyx/transcribe\" maxLength=\"15\" timeout=\"3\"/></Response>';\n  return [{json:{normalized:ev,texml}}];\n}\nawait this.helpers.httpRequest({method:'POST',url:($env.N8N_WEBHOOK_URL||'').replace(/\\/$/, '')+'/renov/conversation',body:ev,json:true});\nreturn [{json:ev}];"
+      },
+      "id": "tx-norm",
+      "name": "Normalize Telnyx",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [280, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.texml || '' }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [{ "name": "Content-Type", "value": "text/xml" }]
+          }
+        }
+      },
+      "id": "tx-resp",
+      "name": "Respond TeXML",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [560, 300]
+    }
+  ],
+  "connections": {
+    "Webhook Telnyx": { "main": [[{ "node": "Normalize Telnyx", "type": "main", "index": 0 }]] },
+    "Normalize Telnyx": { "main": [[{ "node": "Respond TeXML", "type": "main", "index": 0 }]] }
+  },
+  "meta": { "templateCredsSetupCompleted": false },
+  "tags": [{ "name": "renov-aides" }, { "name": "telephony-telnyx" }]
+}

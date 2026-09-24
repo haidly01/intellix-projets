@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="level_apprenti" model="pe.level">
+        <field name="name">Apprenti</field>
+        <field name="level_number">1</field>
+        <field name="icon">🌱</field>
+        <field name="points_required">0</field>
+        <field name="perks">Profil People Engine actif</field>
+    </record>
+    <record id="level_professionnel" model="pe.level">
+        <field name="name">Professionnel</field>
+        <field name="level_number">2</field>
+        <field name="icon">⭐</field>
+        <field name="points_required">100</field>
+        <field name="perks">Badge visible sur le profil</field>
+    </record>
+    <record id="level_expert" model="pe.level">
+        <field name="name">Expert</field>
+        <field name="level_number">3</field>
+        <field name="icon">🏅</field>
+        <field name="points_required">300</field>
+        <field name="perks">Priorité sur les défis d'équipe</field>
+    </record>
+    <record id="level_champion" model="pe.level">
+        <field name="name">Champion</field>
+        <field name="level_number">4</field>
+        <field name="icon">🌟</field>
+        <field name="color">#FFD700</field>
+        <field name="points_required">600</field>
+        <field name="perks">Reconnaissance publique équipe</field>
+    </record>
+</odoo>

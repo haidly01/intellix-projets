@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="seq_pe_disciplinary_incident" model="ir.sequence">
+        <field name="name">Incident disciplinaire</field>
+        <field name="code">pe.disciplinary.incident</field>
+        <field name="prefix">INC/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_pe_disciplinary_procedure" model="ir.sequence">
+        <field name="name">Procédure disciplinaire</field>
+        <field name="code">pe.disciplinary.procedure</field>
+        <field name="prefix">PROC/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_pe_disciplinary_letter" model="ir.sequence">
+        <field name="name">Lettre disciplinaire</field>
+        <field name="code">pe.disciplinary.letter</field>
+        <field name="prefix">LETT/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

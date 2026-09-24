@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_renovation_partner_package_tree" model="ir.ui.view">
+        <field name="name">renovation.partner.package.tree</field>
+        <field name="model">renovation.partner.package</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'active' and not is_paused_now"
+                  decoration-warning="leads_remaining &lt;= 2 and state == 'active'"
+                  decoration-danger="state == 'expired' or is_paused_now">
+                <field name="name"/>
+                <field name="partner_id" string="Entrepreneur / agence partenaire"/>
+                <field name="secteur_tarif_id"/>
+                <field name="forfait_type_id"/>
+                <field name="leads_total"/>
+                <field name="leads_used"/>
+                <field name="leads_remaining"/>
+                <field name="state"/>
+                <field name="en_pause" column_invisible="1"/>
+                <field name="is_paused_now" column_invisible="1"/>
+                <field name="pause_badge" widget="badge" decoration-warning="is_paused_now"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_renovation_partner_package_form" model="ir.ui.view">
+        <field name="name">renovation.partner.package.form</field>
+        <field name="model">renovation.partner.package</field>
+        <field name="arch" type="xml">
+            <form string="Nouveau forfait partenaire" class="o_reno_forfait_form">
+                <header>
+                    <button name="action_activate" string="Activer"
+                            type="object" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_consume_lead" string="Consommer 1 lead"
+                            type="object" class="btn-secondary"
+                            invisible="state != 'active'"/>
+                    <button name="action_send_welcome_email" string="Envoyer email bienvenue"
+                            type="object"
+                            invisible="state != 'active'"/>
+                    <button name="action_view_package_leads" string="Leads de ce partenaire"
+                            type="object" class="btn-secondary"/>
+                    <button name="action_cancel" string="Annuler"
+                            type="object"
+                            invisible="state in ('cancelled', 'expired')"/>
+                    <button name="action_set_draft" string="Remettre en brouillon"
+                            type="object"
+                            invisible="state == 'draft'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,active,expired"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_credits" type="object"
+                                class="oe_stat_button" icon="fa-clock-o">
+                            <field name="credit_leads_total" widget="statinfo" string="Crédits"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="En pause" bg_color="text-bg-warning"
+                            invisible="not is_paused_now"/>
+                    <field name="company_id" invisible="1"/>
+                    <field name="package_type_id" invisible="1"/>
+                    <field name="secteur" invisible="1"/>
+                    <field name="is_paused_now" invisible="1"/>
+                    <field name="currency_id" invisible="1"/>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Nouveau forfait partenaire"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <label for="partner_id" string="Entrepreneur / agence partenaire"/>
+                        <div class="o_row o_reno_partner_row">
+                            <field name="partner_id" nolabel="1"
+                                   domain="[('category_id.name', '=', 'Partenaire Réno Immo')]"/>
+                            <field name="partner_tag_ids" widget="many2many_tags" nolabel="1" readonly="1"/>
+                        </div>
+                    </group>
+                    <div class="o_reno_helper">
+                        Seuls les contacts marqués 'Partenaire Réno Immo' apparaissent ici
+                        <button name="action_create_reno_partner" type="object"
+                                string="Créer un nouveau contact"
+                                class="btn-link"/>
+                    </div>
+
+                    <group string="Forfait et couverture">
+                        <group>
+                            <field name="secteur_tarif_id" options="{'no_create': True}"/>
+                        </group>
+                        <group>
+                            <field name="forfait_type_id" options="{'no_create': True}"/>
+                        </group>
+                    </group>
+                    <div class="o_reno_forfait_cards">
+                        <div class="o_reno_forfait_card">
+                            <div class="o_reno_card_label">Leads inclus</div>
+                            <field name="leads_total" nolabel="1"/>
+                        </div>
+                        <div class="o_reno_forfait_card">
+                            <div class="o_reno_card_label">Leads restants</div>
+                            <field name="leads_remaining" nolabel="1" readonly="1"/>
+                        </div>
+                        <div class="o_reno_forfait_card">
+                            <div class="o_reno_card_label">Prix calculé</div>
+                            <field name="forfait_prix" nolabel="1" readonly="1" widget="monetary"/>
+                        </div>
+                    </div>
+                    <group>
+                        <field name="category_ids" widget="many2many_tags"/>
+                    </group>
+                    <group>
+                        <field name="coverage_mode" widget="radio"
+                               options="{'horizontal': true}"
+                               readonly="not partner_id"/>
+                        <field name="city_text"
+                               placeholder="ex: Montréal Laval Longueuil (espace ou virgule)"
+                               invisible="coverage_mode != 'city'"/>
+                        <field name="coverage_radius_km"
+                               invisible="coverage_mode != 'radius'"/>
+                        <field name="postal_codes_text"
+                               placeholder="ex: H7T1A1 J7E2B2 G1A0A1 (espace ou virgule)"
+                               invisible="coverage_mode != 'postal'"
+                               readonly="not partner_id"/>
+                        <field name="province_ids" widget="many2many_tags"
+                               options="{'no_create': True}"
+                               invisible="coverage_mode != 'province'"/>
+                    </group>
+
+                    <separator string="Historique des crédits"/>
+                    <div class="mb-2">
+                        <button name="action_add_credit" type="object"
+                                string="+ Ajouter un crédit"
+                                class="btn-secondary"/>
+                    </div>
+                    <field name="credit_ids" nolabel="1">
+                        <list create="0"
+                              decoration-success="motif == 'promotion'"
+                              decoration-warning="motif == 'retard'">
+                            <field name="date_short" string="Date"/>
+                            <field name="leads_signed" string="Leads"/>
+                            <field name="motif" widget="badge"
+                                   decoration-success="motif == 'promotion'"
+                                   decoration-warning="motif == 'retard'"/>
+                            <field name="cree_par" string="Par"/>
+                            <field name="date" column_invisible="1"/>
+                            <field name="nombre_leads" column_invisible="1"/>
+                        </list>
+                    </field>
+
+                    <group string="Disponibilité">
+                        <field name="en_pause"/>
+                        <field name="pause_debut" invisible="not en_pause"/>
+                        <field name="pause_fin" invisible="not en_pause"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_renovation_partner_package" model="ir.actions.act_window">
+        <field name="name">Forfaits partenaires</field>
+        <field name="res_model">renovation.partner.package</field>
+        <field name="view_mode">list,form</field>
+        <field name="context" eval="{'reno_immo_category_id': ref('partner_category_reno_immo')}"/>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_renovation_partner_package_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_renovation_partner_package_form')})]"/>
+    </record>
+
+    <menuitem id="menu_renovation_partner_package"
+              name="Forfaits partenaires"
+              parent="menu_renovation_root"
+              action="action_renovation_partner_package"
+              sequence="10"
+              groups="base.group_system"/>
+
+</odoo>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Menu visible directement sous Ventes → Commandes -->
+    <menuitem id="menu_intellix_quotation_templates"
+              name="Modèles de devis"
+              parent="sale.sale_order_menu"
+              action="action_intellix_quotation_templates"
+              groups="sales_team.group_sale_salesman"
+              sequence="5"/>
+
+    <!-- Raccourci aussi à la racine Ventes pour encore plus de visibilité -->
+    <menuitem id="menu_intellix_quotation_templates_root"
+              name="Modèles de devis"
+              parent="sale.sale_menu_root"
+              action="action_intellix_quotation_templates"
+              groups="sales_team.group_sale_salesman"
+              sequence="8"/>
+
+    <menuitem id="menu_ix_category_videos"
+              name="Vidéos devis"
+              parent="sale.sale_menu_root"
+              action="action_ix_category_videos"
+              groups="sales_team.group_sale_manager"
+              sequence="80"/>
+</odoo>

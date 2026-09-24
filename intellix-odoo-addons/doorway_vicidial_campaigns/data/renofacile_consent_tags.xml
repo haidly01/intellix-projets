@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="crm_tag_renofacile_consent_ok" model="crm.tag">
+        <field name="name">Consentement rappel OK</field>
+        <field name="color">10</field>
+    </record>
+    <record id="crm_tag_renofacile_sans_consent" model="crm.tag">
+        <field name="name">Sans consentement rappel</field>
+        <field name="color">1</field>
+    </record>
+    <record id="crm_tag_renofacile_pool_aout_2026" model="crm.tag">
+        <field name="name">Pool rappel août 2026</field>
+        <field name="color">4</field>
+    </record>
+</odoo>

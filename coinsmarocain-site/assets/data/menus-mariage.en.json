@@ -1,0 +1,205 @@
+{
+  "section": {
+    "id": "menu-mariage",
+    "titre": "Our Wedding Menus",
+    "sousTitre": "Traditional Moroccan cuisine & international inspirations",
+    "intro": "Two culinary worlds for your wedding: a fully traditional Moroccan menu, and a mix menu that weaves Moroccan and international flavours into three complete formulas.",
+    "lieu": "Marrakech, Morocco",
+    "marque": "Coins Marocain"
+  },
+
+  "ui": {
+    "tabTraditionnel": "Traditional menu",
+    "tabMix": "Mix menu — 3 formulas",
+    "cta": "Request a custom quote",
+    "ctaNote": "Menus can be tailored to your tastes and guest count",
+    "prixIndicatif": "Indicative prices in euros — the final quote depends on guest count and the adjustments you choose.",
+    "populaire": "Popular",
+    "exemples": "Sample journeys — composed with Yasmine",
+    "rowLabels": {
+      "cocktailBouchees": "Welcome drinks & bites",
+      "entree": "Starter",
+      "platPrincipal": "Main course",
+      "dessert": "Dessert",
+      "prixParPersonne": "Price per person"
+    }
+  },
+
+  "menus": [
+    {
+      "id": "menu-traditionnel",
+      "type": "menu-fixe",
+      "titre": "Wedding Menu",
+      "sousTitre": "Traditional Moroccan cuisine",
+      "description": "A complete, authentic path from the welcome cocktail to the cake bar — a traditional Moroccan tasting journey.",
+      "etapes": [
+        {
+          "id": "arrivee-invites",
+          "titre": "As guests arrive",
+          "sousTitre": "Welcome cocktail & small bites",
+          "groupes": [
+            {
+              "nom": "Drinks",
+              "items": [
+                "Orange-carrot juice",
+                "Watermelon-mint juice",
+                "Fresh lemonade",
+                "Ceremonial mint tea",
+                "Orange-blossom water"
+              ]
+            },
+            {
+              "nom": "Savoury bites",
+              "items": [
+                "Chicken & almond briouates",
+                "Seafood briouates",
+                "Individual pigeon pastillas",
+                "Goat cheese & honey puffs",
+                "Miniature kefta skewers",
+                "Olives & roasted almonds"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "entrees",
+          "titre": "Starters",
+          "plats": [
+            {
+              "nom": "Moroccan mixed salad",
+              "details": "Zaalouk · taktouka · spiced carrots · beetroot · grilled peppers · cinnamon orange · fennel"
+            },
+            {
+              "nom": "Chicken pastilla",
+              "details": "Traditional diamond presentation, sweet-savoury, cinnamon & icing sugar"
+            }
+          ]
+        },
+        {
+          "id": "plats-principaux",
+          "titre": "Main courses",
+          "sousTitre": "Served as individual tagines or to share",
+          "plats": [
+            {
+              "nom": "Lamb tagine with prunes and almonds",
+              "details": "Honey and cinnamon"
+            },
+            {
+              "nom": "Chicken tagine with olives and preserved lemon",
+              "details": null
+            },
+            {
+              "nom": "Whole lamb méchoui",
+              "details": "Centrepiece, carved in the room"
+            },
+            {
+              "nom": "Veal tagine with quince and honey",
+              "details": "Cinnamon and roasted almonds"
+            }
+          ]
+        },
+        {
+          "id": "bar-grillades",
+          "titre": "Grill bar",
+          "sousTitre": "Evening",
+          "miseEnAvant": true,
+          "groupes": [
+            {
+              "nom": "Grills",
+              "items": [
+                "Lamb skewers",
+                "Chicken skewers",
+                "Kefta skewers",
+                "Grilled merguez",
+                "Grilled liver (kabab)"
+              ]
+            },
+            {
+              "nom": "Sides",
+              "items": [
+                "Grilled vegetables",
+                "Warm Moroccan bread, khobz & batbout"
+              ]
+            },
+            {
+              "nom": "Sauces",
+              "items": ["Chermoula", "Harissa", "Garlic sauce"]
+            }
+          ]
+        },
+        {
+          "id": "bar-cake",
+          "titre": "Cake bar",
+          "sousTitre": "Dessert & sweet evening",
+          "miseEnAvant": true,
+          "groupes": [
+            {
+              "nom": "Moroccan pastries",
+              "items": ["Gazelle horns", "Ghriba", "Chebakia", "Honey & almond briouates"]
+            },
+            {
+              "nom": "Sweet pieces",
+              "items": ["Mini cupcakes", "Verrines", "Centrepiece wedding cake"]
+            },
+            {
+              "nom": "To finish",
+              "items": ["Dried fruit & stuffed dates", "Mint tea and coffee served throughout"]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "menu-mix-3-formules",
+      "type": "grille-tarifaire",
+      "titre": "Mix menu — 3 formulas",
+      "sousTitre": "Traditional Moroccan & international",
+      "description": "Three complete formulas combining Moroccan and international cooking. The price gap reflects concrete choices — not a simple add-on list — on the main protein, the starter, and the generosity of the cocktail and dessert.",
+      "colonnes": ["cocktailBouchees", "entree", "platPrincipal", "dessert", "prixParPersonne"],
+      "formules": [
+        {
+          "id": "essentielle",
+          "nom": "Essential",
+          "prixAffiche": "€65 / pers.",
+          "prixFourchette": { "min": 63, "max": 65, "devise": "EUR" },
+          "cocktailBouchees": "Juices, mint tea · Briouates, mini quiches",
+          "entree": "Moroccan mixed salad",
+          "platPrincipal": "Chicken tagine, olives & preserved lemon + risotto",
+          "dessert": "Gazelle horns, chebakia · Chocolate fondant"
+        },
+        {
+          "id": "signature",
+          "nom": "Signature",
+          "prixAffiche": "€75 / pers.",
+          "prixFourchette": { "min": 75, "max": 75, "devise": "EUR" },
+          "cocktailBouchees": "+ Hummus verrines · + Mini kefta skewers",
+          "entree": "Burrata, confit tomatoes & pesto",
+          "platPrincipal": "Lamb tagine with prunes + risotto or beef (choice)",
+          "dessert": "Mixed buffet + fruit fountain",
+          "miseEnAvant": true
+        },
+        {
+          "id": "prestige",
+          "nom": "Prestige",
+          "prixAffiche": "€85 / pers.",
+          "prixFourchette": { "min": 85, "max": 87, "devise": "EUR" },
+          "cocktailBouchees": "Full mixed bites (4 types served)",
+          "entree": "Salmon carpaccio with citrus",
+          "platPrincipal": "Lamb tagine + beef fillet, pepper sauce, gratin",
+          "dessert": "Full buffet + individual pastries + fountain"
+        }
+      ],
+      "noteDistinction": {
+        "titre": "What sets the three formulas apart",
+        "texte": "The price gap reflects concrete choices: the main protein (chicken & risotto → lamb → lamb and beef), the starter (Moroccan salad → burrata → salmon) and the generosity of the cocktail and dessert. Each formula is a coherent whole, not a simple add-on list."
+      }
+    }
+  ],
+
+  "metaExtraction": {
+    "source": "PDFs provided by Karine: menumariagecoinsmarocain.pdf, menumix3formulesclient.pdf",
+    "dateExtraction": "2026-08-18",
+    "langue": "en",
+    "aVerifier": []
+  }
+}

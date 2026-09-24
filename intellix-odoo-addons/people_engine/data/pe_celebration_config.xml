@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="pe_celebration_enabled_birthday" model="ir.config_parameter">
+        <field name="key">people_engine.celebration.enabled.birthday</field>
+        <field name="value">True</field>
+    </record>
+    <record id="pe_celebration_enabled_anniversary_1y" model="ir.config_parameter">
+        <field name="key">people_engine.celebration.enabled.anniversary_1y</field>
+        <field name="value">True</field>
+    </record>
+    <record id="pe_celebration_enabled_anniversary_3y" model="ir.config_parameter">
+        <field name="key">people_engine.celebration.enabled.anniversary_3y</field>
+        <field name="value">True</field>
+    </record>
+    <record id="pe_celebration_enabled_anniversary_5y" model="ir.config_parameter">
+        <field name="key">people_engine.celebration.enabled.anniversary_5y</field>
+        <field name="value">True</field>
+    </record>
+    <record id="pe_celebration_enabled_anniversary_10y" model="ir.config_parameter">
+        <field name="key">people_engine.celebration.enabled.anniversary_10y</field>
+        <field name="value">True</field>
+    </record>
+    <record id="pe_celebration_enabled_anniversary_other" model="ir.config_parameter">
+        <field name="key">people_engine.celebration.enabled.anniversary_other</field>
+        <field name="value">True</field>
+    </record>
+    <record id="pe_celebration_enabled_performance" model="ir.config_parameter">
+        <field name="key">people_engine.celebration.enabled.performance</field>
+        <field name="value">True</field>
+    </record>
+    <record id="pe_celebration_enabled_promotion" model="ir.config_parameter">
+        <field name="key">people_engine.celebration.enabled.promotion</field>
+        <field name="value">True</field>
+    </record>
+    <record id="pe_celebration_enabled_custom" model="ir.config_parameter">
+        <field name="key">people_engine.celebration.enabled.custom</field>
+        <field name="value">True</field>
+    </record>
+    <record id="pe_celebration_exclude_honoree" model="ir.config_parameter">
+        <field name="key">people_engine.celebration.exclude_honoree_email</field>
+        <field name="value">True</field>
+    </record>
+</odoo>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_messaging_root"
+              name="Messages"
+              sequence="50"
+              web_icon="mail,static/description/icon.png"/>
+
+    <menuitem id="menu_compose"
+              name="Campagne multi-canal"
+              parent="menu_messaging_root"
+              action="action_open_compose_wizard"
+              sequence="16"/>
+
+    <menuitem id="menu_bulk_select"
+              name="Sélection leads"
+              parent="menu_messaging_root"
+              action="action_bulk_select_wizard"
+              sequence="15"/>
+
+    <menuitem id="menu_campaigns"
+              name="Campagnes"
+              parent="menu_messaging_root"
+              action="action_message_campaign"
+              sequence="20"/>
+
+    <menuitem id="menu_logs"
+              name="Historique envois"
+              parent="menu_messaging_root"
+              action="action_message_log"
+              sequence="30"/>
+
+    <menuitem id="menu_templates"
+              name="Templates"
+              parent="menu_messaging_root"
+              action="action_message_template"
+              sequence="40"/>
+
+    <menuitem id="menu_channels"
+              name="Canaux configurés"
+              parent="menu_messaging_root"
+              action="action_channel_config"
+              sequence="80"
+              groups="base.group_system"/>
+</odoo>

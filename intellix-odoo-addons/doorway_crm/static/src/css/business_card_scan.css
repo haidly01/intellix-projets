@@ -1,0 +1,159 @@
+/* Scanner carte de visite — mobile first */
+.o_doorway_bcard_scan {
+    height: 100%;
+    min-height: 0;
+    overflow: auto;
+    background: var(--ix-bg, #0b1020);
+    color: var(--ix-text, #eef2ff);
+    padding: 12px 16px 24px;
+    box-sizing: border-box;
+}
+
+.o_doorway_bcard_scan__inner {
+    max-width: 520px;
+    margin: 0 auto;
+}
+
+.o_doorway_bcard_scan__head h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.o_doorway_bcard_scan__head p {
+    font-size: 0.9rem;
+    color: var(--ix-text-muted, #94a3b8);
+}
+
+.o_doorway_bcard_scan__preview {
+    margin: 16px 0;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--ix-border, #2a3358);
+    background: #000;
+}
+
+.o_doorway_bcard_scan__preview img {
+    display: block;
+    width: 100%;
+    max-height: 280px;
+    object-fit: contain;
+}
+
+.o_doorway_bcard_scan__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.o_doorway_bcard_scan__actions .btn-lg {
+    min-height: 48px;
+    font-size: 1rem;
+}
+
+.o_doorway_bcard_scan__loading {
+    text-align: center;
+    padding: 48px 16px;
+    color: var(--ix-text-muted, #94a3b8);
+}
+
+.o_doorway_bcard_scan__form {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 12px;
+}
+
+.o_doorway_bcard_scan__form label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--ix-text-muted, #94a3b8);
+    margin-top: 6px;
+}
+
+.o_doorway_bcard_scan__form .form-control {
+    background: var(--ix-surface, #141a33);
+    border-color: var(--ix-border, #2a3358);
+    color: var(--ix-text, #eef2ff);
+    min-height: 44px;
+    font-size: 16px;
+}
+
+/* Bouton header CRM — visible surtout mobile */
+@media (max-width: 768px) {
+    .o_doorway_bcard_header_btn {
+        order: -1;
+        width: 100%;
+        margin-bottom: 8px;
+    }
+    header .o_doorway_nav_buttons {
+        flex-wrap: wrap;
+    }
+}
+
+.doorway_bcard_mobile_btn {
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+@media (min-width: 769px) {
+    .doorway_bcard_mobile_btn .doorway_bcard_scan_btn {
+        max-width: 220px;
+    }
+}
+
+@media (max-width: 768px) {
+    .doorway_bcard_mobile_btn {
+        display: block;
+    }
+    .doorway_bcard_mobile_btn .doorway_bcard_scan_btn {
+        width: 100%;
+        min-height: 44px;
+    }
+}
+
+/* FAB mobile — accès rapide scan carte depuis n'importe quel écran CRM */
+.o_doorway_card_scan_systray {
+    display: none !important;
+}
+
+@media (max-width: 768px) {
+    .o_doorway_card_scan_systray {
+        display: block !important;
+        position: fixed !important;
+        bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+        right: 16px;
+        z-index: 1050;
+        margin: 0 !important;
+        padding: 0 !important;
+        pointer-events: none;
+    }
+
+    /* Pas de FAB sur la boîte mail (onglets en bas) */
+    .o_web_client:has(.doorway-webmail) .o_doorway_card_scan_systray {
+        display: none !important;
+    }
+
+    .o_doorway_card_scan_fab {
+        pointer-events: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 56px;
+        height: 56px;
+        border: none;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #7c6cf6, #22d3c5);
+        color: #fff;
+        font-size: 1.35rem;
+        box-shadow: 0 6px 20px rgba(124, 108, 246, 0.45);
+        cursor: pointer;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .o_doorway_card_scan_fab:active {
+        transform: scale(0.96);
+    }
+}

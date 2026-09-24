@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <template id="portal_layout" name="JT Portal Layout">
+    <t t-call="website.layout">
+      <div id="wrap" class="jt-portal oe_structure">
+        <header class="jt-header">
+          <div class="jt-header-inner">
+            <img src="/jt_client_portal/static/img/logo_jt.png" class="jt-logo" alt="Jason Thomas Assurance"/>
+            <nav class="jt-nav" t-if="token">
+              <a t-attf-href="/portail/#{token}">Accueil</a>
+              <a t-attf-href="/portail/#{token}/polices">Mes polices</a>
+              <a t-attf-href="/portail/#{token}/contact">Contacter Jason</a>
+            </nav>
+          </div>
+        </header>
+        <main class="jt-main">
+          <t t-out="0"/>
+        </main>
+        <footer class="jt-footer">
+          <p>Jason Thomas Assurance · Nouveau-Brunswick · <a href="mailto:jason@jasonthomasassurance.ca">jason@jasonthomasassurance.ca</a></p>
+          <p class="jt-footer-sub">Accès sécurisé — Ce lien est personnel et confidentiel.</p>
+        </footer>
+      </div>
+    </t>
+  </template>
+
+  <template id="portal_error" name="JT Portal — Erreur">
+    <t t-call="jt_client_portal.portal_layout">
+      <div class="jt-hero">
+        <h1>Accès non disponible</h1>
+        <p class="jt-hero-sub"><t t-out="message"/></p>
+      </div>
+    </t>
+  </template>
+</odoo>

@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="doorway_agents_dashboard.AgentsDashboard">
+        <div class="doorway-agents-dashboard o_action o_agents_dashboard_client o_intellix_client_action">
+
+            <header class="ix-dash-hero">
+                <div class="ix-dash-hero__text">
+                    <h1 class="ix-dash-hero__title">Agents IA autonomes</h1>
+                    <p class="ix-dash-hero__subtitle">
+                        Surveillez vos agents qui prospectent, qualifient et ferment 24/7.
+                    </p>
+                </div>
+                <div class="ix-dash-hero__actions">
+                    <button type="button" class="ix-dash-create" t-on-click="openCreateWizard" title="Créer un agent IA">
+                        <i class="fa fa-plus"/> Créer un agent
+                    </button>
+                    <button type="button" class="ix-dash-sync" t-on-click="syncAgents" title="Synchroniser ElevenLabs / n8n">
+                        <i class="fa fa-refresh"/> Synchroniser
+                    </button>
+                </div>
+            </header>
+
+            <div class="ix-dash-global-kpis" t-if="!state.loading">
+                <div class="ix-dash-global-kpi ix-dash-global-kpi--success">
+                    <span class="ix-dash-global-kpi__label">Taux de succès</span>
+                    <strong class="ix-dash-global-kpi__value"><t t-esc="state.globalKpis.success_rate"/>%</strong>
+                </div>
+                <div class="ix-dash-global-kpi ix-dash-global-kpi--latency">
+                    <span class="ix-dash-global-kpi__label">Latence moyenne</span>
+                    <strong class="ix-dash-global-kpi__value"><t t-esc="state.globalKpis.latency_ms"/> ms</strong>
+                </div>
+                <div class="ix-dash-global-kpi ix-dash-global-kpi--calls">
+                    <span class="ix-dash-global-kpi__label">Appels / 24 h</span>
+                    <strong class="ix-dash-global-kpi__value"><t t-esc="state.globalKpis.calls_24h"/></strong>
+                </div>
+            </div>
+
+            <div class="ix-dash-filters">
+                <div class="ix-dash-pills" role="tablist">
+                    <button type="button"
+                            t-att-class="'ix-dash-pill' + (state.filters.status === 'all' ? ' ix-dash-pill--active' : '')"
+                            t-on-click="() => setStatusFilter('all')">Tous</button>
+                    <button type="button"
+                            t-att-class="'ix-dash-pill' + (state.filters.status === 'active' ? ' ix-dash-pill--active' : '')"
+                            t-on-click="() => setStatusFilter('active')">Actifs</button>
+                    <button type="button"
+                            t-att-class="'ix-dash-pill' + (state.filters.status === 'inactive' ? ' ix-dash-pill--active' : '')"
+                            t-on-click="() => setStatusFilter('inactive')">En pause</button>
+                </div>
+                <div class="ix-dash-filters-advanced">
+                    <select t-on-change="(e) => setFilter('provider', e.target.value)" class="ix-dash-select">
+                        <option value="all">Tous providers</option>
+                        <option value="elevenlabs">ElevenLabs</option>
+                        <option value="n8n">n8n</option>
+                    </select>
+                    <select t-on-change="(e) => setFilter('pipeline', e.target.value)" class="ix-dash-select">
+                        <option value="all">Tous pipelines</option>
+                        <option value="renovation">Rénovation</option>
+                        <option value="immobilier">Immobilier</option>
+                        <option value="marketing">Marketing</option>
+                        <option value="driven">Driven</option>
+                        <option value="assurance">Assurance</option>
+                        <option value="doorway">Doorway</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="ix-dash-body">
+                <t t-if="state.loading">
+                    <div class="ix-dash-loading">
+                        <i class="fa fa-spinner fa-spin fa-2x"/>
+                        <span>Chargement des agents…</span>
+                    </div>
+                </t>
+                <t t-else="">
+                    <div class="ix-dash-layout">
+                        <div class="ix-dash-main">
+                            <h2 class="ix-dash-section-title">Agents actifs</h2>
+                            <div class="ix-dash-grid">
+                                <t t-foreach="state.agents" t-as="agent" t-key="agent.id">
+                                    <article t-att-class="'ix-dash-agent-card' + (state.selectedAgentId === agent.id ? ' ix-dash-agent-card--selected' : '')"
+                                             t-on-click="() => selectAgent(agent.id)">
+                                        <div class="ix-dash-agent-card__top">
+                                            <div>
+                                                <h3 class="ix-dash-agent-card__name"><t t-esc="agent.name"/></h3>
+                                                <p class="ix-dash-agent-card__role"><t t-esc="agentSubtitle(agent)"/></p>
+                                            </div>
+                                            <span t-att-class="statusPillClass(agent.status)">
+                                                <t t-esc="statusPillLabel(agent.status)"/>
+                                            </span>
+                                        </div>
+                                        <div class="ix-dash-agent-card__meta">
+                                            <span><t t-esc="labelProvider(agent.provider)"/></span>
+                                            <span t-if="agent.voice_name"> · <t t-esc="agent.voice_name"/></span>
+                                            <span t-if="agent.phone_display"> · <i class="fa fa-phone"/> <t t-esc="agent.phone_display"/></span>
+                                        </div>
+                                        <div class="ix-dash-agent-card__kpis">
+                                            <div class="ix-dash-card-kpi">
+                                                <strong><t t-esc="agent.score_pct or 0"/>%</strong>
+                                                <span>Succès</span>
+                                            </div>
+                                            <div class="ix-dash-card-kpi">
+                                                <strong><t t-esc="agent.latency_ms or 0"/></strong>
+                                                <span>ms</span>
+                                            </div>
+                                            <div class="ix-dash-card-kpi">
+                                                <strong><t t-esc="sparklineTotal(agent)"/></strong>
+                                                <span>7 j</span>
+                                            </div>
+                                        </div>
+                                        <div class="ix-dash-sparkline-wrap">
+                                            <canvas class="ix-dash-sparkline" t-att-data-agent-id="agent.id"/>
+                                        </div>
+                                        <div class="ix-dash-agent-card__actions" t-on-click.stop="() => {}">
+                                            <button type="button" class="ix-dash-btn-cta"
+                                                    t-if="agent.provider === 'n8n' or agent.provider === 'elevenlabs'"
+                                                    t-on-click="() => openWebTest(agent.id)">
+                                                Test web
+                                            </button>
+                                            <button type="button" class="ix-dash-btn-ghost" t-on-click="() => openTestWizard(agent.id)">
+                                                Appel tél.
+                                            </button>
+                                            <button type="button" class="ix-dash-btn-ghost" t-on-click="() => openEditWizard(agent.id)">
+                                                Modifier
+                                            </button>
+                                            <button type="button" class="ix-dash-btn-ghost" t-on-click="() => openHistory(agent.id)">
+                                                Historique
+                                            </button>
+                                        </div>
+                                    </article>
+                                </t>
+                                <t t-if="state.agents.length === 0">
+                                    <div class="ix-dash-empty">
+                                        <p>Aucun agent pour ce filtre.</p>
+                                        <button type="button" class="ix-dash-btn-cta" t-on-click="syncAgents">Synchroniser depuis l'API</button>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+
+                        <aside class="ix-dash-sidebar">
+                            <section class="ix-dash-sidebar-block ix-dash-sidebar-block--optimal">
+                                <header class="ix-dash-sidebar-block__head">
+                                    <h2 class="ix-dash-sidebar-block__title">Agents optimaux</h2>
+                                    <p class="ix-dash-sidebar-block__hint">Meilleurs scores et volume d'appels</p>
+                                </header>
+                                <ul class="ix-dash-sidebar-list">
+                                    <t t-foreach="state.optimalAgents" t-as="item" t-key="item.id">
+                                        <li class="ix-dash-sidebar-item ix-dash-sidebar-item--scored" t-on-click="() => selectAgent(item.id)">
+                                            <div class="ix-dash-sidebar-item__main">
+                                                <span class="ix-dash-sidebar-item__name"><t t-esc="item.name"/></span>
+                                                <span class="ix-dash-sidebar-item__meta"><t t-esc="pipelineLabel(item.pipeline)"/></span>
+                                            </div>
+                                            <div class="ix-dash-sidebar-item__kpis">
+                                                <span class="ix-dash-sidebar-pct"><t t-esc="item.score_pct"/>%</span>
+                                                <span class="ix-dash-sidebar-sub"><t t-esc="item.calls_7d"/> appels · 7 j</span>
+                                            </div>
+                                        </li>
+                                    </t>
+                                    <t t-if="state.optimalAgents.length === 0">
+                                        <li class="ix-dash-sidebar-empty">Aucun agent optimal pour l'instant.</li>
+                                    </t>
+                                </ul>
+                            </section>
+
+                            <section class="ix-dash-sidebar-block ix-dash-sidebar-block--new">
+                                <header class="ix-dash-sidebar-block__head">
+                                    <h2 class="ix-dash-sidebar-block__title">Nouveaux agents</h2>
+                                    <p class="ix-dash-sidebar-block__hint">En rodage — sans score consolidé</p>
+                                </header>
+                                <ul class="ix-dash-sidebar-list">
+                                    <t t-foreach="state.newAgents" t-as="item" t-key="item.id">
+                                        <li class="ix-dash-sidebar-item ix-dash-sidebar-item--new" t-on-click="() => selectAgent(item.id)">
+                                            <div class="ix-dash-sidebar-item__main">
+                                                <span class="ix-dash-sidebar-item__name"><t t-esc="item.name"/></span>
+                                                <span class="ix-dash-sidebar-item__meta">
+                                                    <t t-esc="labelProvider(item.provider)"/> · <t t-esc="pipelineLabel(item.pipeline)"/>
+                                                </span>
+                                            </div>
+                                            <span class="ix-dash-sidebar-badge">Nouveau</span>
+                                        </li>
+                                    </t>
+                                    <t t-if="state.newAgents.length === 0">
+                                        <li class="ix-dash-sidebar-empty">Tous les agents actifs sont optimisés.</li>
+                                    </t>
+                                </ul>
+                            </section>
+                        </aside>
+                    </div>
+                </t>
+            </div>
+
+            <footer class="ix-dash-footer">
+                <span>Sync ElevenLabs / n8n</span>
+                <span>Hébergé sur votre Odoo Intellix</span>
+                <span>Conformité horaires d'appel (QC)</span>
+            </footer>
+        </div>
+    </t>
+</templates>

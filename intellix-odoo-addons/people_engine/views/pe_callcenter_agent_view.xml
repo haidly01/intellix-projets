@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pe_employee_profile_callcenter" model="ir.ui.view">
+        <field name="name">pe.employee.profile.callcenter</field>
+        <field name="model">pe.employee.profile</field>
+        <field name="inherit_id" ref="people_engine.view_pe_employee_profile_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Call Center" name="callcenter">
+                    <group>
+                        <group string="Statut temps réel">
+                            <field name="cc_status" widget="badge"/>
+                            <field name="cc_status_since"/>
+                            <field name="vicidial_user"/>
+                            <field name="department_pe_id"/>
+                            <field name="regime_travail"/>
+                            <field name="pays_affectation"/>
+                        </group>
+                        <group string="Aujourd'hui">
+                            <field name="appels_jour"/>
+                            <field name="demos_bookees_jour"/>
+                            <field name="ventes_jour"/>
+                            <field name="score_ia_moy_jour"/>
+                            <field name="points_jour"/>
+                            <field name="points_semaine"/>
+                            <field name="points_mois"/>
+                            <field name="cc_rank_jour"/>
+                            <field name="cc_rank_semaine"/>
+                        </group>
+                    </group>
+                    <group string="Gamification">
+                        <field name="pe_points_total"/>
+                        <field name="pe_level_name"/>
+                        <field name="badge_award_count"/>
+                    </group>
+                    <field name="cc_call_log_ids" nolabel="1">
+                        <list>
+                            <field name="date_call"/>
+                            <field name="outcome" widget="badge"/>
+                            <field name="duration_fmt"/>
+                            <field name="ai_score"/>
+                            <field name="points_awarded"/>
+                            <field name="campaign_id"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

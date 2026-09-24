@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="crm_team_coins_quebec" model="crm.team">
+        <field name="name">Coins Québec</field>
+        <field name="use_leads">True</field>
+        <field name="use_opportunities">True</field>
+        <field name="is_agence_doorway_pipeline">True</field>
+        <field name="uses_provenance_stages">False</field>
+        <field name="sequence">15</field>
+    </record>
+
+    <record id="stage_coins_quebec_new" model="crm.stage">
+        <field name="name">Nouveau</field>
+        <field name="sequence">1</field>
+        <field name="team_ids" eval="[(4, ref('crm_team_coins_quebec'))]"/>
+    </record>
+    <record id="stage_coins_quebec_qualif" model="crm.stage">
+        <field name="name">Qualification</field>
+        <field name="sequence">5</field>
+        <field name="team_ids" eval="[(4, ref('crm_team_coins_quebec'))]"/>
+    </record>
+    <record id="stage_coins_quebec_booked" model="crm.stage">
+        <field name="name">RDV booké</field>
+        <field name="sequence">10</field>
+        <field name="team_ids" eval="[(4, ref('crm_team_coins_quebec'))]"/>
+    </record>
+    <record id="stage_coins_quebec_present" model="crm.stage">
+        <field name="name">Présent</field>
+        <field name="sequence">20</field>
+        <field name="is_won" eval="True"/>
+        <field name="team_ids" eval="[(4, ref('crm_team_coins_quebec'))]"/>
+    </record>
+    <record id="stage_coins_quebec_noshow" model="crm.stage">
+        <field name="name">Absent</field>
+        <field name="sequence">25</field>
+        <field name="fold" eval="True"/>
+        <field name="team_ids" eval="[(4, ref('crm_team_coins_quebec'))]"/>
+    </record>
+    <record id="stage_coins_quebec_followup" model="crm.stage">
+        <field name="name">Relance</field>
+        <field name="sequence">15</field>
+        <field name="team_ids" eval="[(4, ref('crm_team_coins_quebec'))]"/>
+    </record>
+</odoo>

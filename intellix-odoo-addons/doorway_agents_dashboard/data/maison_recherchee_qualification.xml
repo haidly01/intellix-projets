@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="agent_maison_recherchee" model="doorway.agent.profile">
+        <field name="name">Maison Recherchée · J+0 Qualification</field>
+        <field name="immo_agent_role">j0_qualification</field>
+        <field name="provider">elevenlabs</field>
+        <field name="external_agent_id">ELEVENLABS_AGENT_ID_IMMO</field>
+        <field name="default_volet">qualification</field>
+        <field name="agent_type">outbound</field>
+        <field name="timezone">America/Toronto</field>
+        <field name="transfer_phone">+14389929200</field>
+        <field name="allow_human_transfer" eval="True"/>
+        <field name="allow_send_sms" eval="True"/>
+        <field name="latency_target_ms">800</field>
+        <field name="voice_name">Rachel</field>
+        <field name="system_prompt">Tu es Sophie, l'assistante IA de Maison Recherchée. Tu appelles des propriétaires qui ont demandé une évaluation marchande gratuite via Meta Ads. OBJECTIF: Qualifier en 2-4 minutes max. Français québécois naturel, directe et chaleureuse. Variables: {{lead_name}}, {{property_address}}, {{selling_timeline}}, {{lead_id_odoo}}. Script: salutation, bon moment, timeline, propriétaire, valeur estimée, motivation, hypothèque, autres courtiers. Transfert humain +14389929200 si hot (délai sous 6 mois, propriétaire, motivé) ou demande explicite. Ne jamais promettre un prix. Max 4 minutes.</field>
+    </record>
+
+    <record id="agent_maison_recherchee_phone" model="doorway.agent.phone.number">
+        <field name="sip_trunk_name">Digital Doorway-4387905970</field>
+        <field name="twilio_sip_trunk_sid">TK4005d66df6aefef66f0a63a711491166</field>
+        <field name="notes">Meta Ads qualification — from +14387905970 — trunk TK4005d66df6aefef66f0a63a711491166</field>
+    </record>
+
+    <record id="agent_maison_recherchee_phone_out" model="doorway.agent.phone.number">
+        <field name="sip_trunk_name">Digital Doorway-4387905970</field>
+        <field name="twilio_sip_trunk_sid">TK4005d66df6aefef66f0a63a711491166</field>
+    </record>
+
+    <record id="agent_maison_volet_qualification" model="doorway.agent.volet">
+        <field name="prompt_hint">Script Sophie — qualification évaluation marchande Meta Ads (voir prompt principal).</field>
+    </record>
+</odoo>

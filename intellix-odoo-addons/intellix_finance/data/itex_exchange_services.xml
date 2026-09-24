@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="itex_service_marketing" model="itex.exchange.service">
+            <field name="name">Marketing / visibilité</field>
+        </record>
+        <record id="itex_service_compta" model="itex.exchange.service">
+            <field name="name">Comptabilité</field>
+        </record>
+        <record id="itex_service_juridique" model="itex.exchange.service">
+            <field name="name">Juridique</field>
+        </record>
+        <record id="itex_service_impression" model="itex.exchange.service">
+            <field name="name">Impression / graphisme</field>
+        </record>
+        <record id="itex_service_transport" model="itex.exchange.service">
+            <field name="name">Transport / logistique</field>
+        </record>
+        <record id="itex_service_restauration" model="itex.exchange.service">
+            <field name="name">Restauration</field>
+        </record>
+        <record id="itex_service_conseil" model="itex.exchange.service">
+            <field name="name">Conseil</field>
+        </record>
+        <record id="itex_service_tech" model="itex.exchange.service">
+            <field name="name">Technologies</field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="crm_lead_view_form_synthesis" model="ir.ui.view">
+        <field name="name">crm.lead.form.doorway.synthesis</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="priority">15</field>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[1]" position="before">
+                <page string="Synthèse lead &amp; IA" name="doorway_synthesis"
+                      invisible="type == 'lead'">
+                    <div class="alert alert-secondary o_doorway_lead_source_banner mb-3" role="status">
+                        <strong>Lead reçu</strong> — coordonnées telles qu'importées depuis Meta,
+                        le formulaire web ou n8n. La section <em>Qualification IA</em> ci-dessous
+                        correspond à l'appel et au scoring de l'agent.
+                    </div>
+
+                    <group string="📥 Lead reçu — coordonnées source">
+                        <group>
+                            <field name="source_prenom" readonly="1"/>
+                            <field name="source_nom" readonly="1"/>
+                            <field name="source_email" readonly="1" widget="email"/>
+                        </group>
+                        <group>
+                            <field name="source_phone" readonly="1" widget="phone"/>
+                            <field name="source_ville" readonly="1"/>
+                            <field name="haidly_source" readonly="1"
+                                   invisible="not haidly_source"/>
+                            <field name="reno_project_type" readonly="1"
+                                   invisible="not reno_project_type"/>
+                            <field name="immo_meta_form_id" readonly="1"
+                                   invisible="not immo_meta_form_id"/>
+                        </group>
+                    </group>
+
+                    <group string="🤖 Qualification IA — résultat appel">
+                        <group>
+                            <field name="ia_qualification_score" readonly="1"/>
+                            <field name="ia_qualification_score_numeric" readonly="1"/>
+                            <field name="doorway_agent_profile_id" readonly="1"
+                                   string="Agent IA"/>
+                            <field name="haidly_elevenlabs_conv_id" readonly="1"
+                                   invisible="not haidly_elevenlabs_conv_id"/>
+                            <field name="elevenlabs_conversation_id" readonly="1"
+                                   invisible="not elevenlabs_conversation_id"/>
+                        </group>
+                        <group>
+                            <field name="ia_call_recording_url" readonly="1" widget="url"
+                                   invisible="not ia_call_recording_url"/>
+                            <button name="action_play_ia_recording" type="object"
+                                    string="Écouter l'enregistrement" class="btn-link"
+                                    icon="fa-play"
+                                    invisible="not ia_call_recording_url"/>
+                            <field name="stage_id" readonly="1" string="Étape CRM"/>
+                        </group>
+                    </group>
+
+                    <group string="Transcription de l'appel IA"
+                           invisible="not ia_call_transcript_display">
+                        <field name="ia_call_transcript_display" nolabel="1" readonly="1"
+                               widget="text"/>
+                    </group>
+
+                    <group string="Historique enregistrements"
+                           invisible="not retell_call_log_ids">
+                        <field name="retell_call_log_ids" nolabel="1" readonly="1">
+                            <list>
+                                <field name="create_date" string="Date"/>
+                                <field name="phone_number"/>
+                                <field name="duration_seconds"/>
+                                <field name="recording_url" widget="url"/>
+                                <field name="retell_call_id" string="ID conversation"/>
+                            </list>
+                        </field>
+                    </group>
+                </page>
+            </xpath>
+
+            <xpath expr="//field[@name='probability']" position="attributes">
+                <attribute name="string">Probabilité de closing</attribute>
+            </xpath>
+            <xpath expr="//field[@name='automated_probability']" position="attributes">
+                <attribute name="string">Probabilité estimée (Odoo)</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

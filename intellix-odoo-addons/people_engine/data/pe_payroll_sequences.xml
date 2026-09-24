@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="seq_pe_employment_contract" model="ir.sequence">
+        <field name="name">Contrat PE</field>
+        <field name="code">pe.employment.contract</field>
+        <field name="prefix">CTR/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_pe_payroll_bulletin" model="ir.sequence">
+        <field name="name">Bulletin paie PE</field>
+        <field name="code">pe.payroll.bulletin</field>
+        <field name="prefix">BUL/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_pe_freelance_invoice" model="ir.sequence">
+        <field name="name">Facture freelance PE</field>
+        <field name="code">pe.freelance.invoice</field>
+        <field name="prefix"/>
+        <field name="padding">3</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

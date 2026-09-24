@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_social_tiktok_app_wizard_form" model="ir.ui.view">
+        <field name="name">doorway.social.tiktok.app.wizard.form</field>
+        <field name="model">doorway.social.tiktok.app.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Connecter un compte TikTok">
+                <group>
+                    <div colspan="2" class="alert alert-warning" role="status">
+                        <p class="mb-1">
+                            L’app <strong>Intellix</strong> est en sandbox.
+                            TikTok affiche alors « client_key » si le compte n’est
+                            pas dans <strong>Target users</strong> — la clé Odoo
+                            est déjà la bonne.
+                        </p>
+                        <ol class="mb-0 ps-3">
+                            <li>
+                                developers.tiktok.com → app Intellix →
+                                <strong>Sandbox</strong> → Target users → Add account
+                            </li>
+                            <li>
+                                Connectez-vous avec
+                                <strong>@coinsmarrakech</strong>
+                                (page Coins Marocain)
+                            </li>
+                            <li>
+                                Login Kit → Redirect URI = celle ci-dessous,
+                                sans slash à la fin
+                            </li>
+                            <li>
+                                Dans le navigateur, soyez connectée à TikTok
+                                en tant que <strong>@coinsmarrakech</strong>
+                                avant de cliquer Connecter
+                            </li>
+                        </ol>
+                    </div>
+                    <field name="expected_handle" widget="CopyClipboardChar"/>
+                    <field name="redirect_uri" widget="CopyClipboardChar"/>
+                    <field name="has_existing_credentials" invisible="1"/>
+                    <field name="pipeline_id" placeholder="Coins Marocain, Coins Québec…"/>
+                    <field name="account_id"
+                           domain="[('platform', '=', 'tiktok')]"
+                           options="{'no_create': True}"/>
+                    <field name="client_key" placeholder="Client key TikTok"/>
+                    <field name="client_secret" password="True" placeholder="Client secret TikTok"/>
+                </group>
+                <footer>
+                    <button name="action_save_and_connect" type="object"
+                            string="Enregistrer et connecter TikTok" class="btn-primary"/>
+                    <button name="action_save_credentials" type="object"
+                            string="Enregistrer sans connecter"/>
+                    <button string="Annuler" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_social_connect_tiktok" model="ir.actions.act_window">
+        <field name="name">Connecter un compte TikTok</field>
+        <field name="res_model">doorway.social.tiktok.app.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_doorway_social_account"/>
+        <field name="binding_view_types">list,kanban,form</field>
+    </record>
+</odoo>

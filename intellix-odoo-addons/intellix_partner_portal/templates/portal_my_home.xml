@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_home_leads" name="Portal My Home: Mes leads IntelliX"
+              inherit_id="portal.portal_my_home" priority="15">
+        <div id="portal_common_category" position="before">
+            <t t-if="request.env.user.has_group('intellix_partner_portal.group_intellix_partner_portal') or request.env.user.has_group('renovation_conciergerie.group_renovation_partner')">
+                <div class="o_portal_category row g-2 mt-3" id="portal_ipp_category">
+                    <t t-call="portal.portal_docs_entry">
+                        <t t-set="title">Mes leads</t>
+                        <t t-set="url" t-value="'/my/leads'"/>
+                        <t t-set="text">Accepter, refuser ou demander un remplacement de leads</t>
+                        <t t-set="config_card" t-value="True"/>
+                    </t>
+                    <t t-call="portal.portal_docs_entry">
+                        <t t-set="title">Mon profil partenaire</t>
+                        <t t-set="url" t-value="'/my/profil'"/>
+                        <t t-set="text">Zones, services, capacité et mode pause</t>
+                        <t t-set="config_card" t-value="True"/>
+                    </t>
+                    <t t-call="portal.portal_docs_entry">
+                        <t t-set="title">Mes stats</t>
+                        <t t-set="url" t-value="'/my/stats'"/>
+                        <t t-set="text">Score, acceptés, convertis et progression du bloc</t>
+                        <t t-set="config_card" t-value="True"/>
+                    </t>
+                    <t t-call="portal.portal_docs_entry">
+                        <t t-set="title">Facturation</t>
+                        <t t-set="url" t-value="'/my/facturation'"/>
+                        <t t-set="text">Factures de blocs de leads (portail IntelliX)</t>
+                        <t t-set="config_card" t-value="True"/>
+                    </t>
+                </div>
+                <div class="alert alert-info mt-3 mb-0" role="alert">
+                    Portail partenaire IntelliX —
+                    <a href="/my/leads" class="alert-link">ouvrir Mes leads</a>
+                </div>
+            </t>
+        </div>
+    </template>
+</odoo>

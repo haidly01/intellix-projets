@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Les mappings catégories → comptes 712420/712430 sont appliqués en post-init -->
+</odoo>

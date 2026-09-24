@@ -1,0 +1,208 @@
+{
+  "section": {
+    "id": "menu-mariage",
+    "titre": "Nos Menus de Mariage",
+    "sousTitre": "Cuisine marocaine traditionnelle & inspirations internationales",
+    "intro": "Découvrez deux univers culinaires pensés pour votre mariage : un menu 100% traditionnel marocain, et un menu mix combinant saveurs marocaines et internationales, décliné en trois formules.",
+    "lieu": "Marrakech, Maroc",
+    "marque": "Coins Marocain"
+  },
+
+  "ui": {
+    "tabTraditionnel": "Menu Traditionnel",
+    "tabMix": "Menu Mix — 3 formules",
+    "cta": "Demander un devis personnalisé",
+    "ctaNote": "Menus personnalisables selon vos envies et le nombre d'invités",
+    "prixIndicatif": "Prix indicatifs, en euros — le devis final dépend du nombre d'invités et des ajustements choisis.",
+    "populaire": "Populaire",
+    "exemples": "Exemples de parcours — à composer avec Yasmine",
+    "rowLabels": {
+      "cocktailBouchees": "Cocktail & bouchées",
+      "entree": "Entrée",
+      "platPrincipal": "Plat principal",
+      "dessert": "Dessert",
+      "prixParPersonne": "Prix par personne"
+    }
+  },
+
+  "menus": [
+    {
+      "id": "menu-traditionnel",
+      "type": "menu-fixe",
+      "titre": "Menu de Mariage",
+      "sousTitre": "Cuisine marocaine traditionnelle",
+      "description": "Un menu complet et authentique, du cocktail de bienvenue jusqu'au bar à cake, pensé comme un parcours gustatif traditionnel marocain.",
+      "etapes": [
+        {
+          "id": "arrivee-invites",
+          "titre": "À l'arrivée des invités",
+          "sousTitre": "Cocktail de bienvenue & petites bouchées",
+          "groupes": [
+            {
+              "nom": "Boissons",
+              "items": [
+                "Jus orange-carotte",
+                "Jus pastèque-menthe",
+                "Citronnade fraîche",
+                "Thé à la menthe en cérémonie",
+                "Eau à la fleur d'oranger"
+              ]
+            },
+            {
+              "nom": "Bouchées salées",
+              "items": [
+                "Briouates poulet & amandes",
+                "Briouates fruits de mer",
+                "Pastillas individuelles au pigeon",
+                "Feuilletés chèvre & miel",
+                "Brochettes de kefta miniatures",
+                "Olives & amandes grillées"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "entrees",
+          "titre": "Entrées",
+          "plats": [
+            {
+              "nom": "Salade marocaine variée",
+              "details": "Zaalouk · taktouka · carottes épicées · betteraves · poivrons grillés · orange à la cannelle · fenouil"
+            },
+            {
+              "nom": "Pastilla au poulet",
+              "details": "Présentation traditionnelle en losanges, sucrée-salée, cannelle & sucre glace"
+            }
+          ]
+        },
+        {
+          "id": "plats-principaux",
+          "titre": "Plats principaux",
+          "sousTitre": "Servis en tajines individuels ou à partager",
+          "plats": [
+            {
+              "nom": "Tajine d'agneau aux pruneaux et amandes",
+              "details": "Miel et cannelle"
+            },
+            {
+              "nom": "Tajine de poulet aux olives et citron confit",
+              "details": null
+            },
+            {
+              "nom": "Méchoui d'agneau entier",
+              "details": "Pièce centrale, découpé en salle"
+            },
+            {
+              "nom": "Tajine de veau aux coings et miel",
+              "details": "Cannelle et amandes grillées"
+            }
+          ]
+        },
+        {
+          "id": "bar-grillades",
+          "titre": "Bar à grillades",
+          "sousTitre": "En soirée",
+          "miseEnAvant": true,
+          "groupes": [
+            {
+              "nom": "Grillades",
+              "items": [
+                "Brochettes d'agneau",
+                "Brochettes de poulet",
+                "Brochettes de kefta",
+                "Merguez grillées",
+                "Foie grillé (kabab)"
+              ]
+            },
+            {
+              "nom": "Accompagnements",
+              "items": [
+                "Légumes grillés",
+                "Pain marocain chaud, khobz & batbout"
+              ]
+            },
+            {
+              "nom": "Sauces",
+              "items": ["Chermoula", "Harissa", "Sauce à l'ail"]
+            }
+          ]
+        },
+        {
+          "id": "bar-cake",
+          "titre": "Bar à cake",
+          "sousTitre": "Dessert & soirée sucrée",
+          "miseEnAvant": true,
+          "groupes": [
+            {
+              "nom": "Pâtisseries marocaines",
+              "items": ["Cornes de gazelle", "Ghriba", "Chebakia", "Briouates au miel et amandes"]
+            },
+            {
+              "nom": "Pièces sucrées",
+              "items": ["Mini cupcakes", "Verrines", "Pièce montée / wedding cake central"]
+            },
+            {
+              "nom": "Pour finir",
+              "items": ["Fruits secs & dattes fourrées", "Thé à la menthe et café servis en continu"]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "menu-mix-3-formules",
+      "type": "grille-tarifaire",
+      "titre": "Menu Mix — 3 formules",
+      "sousTitre": "Traditionnel marocain & international",
+      "description": "Trois formules complètes combinant cuisine marocaine et internationale. L'écart de prix reflète des choix concrets — pas une simple addition d'options — sur la protéine du plat principal, l'entrée, et la générosité du cocktail et du dessert.",
+      "colonnes": ["cocktailBouchees", "entree", "platPrincipal", "dessert", "prixParPersonne"],
+      "formules": [
+        {
+          "id": "essentielle",
+          "nom": "Formule Essentielle",
+          "prixAffiche": "65 € / pers.",
+          "prixFourchette": { "min": 63, "max": 65, "devise": "EUR" },
+          "cocktailBouchees": "Jus, thé à la menthe · Briouates, mini-quiches",
+          "entree": "Salade marocaine variée",
+          "platPrincipal": "Tajine de poulet, olives & citron confit + risotto",
+          "dessert": "Cornes de gazelle, chebakia · Fondant chocolat"
+        },
+        {
+          "id": "signature",
+          "nom": "Formule Signature",
+          "prixAffiche": "75 € / pers.",
+          "prixFourchette": { "min": 75, "max": 75, "devise": "EUR" },
+          "cocktailBouchees": "+ Verrines houmous · + Mini-brochettes de kefta",
+          "entree": "Burrata, tomates confites & pesto",
+          "platPrincipal": "Tajine d'agneau aux pruneaux + risotto ou bœuf (choix)",
+          "dessert": "Buffet mixte + fontaine de fruits",
+          "miseEnAvant": true
+        },
+        {
+          "id": "prestige",
+          "nom": "Formule Prestige",
+          "prixAffiche": "85 € / pers.",
+          "prixFourchette": { "min": 85, "max": 87, "devise": "EUR" },
+          "cocktailBouchees": "Bouchées mixtes complètes (4 types servis)",
+          "entree": "Carpaccio de saumon aux agrumes",
+          "platPrincipal": "Tajine d'agneau + filet de bœuf sauce au poivre, gratin",
+          "dessert": "Buffet complet + pâtisseries individuelles + fontaine"
+        }
+      ],
+      "noteDistinction": {
+        "titre": "Ce qui distingue les 3 formules",
+        "texte": "L'écart de prix reflète des choix concrets : la protéine du plat principal (poulet & risotto → agneau → agneau et bœuf), l'entrée (salade marocaine → burrata → saumon) et la générosité du cocktail et du dessert. Chaque formule est pensée comme un tout cohérent, pas une simple addition d'options."
+      }
+    }
+  ],
+
+  "metaExtraction": {
+    "source": "PDF fournis par Karine : menumariagecoinsmarocain.pdf, menumix3formulesclient.pdf",
+    "dateExtraction": "2026-08-18",
+    "langue": "fr",
+    "aVerifier": [
+      "Les prix (63-65€, 75€, 85-87€) sont ceux du PDF client — confirmer s'ils doivent être affichés publiquement sur le site ou seulement sur devis.",
+      "Vérifier si les deux menus doivent être affichés en euros ou en dirhams (MAD) sur le site, selon la cible de clientèle (Marrakech, Maroc)."
+    ]
+  }
+}

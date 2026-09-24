@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="stage_nouveau_lead" model="babinvest.concierge.stage">
+        <field name="name">Nouveau lead</field>
+        <field name="sequence">10</field>
+    </record>
+    <record id="stage_qualification" model="babinvest.concierge.stage">
+        <field name="name">Qualification</field>
+        <field name="sequence">20</field>
+    </record>
+    <record id="stage_nurturing" model="babinvest.concierge.stage">
+        <field name="name">Non qualifié / Nurturing</field>
+        <field name="sequence">30</field>
+    </record>
+    <record id="stage_presentation_projet" model="babinvest.concierge.stage">
+        <field name="name">Présentation projet</field>
+        <field name="sequence">40</field>
+    </record>
+    <record id="stage_visite_planifiee" model="babinvest.concierge.stage">
+        <field name="name">Visite planifiée</field>
+        <field name="sequence">50</field>
+    </record>
+    <record id="stage_visite_effectuee" model="babinvest.concierge.stage">
+        <field name="name">Visite effectuée</field>
+        <field name="sequence">60</field>
+    </record>
+    <record id="stage_negociation" model="babinvest.concierge.stage">
+        <field name="name">Négociation</field>
+        <field name="sequence">70</field>
+    </record>
+    <record id="stage_reservation" model="babinvest.concierge.stage">
+        <field name="name">Réservation (arrhes)</field>
+        <field name="sequence">80</field>
+    </record>
+    <record id="stage_compromis_depot" model="babinvest.concierge.stage">
+        <field name="name">Compromis/Dépôt</field>
+        <field name="sequence">90</field>
+        <field name="is_won">True</field>
+        <field name="fold">True</field>
+    </record>
+    <record id="stage_perdu" model="babinvest.concierge.stage">
+        <field name="name">Perdu</field>
+        <field name="sequence">100</field>
+        <field name="is_lost">True</field>
+        <field name="fold">True</field>
+    </record>
+</odoo>

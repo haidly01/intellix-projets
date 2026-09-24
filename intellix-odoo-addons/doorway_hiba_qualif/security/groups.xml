@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="group_pipeline_tab_coins_quebec" model="res.groups">
+        <field name="name">Onglet pipeline : Coins Québec</field>
+        <field name="comment">Menu et kanban Coins Québec (qualification Hiba, RDV Martin).</field>
+    </record>
+    <record id="group_hiba_freelance" model="res.groups">
+        <field name="name">Hiba — pointage et paie freelance</field>
+        <field name="comment">Login/logout et fiche de paie Hiba uniquement.</field>
+    </record>
+</odoo>

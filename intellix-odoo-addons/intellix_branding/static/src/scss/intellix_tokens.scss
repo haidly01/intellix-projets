@@ -1,0 +1,125 @@
+// Intellix CRM — design tokens (light + dark) + pont Bootstrap / Odoo
+// Police DM Sans : web_layout_intellix_fonts.xml
+
+@mixin ix-tokens-shared {
+    --ix-primary: #6366f1;
+    --ix-primary-light: #818cf8;
+    --ix-secondary: #22d3ee;
+    --ix-purple: #a855f7;
+    --ix-gradient-primary: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);
+    --ix-gradient-cta: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+    --ix-gradient-navbar: linear-gradient(90deg, #6366f1 0%, #7c3aed 50%, #a855f7 100%);
+    --ix-radius-card: 8px;
+    --ix-radius-btn: 6px;
+    --ix-radius-pill: 9999px;
+    --ix-font: "DM Sans", system-ui, -apple-system, sans-serif;
+    --ix-blue: var(--ix-primary);
+    --ix-violet: var(--ix-purple);
+    --ix-gradient: var(--ix-gradient-cta);
+    --ix-white: #ffffff;
+    --ix-gray-light: var(--ix-text-muted);
+    --ix-black: var(--ix-text);
+}
+
+@mixin ix-tokens-light {
+    @include ix-tokens-shared;
+    --ix-bg: #f8f9fb;
+    --ix-surface: #ffffff;
+    --ix-surface-elevated: #ffffff;
+    --ix-surface-hover: #f3f4f6;
+    --ix-border: #e5e7eb;
+    --ix-text: #111827;
+    --ix-text-muted: #6b7280;
+    --ix-text-subtle: #94a3b8;
+    --ix-text-inverse: #ffffff;
+    --ix-success: #22c55e;
+    --ix-warning: #f59e0b;
+    --ix-danger: #ef4444;
+    --ix-shadow-sm: 0 1px 2px rgba(17, 24, 39, 0.06);
+    --ix-shadow-md: 0 8px 24px rgba(99, 102, 241, 0.08);
+}
+
+@mixin ix-tokens-dark {
+    @include ix-tokens-shared;
+    --ix-bg: #0a0a1a;
+    --ix-surface: #1a1a2e;
+    --ix-surface-elevated: #1e1e32;
+    --ix-surface-hover: #2a2a48;
+    --ix-border: #334155;
+    --ix-text: #f1f5f9;
+    --ix-text-muted: #b8c5d6;
+    --ix-text-subtle: #94a3b8;
+    --ix-text-inverse: #ffffff;
+    --ix-success: #22d3ee;
+    --ix-warning: #f59e0b;
+    --ix-danger: #ef4444;
+    --ix-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.25);
+    --ix-shadow-md: 0 8px 32px rgba(99, 102, 241, 0.12);
+}
+
+:root,
+[data-bs-theme="light"] {
+    @include ix-tokens-light;
+}
+
+[data-bs-theme="dark"] {
+    @include ix-tokens-dark;
+}
+
+// ─────────────────────────────────────────────────────────────────────
+// Thème backend sélectionnable par l'utilisateur (Doorway).
+// Source de vérité = classe sur <body class="o_web_client …"> :
+//   .o_doorway_light  → jeu de tokens CLAIR  (DÉFAUT)
+//   .o_doorway_dark   → jeu de tokens SOMBRE (ancien look Intellix)
+// Spécificité 0,2,0 → l'emporte sur [data-bs-theme="dark"] (0,1,0) et sur
+// le pont .o_web_client (0,1,0). Le commutateur systray bascule la classe à
+// chaud (sans rechargement) ; la persistance se fait via res.users.doorway_theme.
+// ─────────────────────────────────────────────────────────────────────
+// Défaut clair uniquement si pas déjà en mode sombre Odoo / Doorway.
+// Sinon data-bs-theme=dark + o_doorway_light → texte #111 sur fond sombre = illisible.
+.o_web_client.o_doorway_light:not([data-bs-theme="dark"]),
+html:not([data-bs-theme="dark"]) .o_web_client:not(.o_doorway_dark) {
+    @include ix-tokens-light;
+}
+
+.o_web_client.o_doorway_dark,
+html[data-bs-theme="dark"] .o_web_client,
+.o_web_client[data-bs-theme="dark"] {
+    @include ix-tokens-dark;
+}
+
+// Login : conserve la charte sombre vitrine
+body.ix-login,
+body.bg-100.ix-login {
+    @include ix-tokens-dark;
+}
+
+// Pont Bootstrap (shell Odoo)
+.o_web_client {
+    --bs-body-bg: var(--ix-bg);
+    --bs-body-color: var(--ix-text);
+    --bs-border-color: var(--ix-border);
+    --bs-link-color: var(--ix-primary);
+    --bs-link-hover-color: var(--ix-primary-light);
+    --bs-primary: var(--ix-primary);
+    --bs-primary-rgb: 99, 102, 241;
+    --bs-secondary-color: var(--ix-text-muted);
+    --bs-tertiary-bg: var(--ix-surface);
+    --bs-tertiary-color: var(--ix-text-muted);
+    --bs-emphasis-color: var(--ix-text);
+    --bs-heading-color: var(--ix-text);
+    --bs-card-bg: var(--ix-surface);
+    --bs-card-border-color: var(--ix-border);
+    --bs-modal-bg: var(--ix-surface);
+    --bs-modal-color: var(--ix-text);
+    --bs-dropdown-bg: var(--ix-surface);
+    --bs-dropdown-color: var(--ix-text);
+    --bs-dropdown-link-color: var(--ix-text);
+    --bs-dropdown-link-hover-bg: rgba(99, 102, 241, 0.12);
+    --bs-dropdown-border-color: var(--ix-border);
+    --bs-table-bg: var(--ix-surface);
+    --bs-table-color: var(--ix-text);
+    --bs-table-border-color: var(--ix-border);
+    --bs-table-striped-bg: var(--ix-surface-elevated);
+    --bs-table-hover-bg: rgba(99, 102, 241, 0.06);
+}

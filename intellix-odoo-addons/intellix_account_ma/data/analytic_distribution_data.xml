@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Distribution analytique par catégorie produit IntelliX (société MA) -->
+    <record id="distribution_intellix_call_center" model="account.analytic.distribution.model">
+        <field name="company_id" ref="base.main_company"/>
+        <field name="product_categ_id" ref="intellix_catalog.product_category_intellix_call_center"/>
+        <field name="analytic_distribution" eval="{ref('analytic_account_ana_sales'): 100}"/>
+        <field name="sequence" eval="10"/>
+    </record>
+    <record id="distribution_intellix_ia" model="account.analytic.distribution.model">
+        <field name="company_id" ref="base.main_company"/>
+        <field name="product_categ_id" ref="intellix_catalog.product_category_intellix_ia"/>
+        <field name="analytic_distribution" eval="{ref('analytic_account_ana_sales'): 100}"/>
+        <field name="sequence" eval="11"/>
+    </record>
+    <record id="distribution_intellix_parent" model="account.analytic.distribution.model">
+        <field name="company_id" ref="base.main_company"/>
+        <field name="product_categ_id" ref="intellix_catalog.product_category_intellix"/>
+        <field name="analytic_distribution" eval="{ref('analytic_account_ana_sales'): 100}"/>
+        <field name="sequence" eval="5"/>
+    </record>
+</odoo>

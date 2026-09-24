@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <function model="doorway.tenant" name="_doorway_credits_fix_access"/>
+</odoo>

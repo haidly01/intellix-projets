@@ -1,0 +1,16 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_tenant_admin,doorway.tenant.admin,model_doorway_tenant,group_doorway_credits_admin,1,1,1,1
+access_tenant_user,doorway.tenant.user,model_doorway_tenant,group_doorway_credits_tenant,1,1,0,0
+access_account_admin,doorway.credit.account.admin,model_doorway_credit_account,group_doorway_credits_admin,1,1,1,1
+access_account_user,doorway.credit.account.user,model_doorway_credit_account,group_doorway_credits_tenant,1,1,0,0
+access_tx_admin,doorway.credit.transaction.admin,model_doorway_credit_transaction,group_doorway_credits_admin,1,0,1,0
+access_tx_user,doorway.credit.transaction.user,model_doorway_credit_transaction,group_doorway_credits_tenant,1,0,0,0
+access_pack_all,doorway.credit.pack.all,model_doorway_credit_pack,base.group_user,1,0,0,0
+access_pack_admin,doorway.credit.pack.admin,model_doorway_credit_pack,group_doorway_credits_admin,1,1,1,1
+access_pricing_admin,doorway.ai.pricing.admin,model_doorway_ai_pricing,group_doorway_credits_admin,1,1,1,1
+access_subscription_admin,doorway.subscription.admin,model_doorway_subscription,group_doorway_credits_admin,1,1,1,1
+access_alert_admin,doorway.credit.alert.admin,model_doorway_credit_alert,group_doorway_credits_admin,1,1,1,1
+access_alert_user,doorway.credit.alert.user,model_doorway_credit_alert,group_doorway_credits_tenant,1,1,0,0
+access_purchase_user,doorway.credit.purchase.user,model_doorway_credit_purchase,group_doorway_credits_tenant,1,1,1,0
+access_purchase_admin,doorway.credit.purchase.admin,model_doorway_credit_purchase,group_doorway_credits_admin,1,1,1,1
+access_paywall_user,doorway.credit.paywall.user,model_doorway_credit_paywall,base.group_user,1,1,1,1

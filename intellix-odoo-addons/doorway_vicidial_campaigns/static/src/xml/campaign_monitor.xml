@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="doorway_vicidial_campaigns.CampaignMonitor">
+        <div class="o_vicidial_campaign_monitor o_action o_intellix_client_action p-3">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="mb-0">Campagnes d'appels — Live</h2>
+                <span class="badge text-bg-secondary">Refresh 30s</span>
+            </div>
+            <t t-if="state.loading">
+                <div class="text-muted py-4 text-center">
+                    <i class="fa fa-spinner fa-spin fa-2x"/>
+                    <p class="mt-2 mb-0">Chargement des campagnes…</p>
+                </div>
+            </t>
+            <t t-else="">
+                <div class="row g-3 mb-3">
+                    <div class="col-md-3">
+                        <div class="card p-3">
+                            <div class="text-muted small">Campagnes actives</div>
+                            <div class="fs-3 fw-bold" t-esc="state.kpis.active"/>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card p-3">
+                            <div class="text-muted small">Appels aujourd'hui</div>
+                            <div class="fs-3 fw-bold" t-esc="state.kpis.calls"/>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card p-3">
+                            <div class="text-muted small">Agents live</div>
+                            <div class="fs-3 fw-bold" t-esc="state.kpis.live_agents"/>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card p-3">
+                            <div class="text-muted small">AMD machine / humain</div>
+                            <div class="fs-5">
+                                <span t-esc="state.kpis.amd_machine"/> /
+                                <span t-esc="state.kpis.amd_human"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Campagne</th>
+                                <th>Mode</th>
+                                <th>État</th>
+                                <th>Appels</th>
+                                <th>Décrochés</th>
+                                <th>Live</th>
+                                <th>AMD M/H</th>
+                                <th>Dial</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-if="!state.campaigns.length">
+                                <tr><td colspan="8" class="text-center text-muted">Aucune campagne</td></tr>
+                            </t>
+                            <t t-foreach="state.campaigns" t-as="c" t-key="c.id">
+                                <tr t-on-click="() => this.openCampaign(c.id)" style="cursor:pointer">
+                                    <td>
+                                        <strong t-esc="c.name"/>
+                                        <div class="small text-muted" t-esc="c.vicidial_campaign_id"/>
+                                    </td>
+                                    <td t-esc="c.agent_mode_label"/>
+                                    <td><span class="badge" t-att-class="c.state_badge" t-esc="c.state_label"/></td>
+                                    <td t-esc="c.calls_today"/>
+                                    <td t-esc="c.answered_today"/>
+                                    <td t-esc="c.live_agent_count"/>
+                                    <td>
+                                        <t t-esc="c.amd_machine_count"/> /
+                                        <t t-esc="c.amd_human_count"/>
+                                    </td>
+                                    <td t-esc="c.auto_dial_level"/>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </div>
+    </t>
+</templates>

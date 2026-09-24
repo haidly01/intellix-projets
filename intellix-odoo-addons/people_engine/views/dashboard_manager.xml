@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_dashboard_manager" model="ir.actions.act_window">
+        <field name="name">Tableau de bord équipe</field>
+        <field name="res_model">pe.employee.profile</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">['|', ('employee_id.user_id', '=', uid), ('employee_id.parent_id.user_id', '=', uid)]</field>
+        <field name="context">{'search_default_group_band': 1, 'allowed_company_ids': [1, 2]}</field>
+    </record>
+
+    <record id="view_dashboard_manager_kanban" model="ir.ui.view">
+        <field name="name">pe.dashboard.manager.kanban</field>
+        <field name="model">pe.employee.profile</field>
+        <field name="priority">15</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="performance_band">
+                <field name="display_name"/>
+                <field name="employee_id"/>
+                <field name="score_global"/>
+                <field name="score_trend"/>
+                <field name="alert_count"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click">
+                            <strong><field name="display_name"/></strong>
+                            <div>Score : <field name="score_global"/> / 100 — <field name="score_trend"/></div>
+                            <t t-if="record.alert_count.raw_value">
+                                <span class="badge text-bg-danger"><field name="alert_count"/> alerte(s)</span>
+                            </t>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+</odoo>

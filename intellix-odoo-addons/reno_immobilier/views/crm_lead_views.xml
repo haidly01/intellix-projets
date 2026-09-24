@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_reno_immo_lead_kanban" model="ir.ui.view">
+        <field name="name">crm.lead.kanban.reno.immobilier.app</field>
+        <field name="model">crm.lead</field>
+        <field name="priority">4</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="stage_id"
+                    class="o_coins_pipeline_kanban o_reno_immo_kanban o_kanban_small_column"
+                    records_draggable="1"
+                    quick_create="false">
+                <field name="stage_id"/>
+                <field name="reno_gestion_status"/>
+                <field name="reno_card_title"/>
+                <field name="reno_card_subtitle"/>
+                <field name="reno_category_badge"/>
+                <field name="reno_user_badge"/>
+                <field name="reno_card_tone"/>
+                <field name="reno_relance_due"/>
+                <templates>
+                    <t t-name="card">
+                        <div t-attf-class="o_coins_lead_card o_reno_lead_card {{ record.reno_card_tone.raw_value or '' }}">
+                            <div class="o_coins_lead_name o_reno_lead_name">
+                                <field name="reno_card_title"/>
+                            </div>
+                            <div class="o_coins_lead_sub o_reno_lead_sub">
+                                <field name="reno_card_subtitle"/>
+                            </div>
+                            <div class="o_reno_lead_badges">
+                                <span t-if="record.reno_relance_due.raw_value" class="o_reno_badge o_reno_badge_relance">
+                                    À relancer
+                                </span>
+                                <span t-if="record.reno_category_badge.raw_value" class="o_reno_badge o_reno_badge_cat">
+                                    <field name="reno_category_badge"/>
+                                </span>
+                                <span t-if="record.reno_user_badge.raw_value" class="o_reno_badge o_reno_badge_user">
+                                    <field name="reno_user_badge"/>
+                                </span>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_reno_immo_lead_list" model="ir.ui.view">
+        <field name="name">crm.lead.list.reno.immobilier.app</field>
+        <field name="model">crm.lead</field>
+        <field name="priority">4</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="reno_card_title" string="Contact"/>
+                <field name="reno_card_subtitle" string="Source"/>
+                <field name="reno_category_badge" string="Catégorie"/>
+                <field name="user_id" string="Commercial"/>
+                <field name="stage_id"/>
+                <field name="phone"/>
+                <field name="email_from"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_reno_immo_lead_search" model="ir.ui.view">
+        <field name="name">crm.lead.search.reno.immobilier.app</field>
+        <field name="model">crm.lead</field>
+        <field name="priority">4</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="Lead" filter_domain="[
+                    '|', '|', '|', '|',
+                    ('name', 'ilike', self),
+                    ('contact_name', 'ilike', self),
+                    ('partner_name', 'ilike', self),
+                    ('email_from', 'ilike', self),
+                    ('phone', 'ilike', self)]"/>
+                <field name="email_from" string="Email"/>
+                <field name="phone" string="Téléphone"/>
+                <field name="partner_id"/>
+                <field name="contact_name"/>
+                <field name="team_id"/>
+                <field name="source_id"/>
+                <field name="user_id"/>
+                <filter name="leads_du_jour" string="Leads du jour"
+                        domain="[('create_date', '&gt;=', datetime.datetime.combine(context_today(), datetime.time(0, 0, 0)))]"/>
+                <filter name="a_relancer" string="À relancer"
+                        domain="[('reno_relance_due', '=', True)]"/>
+                <separator/>
+                <filter name="group_stage" string="Étape" context="{'group_by': 'stage_id'}"/>
+                <filter name="group_partner" string="Partenaire" context="{'group_by': 'partner_id'}"/>
+                <filter name="group_user" string="Commercial" context="{'group_by': 'user_id'}"/>
+                <filter name="group_source" string="Source" context="{'group_by': 'source_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_crm_lead_form_reno_immobilier" model="ir.ui.view">
+        <field name="name">crm.lead.form.reno.immobilier</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="priority">45</field>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <field name="reno_immo_lead" invisible="1"/>
+                <field name="immo_meta_lead_id" invisible="1"/>
+                <field name="reno_covering_partner_ids" invisible="1"/>
+                <field name="reno_assigned_package_id" invisible="1"/>
+                <field name="reno_partner_covers_lead" invisible="1"/>
+                <field name="reno_details_open" invisible="1"/>
+                <field name="phone" invisible="1"/>
+                <button name="action_doorway_phone_call"
+                        type="object"
+                        string="Appeler"
+                        class="btn-primary o_reno_btn_primary"
+                        title="Compose via le poste VICIdial."
+                        invisible="not phone"/>
+                <button name="action_reno_call_ia"
+                        type="object"
+                        string="Appeler (Agent IA)"
+                        class="btn-secondary o_reno_btn_primary"
+                        invisible="not reno_immo_lead"/>
+                <button name="action_reno_compose_email"
+                        type="object"
+                        string="Email"
+                        class="btn-secondary o_reno_btn_primary"
+                        invisible="not reno_immo_lead"/>
+                <button name="action_reno_set_won"
+                        type="object"
+                        string="Gagné"
+                        class="btn-success o_reno_btn_primary"
+                        invisible="not reno_immo_lead or won_status == 'won' or type == 'lead' or not active"/>
+                <button name="%(crm.crm_lead_lost_action)d"
+                        type="action"
+                        string="Perdu"
+                        class="btn-secondary o_reno_btn_primary o_reno_btn_lost"
+                        invisible="not reno_immo_lead or won_status != 'pending' or not active"/>
+            </xpath>
+            <!-- Une seule barre : masquer Gagné / Perdu / Appeler hérités. Méthodes conservées. -->
+            <xpath expr="//button[@name='action_set_won_rainbowman']" position="attributes">
+                <attribute name="invisible">reno_immo_lead or won_status == 'won' or type == 'lead' or not active</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_call_contact_via_agent_ia']" position="attributes">
+                <attribute name="invisible">reno_immo_lead or type == 'lead' or not phone</attribute>
+            </xpath>
+            <!-- Ancien bloc Revenu attendu ($ + $ / Mens...) : mêmes champs, widget masqué. -->
+            <xpath expr="//div[hasclass('oe_title')]/h2" position="attributes">
+                <attribute name="class">row g-0 pb-3 pb-sm-4 o_reno_hide_old_revenue</attribute>
+            </xpath>
+            <xpath expr="//sheet" position="inside">
+                <div class="o_reno_lead_form" invisible="not reno_immo_lead">
+                    <div class="o_reno_top_grid">
+                        <div class="o_reno_contact_card">
+                            <div class="o_reno_contact_title">Contact</div>
+                            <group col="2">
+                                <field name="contact_name" string="Nom"/>
+                                <field name="phone" string="Téléphone" widget="phone"/>
+                                <field name="email_from" string="Courriel" widget="email"/>
+                                <field name="city" string="Ville"/>
+                                <field name="state_id" string="État" options="{'no_open': True, 'no_create': True}"/>
+                            </group>
+                            <div class="o_reno_contact_actions">
+                                <button name="action_doorway_phone_call"
+                                        type="object"
+                                        string="Appeler"
+                                        class="btn btn-primary o_reno_btn_primary"
+                                        invisible="not phone"/>
+                                <button name="action_reno_compose_email"
+                                        type="object"
+                                        string="Courriel"
+                                        class="btn btn-secondary o_reno_contact_btn"/>
+                                <button name="action_reno_compose_sms"
+                                        type="object"
+                                        string="SMS"
+                                        class="btn btn-secondary o_reno_contact_btn"
+                                        invisible="not phone"/>
+                            </div>
+                        </div>
+                        <div class="o_reno_partner_stack" id="o_reno_partner_anchor">
+                            <div class="o_reno_partner_card" invisible="not reno_assigned_partner_id">
+                                <div class="o_reno_partner_header">
+                                    <div class="o_reno_partner_avatar">
+                                        <field name="reno_partner_initials" nolabel="1"/>
+                                    </div>
+                                    <div>
+                                        <div class="o_reno_partner_name">
+                                            <field name="reno_assigned_partner_id" nolabel="1"
+                                                   options="{'no_create': True}"/>
+                                        </div>
+                                        <div class="o_reno_partner_role" invisible="not reno_partner_region_label">
+                                            Partenaire — <field name="reno_partner_region_label" nolabel="1"/>
+                                        </div>
+                                        <div class="o_reno_match_badge" invisible="not reno_partner_covers_lead">
+                                            Couvre la région du lead
+                                        </div>
+                                        <div class="o_reno_status_badge" invisible="not assignment_status">
+                                            <field name="assignment_status" nolabel="1"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="o_reno_partner_meta">
+                                    <div>
+                                        <div class="o_reno_m_label">Forfait</div>
+                                        <div class="o_reno_m_val">
+                                            <field name="reno_partner_package_label" nolabel="1"/>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="o_reno_m_label">Assigné par</div>
+                                        <div class="o_reno_m_val">
+                                            <field name="reno_assignee_label" nolabel="1"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="o_reno_change_partner">Changer de partenaire</div>
+                            </div>
+                            <div class="o_reno_partner_empty" invisible="reno_assigned_partner_id">
+                                <div class="o_reno_partner_empty_icon">!</div>
+                                <h4>Aucun partenaire assigné</h4>
+                                <p>Recherchez un partenaire ou lancez la suggestion : elle croise le service et la région (Longueuil = Rive-Sud). S’il y en a plusieurs, le meilleur quota est proposé — vous changez ensuite.</p>
+                                <div class="o_reno_partner_select">
+                                    <field name="reno_assigned_partner_id"
+                                           string="Rechercher un partenaire"
+                                           placeholder="Rechercher un partenaire..."
+                                           options="{'no_create': True, 'no_open': True}"/>
+                                    <button name="action_reno_suggest_partner"
+                                            type="object"
+                                            string="Suggérer (IA)"
+                                            class="btn o_reno_suggest_btn"/>
+                                </div>
+                            </div>
+                            <div class="o_reno_service_partners">
+                                <div class="o_reno_service_title">Un partenaire par besoin</div>
+                                <p class="o_reno_service_hint">Cochez un autre besoin dans les questions, ou ajoutez une ligne ici, puis assignez un partenaire différent.</p>
+                                <field name="service_assignment_ids" nolabel="1" class="o_reno_service_list">
+                                    <list editable="bottom">
+                                        <field name="eligible_partner_ids" column_invisible="1"/>
+                                        <field name="service_category_id" string="Service demandé"/>
+                                        <field name="partner_id" string="Partenaire"
+                                               domain="[('id', 'in', eligible_partner_ids)]"
+                                               options="{'no_create': True}"/>
+                                        <field name="status"/>
+                                        <field name="assignment_date" optional="hide"/>
+                                        <field name="lead_consumed" string="Lead consommé" optional="hide"/>
+                                    </list>
+                                </field>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="o_reno_revenue_row">
+                        <div class="o_reno_revenue_field">
+                            <label for="expected_revenue" string="Montant fixe estimé"/>
+                            <field name="expected_revenue" class="o_reno_revenue_value"
+                                   placeholder="Non précisé"/>
+                        </div>
+                        <div class="o_reno_revenue_field">
+                            <label for="reno_recurring_revenue" string="Récurrent (ex. mensuel)"/>
+                            <field name="reno_recurring_revenue" class="o_reno_revenue_value"
+                                   placeholder="Non précisé"/>
+                        </div>
+                        <div class="o_reno_revenue_field">
+                            <label for="automated_probability" string="Probabilité de closing (IA)"/>
+                            <field name="automated_probability"
+                                   class="o_reno_revenue_value"/>
+                            <span class="o_reno_prob_pill">Estimation IA</span>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+            <!-- Notes CRM : le brut Meta est replié sous « Voir la réponse brute Meta ». -->
+            <xpath expr="//page[@name='internal_notes']" position="attributes">
+                <attribute name="invisible">immo_meta_lead_id</attribute>
+            </xpath>
+            <!-- Masquer le bloc contact CRM standard (les champs restent sur le modèle). -->
+            <xpath expr="//group[@name='opportunity_partner']" position="attributes">
+                <attribute name="invisible">reno_immo_lead or type == 'lead'</attribute>
+            </xpath>
+            <xpath expr="//group[@name='lead_partner']" position="attributes">
+                <attribute name="invisible">reno_immo_lead or type == 'opportunity'</attribute>
+            </xpath>
+            <!-- Retirer les UIs parallèles Attribution / Partenaire principal (pas de sélecteur string). -->
+            <xpath expr="//field[@name='assigned_partner_id']" position="attributes">
+                <attribute name="invisible">reno_immo_lead</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_assign_partner']" position="attributes">
+                <attribute name="invisible">reno_immo_lead</attribute>
+            </xpath>
+            <!-- Onglet Assignation : plus de champ Partenaire. Lien vers la carte unique. -->
+            <xpath expr="//page[@name='assigne_partenaire']//group" position="inside">
+                <div class="o_reno_assign_tab_link" invisible="not reno_immo_lead">
+                    <button name="action_reno_focus_partner"
+                            type="object"
+                            string="Voir/modifier le partenaire assigné"
+                            class="btn-link o_reno_focus_partner_btn"/>
+                </div>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Réno Immobilier" name="reno_immobilier"
+                      invisible="not reno_immo_lead and team_id != 113">
+                    <group>
+                        <group string="Suivi">
+                            <field name="reno_relance_due" readonly="1"/>
+                            <field name="reno_gestion_status"/>
+                        </group>
+                    </group>
+                    <group string="Plus de détails" name="reno_plus_details">
+                        <group>
+                            <field name="source_id" string="Source du site"/>
+                            <field name="reno_source_label" string="Source (carte)" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="tag_ids" string="Étiquettes" widget="many2many_tags"/>
+                            <field name="date_deadline" string="Date de clôture prévue"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_reno_immobilier_leads" model="ir.actions.act_window">
+        <field name="name">Leads Gestion</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain" eval="[('team_id', '=', ref('crm_team_reno_immobilier')), ('type', '=', 'opportunity'), ('name', 'not ilike', 'RénoFacile')]"/>
+        <field name="context" eval="{'default_type': 'opportunity', 'default_team_id': ref('crm_team_reno_immobilier'), 'search_default_team_id': [ref('crm_team_reno_immobilier')], 'reno_immobilier_pipeline': 1, 'show_user_team_stages': 0}"/>
+        <field name="view_id" ref="view_reno_immo_lead_kanban"/>
+        <field name="search_view_id" ref="view_reno_immo_lead_search"/>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_reno_immo_lead_kanban')}),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_reno_immo_lead_list')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('crm.crm_lead_view_form')})]"/>
+    </record>
+
+    <record id="action_reno_immobilier_leads_du_jour" model="ir.actions.act_window">
+        <field name="name">Leads du jour</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain" eval="[('team_id', '=', ref('crm_team_reno_immobilier')), ('type', '=', 'opportunity'), ('name', 'not ilike', 'RénoFacile')]"/>
+        <field name="context" eval="{'default_type': 'opportunity', 'default_team_id': ref('crm_team_reno_immobilier'), 'search_default_team_id': [ref('crm_team_reno_immobilier')], 'reno_immobilier_pipeline': 1, 'show_user_team_stages': 0, 'search_default_leads_du_jour': 1}"/>
+        <field name="view_id" ref="view_reno_immo_lead_kanban"/>
+        <field name="search_view_id" ref="view_reno_immo_lead_search"/>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_reno_immo_lead_kanban')}),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_reno_immo_lead_list')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('crm.crm_lead_view_form')})]"/>
+    </record>
+</odoo>

@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_message_campaign_tree" model="ir.ui.view">
+        <field name="name">doorway.message.campaign.tree</field>
+        <field name="model">doorway.message.campaign</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="statut"/>
+                <field name="nb_destinataires"/>
+                <field name="nb_envoyes"/>
+                <field name="nb_erreurs"/>
+                <field name="date_planned"/>
+                <field name="user_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_message_campaign_form" model="ir.ui.view">
+        <field name="name">doorway.message.campaign.form</field>
+        <field name="model">doorway.message.campaign</field>
+        <field name="arch" type="xml">
+            <form string="Campagne messaging">
+                <header>
+                    <button name="action_adapter_par_canal" type="object" string="Adapter avec Claude" class="btn-secondary"/>
+                    <button name="action_envoyer" type="object" string="Envoyer" class="btn-primary"
+                            invisible="statut in ('en_cours', 'termine')"/>
+                    <button name="action_planifier" type="object" string="Planifier"
+                            invisible="envoi_immediat or statut != 'brouillon'"/>
+                    <field name="statut" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="sujet"/>
+                            <field name="envoi_immediat"/>
+                            <field name="date_planned" invisible="envoi_immediat"/>
+                            <field name="user_id"/>
+                        </group>
+                        <group string="Stats">
+                            <field name="nb_destinataires"/>
+                            <field name="nb_envoyes"/>
+                            <field name="nb_erreurs"/>
+                            <field name="nb_lus"/>
+                        </group>
+                    </group>
+                    <group string="Canaux">
+                        <field name="canal_email"/>
+                        <field name="canal_sms"/>
+                        <field name="canal_whatsapp"/>
+                        <field name="canal_linkedin"/>
+                        <field name="canal_gmb"/>
+                    </group>
+                    <notebook>
+                        <page string="Message maître">
+                            <field name="corps_master" widget="html"/>
+                        </page>
+                        <page string="Email" invisible="not canal_email">
+                            <field name="corps_email" widget="html"/>
+                        </page>
+                        <page string="SMS" invisible="not canal_sms">
+                            <group>
+                                <field name="sms_template_id"
+                                       options="{'no_create': True}"/>
+                            </group>
+                            <field name="corps_sms"
+                                   invisible="sms_template_id"
+                                   placeholder="Message SMS libre (si aucun template)"/>
+                        </page>
+                        <page string="WhatsApp" invisible="not canal_whatsapp">
+                            <group>
+                                <field name="whatsapp_template_id"
+                                       options="{'no_create': True}"/>
+                            </group>
+                            <div class="alert alert-info" role="alert"
+                                 invisible="whatsapp_template_id">
+                                Pour un envoi WhatsApp à l'initiative de l'entreprise,
+                                sélectionnez un template Twilio approuvé. Le message
+                                libre n'aboutit que dans la fenêtre de session de 24h.
+                            </div>
+                            <field name="corps_whatsapp"
+                                   invisible="whatsapp_template_id"/>
+                        </page>
+                        <page string="LinkedIn" invisible="not canal_linkedin">
+                            <field name="linkedin_page_id"/>
+                            <field name="linkedin_type"/>
+                            <field name="corps_linkedin"/>
+                        </page>
+                        <page string="GMB" invisible="not canal_gmb">
+                            <field name="gmb_location_id"/>
+                            <field name="gmb_post_type"/>
+                            <field name="corps_gmb"/>
+                        </page>
+                        <page string="Destinataires">
+                            <field name="lead_ids" widget="many2many_tags"/>
+                            <field name="partner_ids" widget="many2many_tags"/>
+                            <field name="emails_manuels"/>
+                            <field name="phones_manuels"/>
+                        </page>
+                        <page string="Logs">
+                            <field name="log_ids" readonly="1">
+                                <list>
+                                    <field name="canal"/>
+                                    <field name="destinataire"/>
+                                    <field name="statut"/>
+                                    <field name="date_envoi"/>
+                                    <field name="erreur_msg"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_message_campaign" model="ir.actions.act_window">
+        <field name="name">Campagnes messaging</field>
+        <field name="res_model">doorway.message.campaign</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_send_message_from_leads" model="ir.actions.act_window">
+        <field name="name">Envoyer un message</field>
+        <field name="res_model">doorway.compose.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="crm.model_crm_lead"/>
+        <field name="binding_view_types">list</field>
+        <field name="context">{'default_source_destinataires': 'leads'}</field>
+    </record>
+
+    <record id="action_send_message_from_partners" model="ir.actions.act_window">
+        <field name="name">Envoyer un message</field>
+        <field name="res_model">doorway.compose.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="base.model_res_partner"/>
+        <field name="binding_view_types">list</field>
+        <field name="context">{'default_source_destinataires': 'contacts'}</field>
+    </record>
+</odoo>

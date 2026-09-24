@@ -1,0 +1,769 @@
+// Intellix — lisibilité globale (contraste texte / boutons / panneaux)
+// Chargé en dernier pour primer sur Odoo Bootstrap compilé en clair.
+
+// ─── Champs formulaire : texte toujours lisible (thème sombre) ─────────
+// Symptôme : frappe invisible dans Nom / Char / Many2one (texte sombre ou
+// -webkit-text-fill transparent sur fond sombre ; sélection indigo opaque).
+.o_web_client {
+    .o_form_view,
+    .o_form_view_container,
+    .modal-content .o_form_view,
+    .o_dialog .o_form_view {
+        input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+        textarea,
+        select,
+        .o_input,
+        input.o_input,
+        textarea.o_input,
+        .o_field_widget input,
+        .o_field_widget textarea,
+        .o_field_char input,
+        .o_field_text textarea,
+        .o_field_email input,
+        .o_field_phone input,
+        .o_field_url input,
+        .o_field_integer input,
+        .o_field_float input,
+        .o_field_monetary input,
+        .o_field_many2one input,
+        .o_field_many2one_selection input,
+        .o-autocomplete--input,
+        .oe_title input,
+        .oe_title .o_input,
+        .oe_title .o_field_widget input {
+            color: var(--ix-text) !important;
+            -webkit-text-fill-color: var(--ix-text) !important;
+            caret-color: var(--ix-primary-light, #818cf8) !important;
+            background-color: var(--ix-surface-elevated) !important;
+
+            &::placeholder {
+                color: var(--ix-text-muted) !important;
+                -webkit-text-fill-color: var(--ix-text-muted) !important;
+                opacity: 1 !important;
+            }
+
+            &::selection,
+            &::-moz-selection {
+                background: var(--ix-primary, #6366f1) !important;
+                color: #ffffff !important;
+                -webkit-text-fill-color: #ffffff !important;
+            }
+
+            &:focus,
+            &:focus-visible {
+                color: var(--ix-text) !important;
+                -webkit-text-fill-color: var(--ix-text) !important;
+                caret-color: var(--ix-primary-light, #818cf8) !important;
+                background-color: var(--ix-surface-elevated) !important;
+            }
+        }
+
+        // Chrome / Safari autofill (fond bleu/jaune qui masque le texte)
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        textarea:-webkit-autofill,
+        select:-webkit-autofill {
+            -webkit-text-fill-color: var(--ix-text) !important;
+            caret-color: var(--ix-primary-light, #818cf8) !important;
+            box-shadow: 0 0 0 1000px var(--ix-surface-elevated) inset !important;
+            transition: background-color 99999s ease-out;
+        }
+
+        // Many2one : input transparent superposé — forcer le fill
+        .o_field_many2one_selection .o_input.position-absolute,
+        .o_field_many2one .o_input.position-absolute {
+            -webkit-text-fill-color: var(--ix-text) !important;
+            color: var(--ix-text) !important;
+            caret-color: var(--ix-primary-light, #818cf8) !important;
+        }
+    }
+}
+
+.o_web_client.o_intellix_branded {
+    // Utilitaires Bootstrap encore « noirs » sans data-bs-theme local
+    .text-900,
+    .text-dark,
+    .text-body,
+    .text-black-50 {
+        color: var(--ix-text) !important;
+    }
+
+    .text-muted,
+    .text-600,
+    .text-700 {
+        color: var(--ix-text-muted) !important;
+    }
+
+    .opacity-50,
+    .opacity-75 {
+        opacity: 0.82 !important;
+        color: var(--ix-text-muted) !important;
+    }
+
+    // ─── Barre d’actions (toutes apps) ─────────────────────────────────
+    .o_control_panel {
+        background-color: var(--ix-surface) !important;
+
+        .o_control_panel_main,
+        .o_cp_title,
+        .o_breadcrumb,
+        .o_last_breadcrumb_item,
+        .o_back_button,
+        .o_control_panel_breadcrumbs {
+            color: var(--ix-text) !important;
+            background-color: transparent !important;
+        }
+
+        .o_last_breadcrumb_item,
+        .o_back_button a,
+        .o_breadcrumb .btn,
+        .o_breadcrumb .btn-light,
+        .o_breadcrumb .btn-secondary {
+            color: var(--ix-text) !important;
+            background-color: transparent !important;
+            border-color: transparent !important;
+            box-shadow: none !important;
+        }
+
+        .o_back_button,
+        .breadcrumb-item a,
+        .o_breadcrumb a {
+            color: var(--ix-text-muted) !important;
+            background-color: transparent !important;
+
+            &:hover {
+                color: var(--ix-primary-light) !important;
+            }
+        }
+
+        // Fil d'Ariane CRM — éviter texte clair sur fond blanc (ex. « Marketing »)
+        --bs-breadcrumb-item-active-color: var(--ix-text-muted);
+        --bs-breadcrumb-divider-color: var(--ix-text-muted);
+
+        .breadcrumb {
+            background: transparent !important;
+            margin-bottom: 0;
+        }
+
+        .breadcrumb-item,
+        .breadcrumb-item::before,
+        .breadcrumb-item.active {
+            color: var(--ix-text-muted) !important;
+            background: transparent !important;
+        }
+
+        .breadcrumb-item a.fw-bold,
+        .breadcrumb-item a {
+            color: var(--ix-primary-light) !important;
+            background: transparent !important;
+            box-shadow: none !important;
+        }
+
+        .o_last_breadcrumb_item,
+        .o_last_breadcrumb_item.active,
+        .o_last_breadcrumb_item span {
+            color: var(--ix-text) !important;
+            background: transparent !important;
+        }
+
+        .bg-view {
+            background-color: transparent !important;
+            color: var(--ix-text) !important;
+        }
+
+        // btn-secondary / btn-light (pilules pipeline, filtres) — pas de fond blanc
+        .btn-secondary,
+        .btn-light {
+            color: var(--ix-text) !important;
+            background-color: var(--ix-surface-elevated) !important;
+            border-color: var(--ix-border) !important;
+
+            &:hover,
+            &:focus,
+            &.active {
+                color: var(--ix-text) !important;
+                background-color: var(--ix-surface-hover) !important;
+                border-color: var(--ix-primary) !important;
+            }
+        }
+
+        .o_cp_switch_buttons .btn,
+        .o_cp_pager .btn,
+        .o_cp_action_menus .btn {
+            color: var(--ix-text) !important;
+        }
+
+        .o_searchview {
+            background: var(--ix-surface-elevated);
+            border-color: var(--ix-border);
+            color: var(--ix-text);
+
+            .bg-200 {
+                --bs-bg-opacity: 1;
+                background-color: var(--ix-surface-elevated) !important;
+                color: var(--ix-text) !important;
+            }
+
+            .o_searchview_input,
+            input {
+                color: var(--ix-text) !important;
+
+                &::placeholder {
+                    color: var(--ix-text-subtle, var(--ix-text-muted)) !important;
+                    opacity: 1;
+                }
+            }
+
+            // Facettes (ex. Équipe commerciale / Rénovation) — bg-200 Odoo = fond clair + texte clair
+            .o_searchview_facet {
+                background-color: var(--ix-surface-elevated) !important;
+                border: 1px solid var(--ix-border) !important;
+                color: var(--ix-text) !important;
+
+                > .position-absolute.bg-view {
+                    background-color: var(--ix-surface-hover) !important;
+                    border-color: var(--ix-border) !important;
+                }
+
+                .o_facet_values {
+                    color: var(--ix-text) !important;
+                }
+
+                .o_facet_value,
+                .o_facet_values_sep {
+                    color: var(--ix-text) !important;
+                    opacity: 1 !important;
+                }
+
+                .o_facet_remove {
+                    color: var(--ix-text-muted) !important;
+
+                    &:hover {
+                        color: #f87171 !important;
+                    }
+                }
+
+                .o_searchview_facet_label {
+                    &.btn-primary,
+                    &.text-bg-action {
+                        background-color: var(--ix-primary) !important;
+                        border-color: var(--ix-primary) !important;
+                        color: #ffffff !important;
+
+                        small,
+                        i,
+                        .fa {
+                            color: #ffffff !important;
+                        }
+                    }
+
+                    &.btn-favourite {
+                        color: var(--ix-text) !important;
+                    }
+                }
+            }
+        }
+    }
+
+    // ─── Stat buttons (CRM, ventes, partout) ───────────────────────────
+    .o-form-buttonbox {
+        --o-stat-text-color: var(--ix-primary-light);
+        --o-stat-button-color: var(--ix-primary-light);
+
+        .oe_stat_button.btn-outline-secondary:not(:disabled) {
+            color: var(--ix-text) !important;
+            background: var(--ix-surface-elevated) !important;
+            border-color: var(--ix-border) !important;
+
+            .o_button_icon {
+                color: var(--ix-primary-light) !important;
+            }
+
+            .o_stat_text,
+            > span {
+                color: var(--ix-text-muted) !important;
+            }
+
+            .o_stat_value {
+                color: var(--ix-primary-light) !important;
+                font-weight: 700;
+            }
+
+            &:hover,
+            &:focus {
+                background: rgba(99, 102, 241, 0.16) !important;
+                border-color: var(--ix-primary) !important;
+                z-index: 2;
+
+                .o_stat_text,
+                > span,
+                .o_button_icon {
+                    color: var(--ix-text) !important;
+                }
+            }
+        }
+    }
+
+    // ─── En-tête formulaire (CTA Email, SMS, devis…) ───────────────────
+    .o_form_view header {
+        .btn-secondary,
+        .btn-outline-secondary:not(:disabled) {
+            color: var(--ix-text) !important;
+            font-weight: 500;
+        }
+
+        .oe_highlight,
+        .btn-primary {
+            color: var(--ix-text-inverse) !important;
+            font-weight: 600;
+        }
+    }
+
+    // Pipeline / étapes (statusbar)
+    .o_field_statusbar,
+    .o_field_statusbar_duration,
+    .o_field_rotting_statusbar_duration,
+    .o_form_statusbar {
+        --o-statusbar-border: var(--ix-border);
+        --o-statusbar-background-active: var(--ix-primary);
+        --o-statusbar-border-active: var(--ix-primary);
+        --o-statusbar-background-hover: var(--ix-surface-hover);
+
+        .o_arrow_button,
+        .o_statusbar_status button,
+        button.o_arrow_button {
+            color: var(--ix-text-muted) !important;
+            background-color: var(--ix-surface-elevated) !important;
+
+            &.o_arrow_button_current,
+            &.active,
+            &[aria-current="step"] {
+                color: #ffffff !important;
+                background-color: var(--ix-primary) !important;
+                font-weight: 600;
+            }
+
+            &:hover:not(.disabled):not(:disabled) {
+                color: var(--ix-text) !important;
+                background-color: var(--ix-surface-hover) !important;
+            }
+
+            &:disabled:not(.o_arrow_button_current) {
+                color: var(--ix-text) !important;
+                opacity: 1;
+                font-weight: 500;
+            }
+        }
+    }
+
+    // Statusbar dans le panneau de contrôle (fiche opportunité CRM)
+    .o_control_panel .o_form_statusbar,
+    .o_lead_opportunity_form .o_form_statusbar {
+        background-color: var(--ix-surface-elevated) !important;
+        border-bottom: 1px solid var(--ix-border) !important;
+    }
+
+    // Ruban Perdu / Gagné
+    .o_ribbon {
+        &.text-bg-danger,
+        &.bg-danger {
+            background-color: var(--ix-danger) !important;
+            color: #ffffff !important;
+        }
+
+        &.text-bg-success,
+        &.bg-success {
+            background-color: var(--ix-success) !important;
+            color: #111827 !important;
+        }
+    }
+
+    // ─── Kanban (produits, CRM, projets…) ─────────────────────────────
+    .o_kanban_renderer {
+        .o_kanban_record:not(.o_kanban_ghost):not(.o-kanban-button-new) {
+            .o_kanban_record_title,
+            .o_kanban_record_subtitle,
+            .o_kanban_record_body,
+            .o_primary,
+            strong,
+            a:not(.btn) {
+                color: var(--ix-text) !important;
+            }
+
+            // Prix / montants
+            .o_field_monetary,
+            .o_kanban_record_bottom,
+            .text-primary {
+                color: var(--ix-primary-light) !important;
+            }
+        }
+    }
+
+    // Pipelines Doorway : libellés actifs plus nets
+    .o_doorway_pipeline_btn {
+        color: var(--ix-text-muted) !important;
+
+        &.active,
+        &:hover {
+            color: var(--ix-text) !important;
+        }
+    }
+
+    // ─── Listes ───────────────────────────────────────────────────────
+    .o_list_renderer thead th {
+        color: var(--ix-text-muted) !important;
+        font-weight: 600;
+    }
+
+    .o_list_renderer tbody td {
+        color: var(--ix-text) !important;
+    }
+
+    // ─── Pivot / graph (Léa A/B, analytics) ───────────────────────────
+    .o_pivot_view,
+    .o_graph_view {
+        background-color: var(--ix-bg) !important;
+        color: var(--ix-text) !important;
+
+        .o_content,
+        .o_pivot_renderer,
+        .o_graph_renderer,
+        .o_pivot {
+            background-color: var(--ix-bg) !important;
+            color: var(--ix-text) !important;
+        }
+
+        .o_pivot_buttons .btn-secondary {
+            color: var(--ix-text) !important;
+            background-color: var(--ix-surface-elevated) !important;
+            border-color: var(--ix-border) !important;
+        }
+    }
+
+    .o_pivot_view table.table {
+        --table-bg: var(--ix-surface);
+        --table-color: var(--ix-text);
+        --table-border-color: var(--ix-border);
+        --table-striped-bg: var(--ix-surface-elevated);
+        --table-hover-bg: rgba(99, 102, 241, 0.12);
+        --table-hover-color: var(--ix-text);
+        background-color: var(--ix-surface) !important;
+        color: var(--ix-text) !important;
+        border-color: var(--ix-border) !important;
+    }
+
+    .o_pivot_view table.table th,
+    .o_pivot_view table.table td,
+    .o_pivot_view .bg-100,
+    .o_pivot_view .bg-view,
+    .o_pivot_view td.o_pivot_cell_value,
+    .o_pivot_view th.o_pivot_measure_row {
+        background-color: var(--ix-surface-elevated) !important;
+        color: var(--ix-text) !important;
+        border-color: var(--ix-border) !important;
+    }
+
+    .o_pivot_view .o_pivot_header_cell_closed,
+    .o_pivot_view .o_pivot_header_cell_opened,
+    .o_pivot_view th.o_pivot_header_cell_closed,
+    .o_pivot_view th.o_pivot_header_cell_opened {
+        background-color: var(--ix-surface-hover) !important;
+        color: var(--ix-text) !important;
+        font-weight: 500;
+    }
+
+    .o_pivot_view .o_value,
+    .o_pivot_view .o_pivot_cell_value .o_value {
+        color: var(--ix-text) !important;
+    }
+
+    .o_pivot_view .text-muted,
+    .o_pivot_view .text-info {
+        color: var(--ix-text-muted) !important;
+    }
+
+    .o_graph_view .o_graph_canvas_container {
+        background-color: var(--ix-surface) !important;
+        border: 1px solid var(--ix-border);
+        border-radius: var(--ix-radius-md, 8px);
+    }
+
+    // ─── Chatter ──────────────────────────────────────────────────────
+    .o-mail-Chatter,
+    .o_Chatter {
+        .btn-secondary,
+        .btn-light {
+            color: var(--ix-text) !important;
+            background: var(--ix-surface-elevated) !important;
+            border-color: var(--ix-border) !important;
+        }
+
+        .o-mail-Chatter-topbar button,
+        .o-mail-Composer-send {
+            font-weight: 600;
+        }
+    }
+
+    // ─── Menus déroulants (hors navbar violette) ───────────────────────
+    .o_action_manager .dropdown-menu,
+    .o_action_manager .o-dropdown--menu {
+        .dropdown-item,
+        .o-dropdown-item {
+            color: var(--ix-text) !important;
+            font-weight: 500;
+        }
+    }
+
+    // ─── Sélecteur multi-société (systray) ─────────────────────────────
+    .o_switch_company_menu_dropdown {
+        background-color: var(--ix-surface) !important;
+        border: 1px solid var(--ix-border) !important;
+        color: var(--ix-text) !important;
+
+        .form-control,
+        .o_input {
+            background-color: var(--ix-surface-elevated) !important;
+            color: var(--ix-text) !important;
+            border-color: var(--ix-border) !important;
+        }
+
+        .oi-search {
+            color: var(--ix-text-muted) !important;
+        }
+
+        .o_switch_company_item {
+            color: var(--ix-text) !important;
+
+            &.focus,
+            &.focus > * {
+                background-color: rgba(99, 102, 241, 0.16) !important;
+            }
+
+            .company_label,
+            .text-body {
+                color: var(--ix-text) !important;
+                font-weight: 500;
+            }
+
+            .log_into {
+                color: var(--ix-text) !important;
+            }
+
+            .alert-secondary,
+            .bg-primary-subtle {
+                background-color: rgba(99, 102, 241, 0.2) !important;
+                color: var(--ix-text) !important;
+            }
+
+            .btn-link.text-primary,
+            .text-primary {
+                color: var(--ix-primary-light) !important;
+            }
+
+            .border-primary {
+                border-color: var(--ix-primary) !important;
+            }
+        }
+
+        .o_switch_company_menu_buttons {
+            .btn-primary {
+                color: #fff !important;
+                background-color: var(--ix-primary) !important;
+                border-color: var(--ix-primary) !important;
+                font-weight: 600;
+            }
+
+            .btn-secondary {
+                color: var(--ix-text) !important;
+                background-color: var(--ix-surface-elevated) !important;
+                border-color: var(--ix-border) !important;
+                font-weight: 500;
+            }
+        }
+    }
+
+    // ─── Notebook formulaire (Produit, Devis, etc.) ───────────────────
+    .o_form_view .o_notebook {
+        .o_notebook_headers .nav {
+            background-color: var(--ix-surface-elevated) !important;
+            border-bottom: 1px solid var(--ix-border);
+        }
+
+        .nav-link {
+            color: var(--ix-text-muted) !important;
+            background-color: transparent !important;
+            border-color: transparent !important;
+            font-weight: 500;
+
+            &:hover:not(.active) {
+                color: var(--ix-text) !important;
+                background-color: var(--ix-surface-hover) !important;
+                border-color: var(--ix-border) !important;
+            }
+
+            &.active,
+            &.active:hover,
+            &.active:focus {
+                color: var(--ix-text) !important;
+                background-color: var(--ix-surface) !important;
+                border-color: var(--ix-border) var(--ix-border) var(--ix-surface) !important;
+            }
+        }
+
+        > .tab-content {
+            background-color: var(--ix-surface) !important;
+            border-bottom-color: var(--ix-border) !important;
+        }
+
+        .tab-pane {
+            background-color: var(--ix-surface) !important;
+            color: var(--ix-text);
+        }
+    }
+
+    // Onglets Bootstrap hors notebook (si présents)
+    .o_form_view .nav-tabs {
+        border-bottom-color: var(--ix-border);
+
+        .nav-link:not(.active) {
+            color: var(--ix-text-muted) !important;
+            background-color: transparent !important;
+        }
+
+        .nav-link.active {
+            color: var(--ix-text) !important;
+            background-color: var(--ix-surface) !important;
+            border-color: var(--ix-border) var(--ix-border) var(--ix-surface) !important;
+        }
+    }
+
+    // Listes x2many dans formulaire (ex. Prix produit)
+    .o_form_view .o_field_x2many_list .o_list_renderer,
+    .o_form_view .o_list_renderer {
+        --ListRenderer-thead-bg-color: var(--ix-surface-hover);
+        --ListRenderer-thead-border-end-color: var(--ix-border);
+        --ListRenderer-table-padding-x: 0.75rem;
+
+        .o_list_table {
+            --table-bg: var(--ix-surface);
+            --table-color: var(--ix-text);
+            --table-border-color: var(--ix-border);
+            --table-striped-bg: var(--ix-surface-elevated);
+            --table-hover-bg: rgba(99, 102, 241, 0.1);
+            --table-hover-color: var(--ix-text);
+            background-color: var(--ix-surface) !important;
+        }
+
+        thead,
+        thead th {
+            background-color: var(--ix-surface-hover) !important;
+            color: var(--ix-text) !important;
+            border-color: var(--ix-border) !important;
+            font-weight: 600;
+        }
+
+        tbody td,
+        tbody th,
+        tfoot td {
+            background-color: var(--ix-surface) !important;
+            color: var(--ix-text) !important;
+            border-color: var(--ix-border) !important;
+        }
+
+        tbody tr:hover td {
+            background-color: rgba(99, 102, 241, 0.1) !important;
+            color: var(--ix-text) !important;
+        }
+
+        .o_list_record_selector,
+        .o_handle_cell {
+            color: var(--ix-text-muted) !important;
+        }
+
+        a:not(.btn) {
+            color: var(--ix-primary-light) !important;
+        }
+    }
+
+    // Liens « Ajouter une ligne » dans les onglets
+    .o_form_view .o_field_x2many_list .o_list_renderer + div a,
+    .o_form_view .o_x2m_control_panel a {
+        color: var(--ix-primary-light) !important;
+        font-weight: 500;
+    }
+
+    // ─── Popover calendrier Odoo (fond clair Bootstrap) ───────────────
+    // Le thème sombre force du texte clair sur .opacity-75 / .text-muted :
+    // sur fond blanc le calendrier devient illisible (Vue RH, CRM, etc.).
+    .o_popover.popover,
+    .popover.o_popover {
+        &:has(.o_datetime_picker) {
+            background-color: #ffffff !important;
+            border-color: #cbd5e1 !important;
+            color: #0f172a !important;
+            --bs-popover-bg: #ffffff;
+            --bs-popover-body-color: #0f172a;
+            --bs-popover-header-color: #0f172a;
+            --bs-popover-border-color: #cbd5e1;
+        }
+
+        .o_datetime_picker {
+            background-color: #ffffff !important;
+            color: #0f172a !important;
+
+            .o_datetime_picker_header .btn,
+            .o_zoom_out,
+            .o_header_part,
+            .o_day_of_week_cell,
+            .o_week_number_cell,
+            .o_date_item_cell,
+            .o_datetime_button,
+            .o_datetime_button > div,
+            .o_previous,
+            .o_next {
+                color: #0f172a !important;
+                opacity: 1 !important;
+            }
+
+            .opacity-75,
+            .opacity-50,
+            .text-muted,
+            .o_out_of_range {
+                color: #64748b !important;
+                opacity: 1 !important;
+            }
+
+            .o_datetime_button.o_selected,
+            .o_selected {
+                color: #ffffff !important;
+                background-color: var(--ix-primary, #6366f1) !important;
+            }
+
+            .o_today > div {
+                color: #4f46e5 !important;
+                background-color: rgba(99, 102, 241, 0.18) !important;
+            }
+
+            .o_time_picker .o_input {
+                color: #0f172a !important;
+                background-color: #f8fafc !important;
+                border-color: #cbd5e1 !important;
+            }
+        }
+
+        .o_datetime_buttons {
+            .btn-secondary {
+                color: #0f172a !important;
+                background-color: #f1f5f9 !important;
+                border-color: #cbd5e1 !important;
+            }
+
+            .btn-primary {
+                color: #ffffff !important;
+                background-color: var(--ix-primary, #6366f1) !important;
+                border-color: var(--ix-primary, #6366f1) !important;
+            }
+        }
+    }
+}

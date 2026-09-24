@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_partenaires_dashboard_funnel"
+              inherit_id="coins_marocain_partenariats.portal_partenaires_dashboard">
+        <xpath expr="//div[hasclass('kpis')]" position="after">
+            <div class="kpis" style="margin-top:12px;">
+                <div class="kpi">
+                    <div class="label">Leads entonnoir</div>
+                    <div class="val" t-esc="stats.get('funnel_in') or 0"/>
+                    <div class="delta">8 étapes ITEX</div>
+                </div>
+                <div class="kpi">
+                    <div class="label">Approbation</div>
+                    <div class="val" t-esc="stats.get('approval_pct') or '—'"/>
+                    <div class="delta">cible 30 %</div>
+                </div>
+                <div class="kpi">
+                    <div class="label">Cycle moyen</div>
+                    <div class="val">
+                        <t t-if="stats.get('cycle_days_avg') is not None" t-esc="stats.get('cycle_days_avg')"/>
+                        <t t-else="">—</t>
+                    </div>
+                    <div class="delta">cible 30–90 j</div>
+                </div>
+                <div class="kpi">
+                    <div class="label">Adhérents</div>
+                    <div class="val" t-esc="stats.get('funnel_adherent') or 0"/>
+                    <div class="delta">étape 7</div>
+                </div>
+            </div>
+            <div class="ix-panel card" style="margin:12px 0 0;">
+                <div class="card-head">
+                    <div>
+                        <h2>Volumes par étape</h2>
+                        <div class="hint">Entonnoir ITEX réel</div>
+                    </div>
+                </div>
+                <t t-foreach="(stats.get('itex_funnel') or {}).get('stages') or []" t-as="stage">
+                    <div class="cat-row">
+                        <span class="cat-name">
+                            <t t-esc="stage.get('seq')"/> · <t t-esc="stage.get('label')"/>
+                        </span>
+                        <span class="cat-n" t-esc="stage.get('count') or 0"/>
+                    </div>
+                </t>
+                <div class="readiness-note" style="margin-top:8px;">
+                    Silence post-intérêt : <t t-esc="stats.get('silence_pct') or '—'"/>
+                    · abandon documentaire : <t t-esc="stats.get('documentary_pct') or '—'"/>
+                </div>
+            </div>
+        </xpath>
+    </template>
+</odoo>

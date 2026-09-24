@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Ordre du menu vertical Intellix (apps racine) -->
+
+    <!-- Priorité métier -->
+    <record id="doorway_vicidial_campaigns.menu_vicidial_app_root" model="ir.ui.menu">
+        <field name="sequence">10</field>
+    </record>
+    <record id="crm.crm_menu_root" model="ir.ui.menu">
+        <field name="name">CRM</field>
+        <field name="sequence">20</field>
+    </record>
+    <record id="menu_people_engine_root" model="ir.ui.menu">
+        <field name="sequence">30</field>
+    </record>
+    <record id="doorway_social_ia.menu_social_root" model="ir.ui.menu">
+        <field name="sequence">40</field>
+    </record>
+    <record id="doorway_messaging.menu_messaging_root" model="ir.ui.menu">
+        <field name="sequence">50</field>
+    </record>
+    <record id="doorway_traffic_manager.menu_traffic_root" model="ir.ui.menu">
+        <field name="sequence">60</field>
+    </record>
+    <record id="project.menu_main_pm" model="ir.ui.menu">
+        <field name="name">Projet</field>
+        <field name="sequence">70</field>
+    </record>
+    <record id="account.menu_finance" model="ir.ui.menu">
+        <field name="sequence">80</field>
+    </record>
+
+    <!-- Autres applications -->
+    <record id="spreadsheet_dashboard.spreadsheet_dashboard_menu_root" model="ir.ui.menu">
+        <field name="sequence">90</field>
+    </record>
+    <record id="sale.sale_menu_root" model="ir.ui.menu">
+        <field name="sequence">91</field>
+    </record>
+    <record id="calendar.mail_menu_calendar" model="ir.ui.menu">
+        <field name="sequence">92</field>
+    </record>
+    <record id="contacts.menu_contacts" model="ir.ui.menu">
+        <field name="sequence">93</field>
+    </record>
+    <record id="doorway_agents_dashboard.menu_agents_root" model="ir.ui.menu">
+        <field name="sequence">94</field>
+    </record>
+    <record id="doorway_leads_bruts.menu_leads_bruts_root" model="ir.ui.menu">
+        <field name="sequence">95</field>
+    </record>
+    <record id="lead_automation_hub.menu_lead_automation_root" model="ir.ui.menu">
+        <field name="sequence">96</field>
+    </record>
+    <record id="doorway_credits.menu_doorway_credits_root" model="ir.ui.menu">
+        <field name="sequence">97</field>
+    </record>
+    <record id="renovation_conciergerie.menu_renovation_root" model="ir.ui.menu">
+        <field name="sequence">98</field>
+    </record>
+    <record id="renovation_conciergerie.menu_partner_root" model="ir.ui.menu">
+        <field name="sequence">99</field>
+    </record>
+    <record id="website.menu_website_configuration" model="ir.ui.menu">
+        <field name="sequence">100</field>
+    </record>
+    <record id="utm.menu_link_tracker_root" model="ir.ui.menu">
+        <field name="sequence">101</field>
+    </record>
+</odoo>

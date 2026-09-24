@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_agent_profile_form_performance_tab" model="ir.ui.view">
+        <field name="name">doorway.agent.profile.form.performance</field>
+        <field name="model">doorway.agent.profile</field>
+        <field name="inherit_id" ref="view_agent_profile_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Performance" name="performance">
+                    <group string="Vue d'ensemble" col="4">
+                        <field name="total_appels" readonly="1"/>
+                        <field name="appels_30j" readonly="1"/>
+                        <field name="leads_qualifies" readonly="1"/>
+                        <field name="leads_qualifies_30j" readonly="1"/>
+                    </group>
+                    <group string="Taux" col="4">
+                        <field name="taux_decroches" readonly="1"/>
+                        <field name="taux_repondeurs" readonly="1"/>
+                        <field name="taux_conversion" readonly="1"/>
+                        <field name="score_ia_moyen" readonly="1"/>
+                    </group>
+                    <group string="Économie" col="4">
+                        <field name="duree_moy_appel" readonly="1"/>
+                        <field name="cout_total_eur" readonly="1"/>
+                        <field name="cout_par_lead" readonly="1"/>
+                        <field name="nb_campagnes_actives" readonly="1"/>
+                    </group>
+                    <group>
+                        <field name="id" widget="doorway_agent_chart" readonly="1"
+                               nolabel="1"/>
+                    </group>
+                    <button name="action_view_calls" type="object"
+                            string="Voir journal appels" class="btn-secondary"/>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

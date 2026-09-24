@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <template id="portal_polices" name="JT Portal — Polices">
+    <t t-call="jt_client_portal.portal_layout">
+      <div class="jt-page-header">
+        <h1>Mes polices</h1>
+      </div>
+      <div class="jt-police-list">
+        <t t-foreach="polices" t-as="p">
+          <a t-attf-href="/portail/#{token}/police/#{p.id}" class="jt-police-card">
+            <div class="jt-police-institution"><t t-out="p.institution"/></div>
+            <div class="jt-police-product"><t t-out="p.product"/></div>
+            <div class="jt-police-montant"><t t-out="'{:,.0f} $'.format(p.face_amount or 0)"/></div>
+            <div class="jt-police-status jt-status-force" t-if="p.policy_status == 'en_force'">En force</div>
+            <div class="jt-police-status" t-else=""><t t-out="p.policy_status"/></div>
+          </a>
+        </t>
+      </div>
+    </t>
+  </template>
+</odoo>

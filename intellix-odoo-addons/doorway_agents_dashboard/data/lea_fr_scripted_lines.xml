@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+      Catalogue des répliques FIXES de Léa France « Ma Réno Facile »
+      (source : renovation_conciergerie/n8n/lea_fr/lib/lea_fr_config.js).
+      Miroir FRANCE de lea_qc_scripted_lines.xml : même modèle
+      (lea.qc.scripted.line), clés DISTINCTES (préfixe lea_fr_) pour coexister
+      avec les répliques QC dans le même modèle. text_hash calculé
+      automatiquement → détection « scripté » donc 100% cacheable, attribution
+      de coût par marché (campagne DW_FRB2C). fr-FR, marque Ma Réno Facile,
+      divulgation IA explicite conservée.
+    -->
+    <record id="lea_fr_line_ouverture" model="lea.qc.scripted.line">
+        <field name="key">lea_fr_ouverture</field>
+        <field name="text">Bonjour, ici Léa, l'assistante virtuelle automatisée de Ma Réno Facile. Nous accompagnons les propriétaires dans leurs projets de rénovation de leur logement. J'ai juste deux petites questions, ça prend moins d'une minute. Êtes-vous bien propriétaire de votre logement ?</field>
+    </record>
+    <record id="lea_fr_line_exit_locataire" model="lea.qc.scripted.line">
+        <field name="key">lea_fr_exit_locataire</field>
+        <field name="text">Je comprends, dans ce cas nous ne pourrons pas vous aider pour le moment. Je vous souhaite une bonne journée !</field>
+    </record>
+    <record id="lea_fr_line_question_besoin" model="lea.qc.scripted.line">
+        <field name="key">lea_fr_question_besoin</field>
+        <field name="text">Parfait ! Pensez-vous plutôt à des travaux de rénovation — par exemple l'isolation, le chauffage ou la rénovation d'une pièce —, à faire estimer la valeur de votre bien, ou peut-être les deux ?</field>
+    </record>
+    <record id="lea_fr_line_question_projet" model="lea.qc.scripted.line">
+        <field name="key">lea_fr_question_projet</field>
+        <field name="text">Très bien ! Quels travaux envisagez-vous — cuisine, salle de bains, isolation, chauffage, fenêtres, toiture, ou autre chose ?</field>
+    </record>
+    <record id="lea_fr_line_question_immo" model="lea.qc.scripted.line">
+        <field name="key">lea_fr_question_immo</field>
+        <field name="text">Souhaitez-vous faire estimer la valeur de votre bien, par exemple après vos travaux, dans les prochains mois ?</field>
+    </record>
+    <record id="lea_fr_line_capturer_dispo" model="lea.qc.scripted.line">
+        <field name="key">lea_fr_capturer_dispo</field>
+        <field name="text">Super, c'est exactement pour cela que nous sommes là ! Un conseiller Ma Réno Facile vous rappellera pour étudier votre projet en détail. Quel est le meilleur moment pour vous — plutôt le matin, l'après-midi ou en soirée ?</field>
+    </record>
+    <record id="lea_fr_line_closing" model="lea.qc.scripted.line">
+        <field name="key">lea_fr_closing</field>
+        <field name="text">Parfait ! Je confirme, nous vous rappellerons au numéro que nous avons dans votre dossier. Merci pour votre temps et excellente journée !</field>
+    </record>
+    <record id="lea_fr_line_sonder_futur" model="lea.qc.scripted.line">
+        <field name="key">lea_fr_sonder_futur</field>
+        <field name="text">Je comprends, ce n'est pas forcément pour tout de suite. Avez-vous un projet de rénovation que vous aimeriez réaliser dans les prochains mois ?</field>
+    </record>
+    <record id="lea_fr_line_exit_futur" model="lea.qc.scripted.line">
+        <field name="key">lea_fr_exit_futur</field>
+        <field name="text">Pas de souci. Je note votre dossier et nous reviendrons vers vous quand vous serez prêt. Bonne journée !</field>
+    </record>
+    <record id="lea_fr_line_exit_pas_interesse" model="lea.qc.scripted.line">
+        <field name="key">lea_fr_exit_pas_interesse</field>
+        <field name="text">Très bien, aucun problème ! Si vous changez d'avis, Ma Réno Facile reste à votre disposition. Bonne journée !</field>
+    </record>
+    <record id="lea_fr_line_exit_dnc" model="lea.qc.scripted.line">
+        <field name="key">lea_fr_exit_dnc</field>
+        <field name="text">C'est noté, nous vous retirons de notre liste d'appel. Bonne journée !</field>
+    </record>
+    <record id="lea_fr_line_objection_entrepreneur" model="lea.qc.scripted.line">
+        <field name="key">lea_fr_objection_entrepreneur</field>
+        <field name="text">C'est une très bonne chose ! Nous pouvons tout de même vous proposer un deuxième avis gratuit pour comparer. Puis-je noter vos coordonnées pour que nous restions en contact ?</field>
+    </record>
+    <record id="lea_fr_line_fallback" model="lea.qc.scripted.line">
+        <field name="key">lea_fr_fallback</field>
+        <field name="text">Désolée, je n'ai pas bien entendu. Pouvez-vous répéter, s'il vous plaît ?</field>
+    </record>
+    <record id="lea_fr_line_exit_timeout" model="lea.qc.scripted.line">
+        <field name="key">lea_fr_exit_timeout</field>
+        <field name="text">Je vois que vous êtes occupé, nous vous rappellerons à un autre moment. Bonne journée !</field>
+    </record>
+
+    <!--
+      ════════ Variante B (test A/B de scripts) ════════
+      Répliques ALTERNATIVES France (accroche + qualification reformulées,
+      « diagnostic gratuit »). Seules les clés ci-dessous diffèrent de A ; les
+      autres répliques (exits, fallback, dnc, timeout) sont réutilisées depuis A.
+      Source : lea_fr_config.js (REPLIQUES_B).
+    -->
+    <record id="lea_fr_line_ouverture_b" model="lea.qc.scripted.line">
+        <field name="key">lea_fr_ouverture_b</field>
+        <field name="text">Bonjour, ici Léa, l'assistante virtuelle automatisée de Ma Réno Facile. Bonne nouvelle pour les propriétaires : nous aidons à organiser vos travaux de rénovation avec un diagnostic gratuit. Ça prend trente secondes — êtes-vous bien propriétaire de votre logement ?</field>
+    </record>
+    <record id="lea_fr_line_question_besoin_b" model="lea.qc.scripted.line">
+        <field name="key">lea_fr_question_besoin_b</field>
+        <field name="text">Super, merci ! Pour bien vous orienter : ce qui vous intéresserait le plus en ce moment, ce serait plutôt des travaux de rénovation, connaître la valeur de votre bien, ou un peu les deux ?</field>
+    </record>
+    <record id="lea_fr_line_question_projet_b" model="lea.qc.scripted.line">
+        <field name="key">lea_fr_question_projet_b</field>
+        <field name="text">Très bon choix ! Concrètement, quel projet avez-vous en tête — la cuisine, la salle de bains, l'isolation, le chauffage, les fenêtres, la toiture, ou autre chose ?</field>
+    </record>
+    <record id="lea_fr_line_question_immo_b" model="lea.qc.scripted.line">
+        <field name="key">lea_fr_question_immo_b</field>
+        <field name="text">Parfait. Et juste pour savoir comment vous aider au mieux : faire estimer la valeur de votre bien, c'est quelque chose que vous envisagez d'ici un an ou deux, même sans être pressé ?</field>
+    </record>
+    <record id="lea_fr_line_capturer_dispo_b" model="lea.qc.scripted.line">
+        <field name="key">lea_fr_capturer_dispo_b</field>
+        <field name="text">Excellent, c'est tout à fait notre spécialité ! Un conseiller Ma Réno Facile vous rappellera avec un diagnostic gratuit et des idées concrètes pour votre projet. Pour qu'il tombe au bon moment, préférez-vous plutôt le matin, l'après-midi ou la soirée ?</field>
+    </record>
+    <record id="lea_fr_line_closing_b" model="lea.qc.scripted.line">
+        <field name="key">lea_fr_closing_b</field>
+        <field name="text">Parfait, c'est noté ! Votre conseiller Ma Réno Facile vous rappellera au numéro de votre dossier, au moment que vous avez choisi. Merci beaucoup et très belle journée !</field>
+    </record>
+    <record id="lea_fr_line_sonder_futur_b" model="lea.qc.scripted.line">
+        <field name="key">lea_fr_sonder_futur_b</field>
+        <field name="text">Aucun souci, rien d'urgent ! Juste pour l'avenir : y a-t-il un projet de rénovation sur votre logement que vous aimeriez garder en tête pour plus tard ?</field>
+    </record>
+    <record id="lea_fr_line_objection_entrepreneur_b" model="lea.qc.scripted.line">
+        <field name="key">lea_fr_objection_entrepreneur_b</field>
+        <field name="text">C'est une excellente chose d'avoir déjà quelqu'un ! Nous pouvons tout de même vous offrir un deuxième avis gratuit, souvent ça aide à comparer. Puis-je noter vos coordonnées pour rester en contact ?</field>
+    </record>
+</odoo>

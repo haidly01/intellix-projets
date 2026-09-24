@@ -1,0 +1,42 @@
+# -*- coding: utf-8 -*-
+{
+    'name': 'Jason Thomas Assurance',
+    'version': '19.0.1.19.0',
+    'category': 'Insurance',
+    'summary': 'CRM assurance vie — Jason Thomas (NB, Canada)',
+    'depends': [
+        'base', 'mail', 'crm', 'sale', 'account', 'calendar',
+        'doorway_messaging', 'doorway_agents_dashboard', 'doorway_crm',
+        'renovation_conciergerie',
+    ],
+    'data': [
+        'security/jt_groups.xml',
+        'data/jt_company.xml',
+        'data/jt_assets.xml',
+        'security/ir.model.access.csv',
+        'data/jt_sequences.xml',
+        'data/jt_sync_config.xml',
+        'views/jt_client_views.xml',
+        'views/jt_police_views.xml',
+        'views/jt_tache_views.xml',
+        'views/jt_mailbox_views.xml',
+        'views/calendar_event_views.xml',
+        'views/jt_sidebar.xml',
+        'views/jt_dashboard_views.xml',
+        'views/jt_sync_cookie_views.xml',
+        'views/menus.xml',
+        'wizard/jt_client_merge_wizard_views.xml',
+    ],
+    'assets': {
+        'web.assets_backend': [
+            'jason_thomas_assurance/static/css/jt_theme.css',
+            'jason_thomas_assurance/static/css/jt_dashboard.css',
+            'jason_thomas_assurance/static/src/js/jt_shell.js',
+        ],
+    },
+    'post_init_hook': 'post_init_hook',
+    'uninstall_hook': 'uninstall_hook',
+    'installable': True,
+    'application': True,
+    'license': 'LGPL-3',
+}

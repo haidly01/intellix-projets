@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_campagne_extraction_form_callcenter" model="ir.ui.view">
+        <field name="name">doorway.campagne.extraction.form.callcenter</field>
+        <field name="model">doorway.campagne.extraction</field>
+        <field name="inherit_id" ref="doorway_leads_bruts.view_campagne_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_import_callcenter_prospects"
+                        type="object"
+                        string="→ Prospects CC MA/TN"
+                        class="btn-secondary"
+                        invisible="state != 'done' or zone_geographique not in ('maroc', 'tunisie')"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

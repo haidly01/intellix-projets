@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pe_tv_config_form" model="ir.ui.view">
+        <field name="name">pe.tv.config.form</field>
+        <field name="model">pe.tv.config</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="department_id"/>
+                        <field name="active"/>
+                        <field name="public_url" widget="url"/>
+                        <field name="public_token" password="True"/>
+                        <button name="action_regenerate_token" type="object" string="Régénérer le token" groups="people_engine.group_admin"/>
+                    </group>
+                    <group string="Affichage">
+                        <field name="show_leaderboard"/>
+                        <field name="show_badges_feed"/>
+                        <field name="show_challenges"/>
+                        <field name="show_team_score"/>
+                        <field name="show_course_completions"/>
+                        <field name="refresh_interval"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_pe_tv_config" model="ir.actions.act_window">
+        <field name="name">Dashboard TV</field>
+        <field name="res_model">pe.tv.config</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

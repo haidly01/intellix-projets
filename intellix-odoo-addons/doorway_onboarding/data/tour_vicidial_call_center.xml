@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="tour_vicidial_call_center" model="doorway.onboarding.tour">
+        <field name="name">Appels — Agent call center</field>
+        <field name="code">vicidial_call_center</field>
+        <field name="sequence">5</field>
+        <field name="quest_label">Quête Qualificateur</field>
+        <field name="home_action_method">home_vicidial_call_center</field>
+        <field name="badge_icon">📞</field>
+        <field name="badge_name">Qualificateur Appels</field>
+        <field name="reward_points">40</field>
+    </record>
+
+    <record id="tour_vicidial_step_welcome" model="doorway.onboarding.tour.step">
+        <field name="tour_id" ref="tour_vicidial_call_center"/>
+        <field name="sequence">1</field>
+        <field name="key">welcome</field>
+        <field name="title">Bienvenue sur ton poste d'appels</field>
+        <field name="body_html" type="html">
+            <p>Tu rejoins l'équipe <strong>Appels</strong> sur Intellix CRM.</p>
+            <p>Tes campagnes VICIdial et ton pipeline CRM apparaissent dans la présentation personnalisée ci-dessous.</p>
+            <div class="alert alert-info border-0 pe-xp-callout" role="status">
+                <strong>+40 XP</strong> — termine la quête pour le badge
+                <em>Qualificateur Appels</em> 📞
+            </div>
+        </field>
+    </record>
+
+    <record id="tour_vicidial_step_workstation" model="doorway.onboarding.tour.step">
+        <field name="tour_id" ref="tour_vicidial_call_center"/>
+        <field name="sequence">2</field>
+        <field name="key">workstation</field>
+        <field name="title">Mon poste d'appels</field>
+        <field name="body_html" type="html">
+            <p>Ton écran principal pour passer des appels VICIdial.</p>
+            <ul>
+                <li>Campagnes assignées (Rénovation, Thermopompe…)</li>
+                <li>Sync automatique des appels vers le CRM</li>
+                <li>Raccourcis vers qualification et rappels</li>
+            </ul>
+        </field>
+        <field name="action_xmlid">doorway_vicidial_campaigns.action_vicidial_workstation</field>
+        <field name="action_label">Ouvrir mon poste</field>
+    </record>
+
+    <record id="tour_vicidial_step_qualification" model="doorway.onboarding.tour.step">
+        <field name="tour_id" ref="tour_vicidial_call_center"/>
+        <field name="sequence">3</field>
+        <field name="key">qualification</field>
+        <field name="title">Qualification CRM</field>
+        <field name="body_html" type="html">
+            <p>Après chaque appel, qualifie le lead dans ton <strong>pipeline Appels</strong>.</p>
+            <ul>
+                <li>Étape <em>Nouveau</em> → <em>Qualifié</em> / <em>RDV</em> / <em>Rappel</em> / <em>Non qualifié</em></li>
+                <li>Tags automatiques : Appels, À qualifier</li>
+                <li>Notes et prochaine action obligatoires</li>
+            </ul>
+        </field>
+        <field name="action_xmlid">doorway_vicidial_campaigns.action_vicidial_qualification_hub</field>
+        <field name="action_label">Voir la qualification</field>
+    </record>
+
+    <record id="tour_vicidial_step_coaching" model="doorway.onboarding.tour.step">
+        <field name="tour_id" ref="tour_vicidial_call_center"/>
+        <field name="sequence">4</field>
+        <field name="key">coaching</field>
+        <field name="title">Mon coaching Claude</field>
+        <field name="body_html" type="html">
+            <p>Chaque appel enregistré est analysé par <strong>Claude</strong> :</p>
+            <ul>
+                <li>Scores : accroche, qualification, objections, closing</li>
+                <li>Points positifs et axes d'amélioration</li>
+                <li>Conseil personnalisé pour ton prochain appel</li>
+            </ul>
+            <p>Consulte <strong>Mon coaching</strong> après chaque session.</p>
+        </field>
+        <field name="action_xmlid">doorway_vicidial_campaigns.action_my_coaching_dashboard</field>
+        <field name="action_label">Mon coaching</field>
+    </record>
+
+    <record id="tour_vicidial_step_callbacks" model="doorway.onboarding.tour.step">
+        <field name="tour_id" ref="tour_vicidial_call_center"/>
+        <field name="sequence">5</field>
+        <field name="key">callbacks</field>
+        <field name="title">Mes rappels</field>
+        <field name="body_html" type="html">
+            <p>Les leads à rappeler apparaissent dans ton calendrier <strong>Mes rappels</strong>.</p>
+            <ul>
+                <li>Date et heure de rappel depuis la fiche lead</li>
+                <li>Vue calendrier intégrée Odoo</li>
+                <li>Relance directe depuis le poste d'appels</li>
+            </ul>
+        </field>
+        <field name="action_xmlid">doorway_vicidial_campaigns.action_vicidial_callbacks_calendar</field>
+        <field name="action_label">Mes rappels</field>
+    </record>
+</odoo>

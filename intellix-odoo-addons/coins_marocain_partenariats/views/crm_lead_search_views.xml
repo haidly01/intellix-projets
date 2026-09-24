@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_crm_lead_search_coins_partenariat" model="ir.ui.view">
+        <field name="name">crm.lead.search.coins.partenariat</field>
+        <field name="model">crm.lead</field>
+        <field name="priority">8</field>
+        <field name="arch" type="xml">
+            <search string="Pipeline partenariats">
+                <field name="name" string="Partenaire" filter_domain="[
+                    '|', '|', '|', '|', '|', '|',
+                    ('name', 'ilike', self),
+                    ('coins_etablissement', 'ilike', self),
+                    ('contact_name', 'ilike', self),
+                    ('partner_name', 'ilike', self),
+                    ('email_from', 'ilike', self),
+                    ('phone', 'ilike', self),
+                    ('coins_whatsapp', 'ilike', self)]"/>
+                <field name="email_from" string="Email"/>
+                <field name="phone" string="Téléphone"/>
+                <field name="coins_etablissement"/>
+                <field name="contact_name"/>
+                <field name="coins_ville"/>
+                <field name="coins_commercial_assigne"/>
+                <field name="coins_agent_ia_id"/>
+                <field name="coins_assignee_display"/>
+                <field name="canal_traitement"/>
+                <filter name="filter_relance" string="À relancer"
+                        domain="[('stage_id.name', '=', 'Relance')]"/>
+                <filter name="filter_visite" string="Attribué"
+                        domain="[('stage_id.name', '=', 'Attribué')]"/>
+                <filter name="filter_assigne_humain" string="Assigné humain"
+                        domain="[('assignee_kind', '=', 'humain'), ('coins_commercial_assigne', '!=', False)]"/>
+                <filter name="filter_assigne_ia" string="Assigné IA"
+                        domain="[('assignee_kind', '=', 'ia'), ('coins_agent_ia_id', '!=', False)]"/>
+                <separator/>
+                <filter name="group_categorie" string="Catégorie de lieu"
+                        context="{'group_by': 'coins_categorie_etab'}"/>
+                <filter name="group_ville" string="Ville"
+                        context="{'group_by': 'coins_ville'}"/>
+                <filter name="group_kind" string="Humain / IA"
+                        context="{'group_by': 'assignee_kind'}"/>
+                <filter name="group_commercial" string="Commercial humain"
+                        context="{'group_by': 'coins_commercial_assigne'}"/>
+                <filter name="group_ia" string="Agent IA"
+                        context="{'group_by': 'coins_agent_ia_id'}"/>
+                <filter name="group_canal" string="Canal de traitement"
+                        context="{'group_by': 'canal_traitement'}"/>
+                <filter name="group_stage" string="Étape"
+                        context="{'group_by': 'stage_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_crm_lead_search_coins_voyageur" model="ir.ui.view">
+        <field name="name">crm.lead.search.coins.voyageur</field>
+        <field name="model">crm.lead</field>
+        <field name="priority">8</field>
+        <field name="arch" type="xml">
+            <search string="Pipeline voyageurs">
+                <field name="name" string="Voyageur" filter_domain="[
+                    '|', '|', '|', '|', '|',
+                    ('name', 'ilike', self),
+                    ('contact_name', 'ilike', self),
+                    ('partner_name', 'ilike', self),
+                    ('email_from', 'ilike', self),
+                    ('phone', 'ilike', self),
+                    ('coins_whatsapp', 'ilike', self)]"/>
+                <field name="email_from" string="Email"/>
+                <field name="phone" string="Téléphone"/>
+                <field name="contact_name"/>
+                <field name="coins_whatsapp"/>
+                <field name="coins_service_demande"/>
+                <field name="coins_commercial_assigne"/>
+                <field name="coins_agent_ia_id"/>
+                <filter name="filter_assigne_humain" string="Assigné humain"
+                        domain="[('assignee_kind', '=', 'humain'), ('coins_commercial_assigne', '!=', False)]"/>
+                <filter name="filter_assigne_ia" string="Assigné IA"
+                        domain="[('assignee_kind', '=', 'ia'), ('coins_agent_ia_id', '!=', False)]"/>
+                <filter name="filter_chaud" string="Transfert à chaud"
+                        domain="['|', ('coins_urgence', '=', True), ('stage_id.name', '=', 'Transfert à chaud')]"/>
+                <filter name="filter_sans_tel" string="Sans coordonnées"
+                        domain="[('coins_has_coordonnees', '=', False)]"/>
+                <filter name="filter_incomplet" string="Coordonnées incomplètes"
+                        domain="[('coins_voy_coordonnees_incompletes', '=', True)]"/>
+                <filter name="filter_relance_today" string="À relancer aujourd'hui"
+                        domain="[('coins_voy_relance_today', '=', True)]"/>
+                <filter name="filter_relance_week" string="À relancer cette semaine"
+                        domain="[('coins_voy_relance_week', '=', True)]"/>
+                <separator/>
+                <filter name="group_canal" string="Canal d'origine"
+                        context="{'group_by': 'coins_canal_origine'}"/>
+                <filter name="group_kind" string="Humain / IA"
+                        context="{'group_by': 'assignee_kind'}"/>
+                <filter name="group_commercial" string="Commercial humain"
+                        context="{'group_by': 'coins_commercial_assigne'}"/>
+                <filter name="group_ia" string="Agent IA"
+                        context="{'group_by': 'coins_agent_ia_id'}"/>
+                <filter name="group_stage" string="Étape"
+                        context="{'group_by': 'stage_id'}"/>
+            </search>
+        </field>
+    </record>
+</odoo>

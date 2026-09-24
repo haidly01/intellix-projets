@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="doorway_email_builder.App" owl="1">
+        <div class="o_action o_intellix_client_action deb-builder">
+
+            <t t-if="state.loading">
+                <div class="deb-loading">
+                    <i class="fa fa-spinner fa-spin"/>
+                    <span>Chargement de l'assistant…</span>
+                </div>
+            </t>
+
+            <t t-else="">
+                <!-- ============ PANNEAU GAUCHE — Brief / Formulaire ============ -->
+                <aside class="deb-side">
+                    <div class="deb-side__brand">
+                        <span class="deb-side__logo"><i class="fa fa-envelope-o"/></span>
+                    </div>
+
+                    <div class="deb-side__title">
+                        <span>Brief</span>
+                        <button type="button" class="deb-side__new" t-on-click="() => this.newSession()" title="Nouvelle campagne">
+                            <i class="fa fa-plus"/>
+                        </button>
+                    </div>
+
+                    <div class="deb-side__body">
+                        <label class="deb-field">
+                            <span class="deb-field__label">Nom de la campagne</span>
+                            <input type="text" class="deb-input"
+                                   t-model="state.form.name" t-on-change="() => this.saveBrief()"/>
+                        </label>
+
+                        <label class="deb-field">
+                            <span class="deb-field__label">Objectif</span>
+                            <textarea class="deb-input deb-input--area" rows="2"
+                                      t-model="state.form.objective" t-on-change="() => this.saveBrief()"
+                                      placeholder="ex : relancer les prospects inactifs"/>
+                        </label>
+
+                        <div class="deb-field__group">Marque &amp; langue</div>
+                        <div class="deb-field__row">
+                            <input type="text" class="deb-input"
+                                   t-model="state.form.brand" t-on-change="() => this.saveBrief()"
+                                   placeholder="Marque"/>
+                            <input type="text" class="deb-input"
+                                   t-model="state.form.language" t-on-change="() => this.saveBrief()"
+                                   placeholder="fr"/>
+                        </div>
+
+                        <div class="deb-field__group">Cible &amp; ton</div>
+                        <div class="deb-field__row">
+                            <input type="text" class="deb-input"
+                                   t-model="state.form.persona" t-on-change="() => this.saveBrief()"
+                                   placeholder="Persona / cible"/>
+                            <input type="text" class="deb-input"
+                                   t-model="state.form.tone" t-on-change="() => this.saveBrief()"
+                                   placeholder="Ton"/>
+                        </div>
+
+                        <label class="deb-field">
+                            <span class="deb-field__label">Offre / proposition de valeur</span>
+                            <textarea class="deb-input deb-input--area" rows="2"
+                                      t-model="state.form.offer" t-on-change="() => this.saveBrief()"/>
+                        </label>
+
+                        <label class="deb-field">
+                            <span class="deb-field__label">Appel à l'action (CTA)</span>
+                            <input type="text" class="deb-input"
+                                   t-model="state.form.cta" t-on-change="() => this.saveBrief()"
+                                   placeholder="ex : Réserver une démo"/>
+                        </label>
+                    </div>
+
+                    <div class="deb-side__footer">
+                        <button type="button" class="deb-cta"
+                                t-att-disabled="state.generating or !state.data.claude_available"
+                                t-on-click="() => this.generate()">
+                            <span t-esc="state.generating ? 'Génération…' : generateLabel"/>
+                            <i t-att-class="state.generating ? 'fa fa-spinner fa-spin' : 'fa fa-arrow-right'"/>
+                        </button>
+                        <p t-if="!state.data.claude_available" class="deb-side__warn">
+                            <i class="fa fa-exclamation-triangle"/> Clé API Claude non configurée.
+                        </p>
+                    </div>
+                </aside>
+
+                <!-- ============ CENTRE — Aperçu de l'email ============ -->
+                <main class="deb-canvas">
+                    <header class="deb-canvas__head">
+                        <h1 class="deb-canvas__title" t-esc="state.data.name || 'Créer et prévisualiser l\'email'"/>
+                        <p class="deb-canvas__subtitle">
+                            Décrivez votre brief à gauche, générez l'email puis ajustez-le par instruction.
+                        </p>
+                    </header>
+
+                    <div class="deb-canvas__stage">
+                        <!-- Carte aperçu email -->
+                        <t t-if="isGenerated or isSent">
+                            <article class="deb-preview" t-foreach="previewEmails" t-as="mail" t-key="mail.key">
+                                <span class="deb-preview__corner"/>
+                                <div class="deb-preview__meta" t-esc="mail.name"/>
+                                <div class="deb-preview__from" t-if="state.data.brand">
+                                    <i class="fa fa-paper-plane"/> <span t-esc="state.data.brand"/>
+                                </div>
+                                <h2 class="deb-preview__subject" t-esc="mail.subjects.length ? mail.subjects[0] : '(objet)'"/>
+                                <p class="deb-preview__preheader" t-if="mail.preheader" t-esc="mail.preheader"/>
+                                <t t-if="mail.subjects.length > 1">
+                                    <div class="deb-preview__ab">
+                                        <span class="deb-preview__ablabel">Variante B</span>
+                                        <span t-esc="mail.subjects[1]"/>
+                                    </div>
+                                </t>
+                                <div class="deb-preview__cta" t-if="mail.cta and mail.cta.length and mail.cta[0].label">
+                                    <span class="deb-preview__btn" t-esc="mail.cta[0].label"/>
+                                </div>
+                                <div class="deb-preview__links">
+                                    <a t-if="mail.mailing_id" href="#" t-on-click.prevent="() => this.openRecord('mailing.mailing', mail.mailing_id)">Mailing</a>
+                                    <a t-if="mail.mail_template_id" href="#" t-on-click.prevent="() => this.openRecord('mail.template', mail.mail_template_id)">Template</a>
+                                    <a t-if="mail.campaign_id" href="#" t-on-click.prevent="() => this.openRecord('doorway.message.campaign', mail.campaign_id)">Campagne</a>
+                                </div>
+                            </article>
+                        </t>
+                        <t t-else="">
+                            <article class="deb-preview deb-preview--empty">
+                                <span class="deb-preview__corner"/>
+                                <div class="deb-preview__icon"><i class="fa fa-envelope-o"/></div>
+                                <h2 class="deb-preview__subject">Votre email apparaîtra ici</h2>
+                                <p class="deb-preview__preheader">
+                                    Renseignez le brief puis cliquez sur « Générer l'email ».
+                                </p>
+                            </article>
+                        </t>
+
+                        <!-- Conversation / itération avec Léa -->
+                        <section class="deb-assist">
+                            <div class="deb-assist__head">
+                                <i class="fa fa-comments"/>
+                                <span>Assistant — Léa</span>
+                                <span class="deb-state" t-esc="state.data.state"/>
+                            </div>
+                            <div class="deb-assist__thread">
+                                <t t-foreach="state.data.messages" t-as="msg" t-key="msg.id">
+                                    <div t-att-class="'deb-msg deb-msg--' + msg.role">
+                                        <div class="deb-msg__bubble" t-esc="msg.content"/>
+                                    </div>
+                                </t>
+                                <div t-if="state.generating" class="deb-msg deb-msg--assistant">
+                                    <div class="deb-msg__bubble"><i class="fa fa-spinner fa-spin"/> Léa rédige…</div>
+                                </div>
+                            </div>
+                            <div class="deb-assist__input">
+                                <textarea class="deb-input deb-input--area" rows="2"
+                                          t-model="state.chatInput"
+                                          t-on-keydown="(ev) => this.onKeydown(ev)"
+                                          placeholder="Décrivez votre email ou demandez un ajustement (« plus court », « plus premium », « ajoute une remise »)…"/>
+                                <div class="deb-assist__actions">
+                                    <button type="button" class="deb-btn deb-btn--ghost" t-on-click="() => this.sendMessage()">
+                                        <i class="fa fa-paper-plane"/> Envoyer
+                                    </button>
+                                    <button type="button" class="deb-btn deb-btn--primary"
+                                            t-att-disabled="state.generating or !state.data.claude_available"
+                                            t-on-click="() => this.generate()">
+                                        <i t-att-class="state.generating ? 'fa fa-spinner fa-spin' : 'fa fa-bolt'"/>
+                                        <span t-esc="generateLabel"/>
+                                    </button>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </main>
+
+                <!-- ============ PANNEAU DROIT — Paramètres ============ -->
+                <aside class="deb-settings">
+                    <div class="deb-settings__head">
+                        <h2 class="deb-settings__title">Paramètres</h2>
+                        <div class="deb-settings__topbtns">
+                            <button type="button" class="deb-btn deb-btn--ghost"
+                                    t-if="isGenerated or isSent"
+                                    t-on-click="() => this.openMailings()">Aperçu</button>
+                            <button type="button" class="deb-btn deb-btn--primary"
+                                    t-att-disabled="state.publishing or !(isGenerated or isSent)"
+                                    t-on-click="() => this.publish()">
+                                <i t-if="state.publishing" class="fa fa-spinner fa-spin"/>
+                                <span t-esc="state.publishing ? 'Envoi…' : 'Envoyer'"/>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="deb-settings__body">
+                        <div class="deb-setting">
+                            <div class="deb-setting__label">Longueur de la séquence</div>
+                            <div class="deb-pills">
+                                <t t-foreach="[1,2,3,4,5]" t-as="n" t-key="n">
+                                    <button type="button"
+                                            t-att-class="'deb-pill' + (state.form.sequence_length == n ? ' deb-pill--active' : '')"
+                                            t-on-click="() => this.setSequence(n)">
+                                        <t t-esc="n == 1 ? '1 email' : n + ' emails'"/>
+                                    </button>
+                                </t>
+                            </div>
+                        </div>
+
+                        <div class="deb-setting">
+                            <div class="deb-setting__label">Crédits &amp; envoi</div>
+                            <div class="deb-credit">
+                                <div class="deb-credit__row">
+                                    <span><i class="fa fa-coins"/> Solde</span>
+                                    <strong t-esc="state.data.credit_balance"/>
+                                </div>
+                                <div class="deb-credit__row">
+                                    <span><i class="fa fa-paper-plane"/> Coût d'envoi</span>
+                                    <strong t-esc="state.data.send_cost + ' crédit' + (state.data.send_cost > 1 ? 's' : '')"/>
+                                </div>
+                                <p class="deb-credit__note">Générer et prévisualiser sont gratuits ; seul l'envoi est facturé.</p>
+                            </div>
+                        </div>
+
+                        <div class="deb-setting">
+                            <div class="deb-setting__label">Options</div>
+                            <label class="deb-toggle">
+                                <span>Créer aussi des campagnes multi-contacts</span>
+                                <input type="checkbox" t-model="state.form.create_campaigns" t-on-change="() => this.saveBrief()"/>
+                                <span class="deb-toggle__track"><span class="deb-toggle__knob"/></span>
+                            </label>
+                        </div>
+
+                        <div class="deb-setting" t-if="isSent">
+                            <p class="deb-sent"><i class="fa fa-check-circle"/> Campagne envoyée.</p>
+                        </div>
+
+                        <div class="deb-setting" t-if="isGenerated or isSent">
+                            <button type="button" class="deb-btn deb-btn--block deb-btn--success"
+                                    t-att-disabled="state.publishing"
+                                    t-on-click="() => this.publish()">
+                                <i t-att-class="state.publishing ? 'fa fa-spinner fa-spin' : 'fa fa-paper-plane'"/>
+                                <span t-esc="state.publishing ? 'Envoi…' : publishLabel"/>
+                            </button>
+                        </div>
+                    </div>
+                </aside>
+            </t>
+        </div>
+    </t>
+
+</templates>

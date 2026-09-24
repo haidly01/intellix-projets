@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Après intellix_navbar (50000) pour primer sur le thème sombre Intellix -->
+    <record id="asset_traffic_manager_theme_fix" model="ir.asset">
+        <field name="name">doorway.traffic_manager.theme_fix</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="path">doorway_traffic_manager/static/src/css/traffic_manager_theme_fix.css</field>
+        <field name="sequence" eval="50100"/>
+    </record>
+    <record id="asset_traffic_manager_theme_fix_dark" model="ir.asset">
+        <field name="name">doorway.traffic_manager.theme_fix.dark</field>
+        <field name="bundle">web.assets_web_dark</field>
+        <field name="path">doorway_traffic_manager/static/src/css/traffic_manager_theme_fix.css</field>
+        <field name="sequence" eval="50100"/>
+    </record>
+</odoo>

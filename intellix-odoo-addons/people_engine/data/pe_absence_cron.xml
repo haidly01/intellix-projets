@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="cron_pe_absence_matin" model="ir.cron">
+        <field name="name">PE — Détection absences (matin 10h)</field>
+        <field name="model_id" ref="model_pe_absence_detected"/>
+        <field name="state">code</field>
+        <field name="code">model.sudo().cron_detection_matin()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="nextcall" eval="(DateTime.now() + timedelta(days=1)).replace(hour=10, minute=0, second=0).strftime('%Y-%m-%d %H:%M:%S')"/>
+        <field name="active" eval="True"/>
+    </record>
+
+    <record id="cron_pe_absence_soir" model="ir.cron">
+        <field name="name">PE — Détection absences (soir 18h)</field>
+        <field name="model_id" ref="model_pe_absence_detected"/>
+        <field name="state">code</field>
+        <field name="code">model.sudo().cron_detection_soir()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="nextcall" eval="(DateTime.now() + timedelta(days=1)).replace(hour=18, minute=0, second=0).strftime('%Y-%m-%d %H:%M:%S')"/>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

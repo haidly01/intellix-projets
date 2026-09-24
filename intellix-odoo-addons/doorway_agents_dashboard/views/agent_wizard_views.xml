@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_agent_wizard" model="ir.actions.client">
+        <field name="name">Création agent</field>
+        <field name="tag">agent_wizard_action</field>
+    </record>
+</odoo>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Imprimé Commune Urbaine de Marrakech — un modèle parmi d'autres, pas le format unique. -->
+    <record id="tax_bordereau_tpl_marrakech" model="intellix.riad.tax.bordereau.template">
+        <field name="name">Commune Urbaine de Marrakech</field>
+        <field name="kingdom_label">ROYAUME DU MAROC</field>
+        <field name="authority_name">COMMUNE URBAINE DE MARRAKECH</field>
+        <field name="authority_line_2">SECRÉTARIAT GÉNÉRAL</field>
+        <field name="authority_line_3">DIVISION DE DÉVELOPPEMENT DES RESSOURCES FINANCIÈRES</field>
+        <field name="tax_title">TAXE DE SÉJOUR</field>
+        <field name="document_title">Bordereau de versement</field>
+        <field name="service_name">Service communal de l'assiette</field>
+        <field name="city_for_date">Marrakech</field>
+        <field name="currency_word">dirhams</field>
+        <field name="show_operator_nature" eval="True"/>
+        <field name="show_cin" eval="True"/>
+        <field name="show_fax" eval="True"/>
+        <field name="show_admin_box" eval="True"/>
+        <field name="certification_text">Je soussigné certifie exactes les informations mentionnées sur le présent bordereau</field>
+        <field name="footer_note">À déposer à la recette communale avant la fin du mois suivant le trimestre.</field>
+        <field name="operator_name_label">Nom et prénom de l'exploitant ou raison sociale</field>
+        <field name="operator_address_label">Adresse personnelle ou siège social</field>
+        <field name="operator_cin_label">N° CIN ou n° d'immatriculation</field>
+        <field name="phone_label">Tél</field>
+        <field name="fax_label">Fax</field>
+        <field name="nature_label">Nature de l'exploitant</field>
+        <field name="nature_proprietaire_label">Propriétaire</field>
+        <field name="nature_directeur_label">Directeur</field>
+        <field name="nature_gerant_label">Gérant</field>
+        <field name="col_clients">Nombre de clients</field>
+        <field name="col_nights">Nombre des nuitées</field>
+        <field name="col_rate">Taux de la taxe</field>
+        <field name="col_amount">Montant de la taxe</field>
+        <field name="settled_text">Arrêté le présent bordereau à la somme de</field>
+        <field name="in_letters_label">En lettres</field>
+        <field name="declarant_label">Le Déclarant</field>
+        <field name="date_prefix">À</field>
+        <field name="admin_box_title">Service communal de l'assiette</field>
+        <field name="admin_declaration_no">N° de déclaration</field>
+        <field name="admin_received">Reçue le</field>
+        <field name="admin_ordonnateur">L'ordonnateur</field>
+        <field name="report_xmlid">intellix_riad.action_report_tax_bordereau</field>
+        <field name="notes">Modèle officiel Marrakech. Dupliquer et adapter pour un riad d'une autre commune — ne pas coder Marrakech en dur.</field>
+    </record>
+</odoo>

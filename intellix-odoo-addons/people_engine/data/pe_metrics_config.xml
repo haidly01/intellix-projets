@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="pe_config_default_period_days" model="ir.config_parameter">
+        <field name="key">people_engine.default_period_days</field>
+        <field name="value">30</field>
+    </record>
+    <record id="pe_config_neutral_score" model="ir.config_parameter">
+        <field name="key">people_engine.neutral_subscore</field>
+        <field name="value">5</field>
+    </record>
+    <record id="pe_config_alert_threshold_low" model="ir.config_parameter">
+        <field name="key">people_engine.alert_threshold_critical</field>
+        <field name="value">40</field>
+    </record>
+    <record id="pe_config_alert_threshold_warning" model="ir.config_parameter">
+        <field name="key">people_engine.alert_threshold_warning</field>
+        <field name="value">60</field>
+    </record>
+
+    <function model="pe.employee.profile" name="create_profiles_for_employees"/>
+</odoo>

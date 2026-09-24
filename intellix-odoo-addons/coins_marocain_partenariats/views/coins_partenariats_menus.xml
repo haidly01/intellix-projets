@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Menu parent sous Coins Marocain — aucun fichier coins_marocain modifié -->
+    <menuitem id="menu_coins_partenariats_root"
+              name="Partenariats &amp; Influenceurs"
+              parent="coins_marocain.menu_coins_root"
+              sequence="62"
+              groups="coins_marocain.group_coins_user,coins_marocain.group_coins_manager"/>
+
+    <menuitem id="menu_coins_equipe_kpi"
+              name="KPI équipe"
+              parent="menu_coins_partenariats_root"
+              action="action_coins_equipe_kpi_dashboard"
+              sequence="6"
+              groups="coins_marocain.group_coins_user,coins_marocain.group_coins_manager"/>
+
+    <menuitem id="menu_coins_kpi_daily"
+              name="Activité quotidienne"
+              parent="menu_coins_partenariats_root"
+              action="action_coins_partenariat_kpi_daily"
+              sequence="7"
+              groups="coins_marocain.group_coins_user,coins_marocain.group_coins_manager"/>
+
+    <menuitem id="menu_coins_kpi_settings"
+              name="Objectifs KPI"
+              parent="menu_coins_partenariats_root"
+              action="action_coins_partenariat_kpi_settings"
+              sequence="8"
+              groups="coins_marocain.group_coins_manager"/>
+
+    <menuitem id="menu_coins_influenceur"
+              name="Influenceurs"
+              parent="menu_coins_partenariats_root"
+              action="action_coins_influenceur"
+              sequence="10"
+              groups="coins_marocain.group_coins_user,coins_marocain.group_coins_manager"/>
+
+    <menuitem id="menu_coins_entente"
+              name="Ententes"
+              parent="menu_coins_partenariats_root"
+              action="action_coins_entente"
+              sequence="20"
+              groups="coins_marocain.group_coins_user,coins_marocain.group_coins_manager"/>
+
+    <menuitem id="menu_coins_entente_activation"
+              name="Historique activations"
+              parent="menu_coins_partenariats_root"
+              action="action_coins_entente_activation"
+              sequence="30"
+              groups="coins_marocain.group_coins_user,coins_marocain.group_coins_manager"/>
+</odoo>

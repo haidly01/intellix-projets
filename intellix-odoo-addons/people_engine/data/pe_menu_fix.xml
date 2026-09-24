@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Parent sans action : évite lien mort vers une act_window supprimée -->
+    <record id="menu_pe_coaching" model="ir.ui.menu">
+        <field name="action" eval="False"/>
+    </record>
+</odoo>

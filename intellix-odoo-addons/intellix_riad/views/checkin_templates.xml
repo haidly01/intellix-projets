@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="checkin_chrome" name="Check-in chrome">
+        <html t-att-lang="lang" t-att-dir="rtl and 'rtl' or 'ltr'">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+                <title t-esc="t('title')"/>
+                <style>
+                    :root {
+                        --green: #145C42;
+                        --green-deep: #0E4632;
+                        --terracotta: #C08768;
+                        --cream: #E9DEC7;
+                        --brass: #B8935A;
+                        --paper: #FBF7EF;
+                        --ink: #241A12;
+                        --line: #E4D9C4;
+                    }
+                    * { box-sizing: border-box; }
+                    body {
+                        margin: 0;
+                        background: var(--paper);
+                        color: var(--ink);
+                        font-family: Georgia, "Times New Roman", serif;
+                    }
+                    .hero {
+                        background: linear-gradient(160deg, #145C42 0%, #0E4632 72%);
+                        color: #FBF7EF;
+                        padding: 28px 20px 36px;
+                    }
+                    .langs { display: flex; gap: 10px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; }
+                    .langs a { color: #E9DEC7; text-decoration: none; opacity: .75; }
+                    .langs a.on { opacity: 1; border-bottom: 1px solid #B8935A; }
+                    .hero h1 { font-size: 28px; font-weight: 400; margin: 18px 0 14px; }
+                    .badge {
+                        display: inline-block;
+                        background: rgba(251,247,239,.12);
+                        border: 1px solid rgba(184,147,90,.55);
+                        color: #E9DEC7;
+                        border-radius: 999px;
+                        padding: 6px 14px;
+                        font-size: 12px;
+                        letter-spacing: .08em;
+                    }
+                    .wrap { max-width: 520px; margin: -18px auto 0; padding: 0 16px 40px; }
+                    .section { margin: 28px 0 12px; font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--brass); }
+                    .card {
+                        background: #fff;
+                        border: 1px solid var(--line);
+                        border-radius: 16px;
+                        padding: 14px 16px;
+                        margin-bottom: 12px;
+                    }
+                    .card label, .card .lbl {
+                        display: block;
+                        font-size: 11px;
+                        letter-spacing: .08em;
+                        text-transform: uppercase;
+                        color: #9C9280;
+                        margin-bottom: 6px;
+                    }
+                    .card input, .card select {
+                        width: 100%;
+                        border: 0;
+                        background: transparent;
+                        font-size: 17px;
+                        color: var(--ink);
+                        font-family: Georgia, serif;
+                        padding: 0;
+                    }
+                    .card.locked .val { font-size: 18px; }
+                    .hint { font-size: 12px; color: #9C9280; margin: 4px 0 16px; }
+                    .cta {
+                        display: block;
+                        width: 100%;
+                        border: 0;
+                        border-radius: 16px;
+                        padding: 16px 18px;
+                        margin-top: 18px;
+                        font-size: 16px;
+                        color: #FBF7EF;
+                        background: linear-gradient(135deg, #145C42, #0E4632);
+                        font-family: Georgia, serif;
+                    }
+                    .cta.alt { background: linear-gradient(135deg, #C08768, #145C42); }
+                    .choice { display: flex; flex-direction: column; gap: 10px; }
+                    .pad {
+                        width: 100%;
+                        height: 160px;
+                        border: 1.5px dashed #C08768;
+                        border-radius: 16px;
+                        background: #fff;
+                        touch-action: none;
+                    }
+                    .err { color: #9a3b2f; font-size: 14px; margin: 8px 0 16px; }
+                    .doc { background: #fff; border-radius: 16px; padding: 16px; border: 1px solid var(--line); }
+                    .clear { background: none; border: 0; color: var(--terracotta); font-size: 13px; }
+                </style>
+            </head>
+            <body>
+                <header class="hero">
+                    <nav class="langs">
+                        <a t-att-href="'/checkin/%s?lang=fr' % token" t-att-class="lang == 'fr' and 'on' or None">FR</a>
+                        <a t-att-href="'/checkin/%s?lang=en' % token" t-att-class="lang == 'en' and 'on' or None">EN</a>
+                        <a t-att-href="'/checkin/%s?lang=ar' % token" t-att-class="lang == 'ar' and 'on' or None">عربي</a>
+                    </nav>
+                    <h1 t-esc="t('title')"/>
+                    <span class="badge"><t t-esc="estab_name"/> · <t t-esc="estab_city"/></span>
+                </header>
+                <main class="wrap">
+                    <t t-out="0"/>
+                </main>
+            </body>
+        </html>
+    </template>
+
+    <template id="checkin_form" name="Check-in formulaire">
+        <t t-call="intellix_riad.checkin_chrome">
+            <t t-if="error"><p class="err" t-esc="error"/></t>
+            <t t-if="step != 'form'">
+                <div class="section" t-esc="t('identity')"/>
+                <form method="post" t-att-action="'/checkin/%s/residency' % token">
+                    <input type="hidden" name="lang" t-att-value="lang"/>
+                    <div class="card">
+                        <span class="lbl" t-esc="t('resident_q')"/>
+                    </div>
+                    <div class="choice">
+                        <button class="cta" type="submit" name="resident_ma" value="yes" t-esc="t('yes')"/>
+                        <button class="cta alt" type="submit" name="resident_ma" value="no" t-esc="t('no')"/>
+                    </div>
+                </form>
+            </t>
+            <t t-else="">
+                <form method="post" t-att-action="'/checkin/%s/submit' % token" enctype="multipart/form-data">
+                    <input type="hidden" name="lang" t-att-value="lang"/>
+                    <input type="hidden" name="signature_data" id="signature_data"/>
+                    <div class="section" t-esc="t('identity')"/>
+                    <div class="card"><label t-esc="t('lastname')"/><input name="lastname" required="required" t-att-value="prefill['lastname']"/></div>
+                    <div class="card"><label t-esc="t('firstname')"/><input name="firstname" required="required" t-att-value="prefill['firstname']"/></div>
+                    <div class="card"><label t-esc="t('birth_date')"/><input type="date" name="birth_date" required="required"/></div>
+                    <div class="card"><label t-esc="t('birth_place')"/><input name="birth_place" required="required"/></div>
+                    <div class="card">
+                        <label t-esc="t('nationality')"/>
+                        <select name="nationality_id" required="required">
+                            <option value=""/>
+                            <t t-foreach="countries" t-as="country" t-key="country.id">
+                                <option t-att-value="country.id" t-esc="country.name"/>
+                            </t>
+                        </select>
+                    </div>
+                    <div class="card"><label t-esc="t('passport')"/><input name="passport_number" required="required"/></div>
+                    <div class="card"><label t-esc="t('entry')"/><input type="date" name="entry_date" required="required"/></div>
+                    <div class="card"><label t-esc="t('phone')"/><input name="phone" required="required" t-att-value="prefill['phone']"/></div>
+                    <div class="card"><label t-esc="t('email')"/><input type="email" name="email" required="required" t-att-value="prefill['email']"/></div>
+                    <div class="card"><label t-esc="t('photo')"/><input type="file" name="passport_image" accept="image/*" capture="environment"/></div>
+
+                    <div class="section" t-esc="t('stay')"/>
+                    <p class="hint" t-esc="t('readonly')"/>
+                    <div class="card locked"><span class="lbl" t-esc="t('arrival')"/><div class="val" t-esc="check_in"/></div>
+                    <div class="card locked"><span class="lbl" t-esc="t('departure')"/><div class="val" t-esc="check_out"/></div>
+
+                    <div class="section" t-esc="t('signature')"/>
+                    <p class="hint" t-esc="t('sign_hint')"/>
+                    <canvas id="pad" class="pad" width="640" height="320"/>
+                    <button type="button" class="clear" id="clear-pad" t-esc="t('clear')"/>
+                    <button class="cta" type="submit" t-esc="t('submit')"/>
+                </form>
+                <script>
+                    (function () {
+                        var c = document.getElementById("pad");
+                        if (!c) return;
+                        var ctx = c.getContext("2d");
+                        var hidden = document.getElementById("signature_data");
+                        var drawing = false;
+                        function pos(ev) {
+                            var r = c.getBoundingClientRect();
+                            var t = ev.touches ? ev.touches[0] : ev;
+                            return {
+                                x: (t.clientX - r.left) * (c.width / r.width),
+                                y: (t.clientY - r.top) * (c.height / r.height)
+                            };
+                        }
+                        function start(ev) { drawing = true; var p = pos(ev); ctx.beginPath(); ctx.moveTo(p.x, p.y); ev.preventDefault(); }
+                        function move(ev) {
+                            if (!drawing) return;
+                            var p = pos(ev);
+                            ctx.lineWidth = 2.4;
+                            ctx.lineCap = "round";
+                            ctx.strokeStyle = "#241A12";
+                            ctx.lineTo(p.x, p.y);
+                            ctx.stroke();
+                            ev.preventDefault();
+                        }
+                        function end() { drawing = false; hidden.value = c.toDataURL("image/png"); }
+                        c.addEventListener("pointerdown", start);
+                        c.addEventListener("pointermove", move);
+                        window.addEventListener("pointerup", end);
+                        c.addEventListener("touchstart", start, {passive: false});
+                        c.addEventListener("touchmove", move, {passive: false});
+                        c.addEventListener("touchend", end);
+                        document.getElementById("clear-pad").addEventListener("click", function () {
+                            ctx.clearRect(0, 0, c.width, c.height);
+                            hidden.value = "";
+                        });
+                    })();
+                </script>
+            </t>
+        </t>
+    </template>
+
+    <template id="checkin_done" name="Check-in terminé">
+        <t t-call="intellix_riad.checkin_chrome">
+            <div class="card"><div class="val" t-esc="message"/></div>
+        </t>
+    </template>
+
+    <template id="checkin_sign" name="Check-in signature PE">
+        <html t-att-lang="lang" t-att-dir="rtl and 'rtl' or 'ltr'">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <title t-esc="t('signature')"/>
+                <style>
+                    body { margin: 0; background: #FBF7EF; color: #241A12; font-family: Georgia, serif; }
+                    .hero { background: linear-gradient(160deg, #145C42, #0E4632); color: #FBF7EF; padding: 28px 20px; }
+                    .wrap { max-width: 520px; margin: 0 auto; padding: 20px 16px 40px; }
+                    .doc { background: #fff; border-radius: 16px; padding: 16px; border: 1px solid #E4D9C4; }
+                    .card { background: #fff; border: 1px solid #E4D9C4; border-radius: 16px; padding: 14px 16px; margin: 12px 0; }
+                    .lbl { display: block; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: #9C9280; margin-bottom: 6px; }
+                    .cta { display: block; width: 100%; border: 0; border-radius: 16px; padding: 16px; margin-top: 12px; color: #FBF7EF; background: linear-gradient(135deg, #145C42, #0E4632); font-family: Georgia, serif; font-size: 16px; }
+                    .err { color: #9a3b2f; font-size: 14px; }
+                    input { width: 100%; border: 0; font-size: 20px; letter-spacing: .2em; font-family: Georgia, serif; }
+                    .section { margin: 22px 0 10px; font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: #B8935A; }
+                </style>
+            </head>
+            <body>
+                <header class="hero">
+                    <h1 t-esc="t('signature')"/>
+                    <div><t t-esc="estab_name"/></div>
+                </header>
+                <main class="wrap">
+                    <div class="section" t-esc="t('stay')"/>
+                    <div class="card"><span class="lbl" t-esc="t('arrival')"/><t t-esc="check_in"/></div>
+                    <div class="card"><span class="lbl" t-esc="t('departure')"/><t t-esc="check_out"/></div>
+                    <div class="doc" t-out="document_html"/>
+                    <div id="step1">
+                        <button class="cta" type="button" id="send-otp" t-esc="t('otp_send')"/>
+                    </div>
+                    <div id="step2" style="display:none">
+                        <p id="otp-msg" class="section" t-esc="t('otp_sent')"/>
+                        <div class="card">
+                            <label class="lbl" t-esc="t('otp_code')"/>
+                            <input id="otpInput" name="otp" inputmode="numeric" autocomplete="one-time-code" maxlength="6"/>
+                        </div>
+                        <p id="otpError" class="err"/>
+                        <button class="cta" type="button" id="verify-otp" t-esc="t('otp_verify')"/>
+                    </div>
+                    <div id="step3" class="card" style="display:none">
+                        <div class="val" t-esc="t('thanks')"/>
+                    </div>
+                    <script>
+                        (function () {
+                            var token = "<t t-esc="token"/>";
+                            var send = document.getElementById("send-otp");
+                            var verify = document.getElementById("verify-otp");
+                            function show(id) {
+                                ["step1", "step2", "step3"].forEach(function (name) {
+                                    document.getElementById(name).style.display = name === id ? "block" : "none";
+                                });
+                            }
+                            send.addEventListener("click", function () {
+                                fetch("/sign/send-otp/" + token, {method: "POST"})
+                                    .then(function (res) { return res.json(); })
+                                    .then(function (data) {
+                                        if (data.ok) { show("step2"); }
+                                        else { alert(data.error || "OTP"); }
+                                    });
+                            });
+                            verify.addEventListener("click", function () {
+                                var otp = document.getElementById("otpInput").value;
+                                fetch("/sign/verify/" + token, {
+                                    method: "POST",
+                                    headers: {"Content-Type": "application/json"},
+                                    body: JSON.stringify({jsonrpc: "2.0", method: "call", params: {otp: otp}, id: 1})
+                                }).then(function (res) { return res.json(); })
+                                  .then(function (payload) {
+                                      var data = payload.result || payload;
+                                      if (data.ok) { show("step3"); }
+                                      else { document.getElementById("otpError").textContent = data.error || ""; }
+                                  });
+                            });
+                        })();
+                    </script>
+                </main>
+            </body>
+        </html>
+    </template>
+</odoo>

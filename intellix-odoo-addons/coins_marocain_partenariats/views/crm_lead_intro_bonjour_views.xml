@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_crm_lead_form_coins_intro_bonjour" model="ir.ui.view">
+        <field name="name">crm.lead.form.coins.intro.bonjour</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="view_crm_lead_form_coins_partenariat"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_send_coins_followup_email']" position="after">
+                <button name="action_send_coins_intro_entente"
+                        type="object"
+                        string="Courrier de bonjour"
+                        class="btn-primary"
+                        invisible="not coins_is_partner_lead"
+                        title="Introduction — présentation de l'entente. Brouillon éditable, à valider avant envoi au partenaire."/>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_crm_lead_form_coins_intro_bonjour_fiche" model="ir.ui.view">
+        <field name="name">crm.lead.form.coins.intro.bonjour.fiche</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="view_crm_lead_form_coins_partenariat_fiche"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_send_coins_followup_email']" position="after">
+                <button name="action_send_coins_intro_entente"
+                        type="object"
+                        string="Courrier de bonjour"
+                        class="btn-primary"
+                        title="Introduction — présentation de l'entente. Brouillon éditable, à valider avant envoi au partenaire."/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

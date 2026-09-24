@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_doorway_campaign_list" model="ir.ui.view">
+        <field name="name">doorway.campaign.list</field>
+        <field name="model">doorway.campaign</field>
+        <field name="arch" type="xml">
+            <list decoration-success="is_dialing_prod"
+                  decoration-info="dial_site == 'hostinger'"
+                  decoration-warning="state == 'paused'"
+                  decoration-muted="state in ('completed', 'cancelled')">
+                <field name="name"/>
+                <field name="ia_agent_id" string="Agent" optional="show"/>
+                <field name="vicidial_campaign_id"/>
+                <field name="pipeline"/>
+                <field name="campaign_mode"/>
+                <field name="state"/>
+                <field name="operational_label" string="Opérationnel" optional="show"/>
+                <field name="dial_site" optional="show"/>
+                <field name="vicidial_adl" optional="hide"/>
+                <field name="is_dialing_prod" column_invisible="True"/>
+                <field name="total_contacts"/>
+                <field name="total_called"/>
+                <field name="answer_rate" widget="progressbar"/>
+                <field name="dial_level"/>
+                <field name="date_start"/>
+            </list>
+        </field>
+    </record>
+</odoo>

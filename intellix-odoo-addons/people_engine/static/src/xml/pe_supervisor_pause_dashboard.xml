@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+    <t t-name="people_engine.PeSupervisorPauseDashboard">
+        <div class="o_pe_supervisor_pause p-3">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="mb-0">Supervision pauses — temps réel</h2>
+                <button class="btn btn-secondary btn-sm" t-on-click="() => this.load()">
+                    <i class="fa fa-refresh"/> Actualiser
+                </button>
+            </div>
+            <t t-if="state.loading">
+                <div class="text-center p-5"><i class="fa fa-spinner fa-spin fa-2x"/></div>
+            </t>
+            <t t-else="">
+                <p class="text-muted small" t-if="state.timestamp">
+                    Dernière mise à jour : <t t-esc="state.timestamp"/>
+                </p>
+                <table class="table table-sm table-hover">
+                    <thead>
+                        <tr>
+                            <th>Agent</th>
+                            <th>Statut CC</th>
+                            <th>Session</th>
+                            <th>Pause</th>
+                            <th>Durée</th>
+                            <th>Alerte</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="state.agents" t-as="agent" t-key="agent.profile_id">
+                            <tr t-att-class="agent.pause_alert ? 'table-warning' : ''">
+                                <td><t t-esc="agent.name"/></td>
+                                <td><span class="badge text-bg-secondary" t-esc="agent.cc_status"/></td>
+                                <td><t t-esc="agent.session_state"/></td>
+                                <td><t t-esc="pauseLabel(agent.pause_type)"/></td>
+                                <td><t t-esc="formatDuration(agent.pause_seconds)"/></td>
+                                <td>
+                                    <t t-if="agent.pause_alert">
+                                        <span class="badge text-bg-danger">Dépassement</span>
+                                    </t>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+            </t>
+        </div>
+    </t>
+</templates>

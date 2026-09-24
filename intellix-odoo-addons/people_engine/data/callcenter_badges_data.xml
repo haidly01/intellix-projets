@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="pe_badge_cc_first_sale" model="pe.badge">
+        <field name="name">Premier sang</field>
+        <field name="code">cc_first_sale</field>
+        <field name="icon">🎯</field>
+        <field name="category">milestone</field>
+        <field name="criterion_type">cc_first_sale</field>
+        <field name="criterion_value">1</field>
+        <field name="points_value">50</field>
+        <field name="rarity">common</field>
+        <field name="requires_manager_approval" eval="False"/>
+    </record>
+    <record id="pe_badge_cc_en_feu" model="pe.badge">
+        <field name="name">En feu</field>
+        <field name="code">cc_en_feu</field>
+        <field name="icon">🔥</field>
+        <field name="category">performance</field>
+        <field name="criterion_type">cc_demos_day</field>
+        <field name="criterion_value">5</field>
+        <field name="points_value">75</field>
+        <field name="rarity">rare</field>
+        <field name="requires_manager_approval" eval="False"/>
+    </record>
+    <record id="pe_badge_cc_eclair" model="pe.badge">
+        <field name="name">Éclair</field>
+        <field name="code">cc_eclair</field>
+        <field name="icon">⚡</field>
+        <field name="category">performance</field>
+        <field name="criterion_type">cc_calls_day</field>
+        <field name="criterion_value">50</field>
+        <field name="points_value">100</field>
+        <field name="rarity">rare</field>
+        <field name="requires_manager_approval" eval="False"/>
+    </record>
+    <record id="pe_badge_cc_robot" model="pe.badge">
+        <field name="name">Robot de précision</field>
+        <field name="code">cc_robot_precision</field>
+        <field name="icon">🤖</field>
+        <field name="category">performance</field>
+        <field name="criterion_type">cc_ai_score_avg</field>
+        <field name="criterion_value">20</field>
+        <field name="points_value">120</field>
+        <field name="rarity">epic</field>
+        <field name="requires_manager_approval" eval="False"/>
+    </record>
+    <record id="pe_badge_cc_acteur" model="pe.badge">
+        <field name="name">Acteur parfait</field>
+        <field name="code">cc_acteur_parfait</field>
+        <field name="icon">🎭</field>
+        <field name="category">performance</field>
+        <field name="criterion_type">cc_ai_perfect</field>
+        <field name="criterion_value">100</field>
+        <field name="points_value">200</field>
+        <field name="rarity">legendary</field>
+        <field name="requires_manager_approval" eval="False"/>
+    </record>
+    <record id="pe_badge_cc_toujours_la" model="pe.badge">
+        <field name="name">Toujours là</field>
+        <field name="code">cc_toujours_la</field>
+        <field name="icon">⏰</field>
+        <field name="category">consistency</field>
+        <field name="criterion_type">cc_presence_streak</field>
+        <field name="criterion_value">30</field>
+        <field name="points_value">80</field>
+        <field name="rarity">rare</field>
+    </record>
+    <record id="pe_badge_cc_leve_tot" model="pe.badge">
+        <field name="name">Lève-tôt</field>
+        <field name="code">cc_leve_tot</field>
+        <field name="icon">🌅</field>
+        <field name="category">consistency</field>
+        <field name="criterion_type">manual</field>
+        <field name="points_value">30</field>
+        <field name="rarity">common</field>
+    </record>
+    <record id="pe_badge_cc_showman" model="pe.badge">
+        <field name="name">Showman</field>
+        <field name="code">cc_showman</field>
+        <field name="icon">🎪</field>
+        <field name="category">performance</field>
+        <field name="criterion_type">cc_demos_day</field>
+        <field name="criterion_value">10</field>
+        <field name="points_value">150</field>
+        <field name="rarity">epic</field>
+        <field name="requires_manager_approval" eval="False"/>
+    </record>
+    <record id="pe_badge_cc_diamant" model="pe.badge">
+        <field name="name">Diamant</field>
+        <field name="code">cc_diamant</field>
+        <field name="icon">💎</field>
+        <field name="category">performance</field>
+        <field name="criterion_type">cc_monthly_objective</field>
+        <field name="criterion_value">150</field>
+        <field name="points_value">200</field>
+        <field name="rarity">legendary</field>
+        <field name="requires_manager_approval" eval="False"/>
+    </record>
+    <record id="pe_badge_cc_champion_semaine" model="pe.badge">
+        <field name="name">Champion semaine</field>
+        <field name="code">cc_champion_semaine</field>
+        <field name="icon">🏆</field>
+        <field name="category">performance</field>
+        <field name="criterion_type">cc_weekly_rank</field>
+        <field name="criterion_value">1</field>
+        <field name="points_value">150</field>
+        <field name="rarity">epic</field>
+        <field name="requires_manager_approval" eval="False"/>
+    </record>
+    <record id="pe_badge_cc_noctambule" model="pe.badge">
+        <field name="name">Noctambule</field>
+        <field name="code">cc_noctambule</field>
+        <field name="icon">🌙</field>
+        <field name="category">performance</field>
+        <field name="criterion_type">cc_sale_after_18h</field>
+        <field name="criterion_value">18</field>
+        <field name="points_value">80</field>
+        <field name="rarity">rare</field>
+        <field name="requires_manager_approval" eval="False"/>
+    </record>
+    <record id="pe_badge_cc_eleve_modele" model="pe.badge">
+        <field name="name">Élève modèle</field>
+        <field name="code">cc_eleve_modele</field>
+        <field name="icon">📚</field>
+        <field name="category">growth</field>
+        <field name="criterion_type">cc_training_complete</field>
+        <field name="criterion_value">1</field>
+        <field name="points_value">60</field>
+        <field name="rarity">common</field>
+        <field name="requires_manager_approval" eval="False"/>
+    </record>
+    <record id="pe_badge_cc_marathonien" model="pe.badge">
+        <field name="name">Marathonien</field>
+        <field name="code">cc_marathonien</field>
+        <field name="icon">💪</field>
+        <field name="category">consistency</field>
+        <field name="criterion_type">cc_presence_streak</field>
+        <field name="criterion_value">180</field>
+        <field name="points_value">250</field>
+        <field name="rarity">legendary</field>
+    </record>
+    <record id="pe_badge_cc_esprit_equipe" model="pe.badge">
+        <field name="name">Esprit d'équipe</field>
+        <field name="code">cc_esprit_equipe</field>
+        <field name="icon">🤝</field>
+        <field name="category">teamwork</field>
+        <field name="criterion_type">cc_team_help</field>
+        <field name="criterion_value">3</field>
+        <field name="points_value">90</field>
+        <field name="rarity">rare</field>
+    </record>
+</odoo>

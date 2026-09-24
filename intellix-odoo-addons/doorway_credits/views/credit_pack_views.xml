@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_credit_pack_list" model="ir.ui.view">
+        <field name="name">doorway.credit.pack.list</field>
+        <field name="model">doorway.credit.pack</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="price_usd"/>
+                <field name="credits_amount"/>
+                <field name="bonus_percent"/>
+                <field name="is_active"/>
+                <button name="action_buy_pack" type="object" string="Acheter"
+                        icon="fa-shopping-cart" class="btn-primary"
+                        invisible="not is_active"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_credit_packs" model="ir.actions.act_window">
+        <field name="name">Packs de crédits</field>
+        <field name="res_model">doorway.credit.pack</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

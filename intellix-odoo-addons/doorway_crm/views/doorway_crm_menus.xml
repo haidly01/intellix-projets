@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_doorway_crm_activity_calendar"
+              name="Calendrier des activités"
+              parent="crm.crm_menu_root"
+              action="action_doorway_crm_activity_calendar"
+              sequence="25"/>
+
+    <menuitem id="menu_doorway_business_card_scan"
+              name="Scanner carte de visite"
+              parent="crm.crm_menu_root"
+              action="action_business_card_scan_client"
+              sequence="2"
+              groups="sales_team.group_sale_salesman"/>
+</odoo>

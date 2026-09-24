@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_email_builder" model="ir.actions.client">
+        <field name="name">Email Builder IA</field>
+        <field name="tag">doorway_email_builder_action</field>
+    </record>
+
+    <menuitem id="menu_email_builder_root"
+              name="Email Builder IA"
+              sequence="46"/>
+
+    <menuitem id="menu_email_builder_app"
+              name="Assistant Email"
+              parent="menu_email_builder_root"
+              action="action_email_builder"
+              sequence="1"/>
+</odoo>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="price_claude_analysis" model="doorway.ai.pricing">
+        <field name="service">claude_analysis</field>
+        <field name="real_cost">0.003</field>
+        <field name="client_price">0.006</field>
+        <field name="unit">par appel analysé</field>
+    </record>
+    <record id="price_claude_report" model="doorway.ai.pricing">
+        <field name="service">claude_report</field>
+        <field name="real_cost">0.01</field>
+        <field name="client_price">0.02</field>
+        <field name="unit">par rapport</field>
+    </record>
+    <record id="price_elevenlabs" model="doorway.ai.pricing">
+        <field name="service">elevenlabs_voice</field>
+        <field name="real_cost">0.10</field>
+        <field name="client_price">0.20</field>
+        <field name="unit">par minute</field>
+    </record>
+    <record id="price_twilio_call" model="doorway.ai.pricing">
+        <field name="service">twilio_call</field>
+        <field name="real_cost">0.02</field>
+        <field name="client_price">0.04</field>
+        <field name="unit">par minute</field>
+    </record>
+    <record id="price_twilio_sms" model="doorway.ai.pricing">
+        <field name="service">twilio_sms</field>
+        <field name="real_cost">0.008</field>
+        <field name="client_price">0.016</field>
+        <field name="unit">par SMS</field>
+    </record>
+</odoo>

@@ -1,0 +1,156 @@
+/* Encart promotion croisée — une variante max par page */
+.cm-xpromo {
+  --cream: #faf6ee;
+  --gold-1: #b5732f;
+  --gold-3: #8a4f22;
+  --charcoal: #262220;
+  margin: 0;
+  padding: 28px 22px 36px;
+  background: linear-gradient(180deg, #fff9ef 0%, var(--cream) 100%);
+  border-top: 1px solid rgba(181, 115, 47, 0.22);
+}
+.cm-xpromo .inner {
+  max-width: 920px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px 24px;
+}
+.cm-xpromo p {
+  margin: 0;
+  font-family: "Jost", "Inter", sans-serif;
+  font-weight: 400;
+  font-size: 1.02rem;
+  color: var(--charcoal);
+  max-width: 48ch;
+  line-height: 1.45;
+}
+.cm-xpromo a {
+  flex-shrink: 0;
+  text-decoration: none;
+  font-family: "Jost", "Inter", sans-serif;
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: #fff;
+  background: linear-gradient(135deg, var(--gold-1), var(--gold-3));
+  padding: 11px 16px;
+  border-radius: 4px;
+}
+.cm-xpromo a:hover {
+  filter: brightness(1.05);
+}
+
+/* Aperçu carte accueil (statique, lazy) */
+.cm-lieux-map-preview {
+  position: relative;
+  display: block;
+  border-radius: 4px;
+  overflow: hidden;
+  min-height: 280px;
+  background: #efe4d0;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 10px 28px rgba(38, 34, 32, 0.08);
+}
+.cm-lieux-map-preview img {
+  display: block;
+  width: 100%;
+  height: 320px;
+  object-fit: cover;
+  filter: saturate(0.85) contrast(0.95);
+}
+.cm-lieux-map-preview .pins {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.cm-lieux-map-preview .pin {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #b5732f;
+  border: 2px solid #8a4f22;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  transform: translate(-50%, -50%);
+}
+.cm-lieux-map-preview .pin.p1 { left: 48%; top: 42%; }
+.cm-lieux-map-preview .pin.p2 { left: 38%; top: 62%; }
+.cm-lieux-map-preview .pin.p3 { left: 58%; top: 48%; }
+.cm-lieux-map-preview .overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 18px 20px;
+  background: linear-gradient(180deg, transparent, rgba(38, 34, 32, 0.72));
+  color: #faf6ee;
+  font-weight: 600;
+}
+.cm-lieux-map-preview:hover .overlay {
+  background: linear-gradient(180deg, transparent, rgba(138, 79, 34, 0.85));
+}
+
+/* Hub partenaires — panneaux */
+.cm-part-panel[hidden] { display: none !important; }
+.cm-part-form {
+  display: grid;
+  gap: 12px;
+  max-width: 520px;
+  margin-top: 18px;
+}
+.cm-part-form label {
+  display: grid;
+  gap: 5px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+.cm-part-form input,
+.cm-part-form select,
+.cm-part-form textarea {
+  font: inherit;
+  font-weight: 300;
+  padding: 12px 14px;
+  border: 1px solid rgba(138, 79, 34, 0.28);
+  border-radius: 10px;
+  background: #fff;
+  width: 100%;
+  box-sizing: border-box;
+}
+.cm-part-form textarea {
+  resize: vertical;
+  min-height: 96px;
+  line-height: 1.45;
+}
+.cm-part-photo-hint {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: rgba(38, 34, 32, 0.55);
+}
+.cm-part-form .row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.cm-part-form button {
+  appearance: none;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+  padding: 12px 18px;
+  border-radius: 4px;
+  background: var(--terracotta, #b8893f);
+  color: #fff;
+  justify-self: start;
+}
+.cm-part-status { min-height: 1.2em; font-size: 0.95rem; }
+.cm-part-status.ok { color: #2f6b3a; }
+.cm-part-status.err { color: #8b2e2e; }
+@media (max-width: 640px) {
+  .cm-part-form .row { grid-template-columns: 1fr; }
+}

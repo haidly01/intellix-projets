@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="seq_coins_evenement" model="ir.sequence">
+        <field name="name">Événement Coins Marocain</field>
+        <field name="code">coins.evenement</field>
+        <field name="prefix">CM-EV/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_coins_reservation" model="ir.sequence">
+        <field name="name">Réservation Coins Marocain</field>
+        <field name="code">coins.reservation</field>
+        <field name="prefix">CM/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_coins_detente_booking" model="ir.sequence">
+        <field name="name">Réservation détente</field>
+        <field name="code">coins.detente_booking</field>
+        <field name="prefix">CM-DT/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_coins_driver_contrat" model="ir.sequence">
+        <field name="name">Contrat chauffeur</field>
+        <field name="code">coins.driver.contrat</field>
+        <field name="prefix">CDC/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_coins_driver_mouvement" model="ir.sequence">
+        <field name="name">Mouvement chauffeur</field>
+        <field name="code">coins.driver.mouvement</field>
+        <field name="prefix">CDM/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_coins_driver_remise" model="ir.sequence">
+        <field name="name">Remise quotidienne chauffeur</field>
+        <field name="code">coins.driver.remise_quotidienne</field>
+        <field name="prefix">CDR/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_coins_yasmine_conversation" model="ir.sequence">
+        <field name="name">Conversation Yasmine</field>
+        <field name="code">coins.yasmine.conversation</field>
+        <field name="prefix">YAS/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_coins_carnet" model="ir.sequence">
+        <field name="name">Carnet du Voyageur</field>
+        <field name="code">coins.carnet</field>
+        <field name="prefix">CRN/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_coins_ambassador" model="ir.sequence">
+        <field name="name">Ambassadeur</field>
+        <field name="code">coins.ambassador</field>
+        <field name="prefix">AMB/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_coins_ambassador_referral" model="ir.sequence">
+        <field name="name">Parrainage Ambassadeur</field>
+        <field name="code">coins.ambassador.referral</field>
+        <field name="prefix">REF/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

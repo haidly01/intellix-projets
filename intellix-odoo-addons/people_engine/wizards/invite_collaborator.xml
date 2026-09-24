@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pe_invite_collaborator_form" model="ir.ui.view">
+        <field name="name">pe.invite.collaborator.form</field>
+        <field name="model">pe.invite.collaborator</field>
+        <field name="arch" type="xml">
+            <form string="Inviter un collaborateur">
+                <group>
+                    <group string="Identité">
+                        <field name="name"/>
+                        <field name="email" widget="email"/>
+                        <field name="send_invitation"/>
+                    </group>
+                    <group string="Organisation">
+                        <field name="company_id" groups="base.group_multi_company"/>
+                        <field name="department_id"/>
+                        <field name="job_id"/>
+                        <field name="manager_id"/>
+                    </group>
+                </group>
+                <group string="Accès RH">
+                    <field name="doorway_segment"/>
+                    <field name="pe_access"/>
+                </group>
+                <footer>
+                    <button name="action_invite" type="object" string="Créer et inviter" class="btn-primary"/>
+                    <button string="Annuler" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_pe_invite_collaborator" model="ir.actions.act_window">
+        <field name="name">Inviter un collaborateur</field>
+        <field name="res_model">pe.invite.collaborator</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

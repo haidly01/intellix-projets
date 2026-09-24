@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="people_engine.DevPlanListView" t-inherit="web.ListView" t-inherit-mode="primary">
+        <xpath expr="//div[@t-ref='root']" position="attributes">
+            <attribute name="class" add="o_pe_dev_plan_list" separator=" "/>
+        </xpath>
+        <xpath expr="//div[@t-ref='root']/Layout" position="before">
+            <div class="ix-list-header-wrap" t-if="header.loaded">
+                <div class="ix-stat-row">
+                    <div class="ix-stat-card">
+                        <div class="ix-stat-label">Plans actifs</div>
+                        <div class="ix-stat-val indigo" t-esc="header.active"/>
+                    </div>
+                    <div class="ix-stat-card">
+                        <div class="ix-stat-label">Complétion moy.</div>
+                        <div t-att-class="'ix-stat-val ' + (header.avg_completion >= 70 ? 'green' : header.avg_completion >= 40 ? 'amber' : 'red')">
+                            <t t-esc="header.avg_completion"/><span class="ix-stat-denom">%</span>
+                        </div>
+                    </div>
+                    <div class="ix-stat-card">
+                        <div class="ix-stat-label">Complétés</div>
+                        <div class="ix-stat-val green" t-esc="header.completed"/>
+                    </div>
+                    <div class="ix-stat-card">
+                        <div class="ix-stat-label">Total plans</div>
+                        <div class="ix-stat-val indigo" t-esc="header.total"/>
+                    </div>
+                </div>
+            </div>
+            <div class="ix-empty-state" t-if="header.loaded and header.total === 0">
+                <div class="ix-empty-ico"><i class="fa fa-line-chart"/></div>
+                <div class="ix-empty-title">Aucun plan de développement</div>
+                <div class="ix-empty-sub">
+                    Créez un plan à partir d'une session coaching IA ou manuellement
+                    pour structurer la progression de vos agents.
+                </div>
+                <button type="button" class="ix-btn-primary" t-on-click="onCreatePlan">
+                    <i class="fa fa-plus"/> Créer un plan
+                </button>
+            </div>
+        </xpath>
+    </t>
+
+    <t t-name="people_engine.ProgressBarCustomField">
+        <div class="ix-progress-wrap">
+            <div class="ix-progress-bar">
+                <div class="ix-progress-fill"
+                     t-att-style="'width:' + value + '%;background:' + fillColor"/>
+            </div>
+            <span class="ix-progress-label" t-esc="value + '%'"/>
+        </div>
+    </t>
+
+</templates>

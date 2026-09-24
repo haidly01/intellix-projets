@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="icp_callcenter_agent_name" model="ir.config_parameter">
+        <field name="key">doorway_callcenter_prospecting.agent_name</field>
+        <field name="value">Sophie</field>
+    </record>
+    <record id="icp_twilio_whatsapp_from" model="ir.config_parameter">
+        <field name="key">doorway_callcenter_prospecting.twilio_whatsapp_from</field>
+        <field name="value">whatsapp:+14155238886</field>
+    </record>
+    <record id="icp_twilio_content_sid_j0" model="ir.config_parameter">
+        <field name="key">doorway_callcenter_prospecting.twilio_content_sid_j0</field>
+        <field name="value">HXb1a791a504786fa6732171b3fb3c31d4</field>
+    </record>
+    <record id="icp_twilio_content_sid_j2" model="ir.config_parameter">
+        <field name="key">doorway_callcenter_prospecting.twilio_content_sid_j2</field>
+        <field name="value">HXb1a791a504786fa6732171b3fb3c31d4</field>
+    </record>
+    <record id="icp_twilio_content_sid_j5" model="ir.config_parameter">
+        <field name="key">doorway_callcenter_prospecting.twilio_content_sid_j5</field>
+        <field name="value">HXb1a791a504786fa6732171b3fb3c31d4</field>
+    </record>
+</odoo>

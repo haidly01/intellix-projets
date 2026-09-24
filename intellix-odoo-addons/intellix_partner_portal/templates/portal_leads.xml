@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_leads_dashboard" name="Portail — CRM leads">
+        <t t-call="intellix_partner_portal.ipp_portal_layout">
+            <div class="ipp-crm-page" id="ipp-crm-root"
+                 t-att-data-is-manager="'1' if is_manager else '0'"
+                 t-att-data-current-user="current_user_id">
+                <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:20px;flex-wrap:wrap">
+                    <div>
+                        <h2 style="font-size:26px;margin:0 0 6px;font-weight:600">CRM leads</h2>
+                        <p style="margin:0;color:var(--crm-text-muted);font-size:13.5px">Tes leads sont exclusifs. Assigne-les à ton équipe et suis les relances, appel par appel.</p>
+                    </div>
+                    <span class="ipp-crm-live-pill"><span class="ipp-crm-live-dot"/>Temps réel</span>
+                </div>
+
+                <div class="ipp-crm-filter-row" id="ipp-crm-filter-row"/>
+                <div class="ipp-crm-view-tabs" id="ipp-crm-view-tabs"/>
+
+                <div class="ipp-crm-workspace">
+                    <div>
+                        <div class="ipp-crm-board" id="ipp-crm-board">
+                            <div class="ipp-crm-col" data-status="nouveau">
+                                <div class="ipp-crm-col-bar nouveau"/>
+                                <div class="ipp-crm-col-head"><h3>Nouveau</h3><span class="ipp-crm-col-count" data-count="nouveau">0</span></div>
+                                <div data-col="nouveau"/>
+                            </div>
+                            <div class="ipp-crm-col" data-status="relance">
+                                <div class="ipp-crm-col-bar relance"/>
+                                <div class="ipp-crm-col-head"><h3>En relance</h3><span class="ipp-crm-col-count" data-count="relance">0</span></div>
+                                <div data-col="relance"/>
+                            </div>
+                            <div class="ipp-crm-col" data-status="rdv">
+                                <div class="ipp-crm-col-bar rdv"/>
+                                <div class="ipp-crm-col-head"><h3>RDV fixé</h3><span class="ipp-crm-col-count" data-count="rdv">0</span></div>
+                                <div data-col="rdv"/>
+                            </div>
+                            <div class="ipp-crm-col" data-status="vendu">
+                                <div class="ipp-crm-col-bar vendu"/>
+                                <div class="ipp-crm-col-head"><h3>Vendu</h3><span class="ipp-crm-col-count" data-count="vendu">0</span></div>
+                                <div data-col="vendu"/>
+                            </div>
+                            <div class="ipp-crm-col" data-status="perdu">
+                                <div class="ipp-crm-col-bar perdu"/>
+                                <div class="ipp-crm-col-head"><h3>Perdu</h3><span class="ipp-crm-col-count" data-count="perdu">0</span></div>
+                                <div data-col="perdu"/>
+                            </div>
+                        </div>
+                        <div class="ipp-crm-cal-wrap" id="ipp-crm-calendar" style="display:none"/>
+                    </div>
+
+                    <div class="ipp-crm-rail">
+                        <div class="ipp-crm-panel" id="ipp-crm-fiche"/>
+                        <div class="ipp-crm-panel" id="ipp-crm-team-panel"/>
+                    </div>
+                </div>
+            </div>
+
+            <script type="application/json" id="ipp-crm-data" t-raw="crm_data_json"/>
+            <script src="/intellix_partner_portal/static/src/js/crm_leads.js"/>
+        </t>
+    </template>
+</odoo>

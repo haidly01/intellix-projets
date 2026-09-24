@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_crm_lead_form_coins_partenariat_scrape" model="ir.ui.view">
+        <field name="name">crm.lead.form.coins.partenariat.scrape</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="coins_marocain_partenariats.view_crm_lead_form_coins_partenariat"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='coins_quartier']" position="after">
+                <field name="coins_scrape_zone"/>
+                <field name="coins_scrape_source"/>
+                <field name="coins_google_place_id"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_crm_lead_form_coins_partenariat_fiche_scrape" model="ir.ui.view">
+        <field name="name">crm.lead.form.coins.partenariat.fiche.scrape</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="coins_marocain_partenariats.view_crm_lead_form_coins_partenariat_fiche"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='coins_quartier']" position="after">
+                <field name="coins_scrape_zone"/>
+                <field name="coins_scrape_source"/>
+                <field name="coins_google_place_id"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_crm_lead_list_coins_partenariat_scrape" model="ir.ui.view">
+        <field name="name">crm.lead.list.coins.partenariat.scrape</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="coins_marocain_partenariats.view_crm_lead_list_coins_partenariat"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='coins_ville']" position="after">
+                <field name="coins_scrape_zone" optional="show"/>
+                <field name="coins_scrape_source" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_crm_lead_search_coins_partenariat_scrape" model="ir.ui.view">
+        <field name="name">crm.lead.search.coins.partenariat.scrape</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="coins_marocain_partenariats.view_crm_lead_search_coins_partenariat"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='coins_ville']" position="after">
+                <field name="coins_scrape_zone"/>
+                <field name="coins_google_place_id"/>
+            </xpath>
+            <xpath expr="//filter[@name='group_ville']" position="after">
+                <filter name="group_scrape_zone" string="Zone scrape"
+                        context="{'group_by': 'coins_scrape_zone'}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

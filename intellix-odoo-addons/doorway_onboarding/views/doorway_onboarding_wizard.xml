@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_doorway_onboarding_wizard" model="ir.ui.view">
+        <field name="name">doorway.onboarding.wizard.form</field>
+        <field name="model">doorway.onboarding.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Visite guidée" js_class="doorway_onboarding_form" class="o_doorway_onboarding_wizard">
+                <field name="tour_id" invisible="1"/>
+                <field name="tour_code" invisible="1"/>
+                <field name="current_step_key" invisible="1"/>
+                <field name="is_admin" invisible="1"/>
+                <field name="is_last_step" invisible="1"/>
+                <field name="progress_percent" invisible="1"/>
+                <field name="step_action_xmlid" invisible="1"/>
+
+                <div class="pe-onboarding-header mb-3" invisible="current_step_key == 'celebrate'">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="pe-onboarding-xp-label text-uppercase fw-bold small">
+                            <i class="fa fa-gamepad me-1" title="Gamification"/>
+                            <field name="quest_label" readonly="1" nolabel="1" class="d-inline"/>
+                        </span>
+                        <field name="progress_label" readonly="1" nolabel="1" class="mb-0 text-muted small"/>
+                    </div>
+                    <field name="progress_percent" widget="progressbar" nolabel="1"
+                        options="{'max_value': 100}" readonly="1"/>
+                </div>
+
+                <div invisible="current_step_key == 'celebrate'" class="pe-onboarding-panel pe-animate-in">
+                    <h2 class="pe-onboarding-title">
+                        <field name="step_title" readonly="1" nolabel="1"/>
+                    </h2>
+                    <field name="step_body_html" widget="html" readonly="1" nolabel="1"/>
+                    <button name="action_open_step_link" type="object"
+                        class="btn btn-outline-primary btn-sm mt-2"
+                        invisible="not step_action_xmlid">
+                        <field name="step_action_label" readonly="1" nolabel="1" class="d-inline"/>
+                    </button>
+                </div>
+
+                <div invisible="current_step_key != 'celebrate'" class="pe-onboarding-panel pe-celebrate pe-animate-in">
+                    <div class="text-center py-3">
+                        <div class="pe-badge-unlock mb-3">
+                            <span class="pe-badge-unlock-ring"/>
+                            <field name="reward_badge_icon" readonly="1" nolabel="1"
+                                class="pe-badge-unlock-icon display-1 d-block"/>
+                        </div>
+                        <h2 class="pe-onboarding-title text-success">Badge débloqué !</h2>
+                        <field name="reward_badge_name" readonly="1" nolabel="1" class="fs-5 fw-semibold text-center"/>
+                        <field name="reward_message" readonly="1" nolabel="1" class="text-muted text-center"/>
+                        <div class="pe-xp-burst mt-3">
+                            <span class="badge rounded-pill bg-warning text-dark fs-6 px-3 py-2">
+                                +<field name="reward_points" readonly="1" nolabel="1" class="d-inline"/> XP
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <footer>
+                    <button name="action_skip" type="object" string="Passer" class="btn-secondary"
+                        invisible="current_step_key == 'celebrate'"/>
+                    <button name="action_previous" type="object" string="Précédent"
+                        invisible="current_step_key in ('welcome', 'celebrate')"/>
+                    <button name="action_next" type="object" string="Suivant" class="btn-primary"
+                        invisible="is_last_step or current_step_key == 'celebrate'"/>
+                    <button name="action_finish" type="object"
+                        string="Débloquer mon badge 🏆" class="btn-primary pe-btn-unlock"
+                        invisible="not is_last_step or current_step_key == 'celebrate'"/>
+                    <button name="action_go_home" type="object"
+                        string="Commencer l'aventure" class="btn-primary pe-btn-celebrate"
+                        invisible="current_step_key != 'celebrate'"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

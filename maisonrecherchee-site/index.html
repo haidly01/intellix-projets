@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="fr-CA">
+
+<head>
+	<meta charset="UTF-8" />
+	<!-- Tracking (A7 perf) : stubs/queues immédiats, scripts réseau différés après load -->
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		window.dataLayer.push({'gtm.start': new Date().getTime(), event: 'gtm.js'});
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+		gtag('config', 'G-MWK134MFF7');
+		!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+		n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+		if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[]}(
+		window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+		fbq('init', '926187789953908');
+		fbq('track', 'PageView');
+
+		function doorwayLoadTrackingScripts(){
+			var gtm=document.createElement('script');gtm.async=true;
+			gtm.src='https://www.googletagmanager.com/gtm.js?id=GTM-MDR5G9JW&l=dataLayer';
+			document.head.appendChild(gtm);
+			var gt=document.createElement('script');gt.async=true;
+			gt.src='https://www.googletagmanager.com/gtag/js?id=G-MWK134MFF7';
+			document.head.appendChild(gt);
+			var fb=document.createElement('script');fb.async=true;
+			fb.src='https://connect.facebook.net/en_US/fbevents.js';
+			document.head.appendChild(fb);
+		}
+		(function doorwayWaitForContentThenLoadTracking(){
+			var start = Date.now(), MAX_WAIT_MS = 5000, POLL_MS = 250;
+			function check(){
+				var root = document.getElementById('root');
+				var hasContent = root && root.textContent && root.textContent.trim().length >= 40;
+				if (hasContent || (Date.now() - start) >= MAX_WAIT_MS) { doorwayLoadTrackingScripts(); }
+				else { setTimeout(check, POLL_MS); }
+			}
+			check();
+		})();
+	</script>
+	<!-- End tracking -->
+
+	<!-- Favicon -->
+	<link rel="icon" href="/favicon.ico" sizes="any" />
+	<link rel="icon" type="image/png" href="/favicon.png" />
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+	<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+	<!-- SEO Meta Tags (prerender shells override per route) -->
+	<title>Évaluation vendeur à Québec : trois prix de courtiers, une base | Maison Recherchée</title>
+	<meta name="description" content="Un vendeur de Québec compare souvent trois affichages le même week-end. Évaluation marchande gratuite en 24 h, 819-803-9855, créneau Dave Pichette RE/MAX." />
+	<link rel="canonical" href="https://maisonrecherchee.com/" />
+
+	<meta name="generator" content="Maison Recherchée" />
+	<meta name="robots" content="index, follow" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+	<!-- Open Graph Meta Tags -->
+	<meta property="og:title" content="Évaluation vendeur à Québec : trois prix de courtiers, une base | Maison Recherchée" />
+	<meta property="og:description" content="Un vendeur de Québec compare souvent trois affichages le même week-end. Évaluation marchande gratuite en 24 h, 819-803-9855, créneau Dave Pichette RE/MAX." />
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="https://maisonrecherchee.com/" />
+	<meta property="og:image" content="https://maisonrecherchee.com/og-image.jpg" />
+
+	<!-- Twitter Card Meta Tags -->
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="Évaluation vendeur à Québec : trois prix de courtiers, une base | Maison Recherchée" />
+	<meta name="twitter:description" content="Un vendeur de Québec compare souvent trois affichages le même week-end. Évaluation marchande gratuite en 24 h, 819-803-9855, créneau Dave Pichette RE/MAX." />
+	<meta name="twitter:image" content="https://maisonrecherchee.com/og-image.jpg" />
+
+	<!-- Hide SEO prerender shell from users (keeps HTML for crawlers) -->
+	<style>
+		#seo-prerender {
+			position: absolute !important;
+			width: 1px !important;
+			height: 1px !important;
+			padding: 0 !important;
+			margin: -1px !important;
+			overflow: hidden !important;
+			clip: rect(0, 0, 0, 0) !important;
+			white-space: nowrap !important;
+			border: 0 !important;
+		}
+	</style>
+  <script defer crossorigin src="/assets/index-R819immo-geo1.js?v=c9"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-B4xhog5w.css">
+  <script type="module">
+window.onerror = (message, source, lineno, colno, errorObj) => {
+	const errorDetails = errorObj ? JSON.stringify({
+		name: errorObj.name,
+		message: errorObj.message,
+		stack: errorObj.stack,
+		source,
+		lineno,
+		colno,
+	}) : null;
+
+	window.parent.postMessage({
+		type: 'horizons-runtime-error',
+		message,
+		error: errorDetails
+	}, '*');
+};
+</script>
+  <script type="module">
+const observer = new MutationObserver((mutations) => {
+	for (const mutation of mutations) {
+		for (const addedNode of mutation.addedNodes) {
+			if (
+				addedNode.nodeType === Node.ELEMENT_NODE &&
+				(
+					addedNode.tagName?.toLowerCase() === 'vite-error-overlay' ||
+					addedNode.classList?.contains('backdrop')
+				)
+			) {
+				handleViteOverlay(addedNode);
+			}
+		}
+	}
+});
+
+observer.observe(document.documentElement, {
+	childList: true,
+	subtree: true
+});
+
+function handleViteOverlay(node) {
+	if (!node.shadowRoot) {
+		return;
+	}
+
+	const backdrop = node.shadowRoot.querySelector('.backdrop');
+
+	if (backdrop) {
+		const overlayHtml = backdrop.outerHTML;
+		const parser = new DOMParser();
+		const doc = parser.parseFromString(overlayHtml, 'text/html');
+		const messageBodyElement = doc.querySelector('.message-body');
+		const fileElement = doc.querySelector('.file');
+		const messageText = messageBodyElement ? messageBodyElement.textContent.trim() : '';
+		const fileText = fileElement ? fileElement.textContent.trim() : '';
+		const error = messageText + (fileText ? ' File:' + fileText : '');
+
+		window.parent.postMessage({
+			type: 'horizons-vite-error',
+			error,
+		}, '*');
+	}
+}
+</script>
+  <script type="module">
+const originalConsoleError = console.error;
+const MATCH_LINE_COL_REGEX = /:(\d+):(\d+)\)?\s*$/; // regex to match the :lineNum:colNum
+const MATCH_AT_REGEX = /^\s*at\s+(?:async\s+)?(?:.*?\s+)?\(?/; // regex to remove the 'at' keyword and any 'async' or function name
+const MATCH_PATH_REGEX = /^\//; // regex to remove the leading slash
+
+function parseStackFrameLine(line) {
+	const lineColMatch = line.match(MATCH_LINE_COL_REGEX);
+	if (!lineColMatch) return null;
+	const [, lineNum, colNum] = lineColMatch;
+	const suffix = `:${lineNum}:${colNum}`;
+	const idx = line.lastIndexOf(suffix);
+	if (idx === -1) return null;
+	const before = line.substring(0, idx);
+	const path = before.replace(MATCH_AT_REGEX, '').trim();
+	if (!path) return null;
+
+	try {
+		const pathname = new URL(path).pathname;
+		const filePath = pathname.replace(MATCH_PATH_REGEX, '') || pathname;
+		return `${filePath}:${lineNum}:${colNum}`;
+	} catch (e) {
+		const filePath = path.replace(MATCH_PATH_REGEX, '') || path;
+		return `${filePath}:${lineNum}:${colNum}`;
+	}
+}
+
+function getFilePathFromStack(stack, skipFrames = 0) {
+	if (!stack || typeof stack !== 'string') return null;
+	const lines = stack.split('\n').slice(1);
+
+	const frames = lines.map(line => parseStackFrameLine(line.replace(/\r$/, ''))).filter(Boolean);
+
+	return frames[skipFrames] ?? null;
+}
+
+console.error = function(...args) {
+	originalConsoleError.apply(console, args);
+
+	let errorString = '';
+	let filePath = null;
+
+	for (let i = 0; i < args.length; i++) {
+		const arg = args[i];
+		if (arg instanceof Error) {
+			filePath = getFilePathFromStack(arg.stack, 0);
+			errorString = `${arg.name}: ${arg.message}`;
+			if (filePath) {
+				errorString = `${errorString} at ${filePath}`;
+			}
+			break;
+		}
+	}
+
+	if (!errorString) {
+		errorString = args.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : String(arg)).join(' ');
+		const stack = new Error().stack;
+		filePath = getFilePathFromStack(stack, 1);
+		if (filePath) {
+			errorString = `${errorString} at ${filePath}`;
+		}
+	}
+
+	window.parent.postMessage({
+		type: 'horizons-console-error',
+		error: errorString
+	}, '*');
+};
+</script>
+  <script type="module">
+const originalFetch = window.fetch;
+
+window.fetch = function(...args) {
+	const url = args[0] instanceof Request ? args[0].url : args[0];
+
+	// Skip WebSocket URLs
+	if (url.startsWith('ws:') || url.startsWith('wss:')) {
+		return originalFetch.apply(this, args);
+	}
+
+	return originalFetch.apply(this, args)
+		.then(async response => {
+			const contentType = response.headers.get('Content-Type') || '';
+
+			// Exclude HTML document responses
+			const isDocumentResponse =
+				contentType.includes('text/html') ||
+				contentType.includes('application/xhtml+xml');
+
+			if (!response.ok && !isDocumentResponse) {
+					const responseClone = response.clone();
+					const errorFromRes = await responseClone.text();
+					const requestUrl = response.url;
+					console.error(`Fetch error from ${requestUrl}: ${errorFromRes}`);
+			}
+
+			return response;
+		})
+		.catch(error => {
+			if (!url.match(/.html?$/i)) {
+				console.error(error);
+			}
+
+			throw error;
+		});
+};
+</script>
+  <script type="module">
+if (window.navigation && window.self !== window.top) {
+	window.navigation.addEventListener('navigate', (event) => {
+		const url = event.destination.url;
+
+		try {
+			const destinationUrl = new URL(url);
+			const destinationOrigin = destinationUrl.origin;
+			const currentOrigin = window.location.origin;
+
+			if (destinationOrigin === currentOrigin) {
+				return;
+			}
+		} catch (error) {
+			return;
+		}
+
+		window.parent.postMessage({
+			type: 'horizons-navigation-error',
+			url,
+		}, '*');
+	});
+}
+</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"L’évaluation d’accueil, c’est le rôle de la Ville ?","acceptedAnswer":{"@type":"Answer","text":"Non. L’accueil promet une évaluation marchande en 24 h pour décider d’un prix d’affichage. Le rôle municipal sert surtout à la taxe. La banque protège le prêteur. Trois chiffres, trois usages."}},{"@type":"Question","name":"Faut-il déjà choisir un courtier pour demander l’évaluation ?","acceptedAnswer":{"@type":"Answer","text":"Non. Vous demandez la base d’abord, puis vous décidez qui mène le mandat. Créneau Dave Pichette : intellixcrm.com/intellix/rdv/dave."}},{"@type":"Question","name":"Vous publiez un prix moyen ou une commission ?","acceptedAnswer":{"@type":"Answer","text":"Non. Aucun pourcentage de commission ni plus-value n’est affiché. Les pages géo le rappellent. Comparez les évaluations ; vérifiez l’hypothèque avant d’afficher."}}]}</script>
+<style id="cm-prerender-fallback">#seo-prerender{position:static!important;width:auto!important;height:auto!important;margin:0!important;padding:1.5rem!important;overflow:visible!important;clip:auto!important;white-space:normal!important;border:0!important;max-width:48rem;margin-inline:auto!important;color:#0B2A4A!important}#root:has(#main-content) #seo-prerender{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important}</style>
+</head>
+
+<body>
+	<!-- Google Tag Manager (noscript) -->
+	<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MDR5G9JW"
+	height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+	<!-- End Google Tag Manager (noscript) -->
+	<noscript><img height="1" width="1" style="display:none"
+	src="https://www.facebook.com/tr?id=926187789953908&ev=PageView&noscript=1"
+	/></noscript>
+	<div id="root">
+<main id="seo-prerender" aria-hidden="true"><h1>Vendre au meilleur prix commence par une seule évaluation — pas trois affichages</h1><p>Le week-end où trois courtiers laissent trois prix sur la table de cuisine, le vendeur de Québec ne sait plus lequel afficher. Maison Recherchée pose d’abord une évaluation marchande : ventes comparables du même type de bien, état, timing — pas le rôle municipal, pas la banque. Gratuite, en 24 h, sans engagement. Tél. 819-803-9855.</p><h2>Sur le terrain</h2><p>Sur le Plateau de Québec, un plex de brique ne se compare pas à un bungalow de Sainte-Foy ni à un condo de Lévis-Desjardins. Un mandat « grande région » sans secteur envoie les mauvaises visites : l’acheteur de Charlesbourg ne visite pas Val-Bélair comme s’il s’agissait du Vieux. Avant d’afficher, on regarde aussi l’hypothèque : une pénalité de bris peut manger la plus-value que le premier prix d’affichage promettait. Le calculateur de pénalité est sur le site ; on n’invente pas le pourcentage.</p><h2>Ensuite</h2><p>Quand l’évaluation est posée, Dave Pichette et l’équipe RE/MAX mènent la mise en marché. Les pages géo Beauport, Charlesbourg, Val-Bélair, Lévis, Saint-Romuald et Saint-Nicolas restent des landings vendeur : aucun prix moyen Centris n’y est publié. Les avis « Marie Dubois / Jean Tremblay » ont été retirés — photos de banque + citations génériques, pas un dossier client.</p><p>Tél. <a href="tel:+18198039855">819-803-9855</a>.</p><section class="geo-faq"><h2>Questions fréquentes</h2><h3>L’évaluation d’accueil, c’est le rôle de la Ville ?</h3><p>Non. L’accueil promet une évaluation marchande en 24 h pour décider d’un prix d’affichage. Le rôle municipal sert surtout à la taxe. La banque protège le prêteur. Trois chiffres, trois usages.</p><h3>Faut-il déjà choisir un courtier pour demander l’évaluation ?</h3><p>Non. Vous demandez la base d’abord, puis vous décidez qui mène le mandat. Créneau Dave Pichette : intellixcrm.com/intellix/rdv/dave.</p><h3>Vous publiez un prix moyen ou une commission ?</h3><p>Non. Aucun pourcentage de commission ni plus-value n’est affiché. Les pages géo le rappellent. Comparez les évaluations ; vérifiez l’hypothèque avant d’afficher.</p></section></main>
+</div>
+<noscript><style>*{opacity:1 !important;transform:none !important;animation:none !important;transition:none !important}</style></noscript>
+<script data-doorway-safety-net>
+/* Doorway — filet de sécurité SPA (Brief A1/A2), injecté en fin de <body>.
+   A1 : si #root reste vide après ROOT_TIMEOUT_MS, affiche un fallback minimal.
+   A2 : force opacity:1 sur tout élément resté à faible opacité après
+        OPACITY_TIMEOUT_MS, peu importe la librairie/le mécanisme d'origine —
+        scan par style calculé plutôt que par nom de classe, pour rester
+        robuste même si le composant d'animation diffère d'un site à l'autre. */
+(function () {
+  "use strict";
+
+  var ROOT_TIMEOUT_MS = 2000;
+  var OPACITY_TIMEOUT_MS = 150;
+  var ROOT_SELECTOR = "#root";
+  var PHONE = "819-803-9855";
+  var LOGO_TEXT = "Maison Recherchée";
+
+  function el(tag, attrs, children) {
+    var e = document.createElement(tag);
+    for (var k in attrs || {}) e.setAttribute(k, attrs[k]);
+    (children || []).forEach(function (c) {
+      e.appendChild(typeof c === "string" ? document.createTextNode(c) : c);
+    });
+    return e;
+  }
+
+  // A2 — filet d'opacité : scan des éléments visibles above-the-fold restés
+  // à faible opacité, sans dépendre du nom de classe/librairie d'animation.
+  function forceOpacitySafetyNet() {
+    setTimeout(function () {
+      var vh = window.innerHeight || 800;
+      var all = document.querySelectorAll("body *");
+      var fixed = 0;
+      for (var i = 0; i < all.length; i++) {
+        var node = all[i];
+        var rect = node.getBoundingClientRect();
+        if (rect.top > vh || rect.bottom < 0) continue; // hors above-the-fold
+        var cs = window.getComputedStyle(node);
+        var op = parseFloat(cs.opacity);
+        if (!isNaN(op) && op < 0.5) {
+          node.style.setProperty("opacity", "1", "important");
+          node.style.setProperty("transform", "none", "important");
+          node.style.setProperty("transition", "none", "important");
+          fixed++;
+        }
+      }
+      if (fixed > 0 && window.console) {
+        console.info("[doorway-safety-net] opacity forcée sur " + fixed + " élément(s) above-the-fold");
+      }
+    }, OPACITY_TIMEOUT_MS);
+  }
+
+  // A1 — watchdog page blanche. Réévalue en continu après affichage : si le
+  // vrai contenu finit par apparaître (chargement lent mais pas cassé), le
+  // fallback est retiré pour révéler la page réelle en dessous — sinon il
+  // resterait bloqué indéfiniment devant un site qui a fini par charger.
+  var RECHECK_INTERVAL_MS = 500;
+
+  function isRootEmpty() {
+    var root = document.querySelector(ROOT_SELECTOR);
+    return !root || !root.textContent || root.textContent.trim().length < 20;
+  }
+
+  function blankPageWatchdog() {
+    setTimeout(function () {
+      if (!isRootEmpty()) return;
+
+      var fallback = el("div", { id: "doorway-fallback", style:
+        "position:fixed;inset:0;z-index:999999;background:#0a1324;color:#fff;" +
+        "display:flex;flex-direction:column;align-items:center;justify-content:center;" +
+        "text-align:center;padding:24px;font-family:system-ui,-apple-system,sans-serif;" }, [
+        el("div", { style: "font-size:20px;font-weight:700;margin-bottom:12px;" }, [LOGO_TEXT]),
+        el("p", { style: "max-width:32rem;margin:0 0 20px;opacity:.85;line-height:1.5;" }, [
+          "La page a rencontré un problème de chargement. Rechargez, ou contactez-nous directement.",
+        ]),
+        el("button", {
+          onclick: "location.reload()",
+          style:
+            "background:#DAA830;color:#0a1324;border:none;border-radius:8px;" +
+            "padding:12px 24px;font-weight:600;font-size:15px;cursor:pointer;margin-bottom:12px;",
+        }, ["Recharger la page"]),
+        PHONE ? el("a", { href: "tel:" + PHONE.replace(/[^0-9+]/g, ""), style: "color:#DAA830;text-decoration:none;font-size:15px;" }, [PHONE]) : el("span", {}, []),
+      ]);
+      document.body.appendChild(fallback);
+
+      var recheck = setInterval(function () {
+        if (!isRootEmpty()) {
+          fallback.remove();
+          clearInterval(recheck);
+        }
+      }, RECHECK_INTERVAL_MS);
+    }, ROOT_TIMEOUT_MS);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", function () {
+      forceOpacitySafetyNet();
+      blankPageWatchdog();
+    });
+  } else {
+    forceOpacitySafetyNet();
+    blankPageWatchdog();
+  }
+})();
+</script>
+</body>
+
+</html>

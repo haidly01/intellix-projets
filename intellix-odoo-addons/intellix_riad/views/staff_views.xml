@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_riad_staff_list" model="ir.ui.view">
+        <field name="name">pe.employee.profile.riad.list</field>
+        <field name="model">pe.employee.profile</field>
+        <field name="arch" type="xml">
+            <list string="Personnel">
+                <field name="riad_photo" widget="image" options="{'size': [32, 32]}" optional="show"/>
+                <field name="display_name" string="Nom"/>
+                <field name="company_id"/>
+                <field name="employee_company_id" optional="hide"/>
+                <field name="riad_establishment_id"/>
+                <field name="riad_role_ids" widget="many2many_tags" string="Poste"/>
+                <field name="riad_phone" string="Téléphone"/>
+                <field name="work_phone" optional="show"/>
+                <field name="work_email" string="Email"/>
+                <field name="riad_hire_date" string="Date d'embauche"/>
+                <field name="riad_expected_start" widget="float_time" string="Arrivée prévue"/>
+                <field name="riad_today_status" string="Pointage du jour"/>
+                <field name="pe_status"/>
+                <button name="action_riad_punch_present" type="object" string="Présent" icon="fa-check" groups="intellix_riad.group_riad_manager"/>
+                <button name="action_riad_punch_late" type="object" string="Retard" groups="intellix_riad.group_riad_manager"/>
+                <button name="action_riad_punch_leave" type="object" string="Congé" groups="intellix_riad.group_riad_manager"/>
+                <button name="action_riad_punch_illness" type="object" string="Maladie" groups="intellix_riad.group_riad_manager"/>
+                <button name="action_riad_punch_unjustified" type="object" string="Non justifiée" groups="intellix_riad.group_riad_manager"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_riad_staff_form" model="ir.ui.view">
+        <field name="name">pe.employee.profile.riad.form</field>
+        <field name="model">pe.employee.profile</field>
+        <field name="arch" type="xml">
+            <form class="o_riad_charter_form o_riad_staff_form" string="Nouvel employé">
+                <header>
+                    <button special="save" string="Enregistrer" class="btn-primary"/>
+                    <button special="cancel" string="Annuler"/>
+                    <button name="action_riad_punch_present" type="object" string="Présent"
+                            class="btn-primary" groups="intellix_riad.group_riad_manager"
+                            invisible="not employee_id"/>
+                    <button name="action_riad_punch_late" type="object" string="Retard"
+                            groups="intellix_riad.group_riad_manager" invisible="not employee_id"/>
+                    <button name="action_riad_punch_leave" type="object" string="Congé planifié"
+                            groups="intellix_riad.group_riad_manager" invisible="not employee_id"/>
+                    <button name="action_riad_punch_illness" type="object" string="Maladie"
+                            groups="intellix_riad.group_riad_manager" invisible="not employee_id"/>
+                    <button name="action_riad_punch_unjustified" type="object" string="Non justifiée"
+                            groups="intellix_riad.group_riad_manager" invisible="not employee_id"/>
+                    <field name="pe_status" widget="statusbar" invisible="not employee_id"/>
+                </header>
+                <sheet>
+                    <field name="riad_photo" widget="image" class="oe_avatar" options="{'size': [120, 120]}"/>
+                    <div class="oe_title">
+                        <h1>Nouvel employé</h1>
+                    </div>
+                    <group string="Identité">
+                        <group>
+                            <field name="riad_new_employee_name" string="Nom complet"
+                                   placeholder="Ex. Fatima El Amrani"
+                                   invisible="employee_id"/>
+                            <field name="employee_id" string="Nom complet" invisible="not employee_id"/>
+                            <field name="display_name" invisible="1"/>
+                            <field name="riad_establishment_id" required="1"/>
+                            <field name="company_id"/>
+                            <field name="employee_company_id" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="riad_phone" placeholder="+212 …"/>
+                            <field name="work_phone"/>
+                            <field name="work_email" placeholder="prenom@riadsweety.com"/>
+                            <field name="riad_hire_date" placeholder="jj/mm/aaaa"/>
+                        </group>
+                    </group>
+                    <group string="Rôle">
+                        <field name="riad_role_ids" widget="many2many_checkboxes"/>
+                        <field name="riad_role" invisible="1"/>
+                        <div class="text-muted">
+                            Plusieurs rôles possibles pour une même personne (ex. Salma : massage + esthétique + ménage) — détermine sa disponibilité dans le planning bien-être
+                        </div>
+                    </group>
+                    <group string="Paie">
+                        <group>
+                            <field name="riad_wage"/>
+                            <field name="riad_wage_currency_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="riad_in_payroll"/>
+                        </group>
+                    </group>
+                    <group string="Pointage" invisible="not employee_id">
+                        <group>
+                            <field name="riad_expected_start" widget="float_time"/>
+                            <field name="riad_late_arrival" widget="float_time"/>
+                        </group>
+                        <group>
+                            <field name="riad_today_status"/>
+                            <field name="riad_practitioner_id" readonly="1"/>
+                        </group>
+                        <div class="text-muted">
+                            Pointage manuel par la gérante uniquement. Aucune heure ni géolocalisation n'est capturée automatiquement.
+                            Les corrections restent possibles jusqu'à l'envoi du rapport mensuel.
+                        </div>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_riad_staff_search" model="ir.ui.view">
+        <field name="name">pe.employee.profile.riad.search</field>
+        <field name="model">pe.employee.profile</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="display_name"/>
+                <field name="employee_id"/>
+                <field name="riad_role_ids"/>
+                <field name="company_id"/>
+                <field name="riad_phone"/>
+                <field name="work_email"/>
+                <filter name="riad_only" string="Équipe hébergement" domain="[('riad_establishment_id', '!=', False)]"/>
+                <filter name="active_staff" string="Actifs" domain="[('pe_status', '!=', 'inactive')]"/>
+                <filter name="in_payroll" string="Rapport paie" domain="[('riad_in_payroll', '=', True)]"/>
+                <group>
+                    <filter name="group_role" string="Poste" context="{'group_by': 'riad_role'}"/>
+                    <filter name="group_estab" string="Établissement" context="{'group_by': 'riad_establishment_id'}"/>
+                    <filter name="group_company" string="Société" context="{'group_by': 'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_riad_staff" model="ir.actions.act_window">
+        <field name="name">Personnel</field>
+        <field name="res_model">pe.employee.profile</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('riad_establishment_id', '!=', False)]</field>
+        <field name="context">{'search_default_active_staff': 1}</field>
+        <field name="search_view_id" ref="view_riad_staff_search"/>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_riad_staff_list')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_riad_staff_form')})]"/>
+    </record>
+
+    <record id="view_riad_punch_list" model="ir.ui.view">
+        <field name="name">pe.presence.summary.riad.list</field>
+        <field name="model">pe.presence.summary</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="date"/>
+                <field name="employee_id"/>
+                <field name="riad_establishment_id"/>
+                <field name="statut_jour"/>
+                <field name="absence_kind"/>
+                <field name="heure_debut"/>
+                <field name="minutes_late"/>
+                <field name="riad_note"/>
+                <field name="riad_locked"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_riad_punch_form" model="ir.ui.view">
+        <field name="name">pe.presence.summary.riad.form</field>
+        <field name="model">pe.presence.summary</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="employee_id"/>
+                        <field name="date"/>
+                        <field name="riad_establishment_id" readonly="1"/>
+                        <field name="statut_jour"/>
+                        <field name="absence_kind"/>
+                        <field name="heure_debut"/>
+                        <field name="heure_fin"/>
+                        <field name="minutes_late"/>
+                        <field name="riad_note"/>
+                        <field name="riad_punch"/>
+                        <field name="riad_locked"/>
+                    </group>
+                    <field name="riad_correction_ids" readonly="1">
+                        <list>
+                            <field name="changed_at"/>
+                            <field name="changed_by_id"/>
+                            <field name="previous_label"/>
+                            <field name="new_label"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_riad_punch_search" model="ir.ui.view">
+        <field name="name">pe.presence.summary.riad.search</field>
+        <field name="model">pe.presence.summary</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="employee_id"/>
+                <filter name="today" string="Aujourd'hui" domain="[('date', '=', context_today())]"/>
+                <filter name="riad_only" string="Pointages hébergement" domain="[('riad_establishment_id', '!=', False)]"/>
+                <group>
+                    <filter name="group_date" string="Date" context="{'group_by': 'date'}"/>
+                    <filter name="group_employee" string="Employé" context="{'group_by': 'employee_id'}"/>
+                    <filter name="group_status" string="Statut" context="{'group_by': 'statut_jour'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_riad_punch" model="ir.actions.act_window">
+        <field name="name">Pointages</field>
+        <field name="res_model">pe.presence.summary</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('riad_establishment_id', '!=', False)]</field>
+        <field name="context">{'search_default_today': 1}</field>
+        <field name="search_view_id" ref="view_riad_punch_search"/>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_riad_punch_list')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_riad_punch_form')})]"/>
+    </record>
+
+    <record id="view_riad_staff_role_list" model="ir.ui.view">
+        <field name="name">intellix.riad.staff.role.list</field>
+        <field name="model">intellix.riad.staff.role</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="legacy_role"/>
+                <field name="wellness_type_code"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_riad_staff_role" model="ir.actions.act_window">
+        <field name="name">Rôles personnel</field>
+        <field name="res_model">intellix.riad.staff.role</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <record id="view_pe_employee_profile_form_riad" model="ir.ui.view">
+        <field name="name">pe.employee.profile.form.riad</field>
+        <field name="model">pe.employee.profile</field>
+        <field name="inherit_id" ref="people_engine.view_pe_employee_profile_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="Module Hébergement" name="riad">
+                    <field name="riad_establishment_id"/>
+                    <field name="company_id"/>
+                    <field name="riad_role_ids" widget="many2many_tags"/>
+                    <field name="riad_phone"/>
+                    <field name="work_email"/>
+                    <field name="riad_hire_date"/>
+                    <field name="riad_expected_start" widget="float_time"/>
+                    <field name="riad_late_arrival" widget="float_time"/>
+                    <field name="riad_in_payroll"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,585 @@
+/* ════════════════════════════════════════════════════════════════════
+ * Doorway Email Builder IA — restyle 3 panneaux (navy / clair / blanc)
+ * Tout est scopé sous .deb-builder pour ne PAS fuir vers d'autres modules.
+ * Le root porte aussi .o_action.o_intellix_client_action : intellix_branding
+ * force flex-direction:column dessus, on rétablit le flex horizontal avec une
+ * spécificité supérieure (même schéma que doorway_messaging / people_engine).
+ * ════════════════════════════════════════════════════════════════════ */
+
+/* Thème LIGHT/DARK : mappe les variables locales sur les tokens partagés
+ * (intellix_branding), avec les littéraux d'origine en fallback.
+ * NB : le panneau gauche .deb-side reste volontairement navy (élément de
+ * marque) et n'est PAS tokenisé. */
+.deb-builder,
+.o_web_client .o_action.o_intellix_client_action.deb-builder {
+    --deb-bg: var(--ix-bg, #f4f5f7);
+    --deb-surface: var(--ix-surface, #ffffff);
+    --deb-elev: var(--ix-surface-elevated, #f8f9fb);
+    --deb-hover: var(--ix-surface-hover, #f4f5f7);
+    --deb-text: var(--ix-text, #1f2433);
+    --deb-muted: var(--ix-text-muted, #6b7185);
+    --deb-subtle: var(--ix-text-subtle, #9aa0b4);
+    --deb-border: var(--ix-border, #e9ebf0);
+}
+
+.o_action_manager:has(.deb-builder) { height: 100% !important; }
+
+.o_web_client .o_action.o_intellix_client_action.deb-builder {
+    display: flex !important;
+    flex-direction: row !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: hidden !important;
+    width: 100% !important;
+    padding: 0 !important;
+    background: var(--deb-bg) !important;
+    color: var(--deb-text) !important;
+    font-family: inherit;
+}
+
+.deb-builder *,
+.deb-builder *::before,
+.deb-builder *::after { box-sizing: border-box; }
+
+.deb-builder .deb-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    height: 100%;
+    color: var(--deb-muted);
+    font-size: 15px;
+}
+
+/* ───────────────── PANNEAU GAUCHE — navy (élément de marque, NON tokenisé) ───────────────── */
+.deb-builder .deb-side {
+    width: 300px;
+    min-width: 280px;
+    flex-shrink: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(180deg, #322d6e 0%, #2b2660 60%, #2a2557 100%);
+    color: #eef0fb;
+    padding: 22px 22px 18px;
+    overflow: hidden;
+}
+
+.deb-builder .deb-side__brand { margin-bottom: 18px; }
+
+.deb-builder .deb-side__logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 30px;
+    border-radius: 9px;
+    background: rgba(255, 255, 255, 0.14);
+    color: #fff;
+    font-size: 14px;
+}
+
+.deb-builder .deb-side__title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 14px;
+}
+
+.deb-builder .deb-side__new {
+    width: 26px;
+    height: 26px;
+    border: none;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.12);
+    color: #d9ddf7;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background 0.15s;
+}
+.deb-builder .deb-side__new:hover { background: rgba(255, 255, 255, 0.24); color: #fff; }
+
+.deb-builder .deb-side__body {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.deb-builder .deb-side__body::-webkit-scrollbar { width: 6px; }
+.deb-builder .deb-side__body::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.18);
+    border-radius: 3px;
+}
+
+.deb-builder .deb-field { display: block; }
+.deb-builder .deb-field__label,
+.deb-builder .deb-field__group {
+    display: block;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #c4c8ee;
+    margin: 0 0 6px 2px;
+    letter-spacing: 0.01em;
+}
+.deb-builder .deb-field__group { margin-top: 4px; }
+
+.deb-builder .deb-field__row {
+    display: flex;
+    gap: 8px;
+}
+.deb-builder .deb-field__row > .deb-input { flex: 1; min-width: 0; }
+
+.deb-builder .deb-input {
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.08);
+    color: #f5f6ff;
+    border-radius: 10px;
+    padding: 9px 12px;
+    font-size: 13px;
+    line-height: 1.4;
+    outline: none;
+    transition: border-color 0.15s, background 0.15s;
+}
+.deb-builder .deb-input::placeholder { color: rgba(232, 235, 255, 0.45); }
+.deb-builder .deb-input:focus {
+    border-color: #6f78e0;
+    background: rgba(255, 255, 255, 0.14);
+}
+.deb-builder .deb-input--area { resize: vertical; min-height: 42px; }
+
+.deb-builder .deb-side__footer {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.deb-builder .deb-cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.05s;
+}
+.deb-builder .deb-cta:hover:not(:disabled) { background: rgba(255, 255, 255, 0.2); }
+.deb-builder .deb-cta:active:not(:disabled) { transform: translateY(1px); }
+.deb-builder .deb-cta:disabled { opacity: 0.55; cursor: not-allowed; }
+
+.deb-builder .deb-side__warn {
+    margin: 10px 0 0;
+    font-size: 11.5px;
+    color: #fcd9a8;
+}
+
+/* ───────────────── CENTRE — clair ───────────────── */
+.deb-builder .deb-canvas {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    overflow-y: auto;
+    background: var(--deb-bg);
+    padding: 36px 32px 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.deb-builder .deb-canvas__head { text-align: center; margin-bottom: 24px; }
+.deb-builder .deb-canvas__title {
+    margin: 0 0 8px;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--deb-text);
+}
+.deb-builder .deb-canvas__subtitle {
+    margin: 0;
+    font-size: 14px;
+    color: var(--deb-subtle);
+    max-width: 520px;
+}
+
+.deb-builder .deb-canvas__stage {
+    width: 100%;
+    max-width: 560px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Carte aperçu email */
+.deb-builder .deb-preview {
+    position: relative;
+    background: var(--deb-surface);
+    border-radius: 16px;
+    padding: 30px 32px 26px;
+    box-shadow: 0 18px 40px rgba(31, 41, 79, 0.1);
+    overflow: hidden;
+}
+.deb-builder .deb-preview__corner {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 56px 56px 0;
+    border-color: transparent #2f6bff transparent transparent;
+}
+.deb-builder .deb-preview__meta {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--deb-subtle);
+    margin-bottom: 14px;
+}
+.deb-builder .deb-preview__from {
+    font-size: 12px;
+    color: #2f6bff;
+    margin-bottom: 8px;
+}
+.deb-builder .deb-preview__subject {
+    margin: 0 0 8px;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--deb-text);
+    line-height: 1.3;
+}
+.deb-builder .deb-preview__preheader {
+    margin: 0 0 14px;
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--deb-muted);
+}
+.deb-builder .deb-preview__ab {
+    background: var(--deb-hover);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 13px;
+    color: var(--deb-muted);
+    margin-bottom: 14px;
+}
+.deb-builder .deb-preview__ablabel {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--deb-subtle);
+    margin-right: 8px;
+}
+.deb-builder .deb-preview__cta { margin: 18px 0 8px; }
+.deb-builder .deb-preview__btn {
+    display: inline-block;
+    background: #2f6bff;
+    color: #fff;
+    border-radius: 9px;
+    padding: 10px 22px;
+    font-size: 13px;
+    font-weight: 600;
+}
+.deb-builder .deb-preview__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--deb-border);
+}
+.deb-builder .deb-preview__links a {
+    font-size: 12px;
+    font-weight: 600;
+    color: #2f6bff;
+    text-decoration: none;
+}
+.deb-builder .deb-preview__links a:hover { text-decoration: underline; }
+
+.deb-builder .deb-preview--empty { text-align: center; color: var(--deb-subtle); }
+.deb-builder .deb-preview__icon {
+    font-size: 34px;
+    color: #c7cbe0;
+    margin-bottom: 14px;
+}
+.deb-builder .deb-preview--empty .deb-preview__subject { color: var(--deb-muted); }
+
+/* Assistant / conversation */
+.deb-builder .deb-assist {
+    background: var(--deb-surface);
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(31, 41, 79, 0.06);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.deb-builder .deb-assist__head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 18px;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--deb-text);
+    border-bottom: 1px solid var(--deb-border);
+}
+.deb-builder .deb-assist__head i { color: #2f6bff; }
+.deb-builder .deb-state {
+    margin-left: auto;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--deb-subtle);
+    background: var(--deb-hover);
+    padding: 3px 9px;
+    border-radius: 10px;
+}
+
+.deb-builder .deb-assist__thread {
+    max-height: 320px;
+    overflow-y: auto;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.deb-builder .deb-msg { display: flex; }
+.deb-builder .deb-msg--user { justify-content: flex-end; }
+.deb-builder .deb-msg__bubble {
+    max-width: 78%;
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-size: 13.5px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+.deb-builder .deb-msg--assistant .deb-msg__bubble {
+    background: var(--deb-hover);
+    color: var(--deb-text);
+    border-bottom-left-radius: 4px;
+}
+.deb-builder .deb-msg--user .deb-msg__bubble {
+    background: #2f6bff;
+    color: #fff;
+    border-bottom-right-radius: 4px;
+}
+.deb-builder .deb-msg--system .deb-msg__bubble {
+    background: #fef3c7;
+    color: #92400e;
+    font-size: 13px;
+}
+
+.deb-builder .deb-assist__input {
+    padding: 14px 18px;
+    border-top: 1px solid var(--deb-border);
+}
+.deb-builder .deb-assist__input .deb-input {
+    background: var(--deb-hover);
+    color: var(--deb-text);
+    border: 1px solid var(--deb-border);
+}
+.deb-builder .deb-assist__input .deb-input::placeholder { color: var(--deb-subtle); }
+.deb-builder .deb-assist__input .deb-input:focus { border-color: #2f6bff; background: var(--deb-surface); }
+.deb-builder .deb-assist__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+/* ───────────────── PANNEAU DROIT — blanc ───────────────── */
+.deb-builder .deb-settings {
+    width: 300px;
+    min-width: 280px;
+    flex-shrink: 0;
+    height: 100%;
+    background: var(--deb-surface);
+    border-left: 1px solid var(--deb-border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.deb-builder .deb-settings__head {
+    padding: 22px 22px 16px;
+    border-bottom: 1px solid var(--deb-border);
+}
+.deb-builder .deb-settings__title {
+    margin: 0 0 14px;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--deb-text);
+}
+.deb-builder .deb-settings__topbtns {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+.deb-builder .deb-settings__body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 18px 22px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.deb-builder .deb-setting__label {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--deb-text);
+    margin-bottom: 10px;
+}
+
+.deb-builder .deb-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    background: var(--deb-hover);
+    border-radius: 10px;
+    padding: 4px;
+}
+.deb-builder .deb-pill {
+    flex: 1;
+    border: none;
+    background: transparent;
+    color: var(--deb-muted);
+    border-radius: 8px;
+    padding: 8px 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s;
+}
+.deb-builder .deb-pill:hover { color: var(--deb-text); }
+.deb-builder .deb-pill--active {
+    background: #322d6e;
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(50, 45, 110, 0.25);
+}
+
+.deb-builder .deb-credit {
+    background: var(--deb-elev);
+    border: 1px solid var(--deb-border);
+    border-radius: 12px;
+    padding: 14px 16px;
+}
+.deb-builder .deb-credit__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+    color: var(--deb-muted);
+    padding: 4px 0;
+}
+.deb-builder .deb-credit__row i { color: #2f6bff; margin-right: 6px; }
+.deb-builder .deb-credit__row strong { color: var(--deb-text); }
+.deb-builder .deb-credit__note {
+    margin: 8px 0 0;
+    font-size: 11.5px;
+    color: var(--deb-subtle);
+    line-height: 1.45;
+}
+
+/* Toggle / interrupteur */
+.deb-builder .deb-toggle {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    color: var(--deb-muted);
+    cursor: pointer;
+}
+.deb-builder .deb-toggle span:first-child { flex: 1; }
+.deb-builder .deb-toggle input { position: absolute; opacity: 0; width: 0; height: 0; }
+.deb-builder .deb-toggle__track {
+    position: relative;
+    flex-shrink: 0;
+    width: 40px;
+    height: 22px;
+    background: #d6d9e2;
+    border-radius: 999px;
+    transition: background 0.15s;
+}
+.deb-builder .deb-toggle__knob {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 18px;
+    height: 18px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    transition: transform 0.15s;
+}
+.deb-builder .deb-toggle input:checked + .deb-toggle__track { background: #2f6bff; }
+.deb-builder .deb-toggle input:checked + .deb-toggle__track .deb-toggle__knob { transform: translateX(18px); }
+
+.deb-builder .deb-sent {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: #16a34a;
+}
+.deb-builder .deb-sent i { margin-right: 6px; }
+
+/* ───────────────── Boutons partagés ───────────────── */
+.deb-builder .deb-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, opacity 0.15s;
+}
+.deb-builder .deb-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+.deb-builder .deb-btn--primary { background: #2f6bff; color: #fff; }
+.deb-builder .deb-btn--primary:hover:not(:disabled) { background: #1f57e6; }
+.deb-builder .deb-btn--ghost {
+    background: var(--deb-hover);
+    color: var(--deb-muted);
+    border-color: var(--deb-border);
+}
+.deb-builder .deb-btn--ghost:hover:not(:disabled) { background: #e9ebf0; }
+.deb-builder .deb-btn--success { background: #16a34a; color: #fff; }
+.deb-builder .deb-btn--success:hover:not(:disabled) { background: #128a3e; }
+.deb-builder .deb-btn--block { width: 100%; }
+
+/* ───────────────── Responsive ───────────────── */
+@media (max-width: 1100px) {
+    .deb-builder .deb-side,
+    .deb-builder .deb-settings { width: 260px; min-width: 240px; }
+}
+@media (max-width: 900px) {
+    .o_web_client .o_action.o_intellix_client_action.deb-builder {
+        flex-direction: column !important;
+        overflow: auto !important;
+    }
+    .deb-builder .deb-side,
+    .deb-builder .deb-settings,
+    .deb-builder .deb-canvas {
+        width: 100%;
+        min-width: 0;
+        height: auto;
+    }
+}

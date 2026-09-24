@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="tier_1" model="coins.quebec.carnet.tier">
+        <field name="name">Palier 1 — Découverte</field>
+        <field name="code">p1</field>
+        <field name="sequence">10</field>
+        <field name="seuil_badges">1</field>
+        <field name="discount_percent">0</field>
+    </record>
+    <record id="tier_2" model="coins.quebec.carnet.tier">
+        <field name="name">Palier 2 — Explorateur</field>
+        <field name="code">p2</field>
+        <field name="sequence">20</field>
+        <field name="seuil_badges">3</field>
+        <field name="discount_percent">5</field>
+    </record>
+    <record id="tier_3" model="coins.quebec.carnet.tier">
+        <field name="name">Palier 3 — Ambassadeur</field>
+        <field name="code">p3</field>
+        <field name="sequence">30</field>
+        <field name="seuil_badges">6</field>
+        <field name="seuil_parrainages_alternatif">3</field>
+        <field name="discount_percent">10</field>
+    </record>
+</odoo>

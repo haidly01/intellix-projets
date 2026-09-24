@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================= -->
+    <!-- Niveaux d'accès CRM                                            -->
+    <!--  1. Super admin  : groupe « Agence Doorway — Pipelines CRM »   -->
+    <!--                    (existant, implique group_sale_manager)     -->
+    <!--  2. Admin de pipeline (restreint)                             -->
+    <!--  3. Superviseur d'équipe                                       -->
+    <!-- ============================================================= -->
+
+    <!-- Groupes de visibilité des onglets de pipeline (gérés automatiquement) -->
+    <record id="group_pipeline_tab_renovation" model="res.groups">
+        <field name="name">Onglet pipeline : Rénovation</field>
+        <field name="comment">Segment B2C — pipeline Rénovation (géré automatiquement).</field>
+    </record>
+    <record id="group_pipeline_tab_immobilier" model="res.groups">
+        <field name="name">Onglet pipeline : Immobilier</field>
+        <field name="comment">Segment B2C — pipeline Immobilier (géré automatiquement).</field>
+    </record>
+    <record id="group_pipeline_tab_marketing" model="res.groups">
+        <field name="name">Onglet pipeline : Marketing</field>
+        <field name="comment">Segment B2B — onglet Marketing (géré automatiquement).</field>
+    </record>
+    <record id="group_pipeline_tab_driven" model="res.groups">
+        <field name="name">Onglet pipeline : Driven</field>
+        <field name="comment">Segment B2B — pipeline Driven (géré automatiquement).</field>
+    </record>
+    <record id="group_pipeline_tab_doorway_b2b" model="res.groups">
+        <field name="name">Onglet pipeline : Doorway Clients</field>
+        <field name="comment">Segment B2B — pipeline Doorway Clients (géré automatiquement). Nom technique historique : crm_team_doorway_b2b.</field>
+    </record>
+    <record id="group_pipeline_tab_assurance" model="res.groups">
+        <field name="name">Onglet pipeline : Assurance</field>
+        <field name="comment">Segment B2C — pipeline Assurance (géré automatiquement).</field>
+    </record>
+
+    <!-- Vue globale (Karine) : tous les onglets -->
+    <record id="group_agence_doorway_crm" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('group_pipeline_tab_renovation')),
+                                          (4, ref('group_pipeline_tab_immobilier')),
+                                          (4, ref('group_pipeline_tab_marketing')),
+                                          (4, ref('group_pipeline_tab_driven')),
+                                          (4, ref('group_pipeline_tab_doorway_b2b')),
+                                          (4, ref('group_pipeline_tab_assurance'))]"/>
+    </record>
+
+    <!-- Vendeurs Doorway : isolation Martin / Zakaria (règle Odoo « Personal Leads » via group_sale_salesman) -->
+    <record id="rule_crm_lead_doorway_peer_sales" model="ir.rule">
+        <field name="name">CRM Lead : vendeur Doorway (ses leads + non assignés)</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="domain_force">['|', ('user_id', '=', user.id), ('user_id', '=', False)]</field>
+        <field name="groups" eval="[(4, ref('group_agence_doorway_crm_sales'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_mail_activity_doorway_peer_sales" model="ir.rule">
+        <field name="name">Activités : vendeur Doorway (soi + non assignées)</field>
+        <field name="model_id" ref="mail.model_mail_activity"/>
+        <field name="domain_force">['|', ('user_id', '=', user.id), ('user_id', '=', False)]</field>
+        <field name="groups" eval="[(4, ref('group_agence_doorway_crm_sales'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="group_pipeline_admin" model="res.groups">
+        <field name="name">Admin de pipeline (restreint)</field>
+        <field name="implied_ids" eval="[(4, ref('group_doorway_role_admin')),
+                                          (4, ref('sales_team.group_sale_salesman')),
+                                          (4, ref('group_automation_configurator'))]"/>
+        <field name="comment">Gère entièrement les leads des pipelines listés dans « Pipelines administrés » (création, modification, suppression, attribution), sans accès aux autres pipelines ni à la configuration globale du CRM.</field>
+    </record>
+
+    <record id="group_pipeline_supervisor" model="res.groups">
+        <field name="name">Superviseur d'équipe</field>
+        <field name="implied_ids" eval="[(4, ref('group_doorway_role_supervisor')),
+                                          (4, ref('sales_team.group_sale_salesman'))]"/>
+        <field name="comment">Voit et modifie ses propres dossiers ainsi que ceux des équipes CRM dont il est responsable (activités de ses subordonnés incluses).</field>
+    </record>
+
+    <!-- Admin de pipeline : leads des pipelines administrés -->
+    <record id="rule_crm_lead_pipeline_admin" model="ir.rule">
+        <field name="name">CRM Lead : admin de pipeline (pipelines administrés)</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="domain_force">[('team_id', 'in', user.effective_pipeline_team_ids.ids)]</field>
+        <field name="groups" eval="[(4, ref('group_pipeline_admin'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <!-- Superviseur : ses dossiers + ceux des équipes qu'il dirige -->
+    <record id="rule_crm_lead_supervisor" model="ir.rule">
+        <field name="name">CRM Lead : superviseur (soi + équipes supervisées)</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="domain_force">['|', ('user_id', '=', user.id), ('team_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_pipeline_supervisor'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- Superviseur : activités (siennes + celles de ses subordonnés) -->
+    <record id="rule_mail_activity_supervisor" model="ir.rule">
+        <field name="name">Activités : superviseur (soi + subordonnés)</field>
+        <field name="model_id" ref="mail.model_mail_activity"/>
+        <field name="domain_force">['|', ('user_id', '=', user.id), '&amp;', ('user_id', 'in', user.subordinate_user_ids.ids), ('user_id.login', '!=', 'zakaria@agencedoorway.com')]</field>
+        <field name="groups" eval="[(4, ref('group_pipeline_supervisor'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+</odoo>

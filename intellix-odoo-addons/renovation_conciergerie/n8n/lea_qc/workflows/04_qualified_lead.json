@@ -1,0 +1,57 @@
+{
+  "name": "lea-qc — 04 Lead Qualifié",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lea-qc/qualified",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        300
+      ],
+      "webhookId": "lea-qc-qualified"
+    },
+    {
+      "parameters": {
+        "jsCode": "const p = $input.first().json.body || $input.first().json;\nconst phone = p.telephone || p.phone || '';\nconst prenom = p.prenom || (p.nom || '').split(' ')[0] || 'Bonjour';\nconst jour = p.jour || 'cette semaine';\nconst moment = p.preference_rappel === 'avant_midi' ? 'avant-midi' : 'après-midi';\n\nconst msg =\n  `Bonjour ${prenom} ! 😊\\nMerci pour votre temps.\\n` +\n  `Notre directeur des travaux vous contactera ${jour} en ${moment}.\\n` +\n  `Des questions ? Répondez à ce message !\\n— Soumission Entrepreneurs`;\n\nif (!phone) return [{ json: { ok: false, error: 'no_phone' } }];\n\nconst sid = $env.TWILIO_ACCOUNT_SID;\nconst auth = Buffer.from(`${sid}:${$env.TWILIO_AUTH_TOKEN}`).toString('base64');\nconst from = $env.TWILIO_FROM_SOUMISSION || '+15817058118';\n\nawait this.helpers.httpRequest({\n  method: 'POST',\n  url: `https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`,\n  headers: { Authorization: 'Basic ' + auth, 'Content-Type': 'application/x-www-form-urlencoded' },\n  body: `To=${encodeURIComponent(phone)}&From=${encodeURIComponent(from)}&Body=${encodeURIComponent(msg)}`,\n});\n\nconst odooUrl = ($env.ODOO_URL || 'https://intellixcrm.com').replace(/\\/$/, '');\nlet odoo = {};\ntry {\n  const res = await this.helpers.httpRequest({\n    method: 'POST',\n    url: odooUrl + '/doorway/api/lea-qc/qualified',\n    body: {\n      jsonrpc: '2.0',\n      method: 'call',\n      params: { tenant_api_key: $env.DOORWAY_TENANT_API_KEY, ...p },\n      id: Date.now(),\n    },\n    json: true,\n  });\n  odoo = res.result || res;\n} catch (e) {\n  odoo = { error: (e.message || String(e)).slice(0, 200) };\n}\n\nreturn [{ json: { ok: true, sms_sent: true, odoo } }];"
+      },
+      "name": "Qualified Lead",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Qualified Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [
+    {
+      "name": "lea-qc"
+    },
+    {
+      "name": "sofia"
+    }
+  ]
+}

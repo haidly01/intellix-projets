@@ -1,0 +1,296 @@
+// Intellix — vue Calendrier (FullCalendar + sidebar participants)
+.o_web_client.o_intellix_branded {
+    .o_calendar_renderer {
+        background-color: var(--ix-bg) !important;
+        color: var(--ix-text);
+
+        // En-tête semaine / navigation
+        .o_calendar_navigation,
+        .o_calendar_header,
+        h5,
+        .o_current_week,
+        .o_calendar_button_today {
+            color: var(--ix-text) !important;
+        }
+
+        .o_calendar_sidebar_container,
+        .o_calendar_sidebar {
+            background-color: var(--ix-surface) !important;
+            color: var(--ix-text);
+            border-color: var(--ix-border) !important;
+
+            // Mini-calendrier (DatePicker sidebar)
+            .o_datepicker,
+            .o_datetime_picker {
+                --o-cp-bg: var(--ix-surface-elevated);
+                color: var(--ix-text);
+
+                .o_date_item_cell,
+                .o_date_item_picker,
+                button {
+                    color: var(--ix-text) !important;
+                }
+
+                .o_today,
+                .o_selected {
+                    color: var(--ix-text-inverse) !important;
+                }
+
+                .o_date_item_picker.o_selected {
+                    background-color: var(--ix-primary) !important;
+                }
+            }
+        }
+
+        // Panneau Participants (filtres calendrier)
+        .o_calendar_filter {
+            color: var(--ix-text);
+
+            label,
+            .form-check-label,
+            .o_calendar_filter_items_checkall {
+                color: var(--ix-text) !important;
+            }
+
+            .o_calendar_filter_item {
+                padding: 5px 8px;
+                font-size: 0.875rem;
+                line-height: 1.35;
+
+                .o_calendar_filter_items_checkall,
+                .form-check-label {
+                    font-size: 0.875rem !important;
+                }
+
+                &:hover {
+                    background-color: var(--ix-surface-hover);
+                    border-radius: var(--ix-radius-btn);
+                }
+            }
+
+            button.o_remove {
+                color: var(--ix-text-muted) !important;
+
+                &:hover {
+                    color: var(--ix-danger) !important;
+                }
+            }
+        }
+
+        // Couleurs événements — même niveau que Odoo pour écraser les pastels
+        @for $i from 0 through 11 {
+            .o_calendar_color_#{$i} {
+                &.fc-event:not(.o_event_dot):not(.fc-dragging),
+                &.fc-timegrid-event:not(.o_event_dot),
+                &.fc-daygrid-event:not(.o_event_dot) {
+                    --fc-event-bg-color: var(--o-event-bg) !important;
+                    --fc-event-text-color: #ffffff !important;
+                    --fc-event-border-color: var(--o-event-bg) !important;
+                    background-color: var(--o-event-bg) !important;
+                    border-color: var(--o-event-bg) !important;
+
+                    .fc-event-main {
+                        background-color: transparent !important;
+                        color: #ffffff !important;
+                    }
+
+                    .fc-event-main,
+                    .fc-event-title,
+                    .fc-event-time,
+                    .o_event_title,
+                    a {
+                        color: #ffffff !important;
+                        font-weight: 600;
+                        font-size: 0.8rem;
+                        line-height: 1.25;
+                        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+                    }
+                }
+            }
+        }
+
+        .o_calendar_widget {
+            --fc-page-bg-color: var(--ix-bg);
+            --fc-border-color: rgba(148, 163, 184, 0.28);
+            --fc-neutral-bg-color: var(--ix-surface);
+            --fc-list-event-hover-bg-color: rgba(99, 102, 241, 0.12);
+            --fc-today-bg-color: rgba(99, 102, 241, 0.1);
+            --fc-now-indicator-color: var(--ix-danger);
+
+            .fc-scrollgrid,
+            .fc-theme-standard td,
+            .fc-theme-standard th {
+                border-color: rgba(148, 163, 184, 0.28) !important;
+            }
+
+            // En-têtes jours (ex. « DIM. 7 »)
+            .fc-col-header-cell {
+                background-color: var(--ix-surface-elevated) !important;
+            }
+
+            .fc-col-header-cell-cushion,
+            .fc-daygrid-day-number,
+            .fc-timegrid-slot-label-cushion,
+            .fc-list-day-text,
+            .fc-list-day-side-text,
+            .fc-timegrid-axis-cushion {
+                color: var(--ix-text) !important;
+            }
+
+            .fc-col-header-cell-cushion {
+                font-weight: 600;
+                font-size: 0.85rem;
+            }
+
+            .fc-daygrid-day.fc-day-today .fc-daygrid-day-number {
+                color: var(--ix-primary-light) !important;
+                font-weight: 600;
+            }
+
+            // Vue semaine / jour — créneaux horaires plus lisibles
+            .fc-timegrid-slot {
+                font-size: 0.8rem !important;
+
+                &.fc-timegrid-slot-label .fc-timegrid-slot-label-cushion {
+                    font-weight: 500;
+                    color: var(--ix-text-muted) !important;
+                }
+            }
+
+            .fc-timegrid-slot-lane {
+                border-color: rgba(148, 163, 184, 0.18) !important;
+            }
+
+            .fc-timegrid-event,
+            .fc-daygrid-block-event {
+                border-radius: 4px;
+                min-height: 1.4em;
+            }
+
+            .fc-more-link {
+                color: var(--ix-primary-light) !important;
+            }
+
+            .fc-popover {
+                background-color: var(--ix-surface) !important;
+                border-color: var(--ix-border) !important;
+
+                .fc-popover-header {
+                    background-color: var(--ix-surface-elevated) !important;
+                    color: var(--ix-text) !important;
+                }
+
+                .fc-popover-body {
+                    color: var(--ix-text) !important;
+                }
+            }
+
+            .o_calendar_disabled {
+                background-color: rgba(30, 41, 59, 0.45) !important;
+            }
+        }
+    }
+
+    // Popover détail événement / activité (thème sombre cohérent)
+    .o_cw_popover {
+        background-color: var(--ix-surface) !important;
+        border: 1px solid var(--ix-border) !important;
+        color: var(--ix-text) !important;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+
+        .card-header,
+        .card-header .popover-header {
+            background-color: var(--ix-surface-elevated) !important;
+            color: var(--ix-text) !important;
+            border-color: var(--ix-border) !important;
+        }
+
+        .o_cw_body,
+        .list-group-item {
+            background-color: transparent !important;
+            color: var(--ix-text) !important;
+        }
+
+        .list-group-item .fw-bold,
+        .o_cw_popover_field,
+        .o_cw_popover_field .o_field_widget,
+        .o_cw_popover_field span {
+            color: var(--ix-text) !important;
+        }
+
+        .text-400,
+        .fa.text-400 {
+            color: var(--ix-text-muted) !important;
+            opacity: 1 !important;
+        }
+
+        .card-footer,
+        .modal-footer {
+            background-color: var(--ix-surface-elevated) !important;
+            border-color: var(--ix-border) !important;
+        }
+
+        .o_cw_popover_close,
+        .fc-close {
+            color: var(--ix-text-muted) !important;
+
+            &:hover {
+                color: var(--ix-text) !important;
+            }
+        }
+
+        // Annule les en-têtes pastel Odoo (illisibles sur fond sombre)
+        &[class*="o_calendar_color_"] {
+            .card-header,
+            .card-header .popover-header {
+                background-color: var(--ix-surface-elevated) !important;
+                color: var(--ix-text) !important;
+            }
+        }
+
+        a[href*="videocall"],
+        a[href*="join_videocall"],
+        .o_field_CopyClipboardURL,
+        .fa-video-camera {
+            color: var(--ix-primary-light) !important;
+        }
+    }
+
+    // Liens événements (vue année / popover multi-événements)
+    .o_cw_popover_link {
+        color: var(--ix-text) !important;
+
+        &[class*="o_calendar_color_"]:not(.o_event_dot) {
+            background-color: var(--o-event-bg) !important;
+            color: #ffffff !important;
+            border-color: var(--o-event-bg) !important;
+        }
+    }
+
+    .modal .o_calendar_color_0,
+    [class*="o_calendar_color_"] {
+        color: var(--ix-text);
+    }
+
+    // Formulaire rapide / création événement
+    .o-calendar-quick-create,
+    .o_calendar_view .o_form_view {
+        color: var(--ix-text);
+
+        .btn-link,
+        button[name="set_discuss_videocall_location"] {
+            color: var(--ix-primary-light) !important;
+
+            &:hover {
+                color: var(--ix-secondary) !important;
+            }
+        }
+
+        .fa-video-camera,
+        .fa-map-marker,
+        .fa-users,
+        .fa-lock {
+            color: var(--ix-text-muted) !important;
+        }
+    }
+}

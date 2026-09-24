@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="style_guide_page" name="Intellix Style Guide">
+        <html lang="fr">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <title>Intellix — Style Guide</title>
+                <link rel="stylesheet" href="/web/assets/web.assets_backend.min.css" t-if="False"/>
+                <style>
+                    @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;display=swap");
+                    :root {
+                        --ix-primary: #6366f1;
+                        --ix-primary-light: #818cf8;
+                        --ix-secondary: #22d3ee;
+                        --ix-purple: #a855f7;
+                        --ix-gradient-cta: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+                        --ix-bg-dark: #0a0a1a;
+                        --ix-surface-dark: #1a1a2e;
+                        --ix-border-dark: #1e293b;
+                        --ix-text-dark: #ffffff;
+                        --ix-muted-dark: #94a3b8;
+                        --ix-bg-light: #f8f9fb;
+                        --ix-surface-light: #ffffff;
+                        --ix-border-light: #e5e7eb;
+                        --ix-text-light: #111827;
+                        --ix-muted-light: #6b7280;
+                        --ix-radius-card: 8px;
+                        --ix-radius-btn: 6px;
+                        --ix-radius-pill: 9999px;
+                    }
+                    * { box-sizing: border-box; }
+                    body { margin: 0; font-family: "DM Sans", system-ui, sans-serif; background: var(--ix-bg-light); color: var(--ix-text-light); padding: 2rem; }
+                    h1 { font-weight: 700; margin: 0 0 0.5rem; }
+                    .subtitle { color: var(--ix-muted-light); margin-bottom: 2rem; }
+                    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
+                    .panel { border-radius: var(--ix-radius-card); padding: 1.25rem; border: 1px solid var(--ix-border-light); background: var(--ix-surface-light); }
+                    .panel.dark { background: var(--ix-bg-dark); border-color: var(--ix-border-dark); color: var(--ix-text-dark); }
+                    .panel.dark .muted { color: var(--ix-muted-dark); }
+                    .swatch { height: 48px; border-radius: var(--ix-radius-btn); margin-bottom: 0.5rem; border: 1px solid rgba(0,0,0,0.08); }
+                    .row { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 1rem 0; }
+                    .btn-demo { padding: 0.5rem 1rem; border-radius: var(--ix-radius-btn); font-weight: 600; font-size: 0.875rem; border: none; cursor: default; }
+                    .btn-cta { background: var(--ix-gradient-cta); color: #fff; }
+                    .btn-outline { background: transparent; border: 1px solid var(--ix-primary); color: var(--ix-primary); }
+                    .pill { display: inline-block; padding: 0.2em 0.65em; border-radius: var(--ix-radius-pill); font-size: 0.75rem; font-weight: 600; background: rgba(99,102,241,0.12); color: var(--ix-primary); }
+                    .type-sample h2 { margin: 0.5rem 0 0; font-weight: 700; }
+                    .type-sample p { margin: 0.25rem 0; color: var(--ix-muted-light); }
+                    .panel.dark .type-sample p { color: var(--ix-muted-dark); }
+                    code { font-size: 0.8rem; background: rgba(99,102,241,0.08); padding: 0.15rem 0.4rem; border-radius: 4px; }
+                </style>
+            </head>
+            <body>
+                <h1>Intellix — Style Guide</h1>
+                <p class="subtitle">Dark + light · DM Sans · Indigo / violet / cyan</p>
+                <div class="grid">
+                    <div class="panel">
+                        <h2>Light mode</h2>
+                        <p class="muted">Background <code>#f8f9fb</code> · Cards <code>#ffffff</code></p>
+                        <div class="swatch" style="background:#f8f9fb"/>
+                        <div class="swatch" style="background:#ffffff;border-color:#e5e7eb"/>
+                        <div class="swatch" style="background:linear-gradient(135deg,#6366f1,#818cf8)"/>
+                        <div class="swatch" style="background:#22d3ee"/>
+                        <div class="type-sample">
+                            <h2 style="color:#111827">Heading</h2>
+                            <p style="color:#6b7280">Body text sample</p>
+                        </div>
+                        <div class="row">
+                            <span class="btn-demo btn-cta">CTA</span>
+                            <span class="btn-demo btn-outline">Outline</span>
+                            <span class="pill">Pill badge</span>
+                        </div>
+                    </div>
+                    <div class="panel dark">
+                        <h2>Dark mode</h2>
+                        <p class="muted">Background <code>#0a0a1a</code> · Cards <code>#1a1a2e</code></p>
+                        <div class="swatch" style="background:#0a0a1a"/>
+                        <div class="swatch" style="background:#1a1a2e;border-color:#1e293b"/>
+                        <div class="swatch" style="background:linear-gradient(135deg,#6366f1,#a855f7)"/>
+                        <div class="swatch" style="background:#22d3ee"/>
+                        <div class="type-sample">
+                            <h2>Heading</h2>
+                            <p>Body text sample</p>
+                        </div>
+                        <div class="row">
+                            <span class="btn-demo btn-cta">CTA</span>
+                            <span class="btn-demo btn-outline" style="border-color:#818cf8;color:#818cf8">Outline</span>
+                            <span class="pill" style="background:rgba(34,211,238,0.15);color:#22d3ee">Pill badge</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="subtitle" style="margin-top:2rem">Tokens SCSS : <code>intellix_branding/static/src/scss/intellix_tokens.scss</code></p>
+            </body>
+        </html>
+    </template>
+
+    <record id="action_intellix_style_guide" model="ir.actions.act_url">
+        <field name="name">Intellix Style Guide</field>
+        <field name="url">/intellix/style-guide</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_intellix_style_guide"
+              name="Style Guide Intellix"
+              parent="base.menu_administration"
+              action="action_intellix_style_guide"
+              sequence="999"
+              groups="base.group_system"/>
+</odoo>

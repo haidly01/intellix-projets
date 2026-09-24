@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <function model="doorway.campaign" name="_run_setup_rappel_quebec"/>
+</odoo>

@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_cq_driver_action" model="ir.actions.act_window">
+        <field name="name">Chauffeurs</field>
+        <field name="path">cq-chauffeurs</field>
+        <field name="res_model">coins.quebec.driver</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_cq_driver_list" model="ir.ui.view">
+        <field name="name">coins.quebec.driver.list</field>
+        <field name="model">coins.quebec.driver</field>
+        <field name="arch" type="xml">
+            <list>
+                    <field name="name"/>
+                    <field name="phone"/>
+                    <field name="state"/>
+                    <field name="frais_par_course"/>
+                    <field name="solde_du_jour"/>
+                    <field name="currency_id"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_cq_driver_form" model="ir.ui.view">
+        <field name="name">coins.quebec.driver.form</field>
+        <field name="model">coins.quebec.driver</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                    <group string="Chauffeur">
+                        <field name="name"/>
+                        <field name="partner_id"/>
+                        <field name="phone"/>
+                        <field name="email"/>
+                        <field name="state"/>
+                        <field name="active"/>
+                        <field name="rating"/>
+                    </group>
+                    <group string="Paiement CAD">
+                        <field name="currency_id"/>
+                        <field name="frais_par_course"/>
+                        <field name="solde_du_jour"/>
+                        <field name="rib_coordonnees"/>
+                    </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_cq_driver_contrat_action" model="ir.actions.act_window">
+        <field name="name">Contrats chauffeurs</field>
+        <field name="path">cq-contrats</field>
+        <field name="res_model">coins.quebec.driver.contrat</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_cq_driver_contrat_list" model="ir.ui.view">
+        <field name="name">coins.quebec.driver.contrat.list</field>
+        <field name="model">coins.quebec.driver.contrat</field>
+        <field name="arch" type="xml">
+            <list>
+                    <field name="name"/>
+                    <field name="chauffeur_id"/>
+                    <field name="statut"/>
+                    <field name="date_signature"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_cq_driver_contrat_form" model="ir.ui.view">
+        <field name="name">coins.quebec.driver.contrat.form</field>
+        <field name="model">coins.quebec.driver.contrat</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                    <group string="Contrat">
+                        <field name="name"/>
+                        <field name="chauffeur_id"/>
+                        <field name="statut"/>
+                        <field name="date_signature"/>
+                        <field name="notes"/>
+                    </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_cq_driver_mouvement_action" model="ir.actions.act_window">
+        <field name="name">Mouvements</field>
+        <field name="path">cq-mouvements</field>
+        <field name="res_model">coins.quebec.driver.mouvement</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_cq_driver_mouvement_list" model="ir.ui.view">
+        <field name="name">coins.quebec.driver.mouvement.list</field>
+        <field name="model">coins.quebec.driver.mouvement</field>
+        <field name="arch" type="xml">
+            <list>
+                    <field name="name"/>
+                    <field name="chauffeur_id"/>
+                    <field name="date"/>
+                    <field name="montant"/>
+                    <field name="currency_id"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_cq_driver_mouvement_form" model="ir.ui.view">
+        <field name="name">coins.quebec.driver.mouvement.form</field>
+        <field name="model">coins.quebec.driver.mouvement</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                    <group string="Mouvement">
+                        <field name="name"/>
+                        <field name="chauffeur_id"/>
+                        <field name="date"/>
+                        <field name="currency_id"/>
+                        <field name="montant"/>
+                        <field name="notes"/>
+                    </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_cq_driver_remise_action" model="ir.actions.act_window">
+        <field name="name">Remises quotidiennes</field>
+        <field name="path">cq-remises</field>
+        <field name="res_model">coins.quebec.driver.remise</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_cq_driver_remise_list" model="ir.ui.view">
+        <field name="name">coins.quebec.driver.remise.list</field>
+        <field name="model">coins.quebec.driver.remise</field>
+        <field name="arch" type="xml">
+            <list>
+                    <field name="name"/>
+                    <field name="chauffeur_id"/>
+                    <field name="date"/>
+                    <field name="montant"/>
+                    <field name="statut"/>
+                    <field name="currency_id"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_cq_driver_remise_form" model="ir.ui.view">
+        <field name="name">coins.quebec.driver.remise.form</field>
+        <field name="model">coins.quebec.driver.remise</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                    <group string="Remise">
+                        <field name="name"/>
+                        <field name="chauffeur_id"/>
+                        <field name="date"/>
+                        <field name="currency_id"/>
+                        <field name="montant"/>
+                        <field name="statut"/>
+                    </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+</odoo>

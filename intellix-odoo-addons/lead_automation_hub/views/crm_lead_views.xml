@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_crm_lead_form_lead_automation_hub" model="ir.ui.view">
+        <field name="name">crm.lead.form.lead.automation.hub</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button
+                    name="action_make_twilio_call"
+                    type="object"
+                    string="Call With Twilio"
+                    class="btn-secondary"
+                    invisible="type != 'lead' or not phone"
+                />
+            </xpath>
+            <xpath expr="//sheet//group" position="inside">
+                <group string="AI Call">
+                    <button
+                        name="action_make_twilio_call"
+                        type="object"
+                        string="Call With Twilio"
+                        class="btn-secondary"
+                        invisible="not phone"
+                    />
+                    <field name="ai_call_status" readonly="1"/>
+                    <field name="ai_call_provider" readonly="1"/>
+                    <field name="twilio_call_sid" readonly="1"/>
+                    <field name="twilio_call_error" readonly="1"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="0">
+    <!-- Pipeline CRM standard : Nouveau → Qualifié → Suivi → Proposition -->
+    <record id="crm.stage_lead1" model="crm.stage">
+        <field name="name">Nouveau</field>
+        <field name="sequence">1</field>
+    </record>
+    <record id="crm.stage_lead2" model="crm.stage">
+        <field name="name">Qualifié</field>
+        <field name="sequence">2</field>
+    </record>
+    <record id="doorway_crm_stage_suivi" model="crm.stage">
+        <field name="name">Suivi</field>
+        <field name="sequence">3</field>
+    </record>
+    <record id="crm.stage_lead3" model="crm.stage">
+        <field name="name">Proposition</field>
+        <field name="sequence">4</field>
+    </record>
+    <record id="crm.stage_lead4" model="crm.stage">
+        <field name="name">Gagné</field>
+        <field name="sequence">70</field>
+        <field name="is_won">True</field>
+    </record>
+</odoo>

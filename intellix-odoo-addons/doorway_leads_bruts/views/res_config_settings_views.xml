@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Réglages dédiés Configurateur de Campagnes (formulaire léger standalone) -->
+    <record id="res_config_settings_view_form_extracteur" model="ir.ui.view">
+        <field name="name">res.config.settings.form.extracteur</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority">55</field>
+        <field name="arch" type="xml">
+            <form string="Configuration Extracteur" class="oe_form_configuration" js_class="base_settings">
+                <app string="Configurateur Extracteur" name="doorway_leads_bruts">
+                    <block title="Recommandation IA (Claude / Anthropic)"
+                           help="Clé utilisée par le configurateur pour recommander les sources. Si vide, les clés Anthropic des autres modules Intellix sont réutilisées automatiquement.">
+                        <setting string="Clé API Claude (Anthropic)">
+                            <field name="leads_bruts_claude_api_key" password="True"/>
+                        </setting>
+                    </block>
+                    <block title="Déploiement n8n"
+                           help="n8n → Settings → API → Create an API key. La clé permet la création programmatique des workflows (créés en mode INACTIF).">
+                        <setting string="URL n8n">
+                            <field name="leads_bruts_n8n_url"/>
+                        </setting>
+                        <setting string="Clé API n8n (X-N8N-API-KEY)">
+                            <field name="leads_bruts_n8n_api_key" password="True"/>
+                        </setting>
+                        <setting string="URL Odoo (callback n8n → Odoo)">
+                            <field name="leads_bruts_odoo_base_url"/>
+                        </setting>
+                    </block>
+                    <block title="Leads CRM générés">
+                        <setting string="Étiquette CRM par défaut">
+                            <field name="leads_bruts_crm_tag_id"/>
+                        </setting>
+                        <setting string="Équipe commerciale par défaut">
+                            <field name="leads_bruts_crm_team_id"/>
+                        </setting>
+                    </block>
+                </app>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_extracteur_settings" model="ir.actions.act_window">
+        <field name="name">Configurateur — Réglages (IA &amp; n8n)</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="res_config_settings_view_form_extracteur"/>
+        <field name="context">{'module': 'doorway_leads_bruts'}</field>
+    </record>
+</odoo>

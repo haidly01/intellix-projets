@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Remplace l'ancien dashboard kanban fondations par l'UI OWL -->
+    <delete model="ir.actions.act_window" id="action_traffic_dashboard"/>
+
+    <record id="action_traffic_dashboard" model="ir.actions.client">
+        <field name="name">Tableau de bord</field>
+        <field name="tag">traffic_dashboard_action</field>
+    </record>
+
+    <record id="action_traffic_campaigns" model="ir.actions.client">
+        <field name="name">Campagnes</field>
+        <field name="tag">traffic_campaigns_action</field>
+    </record>
+
+    <record id="action_traffic_recommendations" model="ir.actions.client">
+        <field name="name">Recommandations IA</field>
+        <field name="tag">traffic_recommendations_action</field>
+    </record>
+
+    <record id="action_traffic_creatives_grid" model="ir.actions.client">
+        <field name="name">Créatifs</field>
+        <field name="tag">traffic_creatives_action</field>
+    </record>
+
+    <record id="action_traffic_settings" model="ir.actions.client">
+        <field name="name">Paramètres</field>
+        <field name="tag">traffic_settings_action</field>
+    </record>
+
+    <record id="action_traffic_campaign_wizard" model="ir.actions.client">
+        <field name="name">Nouvelle campagne IA</field>
+        <field name="tag">traffic_campaign_wizard_action</field>
+        <field name="target">current</field>
+    </record>
+</odoo>

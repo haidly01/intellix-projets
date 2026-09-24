@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="crm_tag_source_icithermopompe" model="crm.tag">
+        <field name="name">source-icithermopompe</field>
+        <field name="color">2</field>
+    </record>
+    <record id="crm_tag_source_isolationqc" model="crm.tag">
+        <field name="name">source-isolationqc</field>
+        <field name="color">4</field>
+    </record>
+    <record id="crm_tag_source_portesfenetresqc" model="crm.tag">
+        <field name="name">source-portesfenetresqc</field>
+        <field name="color">6</field>
+    </record>
+    <record id="crm_tag_projet_thermopompe" model="crm.tag">
+        <field name="name">projet-thermopompe</field>
+        <field name="color">3</field>
+    </record>
+    <record id="crm_tag_projet_isolation" model="crm.tag">
+        <field name="name">projet-isolation</field>
+        <field name="color">5</field>
+    </record>
+    <record id="crm_tag_projet_portes_fenetres" model="crm.tag">
+        <field name="name">projet-portes-fenetres</field>
+        <field name="color">7</field>
+    </record>
+    <record id="crm_tag_projet_multi" model="crm.tag">
+        <field name="name">projet-multi</field>
+        <field name="color">9</field>
+    </record>
+    <record id="crm_tag_chauffage_mazout" model="crm.tag">
+        <field name="name">chauffage-mazout</field>
+        <field name="color">10</field>
+    </record>
+    <record id="crm_tag_chauffage_propane" model="crm.tag">
+        <field name="name">chauffage-propane</field>
+        <field name="color">10</field>
+    </record>
+    <record id="crm_tag_chauffage_electrique" model="crm.tag">
+        <field name="name">chauffage-electrique</field>
+        <field name="color">2</field>
+    </record>
+    <record id="crm_tag_energie_hot" model="crm.tag">
+        <field name="name">energie-hot</field>
+        <field name="color">10</field>
+    </record>
+    <record id="crm_tag_energie_warm" model="crm.tag">
+        <field name="name">energie-warm</field>
+        <field name="color">4</field>
+    </record>
+    <record id="crm_tag_energie_cold" model="crm.tag">
+        <field name="name">energie-cold</field>
+        <field name="color">1</field>
+    </record>
+    <record id="crm_tag_logisvert_eligible" model="crm.tag">
+        <field name="name">logisvert-eligible</field>
+        <field name="color">3</field>
+    </record>
+    <record id="crm_tag_renoclimat_eligible" model="crm.tag">
+        <field name="name">renoclimat-eligible</field>
+        <field name="color">5</field>
+    </record>
+    <record id="crm_tag_chauffez_vert_eligible" model="crm.tag">
+        <field name="name">chauffez-vert-eligible</field>
+        <field name="color">9</field>
+    </record>
+    <record id="crm_tag_camt_eligible" model="crm.tag">
+        <field name="name">camt-eligible</field>
+        <field name="color">6</field>
+    </record>
+</odoo>

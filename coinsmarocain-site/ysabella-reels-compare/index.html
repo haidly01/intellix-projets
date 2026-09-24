@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Coins Marocain — tests Reels (gabarits Lieu + Événement)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Jost:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root { --ink:#262220; --muted:#6a5e52; --line:#e4d8c8; --bg:#faf6ee; --gold:#8a4f22; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Jost, system-ui, sans-serif; background: var(--bg); color: var(--ink); }
+    header { padding: 28px 20px 8px; max-width: 1100px; margin: 0 auto; }
+    h1 { font-family: "Cormorant Garamond", Georgia, serif; font-weight: 600; font-size: clamp(1.8rem, 4vw, 2.5rem); margin: 0 0 8px; }
+    h2 { font-family: "Cormorant Garamond", Georgia, serif; font-weight: 600; font-size: 1.45rem; margin: 28px 20px 0; }
+    .sub { color: var(--muted); max-width: 72ch; line-height: 1.5; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; max-width: 720px; margin: 16px auto 8px; padding: 0 20px; }
+    figure { margin: 0; background: #fff; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+    video { width: 100%; aspect-ratio: 9/16; display: block; background: #111; object-fit: contain; }
+    figcaption { padding: 12px 14px 14px; }
+    figcaption strong { display: block; margin-bottom: 4px; }
+    figcaption span { color: var(--muted); font-size: 0.9rem; line-height: 1.45; }
+    .note { max-width: 720px; margin: 12px auto 40px; padding: 0 20px; color: var(--muted); font-size: 0.92rem; }
+    @media (max-width: 640px) { .grid { grid-template-columns: 1fr; max-width: 360px; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Tests Reels — gabarits Lieu et Événement</h1>
+    <p class="sub">Assemblage manuel 9:16, 15–16 s. Clips Casa Ysabella (Ken Burns terrasse + orbit patio/salon).
+      Pas de publication, pas de calendrier social. Fiche publique inchangée.</p>
+  </header>
+
+  <h2>Gabarit 1 — Présentation lieu</h2>
+  <div class="grid">
+    <figure>
+      <video controls playsinline preload="metadata" src="/assets/video/cm-reel-lieu-ysabella-lounge.mp4"></video>
+      <figcaption>
+        <strong>1A — Lounge jazz</strong>
+        <span>Hook terrasse Ken Burns. Musique : <em>Lobby Time</em> (Kevin MacLeod, CC BY). Choix principal pour Découverte.</span>
+      </figcaption>
+    </figure>
+    <figure>
+      <video controls playsinline preload="metadata" src="/assets/video/cm-reel-lieu-ysabella-bossa.mp4"></video>
+      <figcaption>
+        <strong>1B — Bossa (même images)</strong>
+        <span>Identique à 1A, piste <em>Bossa Antigua</em>. Pour juger le rythme des coupes vs la musique.</span>
+      </figcaption>
+    </figure>
+  </div>
+
+  <h2>Gabarit 2 — Événement</h2>
+  <div class="grid">
+    <figure>
+      <video controls playsinline preload="metadata" src="/assets/video/cm-reel-event-mariage.mp4"></video>
+      <figcaption>
+        <strong>2A — Mariage (élégant)</strong>
+        <span>Accroche « Votre mariage à Marrakech ». Musique : <em>Wallpaper</em>. CTA « Devis sur mesure ».</span>
+      </figcaption>
+    </figure>
+    <figure>
+      <video controls playsinline preload="metadata" src="/assets/video/cm-reel-event-evjf.mp4"></video>
+      <figcaption>
+        <strong>2B — EVJF (plus festif)</strong>
+        <span>Même lieu, ton occasion. Musique : <em>Easy Lemon</em>. Contraste volontaire avec 2A.</span>
+      </figcaption>
+    </figure>
+  </div>
+
+  <p class="note">Page interne <code>/ysabella-reels-compare/</code> · noindex.
+    Motion : <a href="/ysabella-motion-compare/">/ysabella-motion-compare/</a> ·
+    Fiche : <a href="/lieux/riad-medina-marrakech-la-casa-ysabella">La Casa Ysabella</a>.
+    Musique : Kevin MacLeod (incompetech.com), licence CC BY 4.0 — crédit obligatoire si un test passe en ligne.</p>
+</body>
+</html>

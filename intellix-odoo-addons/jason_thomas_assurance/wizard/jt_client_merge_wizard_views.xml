@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_jt_client_merge_wizard_form" model="ir.ui.view">
+    <field name="name">jt.client.merge.wizard.form</field>
+    <field name="model">jt.client.merge.wizard</field>
+    <field name="arch" type="xml">
+      <form string="Fusionner des clients">
+        <group>
+          <field name="destination_id" options="{'no_create': True}"/>
+          <field name="source_ids" widget="many2many_tags" options="{'no_create': True}"/>
+        </group>
+        <group>
+          <field name="police_count"/>
+          <field name="tache_count"/>
+        </group>
+        <footer>
+          <button name="action_merge" type="object" string="Fusionner" class="btn-primary"/>
+          <button string="Annuler" special="cancel"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+
+  <record id="action_jt_client_merge_wizard" model="ir.actions.act_window">
+    <field name="name">Fusionner les clients</field>
+    <field name="res_model">jt.client.merge.wizard</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+    <field name="binding_model_id" ref="model_jt_client"/>
+    <field name="binding_view_types">list</field>
+  </record>
+</odoo>

@@ -1,0 +1,209 @@
+.o_pe_onboarding_wizard {
+    color: #f1f5f9;
+
+    .pe-onboarding-title {
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+        color: #f1f5f9;
+    }
+
+    .pe-onboarding-progress-bar {
+        background: linear-gradient(90deg, var(--ix-blue, #2563eb), var(--ix-violet, #7c3aed), #6366f1);
+    }
+
+    .pe-onboarding-step-dots .pe-step-dot {
+        opacity: 0.35;
+        transform: scale(0.9);
+        transition: transform 0.25s ease, opacity 0.25s ease;
+
+        &.active {
+            opacity: 1;
+            transform: scale(1.25);
+        }
+    }
+
+    .pe-xp-callout {
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.12), rgba(124, 58, 237, 0.12));
+    }
+
+    .pe-animate-in {
+        animation: peSlideIn 0.35s ease-out;
+    }
+
+    @keyframes peSlideIn {
+        from {
+            opacity: 0;
+            transform: translateY(12px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .pe-badge-showcase .pe-badge-card {
+        border-radius: 12px;
+        padding: 0.75rem 0.5rem;
+        text-align: center;
+        border: 2px solid #e9ecef;
+        background: #fff;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        min-height: 88px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.25rem;
+
+        &:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+        }
+
+        .pe-badge-icon-field input,
+        .pe-badge-icon-field .o_field_widget {
+            font-size: 1.75rem;
+            line-height: 1;
+            text-align: center;
+            border: none;
+            background: transparent;
+            width: 100%;
+        }
+
+        .pe-badge-name-field input,
+        .pe-badge-name-field .o_field_widget {
+            font-size: 0.7rem;
+            font-weight: 600;
+            line-height: 1.2;
+            text-align: center;
+            border: none;
+            background: transparent;
+            width: 100%;
+        }
+
+        &.pe-rarity-common {
+            border-color: #94a3b8;
+        }
+        &.pe-rarity-uncommon {
+            border-color: #22c55e;
+            background: linear-gradient(180deg, #f0fdf4, #fff);
+        }
+        &.pe-rarity-rare {
+            border-color: #3b82f6;
+            background: linear-gradient(180deg, #eff6ff, #fff);
+        }
+        &.pe-rarity-epic {
+            border-color: #a855f7;
+            background: linear-gradient(180deg, #faf5ff, #fff);
+        }
+        &.pe-rarity-legendary {
+            border-color: #f59e0b;
+            background: linear-gradient(180deg, #fffbeb, #fff);
+            box-shadow: 0 0 12px rgba(245, 158, 11, 0.35);
+        }
+    }
+
+    .pe-badge-unlock {
+        position: relative;
+        display: inline-block;
+
+        .pe-badge-unlock-ring {
+            position: absolute;
+            inset: -12px;
+            border-radius: 50%;
+            border: 3px solid #f59e0b;
+            animation: pePulseRing 1.2s ease-out infinite;
+        }
+
+        .pe-badge-unlock-icon {
+            position: relative;
+            z-index: 1;
+            animation: peBadgePop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+    }
+
+    .pe-xp-burst {
+        animation: peXpPop 0.5s ease-out 0.3s both;
+    }
+
+    &.pe-celebrate-active .pe-celebrate {
+        animation: peCelebrateGlow 2s ease-in-out infinite alternate;
+    }
+
+    .pe-btn-unlock {
+        background: linear-gradient(90deg, var(--ix-blue, #2563eb), var(--ix-violet, #7c3aed));
+        border: none;
+    }
+
+    @keyframes pePulseRing {
+        0% {
+            transform: scale(0.85);
+            opacity: 1;
+        }
+        100% {
+            transform: scale(1.15);
+            opacity: 0;
+        }
+    }
+
+    @keyframes peBadgePop {
+        0% {
+            transform: scale(0.2) rotate(-20deg);
+            opacity: 0;
+        }
+        100% {
+            transform: scale(1) rotate(0);
+            opacity: 1;
+        }
+    }
+
+    @keyframes peXpPop {
+        from {
+            transform: scale(0.5);
+            opacity: 0;
+        }
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    @keyframes peCelebrateGlow {
+        from {
+            filter: brightness(1);
+        }
+        to {
+            filter: brightness(1.05);
+        }
+    }
+}
+
+.pe-confetti-layer {
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    z-index: 1050;
+}
+
+.pe-confetti-piece {
+    position: absolute;
+    top: -10px;
+    width: 8px;
+    height: 14px;
+    opacity: 0.9;
+    animation-name: peConfettiFall;
+    animation-timing-function: ease-in;
+    animation-fill-mode: forwards;
+}
+
+@keyframes peConfettiFall {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(420px) rotate(720deg);
+        opacity: 0;
+    }
+}

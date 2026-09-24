@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="cron_riad_experience_review" model="ir.cron">
+        <field name="name">Module Hébergement — message post-séjour (2 h / relance J+5)</field>
+        <field name="model_id" ref="model_intellix_riad_establishment"/>
+        <field name="state">code</field>
+        <field name="code">model.sudo().cron_send_experience_review_invites()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="nextcall" eval="(DateTime.now() + timedelta(hours=1)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        <field name="active" eval="True"/>
+    </record>
+
+    <function model="intellix.riad.establishment" name="_align_review_delay_hours">
+        <value eval="2"/>
+    </function>
+
+    <function model="intellix.riad.experience.agent" name="seed_webhook_token"/>
+</odoo>

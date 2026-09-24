@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <function model="doorway.social.account" name="_apply_whatsapp_haidly_config"/>
+    <function model="doorway.social.account" name="_sync_inbox_access_for_team"/>
+</odoo>

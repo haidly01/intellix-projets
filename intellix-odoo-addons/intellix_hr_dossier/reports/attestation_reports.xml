@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_attestation_travail" model="ir.actions.report">
+        <field name="name">Attestation de travail</field>
+        <field name="model">hr.employee</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">intellix_hr_dossier.report_attestation_travail</field>
+        <field name="report_file">intellix_hr_dossier.report_attestation_travail</field>
+        <field name="print_report_name">'Attestation travail - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="hr.model_hr_employee"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_attestation_a4"/>
+        <field name="group_ids" eval="[(4, ref('hr.group_hr_user'))]"/>
+    </record>
+
+    <record id="action_report_attestation_salaire" model="ir.actions.report">
+        <field name="name">Attestation de salaire</field>
+        <field name="model">hr.employee</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">intellix_hr_dossier.report_attestation_salaire</field>
+        <field name="report_file">intellix_hr_dossier.report_attestation_salaire</field>
+        <field name="print_report_name">'Attestation salaire - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="hr.model_hr_employee"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_attestation_a4"/>
+        <field name="group_ids" eval="[(4, ref('hr.group_hr_manager'))]"/>
+    </record>
+
+    <record id="action_report_attestation_cnss" model="ir.actions.report">
+        <field name="name">Attestation d'affiliation CNSS</field>
+        <field name="model">hr.employee</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">intellix_hr_dossier.report_attestation_cnss</field>
+        <field name="report_file">intellix_hr_dossier.report_attestation_cnss</field>
+        <field name="print_report_name">'Attestation CNSS - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="hr.model_hr_employee"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_attestation_a4"/>
+        <field name="group_ids" eval="[(4, ref('hr.group_hr_user'))]"/>
+    </record>
+
+    <record id="action_report_certificat_travail" model="ir.actions.report">
+        <field name="name">Certificat de travail (fin de contrat)</field>
+        <field name="model">hr.employee</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">intellix_hr_dossier.report_certificat_travail</field>
+        <field name="report_file">intellix_hr_dossier.report_certificat_travail</field>
+        <field name="print_report_name">'Certificat travail - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="hr.model_hr_employee"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_attestation_a4"/>
+        <field name="group_ids" eval="[(4, ref('hr.group_hr_user'))]"/>
+    </record>
+
+    <record id="action_report_attestation_stage" model="ir.actions.report">
+        <field name="name">Attestation de stage</field>
+        <field name="model">hr.employee</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">intellix_hr_dossier.report_attestation_stage</field>
+        <field name="report_file">intellix_hr_dossier.report_attestation_stage</field>
+        <field name="print_report_name">'Attestation stage - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="hr.model_hr_employee"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_attestation_a4"/>
+        <field name="group_ids" eval="[(4, ref('hr.group_hr_user'))]"/>
+    </record>
+</odoo>

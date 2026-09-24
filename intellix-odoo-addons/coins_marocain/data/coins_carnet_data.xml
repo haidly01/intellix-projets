@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <record id="tier_decouvreur" model="coins.carnet.tier">
+        <field name="name">Découvreur</field>
+    </record>
+
+    <record id="tier_habitue" model="coins.carnet.tier">
+        <field name="name">Habitué</field>
+    </record>
+
+    <record id="tier_initie" model="coins.carnet.tier">
+        <field name="name">Initié</field>
+    </record>
+
+    <record id="tier_ambassadeur" model="coins.carnet.tier">
+        <field name="name">Ambassadeur Coins Marocain</field>
+    </record>
+
+</odoo>

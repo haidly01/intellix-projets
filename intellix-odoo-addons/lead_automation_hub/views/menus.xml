@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_lead_campaign_map" model="ir.actions.act_window">
+        <field name="name">Cartographie campagnes</field>
+        <field name="res_model">lead.campaign.map</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Configurez votre première cartographie campagne
+            </p>
+            <p>
+                Associez un <strong>pays</strong>, un <strong>tag CRM</strong> et un
+                <strong>nom de campagne</strong> pour router les imports et l'outreach IA.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_lead_automation_home" model="ir.actions.server">
+        <field name="name">Lead Automation Hub</field>
+        <field name="model_id" ref="base.model_res_users"/>
+        <field name="state">code</field>
+        <field name="code">action = env['doorway.onboarding.service'].action_open_home('lead_automation_hub')</field>
+    </record>
+
+    <menuitem id="menu_lead_automation_root"
+        name="Lead Automation"
+        action="action_lead_automation_home"
+        sequence="96"
+        groups="sales_team.group_sale_salesman"/>
+
+    <menuitem id="menu_lead_campaign_map"
+        name="Cartographie campagnes"
+        parent="menu_lead_automation_root"
+        action="action_lead_campaign_map"
+        sequence="10"/>
+
+    <record id="action_lead_onboarding_tour" model="ir.actions.act_window">
+        <field name="name">Visite guidée</field>
+        <field name="res_model">doorway.onboarding.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_tour_code': 'lead_automation_hub'}</field>
+    </record>
+
+    <menuitem id="menu_lead_onboarding"
+        name="Visite guidée"
+        parent="menu_lead_automation_root"
+        action="action_lead_onboarding_tour"
+        sequence="99"/>
+</odoo>

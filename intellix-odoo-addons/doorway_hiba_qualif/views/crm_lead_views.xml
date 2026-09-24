@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="crm_lead_view_form_hiba_qualif" model="ir.ui.view">
+        <field name="name">crm.lead.form.hiba.qualif</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <field name="is_coins_quebec_pipeline" invisible="1"/>
+                <button name="action_hiba_book_martin"
+                        type="object"
+                        string="Assigner un RDV à Martin"
+                        class="btn-primary"
+                        invisible="not is_coins_quebec_pipeline"
+                        groups="doorway_hiba_qualif.group_pipeline_tab_coins_quebec,renovation_conciergerie.group_doorway_pipeline_assigned"/>
+                <button name="action_hiba_mark_present"
+                        type="object"
+                        string="Présent"
+                        invisible="not is_coins_quebec_pipeline or hiba_rdv_state != 'booked'"
+                        groups="doorway_hiba_qualif.group_pipeline_tab_coins_quebec,renovation_conciergerie.group_doorway_pipeline_assigned"/>
+                <button name="action_hiba_mark_noshow"
+                        type="object"
+                        string="Absent"
+                        invisible="not is_coins_quebec_pipeline or hiba_rdv_state != 'booked'"
+                        groups="doorway_hiba_qualif.group_pipeline_tab_coins_quebec,renovation_conciergerie.group_doorway_pipeline_assigned"/>
+            </xpath>
+            <xpath expr="//sheet" position="before">
+                <div class="alert alert-info" role="status"
+                     groups="doorway_hiba_qualif.group_pipeline_tab_coins_quebec">
+                    <strong>Ce mois (Toronto) :</strong>
+                    <field name="hiba_kpi_booked_month" class="oe_inline"/> RDV bookés —
+                    <field name="hiba_kpi_present_month" class="oe_inline"/> présents
+                </div>
+            </xpath>
+            <xpath expr="//sheet" position="inside">
+                <group string="Qualification Hiba"
+                       invisible="not is_coins_quebec_pipeline"
+                       groups="doorway_hiba_qualif.group_pipeline_tab_coins_quebec,renovation_conciergerie.group_doorway_pipeline_assigned">
+                    <group string="Contact (évite les doublons)">
+                        <field name="partner_id"
+                               string="Rechercher un contact"
+                               options="{'no_quick_create': True}"
+                               context="{'res_partner_search_mode': 'customer', 'show_vat': False, 'default_is_company': False}"
+                               placeholder="Nom, téléphone ou courriel déjà en base"/>
+                    </group>
+                    <group string="Catégorie / intérêt">
+                        <field name="is_coins_quebec_pipeline" invisible="1"/>
+                        <field name="hiba_interest_coins"/>
+                        <field name="hiba_interest_itex"/>
+                        <field name="hiba_interest_driven"/>
+                        <field name="hiba_interest_marketing"/>
+                        <field name="hiba_interest_intellix"/>
+                        <field name="hiba_interest_immobilier"/>
+                        <field name="hiba_interest_renovation"/>
+                    </group>
+                    <group string="RDV Martin / Michel">
+                        <field name="hiba_rdv_state"/>
+                        <field name="hiba_rdv_start" readonly="1" string="Créneau"/>
+                        <field name="hiba_rdv_booked_display" readonly="1"/>
+                        <field name="hiba_rdv_event_id" readonly="1"/>
+                    </group>
+                    <field name="hiba_comment" placeholder="Notes de qualification, ce qu'elle a dit, prochain pas…"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

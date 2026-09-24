@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_jt_tache_list" model="ir.ui.view">
+    <field name="name">jt.tache.list</field>
+    <field name="model">jt.tache</field>
+    <field name="arch" type="xml">
+      <list string="Tâches"
+            decoration-muted="state in ('done', 'cancel')">
+        <field name="name"/>
+        <field name="client_id"/>
+        <field name="police_id" optional="hide"/>
+        <field name="user_id" widget="many2one_avatar_user"/>
+        <field name="due_date"/>
+        <field name="priority" widget="priority"/>
+        <field name="state" widget="badge"
+               decoration-info="state == 'draft'"
+               decoration-primary="state == 'confirm'"
+               decoration-success="state == 'done'"
+               decoration-muted="state == 'cancel'"/>
+        <field name="source" widget="badge" optional="show"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="view_jt_tache_kanban" model="ir.ui.view">
+    <field name="name">jt.tache.kanban</field>
+    <field name="model">jt.tache</field>
+    <field name="arch" type="xml">
+      <kanban default_group_by="state" class="o_kanban_small_column">
+        <field name="name"/>
+        <field name="client_id"/>
+        <field name="due_date"/>
+        <field name="priority"/>
+        <field name="state"/>
+        <field name="user_id"/>
+        <templates>
+          <t t-name="card">
+            <field name="name" class="fw-bold"/>
+            <div t-if="record.client_id.raw_value"><field name="client_id"/></div>
+            <div><field name="due_date"/> · <field name="priority" widget="priority"/></div>
+            <field name="user_id" widget="many2one_avatar_user"/>
+          </t>
+        </templates>
+      </kanban>
+    </field>
+  </record>
+
+  <record id="view_jt_tache_search" model="ir.ui.view">
+    <field name="name">jt.tache.search</field>
+    <field name="model">jt.tache</field>
+    <field name="arch" type="xml">
+      <search string="Tâches">
+        <field name="name"/>
+        <field name="client_id"/>
+        <field name="user_id"/>
+        <separator/>
+        <filter name="my_tasks" string="Mes tâches" domain="[('user_id', '=', uid)]"/>
+        <filter name="open_tasks" string="Ouvertes" domain="[('state', 'in', ['draft', 'confirm'])]"/>
+        <filter name="overdue" string="En retard"
+                domain="[('due_date', '&lt;', context_today()), ('state', 'not in', ['done', 'cancel'])]"/>
+        <separator/>
+        <filter name="source_email" string="Courriel" domain="[('source', '=', 'email')]"/>
+        <filter name="source_ai" string="IA" domain="[('source', '=', 'ai')]"/>
+        <separator/>
+        <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
+        <filter name="group_client" string="Client" context="{'group_by': 'client_id'}"/>
+        <filter name="group_user" string="Assigné" context="{'group_by': 'user_id'}"/>
+      </search>
+    </field>
+  </record>
+
+  <record id="view_jt_tache_form" model="ir.ui.view">
+    <field name="name">jt.tache.form</field>
+    <field name="model">jt.tache</field>
+    <field name="arch" type="xml">
+      <form string="Tâche">
+        <header>
+          <button name="action_confirm" type="object" string="Confirmer"
+                  invisible="state != 'draft'" class="btn-primary"/>
+          <button name="action_done" type="object" string="Terminer"
+                  invisible="state in ('done', 'cancel')" class="btn-primary"/>
+          <button name="action_cancel" type="object" string="Annuler"
+                  invisible="state in ('done', 'cancel')"/>
+          <button name="action_draft" type="object" string="Remettre en brouillon"
+                  invisible="state not in ('done', 'cancel')"/>
+          <field name="state" widget="statusbar" statusbar_visible="draft,confirm,done"/>
+        </header>
+        <sheet>
+          <div class="oe_title">
+            <h1><field name="name" placeholder="Titre de la tâche"/></h1>
+          </div>
+          <group>
+            <group>
+              <field name="client_id"/>
+              <field name="police_id"/>
+              <field name="user_id" widget="many2one_avatar_user"/>
+              <field name="due_date"/>
+            </group>
+            <group>
+              <field name="priority" widget="priority"/>
+              <field name="source" readonly="source in ('email', 'ai')"/>
+              <field name="mailbox_id" readonly="1" invisible="not mailbox_id"/>
+              <field name="message_id" readonly="1" invisible="not message_id"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Description" name="description">
+              <field name="description" placeholder="Détails et prochaines étapes…"/>
+            </page>
+          </notebook>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+
+  <record id="view_jt_email_task_wizard_form" model="ir.ui.view">
+    <field name="name">jt.email.task.wizard.form</field>
+    <field name="model">jt.email.task.wizard</field>
+    <field name="arch" type="xml">
+      <form string="Générer des tâches (IA)">
+        <field name="state" invisible="1"/>
+        <div invisible="state != 'input'">
+          <div class="alert alert-info" role="status">
+            L'IA proposera une liste de tâches à partir du courriel ou de la note.
+            Vous pourrez les <b>relire et ajuster</b> avant création.
+          </div>
+          <group>
+            <field name="client_id"/>
+            <field name="mailbox_id"/>
+            <field name="extra_instructions"/>
+          </group>
+          <group>
+            <field name="source_text" nolabel="1"
+                   placeholder="Collez ici le courriel ou la note à transformer en tâches…"/>
+          </group>
+        </div>
+        <div invisible="state != 'review'">
+          <div class="alert alert-success" role="status">
+            Relisez, ajustez et décochez les tâches à exclure, puis cliquez
+            sur <b>Créer les tâches</b>.
+          </div>
+          <field name="line_ids">
+            <list editable="bottom">
+              <field name="selected" widget="boolean_toggle"/>
+              <field name="name"/>
+              <field name="user_id"/>
+              <field name="due_date"/>
+              <field name="priority"/>
+              <field name="description"/>
+            </list>
+          </field>
+        </div>
+        <footer>
+          <button name="action_generate" type="object" string="Générer avec l'IA"
+                  class="btn-primary" invisible="state != 'input'"/>
+          <button name="action_create_tasks" type="object" string="Créer les tâches"
+                  class="btn-primary" invisible="state != 'review'"/>
+          <button name="action_generate" type="object" string="Régénérer"
+                  class="btn-secondary" invisible="state != 'review'"/>
+          <button string="Annuler" class="btn-secondary" special="cancel"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+
+  <record id="action_jt_tache" model="ir.actions.act_window">
+    <field name="name">Tâches</field>
+    <field name="res_model">jt.tache</field>
+    <field name="view_mode">list,kanban,form</field>
+    <field name="context">{'search_default_open_tasks': 1, 'search_default_my_tasks': 1}</field>
+    <field name="help" type="html">
+      <p class="o_view_nocontent_smiling_face">
+        Aucune tâche pour le moment.
+      </p>
+      <p>Les tâches peuvent être créées manuellement ou générées automatiquement
+      à partir des courriels entrants.</p>
+    </field>
+  </record>
+
+  <record id="action_jt_email_task_wizard" model="ir.actions.act_window">
+    <field name="name">Générer des tâches (IA)</field>
+    <field name="res_model">jt.email.task.wizard</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+  </record>
+</odoo>

@@ -1,0 +1,22 @@
+{
+  "lot": "riad-asrari",
+  "drive_contact_email_corrected": "riaddjemanna@gmail.com",
+  "drive_contact_email_was": "addjemanna@gmail.com",
+  "asrari": {
+    "partner_id": 21142,
+    "partner_name": "Serge et Charaf",
+    "lead_id": 20121,
+    "entente": "ENT/2026/0019",
+    "partnership_email": "riadasrarimbi@gmail.com",
+    "drive_email_stored_on": "partner.comment + lead note + intake meta.drive_contact_email",
+    "email_field_unchanged": "riadasrarimbi@gmail.com"
+  },
+  "djemanna_untouched": {
+    "partner_id": 21237,
+    "contact_id": 20842,
+    "lead_id": 2657,
+    "entente": "ENT/2026/0015",
+    "email": "riaddjemanna@gmail.com",
+    "note": "Homonymie d'adresse seulement. Deux riads distincts. Aucune fusion, aucun parent_id croisé."
+  }
+}

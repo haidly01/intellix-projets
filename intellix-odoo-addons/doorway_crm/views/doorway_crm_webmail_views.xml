@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_doorway_crm_webmail" model="ir.actions.client">
+        <field name="name">Boîte mail</field>
+        <field name="tag">doorway_crm_webmail_action</field>
+    </record>
+</odoo>

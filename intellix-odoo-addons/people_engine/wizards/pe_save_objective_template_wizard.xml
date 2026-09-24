@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pe_save_objective_template_wizard_form" model="ir.ui.view">
+        <field name="name">pe.save.objective.template.wizard.form</field>
+        <field name="model">pe.save.objective.template.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Enregistrer comme modèle">
+                <group>
+                    <field name="name" placeholder="Ex. Commercial terrain Q2"/>
+                    <field name="description"/>
+                    <field name="objective_ids" widget="many2many_tags"/>
+                </group>
+                <footer>
+                    <button name="action_save_template" type="object"
+                            string="Enregistrer" class="btn-primary"/>
+                    <button string="Annuler" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_pe_save_objective_template_wizard" model="ir.actions.act_window">
+        <field name="name">Enregistrer comme modèle</field>
+        <field name="res_model">pe.save.objective.template.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

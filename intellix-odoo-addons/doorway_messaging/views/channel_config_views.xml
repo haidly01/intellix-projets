@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_channel_config_tree" model="ir.ui.view">
+        <field name="name">doorway.channel.config.tree</field>
+        <field name="model">doorway.channel.config</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="canal"/>
+                <field name="actif"/>
+                <field name="last_test_ok"/>
+                <field name="token_expiry"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_channel_config_form" model="ir.ui.view">
+        <field name="name">doorway.channel.config.form</field>
+        <field name="model">doorway.channel.config</field>
+        <field name="arch" type="xml">
+            <form string="Canal de messagerie">
+                <header>
+                    <button name="action_tester_connexion" type="object" string="Tester connexion" class="btn-primary"/>
+                    <button name="action_oauth_linkedin" type="object" string="OAuth LinkedIn"
+                            invisible="canal != 'linkedin'" class="btn-secondary"/>
+                    <button name="action_oauth_gmb" type="object" string="OAuth Google"
+                            invisible="canal != 'gmb'" class="btn-secondary"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="canal"/>
+                        <field name="actif"/>
+                    </group>
+                    <group string="Credentials">
+                        <field name="api_key" password="True"/>
+                        <field name="api_secret" password="True"/>
+                        <field name="access_token" password="True"/>
+                        <field name="refresh_token" password="True"/>
+                        <field name="token_expiry"/>
+                    </group>
+                    <group string="LinkedIn" invisible="canal != 'linkedin'">
+                        <field name="linkedin_profile_type"/>
+                        <field name="linkedin_org_id"
+                               invisible="linkedin_profile_type != 'organization'"
+                               placeholder="urn:li:organization:123456"/>
+                        <field name="linkedin_person_id"
+                               invisible="linkedin_profile_type != 'personal'"
+                               placeholder="urn:li:person:abcdef"/>
+                        <div class="text-muted" colspan="2">
+                            Créez un canal par profil : personnel, page entreprise A, page entreprise B, etc.
+                        </div>
+                    </group>
+                    <group string="Google My Business" invisible="canal != 'gmb'">
+                        <field name="gmb_account_id"/>
+                        <field name="gmb_location_id"/>
+                        <field name="gmb_location_name"/>
+                    </group>
+                    <group string="Twilio" invisible="canal not in ('sms', 'whatsapp')">
+                        <field name="twilio_from_sms"/>
+                        <field name="twilio_from_wa"/>
+                    </group>
+                    <group string="Dernier test">
+                        <field name="last_test_ok"/>
+                        <field name="last_test_message"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_channel_config" model="ir.actions.act_window">
+        <field name="name">Canaux configurés</field>
+        <field name="res_model">doorway.channel.config</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

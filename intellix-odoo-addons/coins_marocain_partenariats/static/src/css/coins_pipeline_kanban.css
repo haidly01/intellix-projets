@@ -1,0 +1,615 @@
+/* Maquette CRM Coins — crème / or. Doit gagner contre le thème sombre Odoo 19.
+   Pas d’@import Google Fonts ici : ça casse le bundle CSS du backend.
+   html.o_coins_light_pipeline est posé par coins_pipeline_theme.js (thème sombre Odoo). */
+html.o_coins_light_pipeline {
+  color-scheme: light !important;
+}
+html.o_coins_light_pipeline body,
+html.o_coins_light_pipeline .o_web_client,
+html.o_coins_light_pipeline .o_action_manager,
+html.o_coins_light_pipeline .o_action,
+html.o_coins_light_pipeline .o_form_view,
+html.o_coins_light_pipeline .o_form_view_container,
+html.o_coins_light_pipeline .o_kanban_view,
+html.o_coins_light_pipeline .o_kanban_renderer,
+html.o_coins_light_pipeline .o_content,
+html.o_coins_light_pipeline .o_control_panel,
+html.o_coins_light_pipeline .o_control_panel_main,
+html.o_coins_light_pipeline .o_cp_top,
+html.o_coins_light_pipeline .o_cp_bottom,
+html.o_coins_light_pipeline .o_form_sheet_bg,
+html.o_coins_light_pipeline .o_form_sheet {
+  background: #faf6ee !important;
+  color: #262220 !important;
+  color-scheme: light !important;
+}
+html.o_coins_light_pipeline .o_coins_pipeline_banner {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: #262220 !important;
+  border-bottom: 1px solid #e6ddcc;
+  margin: 0 0 16px;
+  padding: 4px 0 10px;
+}
+html.o_coins_light_pipeline .o_coins_lead_card {
+  background: #ffffff !important;
+  border: 1px solid #e6ddcc !important;
+  color: #262220 !important;
+}
+html.o_coins_light_pipeline .o_coins_lead_card.hot {
+  background: #fdeceb !important;
+}
+html.o_coins_light_pipeline .o_coins_lead_name,
+html.o_coins_light_pipeline .o_coins_lead_name .o_field_widget {
+  color: #262220 !important;
+}
+html.o_coins_light_pipeline .o_coins_lead_sub,
+html.o_coins_light_pipeline .o_coins_lead_sub .o_field_widget {
+  color: #8a8172 !important;
+}
+.o_action:has(.o_coins_pipeline_kanban),
+.o_action:has(.o_coins_fiche),
+.o_form_view.o_coins_fiche {
+  --coins-cream: #faf6ee;
+  --coins-gold: #b5732f;
+  --coins-gold-2: #e6b876;
+  --coins-line: #e6ddcc;
+  --coins-charcoal: #262220;
+  --coins-muted: #8a8172;
+  --coins-red-bg: #fdeceb;
+  --coins-red: #a3352b;
+  --coins-green-bg: #eef4e6;
+  --coins-green: #4f6a2c;
+  --o-view-background-color: #faf6ee;
+  --Kanban-background: #faf6ee;
+  --Kanban-Record-background: transparent;
+  --Kanban-Record-padding: 0px;
+  --Kanban-Record-margin-bottom: 8px;
+  --border-color: #e6ddcc;
+  --o-kanban-color-border: #e6ddcc;
+  color-scheme: light !important;
+  background: #faf6ee !important;
+  color: #262220 !important;
+  font-family: "Jost", "Segoe UI", sans-serif;
+}
+
+.o_action:has(.o_coins_pipeline_kanban) .o_control_panel,
+.o_action:has(.o_coins_pipeline_kanban) .o_control_panel_main,
+.o_action:has(.o_coins_pipeline_kanban) .o_cp_top,
+.o_action:has(.o_coins_pipeline_kanban) .o_cp_bottom,
+.o_action:has(.o_coins_fiche) .o_control_panel {
+  background: #faf6ee !important;
+  color: #262220 !important;
+  border-color: #e6ddcc !important;
+  box-shadow: none !important;
+}
+
+.o_action:has(.o_coins_pipeline_kanban) .o_control_panel,
+.o_action:has(.o_coins_fiche) .o_control_panel {
+  border-bottom: 1px solid #e6ddcc !important;
+}
+
+.o_action:has(.o_coins_pipeline_kanban) .o_searchview,
+.o_action:has(.o_coins_pipeline_kanban) .o_searchview_input_container,
+.o_action:has(.o_coins_fiche) .o_searchview {
+  background: #ffffff !important;
+  border: 1px solid #e6ddcc !important;
+  color: #262220 !important;
+}
+
+.o_action:has(.o_coins_pipeline_kanban) .o_searchview input,
+.o_action:has(.o_coins_pipeline_kanban) .o_searchview_facet,
+.o_action:has(.o_coins_pipeline_kanban) .o_last_breadcrumb_item,
+.o_action:has(.o_coins_pipeline_kanban) .o_breadcrumb,
+.o_action:has(.o_coins_pipeline_kanban) .o_control_panel span,
+.o_action:has(.o_coins_pipeline_kanban) .o_control_panel a,
+.o_action:has(.o_coins_pipeline_kanban) .o_cp_switch_buttons button,
+.o_action:has(.o_coins_pipeline_kanban) .o_cp_action_menus {
+  color: #262220 !important;
+}
+
+.o_action:has(.o_coins_pipeline_kanban) .btn-primary,
+.o_form_view.o_coins_fiche .btn-primary,
+.o_coins_btn_gold {
+  background: linear-gradient(135deg, #e6b876, #b5732f) !important;
+  border-color: #b5732f !important;
+  color: #fff !important;
+}
+
+.o_action:has(.o_coins_pipeline_kanban) .btn-secondary,
+.o_form_view.o_coins_fiche .btn-secondary {
+  background: #ffffff !important;
+  border-color: #e6ddcc !important;
+  color: #262220 !important;
+}
+
+.o_action:has(.o_coins_pipeline_kanban) .o_content,
+.o_action_manager:has(.o_coins_pipeline_kanban) .o_content,
+.o_action:has(.o_coins_pipeline_kanban) .o_kanban_view,
+.o_action:has(.o_coins_pipeline_kanban) .o_kanban_renderer,
+.o_coins_pipeline_kanban {
+  background: #faf6ee !important;
+  color: #262220 !important;
+  min-height: 100%;
+}
+
+/* Banner on the action, never on the flex renderer: a ::before
+   sibling of .o_kanban_group breaks OWL useSortable / position:fixed. */
+.o_action:has(.o_coins_pipeline_voyageur) .o_control_panel::after,
+.o_action:has(.o_coins_pipeline_partenariat) .o_control_panel::after {
+  display: block;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  color: #262220;
+  margin: 8px 4px 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e6ddcc;
+  pointer-events: none;
+}
+.o_action:has(.o_coins_pipeline_voyageur) .o_control_panel::after {
+  content: "Pipeline voyageurs — demandes individuelles";
+}
+.o_action:has(.o_coins_pipeline_partenariat) .o_control_panel::after {
+  content: "Pipeline partenariats — établissements";
+}
+
+.o_coins_pipeline_kanban .o_kanban_group {
+  background: transparent !important;
+  background-color: transparent !important;
+  overflow: visible !important;
+}
+
+.o_coins_pipeline_kanban .o_kanban_header,
+.o_coins_pipeline_kanban .o_kanban_header_title,
+.o_coins_pipeline_kanban .o_column_title,
+.o_coins_pipeline_kanban .o_kanban_header .o_kanban_title,
+.o_coins_pipeline_kanban .o_kanban_header .o_column_title,
+.o_coins_pipeline_kanban .o_kanban_counter,
+.o_coins_pipeline_kanban .o_kanban_header .o_kanban_config,
+.o_coins_pipeline_kanban .o_kanban_header i,
+.o_coins_pipeline_kanban .o_kanban_header button {
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #8a8172 !important;
+  background: transparent !important;
+}
+
+.o_coins_pipeline_kanban .o_kanban_header {
+  border-bottom: 0 !important;
+}
+
+.o_coins_pipeline_kanban .o_kanban_record,
+.o_coins_pipeline_kanban article.o_kanban_record,
+.o_coins_pipeline_kanban .o_kanban_record:hover,
+.o_coins_pipeline_kanban .o_kanban_record.o_draggable {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin-bottom: 8px !important;
+  outline: none !important;
+  overflow: visible !important;
+}
+
+.o_coins_pipeline_kanban .o_kanban_record.o_draggable {
+  cursor: grab;
+}
+
+/* Do not force pointer-events: OWL sets body.pe-none during drag so
+   group mouseenter can fire. !important here blocks column drops. */
+.o_coins_pipeline_kanban .o_kanban_record.o_dragged {
+  pointer-events: none;
+}
+
+.o_coins_pipeline_kanban .o_kanban_quick_create,
+.o_coins_pipeline_kanban .o_kanban_quick_add {
+  background: #ffffff !important;
+  border: 1px solid #e6ddcc !important;
+  border-radius: 8px !important;
+  color: #262220 !important;
+}
+
+.o_coins_pipeline_kanban .o_column_folded {
+  display: none !important;
+}
+
+.o_coins_lead_card {
+  background: #ffffff !important;
+  border: 1px solid #e6ddcc !important;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: #262220 !important;
+  min-height: 48px;
+  box-shadow: none !important;
+}
+
+.o_coins_lead_card.hot {
+  background: #fdeceb !important;
+  border-color: #f3c8c3 !important;
+}
+
+.o_coins_lead_card.won {
+  background: #eef4e6 !important;
+  border-color: #d3e0bd !important;
+}
+
+.o_coins_lead_card.idle {
+  opacity: 0.6;
+}
+
+.o_coins_lead_name,
+.o_coins_lead_name span,
+.o_coins_lead_name .o_field_widget {
+  font-weight: 500 !important;
+  margin-bottom: 2px;
+  line-height: 1.3;
+  color: #262220 !important;
+}
+
+.o_coins_lead_sub,
+.o_coins_lead_sub span,
+.o_coins_lead_sub .o_field_widget {
+  font-size: 11px !important;
+  color: #8a8172 !important;
+  line-height: 1.35;
+}
+
+.o_coins_lead_meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.o_coins_badge,
+.o_coins_badge .o_field_widget,
+.o_coins_badge span {
+  display: inline-flex;
+  align-items: center;
+  font-size: 10px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  padding: 2px 7px;
+  border-radius: 999px;
+  color: #262220 !important;
+  background: #faf6ee;
+  border: 1px solid #e6ddcc;
+}
+
+.o_coins_badge_cat {
+  background: #f4ead6 !important;
+  border-color: #e6d3aa !important;
+}
+
+.o_coins_badge_comm {
+  background: #eef4e6 !important;
+  border-color: #d3e0bd !important;
+  color: #4f6a2c !important;
+}
+
+.o_coins_badge_comm .o_field_widget,
+.o_coins_badge_comm span {
+  color: #4f6a2c !important;
+}
+
+.o_coins_badge_scrape {
+  background: #eef3f8 !important;
+  border-color: #c5d4e4 !important;
+}
+
+.o_coins_badge_manual {
+  background: #f8efe4 !important;
+  border-color: #e6d0b4 !important;
+}
+
+.o_coins_badge_user {
+  background: #ffffff !important;
+}
+
+.o_coins_lead_card.hot .o_coins_lead_sub,
+.o_coins_lead_card.hot .o_coins_lead_sub .o_field_widget {
+  color: #a3352b !important;
+}
+
+.o_coins_lead_card.won .o_coins_lead_sub,
+.o_coins_lead_card.won .o_coins_lead_sub .o_field_widget {
+  color: #4f6a2c !important;
+}
+
+.o_form_view.o_coins_fiche,
+.o_form_view:has(.o_coins_fiche_sheet),
+.o_action:has(.o_coins_fiche) .o_form_view {
+  background: #faf6ee !important;
+  font-family: "Jost", "Segoe UI", sans-serif;
+  color: #262220 !important;
+  color-scheme: light !important;
+}
+.o_form_view.o_coins_fiche .o_form_sheet_bg,
+.o_form_view:has(.o_coins_fiche_sheet) .o_form_sheet_bg {
+  background: #faf6ee !important;
+}
+.o_coins_fiche_sheet,
+.o_form_view.o_coins_fiche .o_form_sheet {
+  background: #ffffff !important;
+  border: 1px solid #e6ddcc !important;
+  border-radius: 10px;
+  max-width: 880px;
+  box-shadow: none !important;
+}
+.o_coins_fiche_head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.o_coins_avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: #fff;
+  background: linear-gradient(135deg, #e6b876, #b5732f);
+  flex-shrink: 0;
+}
+.o_coins_avatar input,
+.o_coins_avatar span,
+.o_coins_avatar .o_field_widget {
+  color: #fff !important;
+  font-family: inherit;
+  font-weight: 600;
+  text-align: center;
+  border: 0 !important;
+  background: transparent !important;
+}
+.o_coins_fiche_title .o_field_widget,
+.o_coins_fiche_title input {
+  font-weight: 500;
+  font-size: 15px;
+  color: #262220 !important;
+}
+.o_coins_fiche_sub {
+  font-size: 12px;
+  color: #8a8172;
+}
+.o_coins_section_label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #8a8172;
+  margin: 14px 0 6px;
+}
+.o_coins_alert_hot {
+  margin-top: 14px;
+  background: #fdeceb;
+  color: #a3352b;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.o_coins_relance_banner {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  background: #f4ead6;
+  border: 1px solid #e6d3aa;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin: 0 0 16px;
+  color: #262220;
+}
+.o_coins_relance_banner_text,
+.o_coins_relance_banner_text .o_field_widget {
+  font-size: 14px;
+  font-weight: 600;
+  color: #262220 !important;
+}
+.o_coins_lead_relance,
+.o_coins_lead_relance .o_field_widget {
+  margin-top: 6px;
+  font-size: 11px !important;
+  font-weight: 600;
+  color: #b5732f !important;
+}
+
+/* 5e bouton — contour or, distinct des 4 existants */
+.o_form_view.o_coins_fiche header .o_coins_btn_planifier,
+.o_form_view.o_coins_fiche .o_coins_btn_planifier {
+  background: transparent !important;
+  color: #8a4f22 !important;
+  border: 1.5px solid #b5732f !important;
+  box-shadow: 0 0 0 2px rgba(181, 115, 47, 0.12);
+}
+
+.o_coins_evt_wizard {
+  --gold-1: #b5732f;
+  --ink: #262220;
+  --ink-soft: #6b6058;
+  --cream: #faf6ee;
+  --line: rgba(38, 34, 32, 0.12);
+}
+.o_coins_evt_wizard .o_coins_evt_top {
+  padding: 4px 0 12px;
+  border-bottom: 2px solid #e6b876;
+  margin-bottom: 10px;
+}
+.o_coins_evt_wizard .o_coins_evt_top .eyebrow,
+.o_coins_evt_wizard .o_coins_evt_top h1 {
+  font-family: "Playfair Display", Georgia, serif;
+}
+.o_coins_evt_wizard .o_coins_evt_top .eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.o_coins_evt_wizard .o_coins_evt_top h1 {
+  font-size: 22px;
+  margin: 4px 0 6px;
+  color: var(--ink);
+}
+.o_coins_evt_wizard .o_coins_evt_cap .o_input,
+.o_coins_evt_wizard .o_coins_evt_cap {
+  color: var(--ink-soft) !important;
+  font-size: 12.5px;
+}
+.o_coins_evt_pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0 14px;
+}
+.o_coins_evt_pill {
+  border-radius: 20px !important;
+  border: 1px solid var(--line) !important;
+  background: transparent !important;
+  color: var(--ink-soft) !important;
+  font-size: 12px !important;
+  padding: 4px 12px !important;
+}
+.o_coins_evt_pill.on {
+  background: #b5732f !important;
+  color: #fffdf8 !important;
+  border-color: #b5732f !important;
+}
+.o_coins_evt_panel h2 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 18px;
+}
+.o_coins_evt_panel .lead,
+.o_coins_evt_zero {
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+.o_coins_evt_styles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 10px 0;
+}
+.o_coins_evt_card {
+  border: 1px solid var(--line) !important;
+  background: #fffdf8 !important;
+  color: var(--ink) !important;
+  text-align: left !important;
+  padding: 12px 14px !important;
+  border-radius: 5px !important;
+}
+.o_coins_evt_card.moderne { border-left: 4px solid #8a6a45 !important; }
+.o_coins_evt_card.traditionnel { border-left: 4px solid #b5732f !important; }
+.o_coins_evt_card.nature { border-left: 4px solid #6f7a4a !important; }
+.o_coins_evt_card.desert { border-left: 4px solid #c98c3f !important; }
+.o_coins_evt_empty {
+  padding: 12px 14px;
+  background: #f4efe4;
+  border: 1.5px dashed var(--line);
+  border-radius: 4px;
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin-bottom: 12px;
+}
+.o_coins_evt_props {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 10px 0 14px;
+}
+.o_coins_evt_prop {
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 8px 10px;
+  background: #faf7f0;
+  font-size: 13px;
+}
+.o_coins_evt_prop .n { font-weight: 600; color: var(--ink); }
+.o_coins_evt_prop .meta { font-size: 11px; color: var(--ink-soft); }
+.o_coins_evt_prop.test { opacity: 0.7; font-style: italic; }
+.o_coins_evt_cover {
+  padding: 16px 0 8px;
+  border-bottom: 2px solid #e6b876;
+  margin-bottom: 10px;
+}
+.o_coins_evt_brand {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 16px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.o_coins_evt_brand .tag {
+  font-family: inherit;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #b5732f;
+}
+.o_coins_evt_cover .eyebrow { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); }
+.o_coins_evt_cover h2 { font-family: "Playfair Display", Georgia, serif; font-size: 22px; margin: 6px 0; }
+.o_coins_evt_cover .script { font-style: italic; color: #b5732f; }
+.o_coins_evt_meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+.o_coins_evt_meta span { display: block; font-size: 11px; text-transform: uppercase; color: var(--ink-soft); }
+.o_coins_evt_meta b { font-family: "Playfair Display", Georgia, serif; font-weight: 500; }
+.o_coins_evt_meta i { display: block; font-size: 11px; color: #8a3222; }
+.o_coins_evt_block { padding: 12px 0; border-bottom: 1px solid var(--line); }
+.o_coins_evt_block h3 { font-family: "Playfair Display", Georgia, serif; font-size: 16px; }
+.o_coins_evt_block .row { display: flex; justify-content: space-between; gap: 12px; }
+.o_coins_evt_block em { color: #b5732f; font-style: normal; }
+.o_coins_evt_totaux {
+  margin-top: 14px;
+  padding: 14px 16px;
+  background: #f2ead9;
+  border-radius: 4px;
+}
+.o_coins_evt_totaux h3 { font-family: "Playfair Display", Georgia, serif; }
+.o_coins_evt_totaux .row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 13.5px;
+}
+.o_coins_evt_totaux .row.total {
+  border-bottom: none;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 16px;
+  padding-top: 10px;
+}
+.o_coins_evt_totaux i { display: block; font-size: 11px; color: #8a3222; }
+
+
+/* Envoyer la fiche — mauve maquette, plus visible que l'entente or */
+.o_form_view.o_coins_fiche header button.o_coins_btn_envoyer_fiche,
+.o_form_view header button.o_coins_btn_envoyer_fiche,
+.o_dialog button.o_coins_btn_envoyer_fiche {
+  background: #7c5cbf !important;
+  background-image: none !important;
+  border-color: #6a4bab !important;
+  color: #fff !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+  padding: 8px 18px !important;
+  box-shadow: 0 4px 14px rgba(124, 92, 191, 0.35) !important;
+}

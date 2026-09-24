@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="0">
+    <record id="agent_sofia_soumission_qc" model="doorway.agent.profile">
+        <field name="name">Sofia · Soumission Entrepreneurs QC</field>
+        <field name="provider">n8n</field>
+        <field name="external_agent_id">sofia-soumission-qc-2026</field>
+        <field name="pipeline">renovation</field>
+        <field name="agent_type">outbound</field>
+        <field name="language">fr</field>
+        <field name="voice_gender">female</field>
+        <field name="default_volet">cold_call</field>
+        <field name="timezone">America/Toronto</field>
+        <field name="status">active</field>
+        <field name="allow_human_transfer" eval="False"/>
+        <field name="system_prompt">Sofia — qualification propriétaires Québec pour Soumission Entrepreneurs. Arbre : propriétaire → âge maison → travaux → vente 3 ans → visite directeur travaux → préférence rappel. Stack n8n + Deepgram fr-CA + Claude + ElevenLabs + VICIdial DW_QCB2C + Twilio SMS.</field>
+    </record>
+
+    <record id="agent_sofia_soumission_qc_phone" model="doorway.agent.phone.number">
+        <field name="agent_id" ref="agent_sofia_soumission_qc"/>
+        <field name="name">Twilio Soumission QC</field>
+        <field name="phone_number">+15817058118</field>
+        <field name="phone_source">manual</field>
+        <field name="usage">outbound</field>
+        <field name="is_primary" eval="True"/>
+    </record>
+
+    <record id="agent_sofia_soumission_qc" model="doorway.agent.profile">
+        <field name="default_phone_number_id" ref="agent_sofia_soumission_qc_phone"/>
+    </record>
+
+    <record id="agent_sofia_soumission_qc_volet" model="doorway.agent.volet">
+        <field name="agent_id" ref="agent_sofia_soumission_qc"/>
+        <field name="sequence">10</field>
+        <field name="code">cold_call</field>
+        <field name="prompt_hint">Prospection QC Soumission Entrepreneurs — campagne DW_QCB2C</field>
+    </record>
+</odoo>

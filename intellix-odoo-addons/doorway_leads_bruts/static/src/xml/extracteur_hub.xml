@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="doorway_leads_bruts.ExtracteurHub">
+        <div class="ix-extracteur-hub o_action o_intellix_client_action">
+            <header class="ix-extracteur-hub__header">
+                <h1 class="ix-extracteur-hub__title">Nouvelle génération de leads</h1>
+                <p class="ix-extracteur-hub__subtitle">Choisissez votre type de leads pour commencer</p>
+            </header>
+
+            <div class="ix-extracteur-hub__cards">
+                <t t-foreach="cards" t-as="card" t-key="card.id">
+                    <article class="ix-extracteur-card">
+                        <div class="ix-extracteur-card__badge-wrap">
+                            <div class="ix-extracteur-card__badge"
+                                 t-attf-style="--ix-card-accent: {{ card.color }}">
+                                <i t-attf-class="fa {{ card.icon }} ix-extracteur-card__icon"/>
+                            </div>
+                        </div>
+                        <h2 class="ix-extracteur-card__title"><t t-esc="card.title"/></h2>
+                        <p class="ix-extracteur-card__desc"><t t-esc="card.description"/></p>
+                        <button type="button"
+                                class="ix-extracteur-card__btn"
+                                t-attf-style="background-color: {{ card.color }}"
+                                t-on-click="() => onSelect(card)">
+                            Sélectionner
+                        </button>
+                        <t t-if="card.secondaryAction">
+                            <button type="button"
+                                    class="ix-extracteur-card__btn-secondary"
+                                    t-on-click="() => onSecondaryAction(card)">
+                                <t t-esc="card.secondaryLabel"/>
+                            </button>
+                        </t>
+                    </article>
+                </t>
+            </div>
+        </div>
+    </t>
+</templates>

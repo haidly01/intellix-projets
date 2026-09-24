@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_creative_kanban" model="ir.ui.view">
+        <field name="name">doorway.creative.kanban</field>
+        <field name="model">doorway.creative</field>
+        <field name="arch" type="xml">
+            <kanban class="o_doorway_traffic_creatives">
+                <field name="headline"/>
+                <field name="format"/>
+                <field name="preview_image"/>
+                <field name="video_url"/>
+                <field name="media_status"/>
+                <field name="brand_angle"/>
+                <field name="ai_status"/>
+                <field name="write_date"/>
+                <templates>
+                    <t t-name="card" class="flex-row">
+                        <aside class="o_kanban_aside_full">
+                            <t t-if="record.preview_image.raw_value">
+                                <div class="o_kanban_image_fill position-relative w-100 doorway_creative_media">
+                                    <field name="preview_image" class="h-100 w-100"
+                                           widget="image"
+                                           options="{'img_class': 'object-fit-cover'}"/>
+                                    <span t-if="record.video_url.raw_value"
+                                          class="badge text-bg-dark doorway_video_badge">
+                                        <i class="fa fa-play"/> Vidéo
+                                    </span>
+                                    <span t-elif="record.format.raw_value in ['video','reel','story']"
+                                          class="badge text-bg-secondary doorway_video_badge">
+                                        <i class="fa fa-video-camera"/> Script
+                                    </span>
+                                </div>
+                            </t>
+                            <t t-else="">
+                                <div class="doorway_creative_no_media doorway_creative_media">
+                                    <i t-if="record.format.raw_value in ['video','reel','story']"
+                                       class="fa fa-video-camera fa-3x"/>
+                                    <i t-else="" class="fa fa-image fa-3x"/>
+                                </div>
+                            </t>
+                        </aside>
+                        <main class="ps-2 flex-grow-1 doorway_creative_card">
+                            <strong><field name="headline"/></strong>
+                            <div class="small text-muted">
+                                <field name="format"/> · <field name="brand_angle"/>
+                            </div>
+                            <field name="ai_status" widget="badge" class="mt-1"/>
+                            <div class="mt-2 doorway_creative_actions">
+                                <button name="action_generate_canva_design" type="object"
+                                        class="btn btn-sm btn-secondary"
+                                        invisible="format in ('video','reel','story')">
+                                    Canva
+                                </button>
+                                <button name="action_generate_video" type="object"
+                                        class="btn btn-sm btn-primary"
+                                        invisible="format not in ('video','reel','story')">
+                                    Vidéo IA
+                                </button>
+                                <button name="action_approve" type="object"
+                                        class="btn btn-sm btn-success"
+                                        invisible="ai_status != 'proposed'">
+                                    Valider
+                                </button>
+                            </div>
+                        </main>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_creative_list" model="ir.ui.view">
+        <field name="name">doorway.creative.list</field>
+        <field name="model">doorway.creative</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="preview_image" widget="image" optional="show"/>
+                <field name="headline"/>
+                <field name="campaign_id"/>
+                <field name="format"/>
+                <field name="media_status" optional="show"/>
+                <field name="brand_angle" optional="show"/>
+                <field name="video_url" widget="url" optional="hide"/>
+                <field name="cta"/>
+                <field name="ai_status" widget="badge"
+                       decoration-warning="ai_status == 'proposed'"
+                       decoration-success="ai_status in ('approved', 'active', 'winner')"/>
+                <button name="action_generate_canva_design" type="object"
+                        string="Canva" icon="fa-paint-brush"/>
+                <button name="action_generate_video" type="object"
+                        string="Vidéo" icon="fa-video-camera"/>
+                <button name="action_approve" type="object" string="Valider"
+                        icon="fa-check" invisible="ai_status != 'proposed'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_creative_form" model="ir.ui.view">
+        <field name="name">doorway.creative.form</field>
+        <field name="model">doorway.creative</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_generate_canva_design" type="object"
+                            string="Générer visuel Canva" class="btn-primary"
+                            invisible="format in ('video','reel','story') or ai_status == 'rejected'"/>
+                    <button name="action_generate_video" type="object"
+                            string="Générer vidéo HeyGen" class="btn-primary"
+                            invisible="format not in ('video','reel','story')"/>
+                    <button name="action_refresh_preview" type="object"
+                            string="Rafraîchir aperçu" class="btn-secondary"/>
+                    <button name="action_open_canva" type="object" string="Ouvrir Canva"
+                            invisible="not canva_design_url"/>
+                    <button name="action_approve" type="object" string="Valider (humain)"
+                            invisible="ai_status != 'proposed'" class="btn-success"/>
+                    <button name="action_reject" type="object" string="Ignorer"
+                            invisible="ai_status != 'proposed'"/>
+                    <button name="action_activate" type="object" string="Activer sur Meta"
+                            invisible="ai_status != 'approved'"/>
+                    <field name="ai_status" widget="statusbar"
+                           statusbar_visible="proposed,approved,active"/>
+                </header>
+                <sheet>
+                    <div class="row mb-3">
+                        <div class="col-md-5">
+                            <field name="preview_image" widget="image"
+                                   class="doorway_creative_preview_large"/>
+                        </div>
+                        <div class="col-md-7">
+                            <group string="Aperçu vidéo"
+                                   invisible="format not in ('video','reel','story')">
+                                <field name="video_preview_html" nolabel="1"/>
+                                <field name="video_url" widget="url"/>
+                                <field name="media_status"/>
+                            </group>
+                            <group string="Texte publicitaire">
+                                <field name="campaign_id"/>
+                                <field name="format"/>
+                                <field name="brand_angle"/>
+                                <field name="headline"/>
+                                <field name="body"/>
+                                <field name="cta"/>
+                                <field name="media_status"/>
+                            </group>
+                        </div>
+                    </div>
+                    <group>
+                        <group string="Canva — visuel marque">
+                            <field name="canva_brief"/>
+                            <field name="visual_description"/>
+                            <field name="canva_design_url" widget="url"/>
+                            <field name="image_url" widget="url"/>
+                        </group>
+                        <group string="Vidéo HeyGen"
+                               invisible="format not in ('video','reel','story')">
+                            <field name="video_script"/>
+                            <field name="heygen_video_id" readonly="1"/>
+                            <field name="video_thumbnail" widget="url"/>
+                        </group>
+                    </group>
+                    <group string="Validation humaine">
+                        <field name="validation_notes"/>
+                        <field name="creative_rationale" readonly="1"/>
+                        <field name="approved_by" readonly="1"/>
+                        <field name="approved_at" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_creatives" model="ir.actions.act_window">
+        <field name="name">Créatifs — visuels &amp; vidéos</field>
+        <field name="res_model">doorway.creative</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[('ai_status', 'in', ('proposed', 'approved'))]</field>
+    </record>
+</odoo>

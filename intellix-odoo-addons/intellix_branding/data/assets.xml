@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Chargés APRÈS le CRM et le web pour gagner en spécificité -->
+    <record id="asset_intellix_tokens" model="ir.asset">
+        <field name="name">intellix.tokens</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="path">intellix_branding/static/src/scss/intellix_tokens.scss</field>
+        <field name="sequence" eval="10090"/>
+    </record>
+    <record id="asset_intellix_components" model="ir.asset">
+        <field name="name">intellix.components</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="path">intellix_branding/static/src/scss/intellix_components.scss</field>
+        <field name="sequence" eval="10091"/>
+    </record>
+    <record id="asset_intellix_odoo_shell" model="ir.asset">
+        <field name="name">intellix.odoo_shell</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="path">intellix_branding/static/src/scss/intellix_odoo_shell.scss</field>
+        <field name="sequence" eval="10092"/>
+    </record>
+    <record id="asset_intellix_client_actions" model="ir.asset">
+        <field name="name">intellix.client_actions</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="path">intellix_branding/static/src/scss/intellix_client_actions.scss</field>
+        <field name="sequence" eval="10093"/>
+    </record>
+    <record id="asset_intellix_crm" model="ir.asset">
+        <field name="name">intellix.crm</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="path">intellix_branding/static/src/scss/intellix_crm.scss</field>
+        <field name="sequence" eval="10094"/>
+    </record>
+    <record id="asset_intellix_sale" model="ir.asset">
+        <field name="name">intellix.sale</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="path">intellix_branding/static/src/scss/intellix_sale.scss</field>
+        <field name="sequence" eval="10094"/>
+    </record>
+    <record id="asset_intellix_sale_dark" model="ir.asset">
+        <field name="name">intellix.sale.dark</field>
+        <field name="bundle">web.assets_web_dark</field>
+        <field name="path">intellix_branding/static/src/scss/intellix_sale.scss</field>
+        <field name="sequence" eval="10094"/>
+    </record>
+    <record id="asset_intellix_backend" model="ir.asset">
+        <field name="name">intellix.backend</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="path">intellix_branding/static/src/scss/intellix_backend.scss</field>
+        <field name="sequence" eval="10095"/>
+    </record>
+    <record id="asset_intellix_kanban" model="ir.asset">
+        <field name="name">intellix.kanban</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="path">intellix_branding/static/src/scss/intellix_kanban.scss</field>
+        <field name="sequence" eval="10100"/>
+    </record>
+    <record id="asset_intellix_discuss" model="ir.asset">
+        <field name="name">intellix.discuss</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="path">intellix_branding/static/src/scss/intellix_discuss.scss</field>
+        <field name="sequence" eval="10101"/>
+    </record>
+    <record id="asset_intellix_discuss_dark" model="ir.asset">
+        <field name="name">intellix.discuss.dark</field>
+        <field name="bundle">web.assets_web_dark</field>
+        <field name="path">intellix_branding/static/src/scss/intellix_discuss.scss</field>
+        <field name="sequence" eval="10101"/>
+    </record>
+    <record id="asset_intellix_calendar" model="ir.asset">
+        <field name="name">intellix.calendar</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="path">intellix_branding/static/src/scss/intellix_calendar.scss</field>
+        <field name="sequence" eval="10102"/>
+    </record>
+    <record id="asset_intellix_calendar_dark" model="ir.asset">
+        <field name="name">intellix.calendar.dark</field>
+        <field name="bundle">web.assets_web_dark</field>
+        <field name="path">intellix_branding/static/src/scss/intellix_calendar.scss</field>
+        <field name="sequence" eval="10102"/>
+    </record>
+    <record id="asset_intellix_menus" model="ir.asset">
+        <field name="name">intellix.menus</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="path">intellix_branding/static/src/scss/intellix_menus.scss</field>
+        <field name="sequence" eval="10103"/>
+    </record>
+    <record id="asset_intellix_menus_dark" model="ir.asset">
+        <field name="name">intellix.menus.dark</field>
+        <field name="bundle">web.assets_web_dark</field>
+        <field name="path">intellix_branding/static/src/scss/intellix_menus.scss</field>
+        <field name="sequence" eval="10103"/>
+    </record>
+    <record id="asset_intellix_onboarding" model="ir.asset">
+        <field name="name">intellix.onboarding</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="path">intellix_branding/static/src/scss/intellix_onboarding.scss</field>
+        <field name="sequence" eval="10104"/>
+    </record>
+    <record id="asset_intellix_onboarding_dark" model="ir.asset">
+        <field name="name">intellix.onboarding.dark</field>
+        <field name="bundle">web.assets_web_dark</field>
+        <field name="path">intellix_branding/static/src/scss/intellix_onboarding.scss</field>
+        <field name="sequence" eval="10104"/>
+    </record>
+    <record id="asset_intellix_responsive" model="ir.asset">
+        <field name="name">intellix.responsive</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="path">intellix_branding/static/src/scss/intellix_responsive.scss</field>
+        <field name="sequence" eval="10125"/>
+    </record>
+    <record id="asset_intellix_responsive_dark" model="ir.asset">
+        <field name="name">intellix.responsive.dark</field>
+        <field name="bundle">web.assets_web_dark</field>
+        <field name="path">intellix_branding/static/src/scss/intellix_responsive.scss</field>
+        <field name="sequence" eval="10125"/>
+    </record>
+    <record id="asset_intellix_readability" model="ir.asset">
+        <field name="name">intellix.readability</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="path">intellix_branding/static/src/scss/intellix_readability.scss</field>
+        <field name="sequence" eval="10120"/>
+    </record>
+    <record id="asset_intellix_readability_dark" model="ir.asset">
+        <field name="name">intellix.readability.dark</field>
+        <field name="bundle">web.assets_web_dark</field>
+        <field name="path">intellix_branding/static/src/scss/intellix_readability.scss</field>
+        <field name="sequence" eval="10120"/>
+    </record>
+    <record id="asset_intellix_mail_composer" model="ir.asset">
+        <field name="name">intellix.mail_composer</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="path">intellix_branding/static/src/scss/intellix_mail_composer.scss</field>
+        <field name="sequence" eval="10121"/>
+    </record>
+    <record id="asset_intellix_mail_composer_dark" model="ir.asset">
+        <field name="name">intellix.mail_composer.dark</field>
+        <field name="bundle">web.assets_web_dark</field>
+        <field name="path">intellix_branding/static/src/scss/intellix_mail_composer.scss</field>
+        <field name="sequence" eval="10121"/>
+    </record>
+    <record id="asset_intellix_wizards" model="ir.asset">
+        <field name="name">intellix.wizards</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="path">intellix_branding/static/src/scss/intellix_wizards.scss</field>
+        <field name="sequence" eval="10122"/>
+    </record>
+    <record id="asset_intellix_wizards_dark" model="ir.asset">
+        <field name="name">intellix.wizards.dark</field>
+        <field name="bundle">web.assets_web_dark</field>
+        <field name="path">intellix_branding/static/src/scss/intellix_wizards.scss</field>
+        <field name="sequence" eval="10122"/>
+    </record>
+    <record id="asset_intellix_form_save_patch_js" model="ir.asset">
+        <field name="name">intellix.form_save_patch.js</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="path">intellix_branding/static/src/js/intellix_form_save_patch.js</field>
+        <field name="sequence" eval="10255"/>
+    </record>
+    <!-- Bundle lazy chargé à l’ouverture des tableaux de bord -->
+    <!-- Retiré de web.assets_backend : importe dashboard_loader_service (bundle spreadsheet uniquement) -->
+    <delete model="ir.asset" id="asset_intellix_spreadsheet_dashboard_js"/>
+    <delete model="ir.asset" id="asset_intellix_spreadsheet_dashboard_js_dark"/>
+
+    <record id="asset_intellix_spreadsheet_dashboard_js_lazy" model="ir.asset">
+        <field name="name">intellix.spreadsheet_dashboard.js.lazy</field>
+        <field name="bundle">spreadsheet.o_spreadsheet</field>
+        <field name="path">intellix_branding/static/src/js/intellix_spreadsheet_dashboard.js</field>
+        <field name="sequence" eval="9999"/>
+    </record>
+    <record id="asset_intellix_spreadsheet_dashboard" model="ir.asset">
+        <field name="name">intellix.spreadsheet_dashboard</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="path">intellix_branding/static/src/scss/intellix_spreadsheet_dashboard.scss</field>
+        <field name="sequence" eval="10250"/>
+    </record>
+    <record id="asset_intellix_spreadsheet_dashboard_dark" model="ir.asset">
+        <field name="name">intellix.spreadsheet_dashboard.dark</field>
+        <field name="bundle">web.assets_web_dark</field>
+        <field name="path">intellix_branding/static/src/scss/intellix_spreadsheet_dashboard.scss</field>
+        <field name="sequence" eval="10250"/>
+    </record>
+    <record id="asset_intellix_spreadsheet_dashboard_lazy_scss" model="ir.asset">
+        <field name="name">intellix.spreadsheet_dashboard.lazy</field>
+        <field name="bundle">spreadsheet.o_spreadsheet</field>
+        <field name="path">intellix_branding/static/src/scss/intellix_spreadsheet_dashboard.scss</field>
+        <field name="sequence" eval="10250"/>
+    </record>
+    <record id="asset_intellix_notifications" model="ir.asset">
+        <field name="name">intellix.notifications</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="path">intellix_branding/static/src/scss/intellix_notifications.scss</field>
+        <field name="sequence" eval="10124"/>
+    </record>
+    <record id="asset_intellix_notifications_dark" model="ir.asset">
+        <field name="name">intellix.notifications.dark</field>
+        <field name="bundle">web.assets_web_dark</field>
+        <field name="path">intellix_branding/static/src/scss/intellix_notifications.scss</field>
+        <field name="sequence" eval="10124"/>
+    </record>
+    <record id="asset_intellix_lead_automation" model="ir.asset">
+        <field name="name">intellix.lead_automation</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="path">intellix_branding/static/src/scss/intellix_lead_automation.scss</field>
+        <field name="sequence" eval="10105"/>
+    </record>
+    <record id="asset_intellix_shell_dark" model="ir.asset">
+        <field name="name">intellix.odoo_shell.dark</field>
+        <field name="bundle">web.assets_web_dark</field>
+        <field name="path">intellix_branding/static/src/scss/intellix_odoo_shell.scss</field>
+        <field name="sequence" eval="10095"/>
+    </record>
+    <record id="asset_intellix_tokens_dark" model="ir.asset">
+        <field name="name">intellix.tokens.dark</field>
+        <field name="bundle">web.assets_web_dark</field>
+        <field name="path">intellix_branding/static/src/scss/intellix_tokens.scss</field>
+        <field name="sequence" eval="10090"/>
+    </record>
+    <record id="asset_intellix_company_switch_js" model="ir.asset">
+        <field name="name">intellix.company_switch.js</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="path">intellix_branding/static/src/js/intellix_company_switch.js</field>
+        <field name="sequence" eval="10260"/>
+    </record>
+    <record id="asset_intellix_theme_switcher_js" model="ir.asset">
+        <field name="name">intellix.theme_switcher.js</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="path">intellix_branding/static/src/js/intellix_theme_switcher.js</field>
+        <field name="sequence" eval="10256"/>
+    </record>
+    <record id="asset_intellix_theme_switcher_xml" model="ir.asset">
+        <field name="name">intellix.theme_switcher.xml</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="path">intellix_branding/static/src/xml/intellix_theme_switcher.xml</field>
+        <field name="sequence" eval="10256"/>
+    </record>
+    <record id="asset_intellix_theme_switcher_scss" model="ir.asset">
+        <field name="name">intellix.theme_switcher.scss</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="path">intellix_branding/static/src/scss/intellix_theme_switcher.scss</field>
+        <field name="sequence" eval="10110"/>
+    </record>
+    <record id="asset_intellix_navbar" model="ir.asset">
+        <field name="name">intellix.navbar</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="path">intellix_branding/static/src/scss/intellix_navbar.scss</field>
+        <field name="sequence" eval="50000"/>
+    </record>
+    <record id="asset_intellix_navbar_dark" model="ir.asset">
+        <field name="name">intellix.navbar.dark</field>
+        <field name="bundle">web.assets_web_dark</field>
+        <field name="path">intellix_branding/static/src/scss/intellix_navbar.scss</field>
+        <field name="sequence" eval="50000"/>
+    </record>
+</odoo>

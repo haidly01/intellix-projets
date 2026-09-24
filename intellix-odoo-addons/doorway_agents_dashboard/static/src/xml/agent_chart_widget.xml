@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="doorway_agents_dashboard.AgentChartWidget">
+        <div class="doorway_agent_chart_container">
+            <label class="form-label">Appels par jour (30 derniers jours)</label>
+            <canvas t-ref="chart"/>
+        </div>
+    </t>
+</templates>

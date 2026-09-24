@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="agent_haidly" model="doorway.agent.profile">
+        <field name="name">Haidly · J+0 Qualification</field>
+        <field name="haidly_agent_role">j0_qualification</field>
+        <field name="provider">elevenlabs</field>
+        <field name="external_agent_id">ELEVENLABS_AGENT_ID_HAIDLY</field>
+        <field name="pipeline">renovation</field>
+        <field name="agent_type">outbound</field>
+        <field name="language">fr</field>
+        <field name="default_volet">qualification</field>
+        <field name="timezone">America/Toronto</field>
+        <field name="transfer_phone">+14389929200</field>
+        <field name="status">active</field>
+        <field name="allow_human_transfer" eval="True"/>
+        <field name="allow_send_sms" eval="True"/>
+        <field name="system_prompt">Haidly — concierge rénovation SoumissionEntrepreneurs. Passion design, plans 3D gratuits, entrepreneurs RBQ.</field>
+    </record>
+    <record id="agent_haidly_phone" model="doorway.agent.phone.number">
+        <field name="agent_id" ref="agent_haidly"/>
+        <field name="name">Haidly SIP SoumissionEntrepreneurs</field>
+        <field name="phone_number">+15817058118</field>
+        <field name="sip_trunk_name">Haidly-5817058118</field>
+        <field name="twilio_sip_trunk_sid">TK3d6c7ea376c52bca4e8e81c3b10db400</field>
+        <field name="usage">outbound</field>
+        <field name="is_primary" eval="True"/>
+    </record>
+    <record id="agent_haidly_volet_qualification" model="doorway.agent.volet">
+        <field name="agent_id" ref="agent_haidly"/>
+        <field name="sequence">10</field>
+        <field name="code">qualification</field>
+        <field name="prompt_hint">SoumissionEntrepreneurs — cuisine, SDB, sous-sol, patio, agrandissement.</field>
+    </record>
+</odoo>

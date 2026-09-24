@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_callcenter_prospect_user,doorway.callcenter.prospect user,model_doorway_callcenter_prospect,base.group_user,1,1,1,0
+access_callcenter_prospect_manager,doorway.callcenter.prospect manager,model_doorway_callcenter_prospect,base.group_system,1,1,1,1
+access_linkedin_scraper_user,linkedin.scraper user,model_linkedin_scraper,base.group_user,1,0,0,0
+access_linkedin_scraper_manager,linkedin.scraper manager,model_linkedin_scraper,base.group_system,1,1,1,1

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>On n'a pas réussi à vous joindre</title>
+<style>
+  body { margin:0; padding:0; background:#F3F4F6; font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; color:#374151; }
+  .wrapper { width:100%; background:#F3F4F6; padding:32px 16px; }
+  .container { max-width:600px; margin:0 auto; background:#FFFFFF; border-radius:8px; overflow:hidden; }
+  .topbar { background:#EA580C; color:#fff; font-size:12px; padding:8px 24px; text-align:center; letter-spacing:.2px; }
+  .header { padding:28px 32px 12px 32px; }
+  .logo-mark { display:inline-block; width:28px; height:28px; background:#EA580C; border-radius:6px; color:#fff; font-weight:800; font-size:16px; line-height:28px; text-align:center; font-family:Arial,sans-serif; }
+  .logo-text { font-weight:800; font-size:15px; color:#0F1729; letter-spacing:.3px; vertical-align:middle; }
+  .hero { padding: 4px 32px 0 32px; }
+  .eyebrow { color:#EA580C; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px; margin:18px 0 6px 0; }
+  h1 { color:#0F1729; font-size:22px; line-height:1.3; margin:0 0 16px 0; }
+  p { font-size:15px; line-height:1.65; margin:0 0 14px 0; color:#374151; }
+  .body-block { padding: 4px 32px 8px 32px; }
+  .cta-wrap { padding: 8px 32px 32px 32px; }
+  .cta-btn { display:inline-block; background:#EA580C; color:#ffffff !important; text-decoration:none; font-weight:700; font-size:15px; padding:14px 28px; border-radius:6px; }
+  .cta-note { font-size:13px; color:#6B7280; margin-top:10px; }
+  .divider { border-top:1px solid #E5E7EB; margin:0 32px; }
+  .footer { padding:24px 32px 28px 32px; font-size:12px; color:#6B7280; }
+  .footer a { color:#6B7280; }
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <div class="container">
+    <div class="topbar">581-798-5801 &nbsp;•&nbsp; 204 Saint-Sacrement espace 300, Montréal, QC &nbsp;•&nbsp; info@soumissionentrepreneurs.com</div>
+    <div class="header">
+      <span class="logo-mark">S</span>
+      <span class="logo-text">SOUMISSION&nbsp;ENTREPRENEURS</span>
+    </div>
+    <t t-set="prenom" t-value="(object.contact_name or object.partner_id.name or 'bonjour').split()[0]"/>
+    <t t-set="projet" t-value="(object.service_category_ids[:1].name if object.service_category_ids else object.name or 'rénovation')"/>
+    <t t-set="origine" t-value="(object.source_id.name if object.source_id else 'soumissionentrepreneurs.com')"/>
+    <div class="hero">
+      <div class="eyebrow">On vous a manqué</div>
+      <h1>On a essayé de vous joindre, <t t-out="prenom"/></h1>
+    </div>
+    <div class="body-block">
+      <p>Suite à votre demande sur <t t-out="origine"/> pour votre projet de <t t-out="projet"/>, on a essayé de vous appeler sans succès.</p>
+      <p>Pas de souci — choisissez vous-même un moment qui vous convient pour une soumission gratuite, sans engagement.</p>
+    </div>
+    <div class="cta-wrap">
+      <a href="https://soumissionentrepreneurs.com/deposer-projet" class="cta-btn">Choisir mon rendez-vous</a>
+      <div class="cta-note">Vous préférez qu'on vous rappelle à un moment précis ? Répondez simplement à ce courriel.</div>
+    </div>
+    <div class="divider"></div>
+    <div class="footer">
+      Vous recevez ce courriel suite à votre demande de soumission sur <t t-out="origine"/>.<br>
+      Soumission Entrepreneurs — 204 Saint-Sacrement espace 300, Montréal, QC — 581-798-5801<br>
+      <a href="mailto:info@soumissionentrepreneurs.com?subject=Desabonnement">Se désabonner</a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

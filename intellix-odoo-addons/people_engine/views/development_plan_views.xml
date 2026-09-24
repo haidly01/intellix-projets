@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pe_coaching_plan_tree_dashboard" model="ir.ui.view">
+        <field name="name">pe.coaching.plan.tree.dashboard</field>
+        <field name="model">pe.coaching.plan</field>
+        <field name="inherit_id" ref="people_engine.view_pe_coaching_plan_tree"/>
+        <field name="arch" type="xml">
+            <list position="attributes">
+                <attribute name="js_class">people_engine_dev_plan_list</attribute>
+                <attribute name="class">ix-devplan-list</attribute>
+            </list>
+            <field name="employee_id" position="attributes">
+                <attribute name="widget">many2one_avatar_employee</attribute>
+                <attribute name="string">Agent</attribute>
+            </field>
+            <field name="completion_rate" position="attributes">
+                <attribute name="widget">ix_progress</attribute>
+                <attribute name="string">Progression</attribute>
+            </field>
+            <field name="status" position="attributes">
+                <attribute name="decoration-success">status == 'completed'</attribute>
+                <attribute name="decoration-warning">status == 'active'</attribute>
+                <attribute name="decoration-info">status == 'draft'</attribute>
+                <attribute name="decoration-muted">status in ('cancelled', 'failed')</attribute>
+            </field>
+            <field name="plan_type" position="after">
+                <field name="due_date" string="Échéance" widget="date"/>
+                <field name="coaching_session_id" optional="hide"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_pe_coaching_plan_form_dashboard" model="ir.ui.view">
+        <field name="name">pe.coaching.plan.form.dashboard</field>
+        <field name="model">pe.coaching.plan</field>
+        <field name="inherit_id" ref="people_engine.view_pe_coaching_plan_form"/>
+        <field name="arch" type="xml">
+            <field name="date_end" position="after">
+                <field name="due_date"/>
+                <field name="coaching_session_id"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="action_pe_coaching_plans" model="ir.actions.act_window">
+        <field name="name">Plans de développement</field>
+        <field name="res_model">pe.coaching.plan</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucun plan de développement
+            </p>
+            <p>
+                Créez un plan à partir d'une session coaching IA ou manuellement
+                pour structurer la progression de vos agents.
+            </p>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Active les modèles de devis pour tous les vendeurs -->
+    <record id="sales_team.group_sale_salesman" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('sale_management.group_sale_order_template'))]"/>
+    </record>
+    <record id="sales_team.group_sale_manager" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('sale_management.group_sale_order_template'))]"/>
+    </record>
+</odoo>

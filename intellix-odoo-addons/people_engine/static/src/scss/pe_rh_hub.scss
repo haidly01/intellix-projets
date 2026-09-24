@@ -1,0 +1,366 @@
+// RH Hub — tableau de bord clair (maquette « Bonjour, … »)
+// Sidebar navy slim + en-tête + grille de cartes blanches arrondies.
+// Tout est scopé sous .pe-rh-hub pour ne rien diffuser au reste du backend.
+// Surfaces/textes/bordures → tokens globaux du thème (repli clair en fallback).
+// La sidebar "navy" et les accents restent volontairement fixes (éléments de
+// marque, lisibles en clair comme en sombre).
+$pe-bg: var(--ix-bg, #eef1f6);
+$pe-card: var(--ix-surface, #ffffff);
+$pe-navy: #111c33;
+$pe-navy-2: #0c1426;
+$pe-ink: var(--ix-text, #111827);
+$pe-muted: var(--ix-text-muted, #6b7280);
+$pe-subtle: var(--ix-text-subtle, #94a3b8);
+$pe-line: var(--ix-border, #eceef2);
+$pe-indigo: #6366f1;
+$pe-indigo-d: #4f46e5;
+$pe-purple: #7c3aed;
+$pe-teal: #14b8a6;
+$pe-blue: #3b82f6;
+$pe-orange: #f59e0b;
+$pe-green: #22c55e;
+$pe-radius: 20px;
+$pe-radius-sm: 14px;
+$pe-shadow: 0 1px 2px rgba(16, 24, 40, 0.05), 0 12px 28px rgba(16, 24, 40, 0.07);
+
+// Le hub doit remplir le conteneur d'action — SCOPÉ : la règle globale
+// `.o_action_manager { height:100% }` bloquait la barre Odoo (clics menu RH).
+.o_action_manager:has(.pe-rh-hub) {
+    height: 100% !important;
+}
+
+// FIX critique — le hub porte aussi .o_action.o_intellix_client_action sur le
+// MÊME élément que .pe-rh-hub. intellix_branding force `flex-direction:column`,
+// `overflow:auto` et un fond sombre `var(--ix-bg)` (spécificité 0,3,0) → la
+// sidebar s'empile au-dessus du contenu et un bandeau sombre apparaît.
+// On remonte la spécificité à 0,4,0 pour rétablir la ligne + le thème clair.
+.o_web_client .o_action.o_intellix_client_action.pe-rh-hub {
+    display: flex !important;
+    flex-direction: row !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    background-color: $pe-bg !important;
+    color: $pe-ink !important;
+}
+
+.pe-rh-hub {
+    display: flex;
+    height: 100%;
+    overflow: hidden;
+    background: $pe-bg;
+    color: $pe-ink;
+    font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+    padding: 1.1rem;
+    gap: 1.1rem;
+
+    * { box-sizing: border-box; }
+
+    // ---------- Sidebar navy slim ----------
+    &__sidebar {
+        width: 92px;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: linear-gradient(180deg, $pe-navy 0%, $pe-navy-2 100%);
+        border-radius: 26px;
+        padding: 1.4rem 0 1.1rem;
+        box-shadow: $pe-shadow;
+    }
+    &__side-avatar {
+        margin-bottom: 2rem;
+        padding: 5px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    &__rail {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.6rem;
+        width: 100%;
+    }
+    &__rail-btn {
+        width: 44px;
+        height: 44px;
+        border: none;
+        border-radius: 14px;
+        background: transparent;
+        color: #8b97b3;
+        font-size: 1.05rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background 0.15s, color 0.15s, transform 0.1s;
+        &:hover { background: rgba(255, 255, 255, 0.08); color: #fff; transform: translateY(-1px); }
+        &--active {
+            background: linear-gradient(135deg, $pe-indigo 0%, $pe-purple 100%);
+            color: #fff;
+            box-shadow: 0 8px 18px rgba(99, 102, 241, 0.45);
+        }
+    }
+    &__rail-foot { margin-top: auto; }
+    &__rail-brand {
+        width: 40px; height: 40px; border-radius: 12px;
+        display: inline-flex; align-items: center; justify-content: center;
+        background: rgba(255, 255, 255, 0.08); color: #fff; font-size: 1rem;
+    }
+
+    // ---------- Avatars ----------
+    &__avatar {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        overflow: hidden;
+        background: var(--ix-surface-hover, #e2e8f0);
+        color: var(--ix-text-muted, #475569);
+        font-weight: 700;
+        flex-shrink: 0;
+        img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        &--lg { width: 58px; height: 58px; }
+    }
+    &__avatar-initials { font-size: 1rem; }
+    &__avatar--lg &__avatar-initials { font-size: 1.3rem; }
+
+    // ---------- Contenu ----------
+    &__content {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+    }
+    &__topbar {
+        flex-shrink: 0;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 0.25rem 0.25rem 0.75rem;
+    }
+    &__greeting {
+        h1 {
+            font-size: 1.7rem; font-weight: 800; margin: 0; color: $pe-ink;
+            display: inline-flex; align-items: center; gap: 0.15rem; line-height: 1.2;
+        }
+    }
+    &__spark { margin-left: 0.15rem; font-size: 1.3rem; }
+    &__subtitle { color: $pe-muted; margin: 0.25rem 0 0; font-size: 0.92rem; }
+    &__topbar-actions { display: flex; align-items: center; gap: 0.6rem; flex-shrink: 0; }
+    &__pill-btn {
+        display: inline-flex; align-items: center; gap: 0.5rem;
+        border: 1px solid $pe-line; background: $pe-card; color: $pe-ink;
+        border-radius: 999px; padding: 0.6rem 1.2rem; font-size: 0.88rem; font-weight: 600;
+        cursor: pointer; box-shadow: $pe-shadow; transition: transform 0.1s, color 0.15s;
+        i { color: $pe-indigo; }
+        &:hover { transform: translateY(-1px); color: $pe-indigo-d; }
+    }
+
+    // Liseré multicolore sous l'en-tête
+    &__accent {
+        height: 3px; border-radius: 999px; flex-shrink: 0; margin: 0 0.25rem 0.75rem;
+        background: linear-gradient(90deg, $pe-blue 0%, $pe-purple 50%, $pe-orange 100%);
+    }
+
+    &__scroll { flex: 1; overflow: auto; padding: 0.5rem 0.25rem 1.5rem; }
+
+    // ---------- KPI (4 cartes) ----------
+    &__kpis {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+        gap: 1.1rem;
+        margin-bottom: 1.1rem;
+    }
+    &__kpi {
+        display: flex; align-items: center; gap: 0.9rem;
+        background: $pe-card; border-radius: $pe-radius; padding: 1.2rem 1.3rem;
+        box-shadow: $pe-shadow; border: 1px solid rgba(236, 238, 242, 0.7);
+    }
+    &__kpi-ic {
+        width: 46px; height: 46px; border-radius: 14px; flex-shrink: 0;
+        display: inline-flex; align-items: center; justify-content: center;
+        color: #fff; font-size: 1.05rem;
+        &--indigo { background: linear-gradient(135deg, $pe-indigo, $pe-indigo-d); }
+        &--teal { background: linear-gradient(135deg, #2dd4bf, $pe-teal); }
+        &--purple { background: linear-gradient(135deg, #a78bfa, $pe-purple); }
+        &--orange { background: linear-gradient(135deg, #fbbf24, $pe-orange); }
+    }
+    &__kpi-body { display: flex; flex-direction: column; min-width: 0; }
+    &__kpi-label { font-size: 0.78rem; color: $pe-muted; margin-bottom: 0.25rem; }
+    &__kpi-value { font-size: 1.9rem; font-weight: 800; color: $pe-ink; line-height: 1.05;
+        &--sm { font-size: 1.35rem; }
+    }
+
+    // ---------- Rangées de cartes ----------
+    &__row { display: grid; gap: 1.1rem; margin-bottom: 1.1rem; align-items: stretch; }
+    &__row--2 { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+
+    &__card {
+        background: $pe-card;
+        border: 1px solid rgba(236, 238, 242, 0.7);
+        border-radius: $pe-radius;
+        padding: 1.3rem 1.4rem;
+        box-shadow: $pe-shadow;
+        display: flex;
+        flex-direction: column;
+    }
+    &__card-head {
+        display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
+        margin-bottom: 1rem;
+        h2 { font-size: 1.1rem; font-weight: 700; margin: 0; color: $pe-ink; }
+    }
+    &__card-tag {
+        font-size: 0.72rem; color: $pe-muted; background: var(--ix-surface-hover, #f3f4f7);
+        border-radius: 999px; padding: 0.2rem 0.65rem; white-space: nowrap;
+    }
+    &__icon-btn {
+        width: 32px; height: 32px; border-radius: 10px;
+        border: 1px solid $pe-line; background: $pe-card; color: $pe-muted;
+        display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
+        transition: color 0.15s, transform 0.1s;
+        &:hover { color: $pe-indigo; transform: translateY(-1px); }
+        &--ghost { border: none; background: transparent; }
+    }
+
+    // ---------- Performance (area chart) ----------
+    &__chart { flex: 1; min-height: 150px; display: flex; }
+    &__chart-svg { width: 100%; height: 100%; min-height: 150px; display: block; }
+
+    // ---------- Plan de développement (barres) ----------
+    &__plan { display: flex; flex-direction: column; gap: 1rem; }
+    &__plan-top {
+        display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem;
+        margin-bottom: 0.4rem;
+    }
+    &__plan-name { font-size: 0.9rem; font-weight: 600; color: $pe-ink; }
+    &__plan-pct { font-size: 0.82rem; font-weight: 700; color: $pe-indigo-d; }
+    &__bar {
+        height: 9px; background: var(--ix-surface-hover, #eef0f4); border-radius: 999px; overflow: hidden;
+    }
+    &__bar-fill {
+        height: 100%; border-radius: 999px;
+        background: linear-gradient(90deg, $pe-indigo, $pe-purple);
+        transition: width 0.4s ease;
+    }
+
+    // ---------- Paie ----------
+    &__card--pay { justify-content: flex-start; }
+    &__pay-amount { font-size: 2.4rem; font-weight: 800; color: $pe-ink; line-height: 1.05;
+        &--muted { color: $pe-subtle; }
+    }
+    &__pay-sub { color: $pe-muted; font-size: 0.82rem; margin: 0.3rem 0 1.1rem; }
+    &__link-btn {
+        align-self: flex-start; margin-top: auto;
+        display: inline-flex; align-items: center; gap: 0.5rem;
+        border: none; background: transparent; color: $pe-indigo-d;
+        font-size: 0.9rem; font-weight: 600; cursor: pointer; padding: 0.25rem 0;
+        &:hover:not([disabled]) { text-decoration: underline; }
+        &[disabled] { color: $pe-subtle; cursor: not-allowed; }
+    }
+
+    // ---------- Documents légaux ----------
+    &__docs { display: flex; flex-direction: column; gap: 0.55rem; }
+    &__doc-row {
+        display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
+        padding: 0.55rem 0.2rem; border-bottom: 1px solid $pe-line;
+        &:last-child { border-bottom: none; }
+    }
+    &__doc-info { min-width: 0;
+        strong { display: block; font-size: 0.88rem; color: $pe-ink; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        small { font-size: 0.72rem; color: $pe-muted; }
+    }
+    &__toggle {
+        width: 38px; height: 22px; border-radius: 999px; background: #d8dbe2;
+        flex-shrink: 0; position: relative; transition: background 0.2s;
+        &--on { background: $pe-green; }
+    }
+    &__toggle-knob {
+        position: absolute; top: 2px; left: 2px; width: 18px; height: 18px;
+        border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        transition: transform 0.2s;
+    }
+    &__toggle--on &__toggle-knob { transform: translateX(16px); }
+
+    // ---------- États vides / chargement ----------
+    &__empty {
+        flex: 1; min-height: 130px;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        gap: 0.5rem; color: $pe-subtle; text-align: center;
+        i { font-size: 1.6rem; opacity: 0.6; }
+        span { font-size: 0.85rem; }
+    }
+    &__loading, &__error { padding: 3rem; text-align: center; color: $pe-muted; }
+    &__error { color: #b91c1c; }
+
+    // ---------- Vue d'ensemble (global) ----------
+    &__avatar--sm { width: 34px; height: 34px; }
+    &__avatar--lg i { font-size: 1.4rem; color: #475569; }
+
+    // Histogramme vertical (performance équipe)
+    &__barchart {
+        flex: 1; min-height: 160px;
+        display: flex; align-items: flex-end; justify-content: space-around; gap: 0.6rem;
+        padding-top: 0.5rem;
+    }
+    &__barcol {
+        flex: 1; min-width: 0; max-width: 56px;
+        display: flex; flex-direction: column; align-items: center; gap: 0.5rem; height: 100%;
+    }
+    &__barcol-track {
+        flex: 1; width: 70%; min-width: 14px;
+        display: flex; align-items: flex-end;
+        background: var(--ix-surface-hover, #f1f2f6); border-radius: 8px; overflow: hidden;
+    }
+    &__barcol-fill {
+        width: 100%; border-radius: 8px; min-height: 3px;
+        background: linear-gradient(180deg, $pe-indigo, $pe-purple);
+        transition: height 0.4s ease;
+    }
+    &__barcol-label {
+        font-size: 0.72rem; color: $pe-muted; max-width: 100%;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    // Couleurs des barres par bande de performance
+    &__bar-fill--excellent { background: linear-gradient(90deg, #22c55e, #16a34a); }
+    &__bar-fill--good { background: linear-gradient(90deg, $pe-indigo, $pe-purple); }
+    &__bar-fill--watch { background: linear-gradient(90deg, #fbbf24, $pe-orange); }
+
+    // Classement top performers
+    &__rank { display: flex; flex-direction: column; gap: 0.2rem; }
+    &__rank-row {
+        display: flex; align-items: center; gap: 0.75rem;
+        padding: 0.55rem 0.2rem; border-bottom: 1px solid $pe-line;
+        &:last-child { border-bottom: none; }
+    }
+    &__rank-pos {
+        width: 22px; height: 22px; flex-shrink: 0; border-radius: 7px;
+        display: inline-flex; align-items: center; justify-content: center;
+        background: var(--ix-surface-hover, #f3f4f7); color: $pe-muted; font-size: 0.78rem; font-weight: 700;
+    }
+    &__rank-info { flex: 1; min-width: 0;
+        strong { display: block; font-size: 0.88rem; color: $pe-ink; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        small { font-size: 0.72rem; color: $pe-muted; }
+    }
+    &__rank-score {
+        font-size: 1.05rem; font-weight: 800; color: $pe-indigo-d; flex-shrink: 0;
+    }
+
+    // ---------- Responsive ----------
+    @media (max-width: 768px) {
+        flex-direction: column;
+        padding: 0.75rem;
+        &__sidebar {
+            width: 100%; flex-direction: row; border-radius: 18px;
+            padding: 0.6rem 0.9rem; align-items: center;
+        }
+        &__side-avatar { margin: 0 1rem 0 0; }
+        &__rail { flex-direction: row; flex-wrap: wrap; }
+        &__rail-foot { margin-top: 0; margin-left: auto; }
+    }
+}

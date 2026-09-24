@@ -1,0 +1,138 @@
+/* ============================================================
+   Lisibilité de l'assistant « Campagne multi-contacts »
+   (doorway.assign.campaign.wizard) sur le thème sombre Intellix.
+   Toutes les règles sont préfixées par .o_doorway_assign_wizard
+   pour ne pas impacter les autres vues.
+   ============================================================ */
+
+.o_doorway_assign_wizard {
+    background: var(--ix-surface, #12122a);
+    color: var(--ix-text, #f1f5f9);
+}
+
+.o_doorway_assign_wizard .o_form_sheet,
+.o_doorway_assign_wizard .o_form_sheet_bg {
+    background: var(--ix-surface, #12122a) !important;
+}
+
+/* Titre principal et sous-titre */
+.o_doorway_assign_wizard .oe_title h2 {
+    color: var(--ix-text, #ffffff);
+    font-weight: 700;
+}
+.o_doorway_assign_wizard .o_dwz_help {
+    color: var(--ix-text-muted, #c2cce0) !important;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+/* Titres de sections (string="..." sur les <group>) */
+.o_doorway_assign_wizard .o_horizontal_separator,
+.o_doorway_assign_wizard .o_group .o_horizontal_separator {
+    color: var(--ix-primary-light, #a5b4fc) !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 12px;
+    border-bottom: 1px solid rgba(165, 180, 252, 0.30);
+    padding-bottom: 6px;
+    margin-bottom: 10px;
+    opacity: 1 !important;
+}
+
+/* Libellés des champs */
+.o_doorway_assign_wizard .o_form_label,
+.o_doorway_assign_wizard label {
+    color: var(--ix-text, #e6e9f5) !important;
+    font-weight: 600;
+    opacity: 1 !important;
+}
+
+/* Champs de saisie : fond plus clair + bordure visible + texte lisible */
+.o_doorway_assign_wizard input.o_input,
+.o_doorway_assign_wizard textarea.o_input,
+.o_doorway_assign_wizard .o_field_widget input,
+.o_doorway_assign_wizard .o_field_widget textarea,
+.o_doorway_assign_wizard .o_field_widget select,
+.o_doorway_assign_wizard select.o_input,
+.o_doorway_assign_wizard .o_field_many2many_tags,
+.o_doorway_assign_wizard .o_field_many2one input {
+    background-color: var(--ix-surface-elevated, #1f2040) !important;
+    color: var(--ix-text, #f8fafc) !important;
+    border: 1px solid rgba(165, 180, 252, 0.45) !important;
+    border-radius: 8px !important;
+}
+
+.o_doorway_assign_wizard .o_field_widget input:focus,
+.o_doorway_assign_wizard .o_field_widget textarea:focus,
+.o_doorway_assign_wizard .o_field_widget select:focus,
+.o_doorway_assign_wizard input.o_input:focus,
+.o_doorway_assign_wizard textarea.o_input:focus {
+    border-color: #8b5cf6 !important;
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.35) !important;
+    outline: none !important;
+}
+
+/* Texte d'invite (placeholder) suffisamment contrasté */
+.o_doorway_assign_wizard input::placeholder,
+.o_doorway_assign_wizard textarea::placeholder {
+    color: rgba(226, 232, 240, 0.62) !important;
+    opacity: 1 !important;
+}
+
+/* Tags many2many (Leads / Contacts) */
+.o_doorway_assign_wizard .o_field_many2many_tags .o_tag {
+    background: rgba(139, 92, 246, 0.25) !important;
+    color: #ede9fe !important;
+    border: 1px solid rgba(165, 180, 252, 0.4);
+}
+
+/* Cases à cocher WhatsApp / SMS + boutons radio (mode) */
+.o_doorway_assign_wizard .form-check-input,
+.o_doorway_assign_wizard input[type="checkbox"],
+.o_doorway_assign_wizard input[type="radio"] {
+    border: 1px solid rgba(165, 180, 252, 0.7) !important;
+    background-color: var(--ix-surface-elevated, #1f2040) !important;
+}
+.o_doorway_assign_wizard .form-check-input:checked,
+.o_doorway_assign_wizard input[type="checkbox"]:checked,
+.o_doorway_assign_wizard input[type="radio"]:checked {
+    background-color: #8b5cf6 !important;
+    border-color: #8b5cf6 !important;
+}
+.o_doorway_assign_wizard .o_radio_item label,
+.o_doorway_assign_wizard .form-check label {
+    color: var(--ix-text, #e6e9f5) !important;
+}
+
+/* Bloc SYNTHÈSE : valeurs bien visibles */
+.o_doorway_assign_wizard .o_dwz_synthese .o_field_widget,
+.o_doorway_assign_wizard .o_dwz_synthese span {
+    color: var(--ix-text, #ffffff) !important;
+    font-weight: 700;
+    font-size: 15px;
+}
+
+/* Alerte résultat d'import lisible sur fond sombre */
+.o_doorway_assign_wizard .o_dwz_alert.alert-success {
+    background: rgba(34, 197, 94, 0.15) !important;
+    border: 1px solid rgba(34, 197, 94, 0.45) !important;
+    color: #bbf7d0 !important;
+}
+.o_doorway_assign_wizard .o_dwz_alert .o_field_widget {
+    color: #bbf7d0 !important;
+    font-weight: 600;
+}
+
+/* Avertissement (warning) lisible */
+.o_doorway_assign_wizard .alert-warning {
+    background: rgba(234, 179, 8, 0.15) !important;
+    border: 1px solid rgba(234, 179, 8, 0.45) !important;
+    color: #fde68a !important;
+}
+
+/* Liens / boutons de téléchargement du modèle CSV */
+.o_doorway_assign_wizard .o_dwz_alert a,
+.o_doorway_assign_wizard a {
+    color: var(--ix-primary-light, #a5b4fc) !important;
+}

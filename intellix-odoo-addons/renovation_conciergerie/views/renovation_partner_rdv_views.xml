@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_renovation_partner_rdv_list" model="ir.ui.view">
+        <field name="name">renovation.partner.rdv.list</field>
+        <field name="model">renovation.partner.rdv</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="start_at_display" string="Créneau (Canada)"/>
+                <field name="partner_id"/>
+                <field name="booker_id"/>
+                <field name="martin_user_id"/>
+                <field name="state"/>
+                <field name="event_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_renovation_partner_rdv_form" model="ir.ui.view">
+        <field name="name">renovation.partner.rdv.form</field>
+        <field name="model">renovation.partner.rdv</field>
+        <field name="arch" type="xml">
+            <form string="RDV partenaire Réno">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="lead_id"/>
+                            <field name="booker_id"/>
+                            <field name="martin_user_id"/>
+                            <field name="state"/>
+                        </group>
+                        <group>
+                            <field name="start_at_display" readonly="1"/>
+                            <field name="start_at"/>
+                            <field name="stop_at"/>
+                            <field name="event_tz"/>
+                            <field name="event_id"/>
+                        </group>
+                    </group>
+                    <field name="note" placeholder="Note pour Martin"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_renovation_partner_rdv" model="ir.actions.act_window">
+        <field name="name">RDV Martin (Réno Immobilier)</field>
+        <field name="res_model">renovation.partner.rdv</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucun RDV partenaire Réno Immobilier.
+            </p>
+            <p>
+                Depuis une fiche Partenaires (Réno Immobilier), cliquez
+                « Assigner un RDV à Martin ». Les créneaux sont en heure du Canada.
+            </p>
+        </field>
+    </record>
+
+    <record id="view_reno_partner_interaction_list" model="ir.ui.view">
+        <field name="name">renovation.partner.interaction.list</field>
+        <field name="model">renovation.partner.interaction</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="date"/>
+                <field name="kind"/>
+                <field name="summary"/>
+                <field name="user_id"/>
+                <field name="rdv_id" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_reno_partner_interaction_form" model="ir.ui.view">
+        <field name="name">renovation.partner.interaction.form</field>
+        <field name="model">renovation.partner.interaction</field>
+        <field name="arch" type="xml">
+            <form string="Interaction">
+                <group>
+                    <field name="partner_id" readonly="1"/>
+                    <field name="date"/>
+                    <field name="kind"/>
+                    <field name="user_id"/>
+                    <field name="summary"/>
+                    <field name="body"/>
+                    <field name="rdv_id" invisible="not rdv_id"/>
+                </group>
+                <footer>
+                    <button string="Enregistrer" special="save" class="btn-primary"/>
+                    <button string="Annuler" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

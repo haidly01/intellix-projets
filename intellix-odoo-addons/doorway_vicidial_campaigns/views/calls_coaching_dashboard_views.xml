@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_calls_coaching_dashboard" model="ir.actions.client">
+        <field name="name">Dashboard global</field>
+        <field name="tag">calls_coaching_dashboard_action</field>
+    </record>
+
+    <record id="view_crm_lead_tree_vicidial_fields" model="ir.ui.view">
+        <field name="name">crm.lead.tree.vicidial.fields</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_tree_view_leads"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="campagne_vicidial" optional="show" string="Campagne Appels"/>
+                <field name="qualification_statut" widget="badge" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_crm_opportunity_tree_vicidial_fields" model="ir.ui.view">
+        <field name="name">crm.opportunity.tree.vicidial.fields</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_tree_view_oppor"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="campagne_vicidial" optional="show" string="Campagne Appels"/>
+                <field name="qualification_statut" widget="badge" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_crm_lead_calls_search" model="ir.ui.view">
+        <field name="name">crm.lead.calls.search</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.view_crm_case_leads_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='assigned_to_me']" position="after">
+                <separator/>
+                <filter string="Appels VICIdial" name="source_vicidial"
+                        domain="[('source_vicidial','=',True)]"/>
+                <filter string="Qualifiés Appels" name="qual_vicidial_done"
+                        domain="[('source_vicidial','=',True),('qualification_statut','in',('qualifie','rdv','b2b_valide'))]"/>
+                <filter string="À qualifier Appels" name="qual_vicidial_pending"
+                        domain="[('source_vicidial','=',True),('qualification_statut','=','non_fait')]"/>
+                <separator/>
+                <filter string="Pas intéressé" name="qual_pas_interesse"
+                        domain="[('qualification_statut','=','pas_interesse')]"/>
+                <filter string="Déjà servi" name="qual_deja_servi"
+                        domain="[('qualification_statut','=','deja_servi')]"/>
+                <filter string="Locataire" name="qual_locataire"
+                        domain="[('qualification_statut','=','locataire')]"/>
+                <filter string="Rappel" name="qual_rappel"
+                        domain="[('qualification_statut','=','a_rappeler')]"/>
+                <filter string="RDV" name="qual_rdv"
+                        domain="[('qualification_statut','=','rdv')]"/>
+                <filter string="DNC" name="qual_dnc"
+                        domain="[('qualification_statut','=','dnc')]"/>
+                <filter string="Boîte vocale" name="qual_messagerie"
+                        domain="[('qualification_statut','=','messagerie')]"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

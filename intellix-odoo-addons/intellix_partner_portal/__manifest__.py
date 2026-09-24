@@ -1,0 +1,50 @@
+# -*- coding: utf-8 -*-
+{
+    "name": "Intellix — Portail Partenaire",
+    "version": "19.0.1.4.0",
+    "category": "Website/Portal",
+    "summary": "Portail web partenaire — leads, profil, remplacement",
+    "description": """
+        Portail partenaire IntelliX : CRM leads (pipeline Kanban, calendrier,
+        tableau de bord avec analyse), profil (zones, services, capacité, mode pause).
+    """,
+    "author": "Agence Doorway",
+    "depends": [
+        "portal",
+        "website",
+        "crm",
+        "renovation_conciergerie",
+        "intellix_branding",
+        "auth_signup",
+    ],
+    "data": [
+        "security/intellix_partner_portal_security.xml",
+        "security/ir.model.access.csv",
+        "data/sequence_data.xml",
+        "data/demo_partner_portal.xml",
+        "data/portal_manager_migration.xml",
+        "data/lead_status_migration.xml",
+        "views/res_partner_views.xml",
+        "views/res_users_views.xml",
+        "templates/portal_layout.xml",
+        "templates/portal_dashboard.xml",
+        "templates/portal_my_home.xml",
+        "templates/portal_leads.xml",
+        "templates/portal_profile.xml",
+        "templates/portal_billing.xml",
+        "templates/portal_stats.xml",
+        "templates/portal_sales.xml",
+        "templates/portal_visits.xml",
+        "templates/portal_team.xml",
+    ],
+    "assets": {
+        "web.assets_frontend": [
+            "intellix_partner_portal/static/src/css/partner_portal.css",
+            "intellix_partner_portal/static/src/js/partner_portal.js",
+        ],
+    },
+    "post_init_hook": "post_init_hook",
+    "installable": True,
+    "application": False,
+    "license": "LGPL-3",
+}

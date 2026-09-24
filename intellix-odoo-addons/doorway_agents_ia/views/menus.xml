@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Ancienne racine application (doublon) — désactivée après fusion. -->
+    <record id="menu_doorway_agents_root" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+
+    <!-- Menus rattachés au module unique doorway_agents_dashboard (racine Agents IA). -->
+
+    <menuitem id="menu_doorway_dashboard_live"
+              name="Monitoring en direct"
+              parent="doorway_agents_dashboard.menu_agents_root"
+              action="action_doorway_dashboard_live"
+              sequence="15"/>
+
+    <menuitem id="menu_doorway_call_reports"
+              name="Rapports post-appel"
+              parent="doorway_agents_dashboard.menu_agents_root"
+              action="action_doorway_call_report"
+              sequence="25"/>
+
+    <menuitem id="menu_doorway_agents_config"
+              name="Configuration"
+              parent="doorway_agents_dashboard.menu_agents_root"
+              sequence="90"/>
+
+    <menuitem id="menu_doorway_agent_ia"
+              name="Agents vocaux (legacy)"
+              parent="menu_doorway_agents_config"
+              action="action_doorway_agent_ia"
+              sequence="10"/>
+
+    <menuitem id="menu_doorway_vicidial_campaign"
+              name="Campagnes d'appels"
+              parent="menu_doorway_agents_config"
+              action="doorway_vicidial_campaigns.action_doorway_campaign"
+              sequence="20"/>
+
+    <menuitem id="menu_doorway_sessions_all"
+              name="Historique des appels"
+              parent="menu_doorway_agents_config"
+              action="action_doorway_call_sessions_all"
+              sequence="30"/>
+
+    <menuitem id="menu_doorway_agents_onboarding"
+              name="Visite guidée"
+              parent="menu_doorway_agents_config"
+              action="action_agents_onboarding_tour"
+              sequence="5"/>
+</odoo>

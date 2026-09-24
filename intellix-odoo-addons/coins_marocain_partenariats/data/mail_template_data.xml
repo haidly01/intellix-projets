@@ -1,0 +1,559 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="seq_coins_entente" model="ir.sequence">
+        <field name="name">Entente Coins Marocain</field>
+        <field name="code">coins.entente</field>
+        <field name="prefix">ENT/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="mail_template_coins_entente_lien" model="mail.template">
+        <field name="name">Coins — Lien d'activation partenariat</field>
+        <field name="model_id" ref="model_coins_entente"/>
+        <field name="subject">Votre lien partenaire — {{ object.etablissement or 'Coins Marocain' }}</field>
+        <field name="body_html" type="html">
+<div style="font-family:sans-serif;font-size:14px;color:#262220;max-width:600px;">
+  <p>Bonjour <strong><t t-out="object.partenaire_nom or (object.influenceur_id and object.influenceur_id.name) or 'partenaire'"/></strong>,</p>
+  <p>
+    Voici votre lien d'activation pour
+    <strong><t t-out="object.etablissement or 'Coins Marocain'"/></strong> :
+  </p>
+  <p style="margin:20px 0;">
+    <a t-att-href="object.lien_activation"
+       style="background:#b5732f;color:#fff;padding:12px 22px;text-decoration:none;border-radius:4px;font-weight:600;">
+      Ouvrir mon lien
+    </a>
+  </p>
+  <p>
+    Lien : <a t-att-href="object.lien_activation"><t t-out="object.lien_activation or ''"/></a>
+  </p>
+  <p>
+    Code promo : <strong><t t-out="object.code_promo or ''"/></strong>
+  </p>
+  <p>À bientôt,<br/>Coins Marocain</p>
+</div>
+        </field>
+    </record>
+
+    <record id="mail_template_zakaria_channel_manager" model="mail.template">
+        <field name="name">Zakaria — Prospection hôtels (vidéo Channel Manager)</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="subject">Coins Marocain — Channel Manager, fiche et shooting pour {{ object.coins_etablissement or object.partner_name or object.name }}</field>
+        <field name="email_from">Zakaria — Coins Marocain &lt;zakaria@agencedoorway.com&gt;</field>
+        <field name="email_to">{{ object.email_from }}</field>
+        <field name="use_default_to" eval="True"/>
+        <field name="description">Prospection hôtel/riad AVANT l'entente : vidéo + explication Channel Manager. Signature Zakaria.</field>
+        <field name="body_html" type="html">
+<div style="font-family:Arial, Helvetica, sans-serif;font-size:15px;line-height:22px;color:#262220;max-width:600px;">
+  <p>Bonjour <strong><t t-out="object.contact_name or (object.partner_id and object.partner_id.name) or 'Madame, Monsieur'"/></strong>,</p>
+  <p>
+    Merci de m'avoir reçu chez
+    <strong><t t-out="object.coins_etablissement or object.partner_name or object.name or 'votre établissement'"/></strong>.
+    Voici en quelques points ce que Coins Marocain met en place pour les hôtels, riads et villas — avant toute entente.
+  </p>
+  <h2 style="font-family:Georgia, serif;font-size:18px;color:#3a2418;">Une minute pour voir l'offre hôtels, riads et villas</h2>
+  <p>Cette courte vidéo résume ce que Coins Marocain met en place pour votre établissement — fiche, Channel Manager, shooting.</p>
+  <p>
+    <a href="https://coinsmarocain.com/assets/video/prospection-hotels-riads.html" style="display:block;text-decoration:none;">
+      <img src="https://coinsmarocain.com/assets/video/prospection-hotels-riads.jpg" alt="Vidéo Coins Marocain — hôtels, riads et villas" width="528" style="display:block;width:100%;max-width:528px;height:auto;border-radius:4px;"/>
+    </a>
+  </p>
+  <p style="text-align:center;margin:16px 0 24px;">
+    <a href="https://coinsmarocain.com/assets/video/prospection-hotels-riads.html"
+       style="background:#b5732f;color:#fff;padding:12px 22px;text-decoration:none;border-radius:4px;font-weight:600;display:inline-block;">
+      Regarder la vidéo (50 s)
+    </a>
+  </p>
+  <h2 style="font-family:Georgia, serif;font-size:18px;color:#3a2418;">Ce que Coins Marocain vous propose</h2>
+  <p>Coins Marocain met votre établissement en avant sur une plateforme dédiée aux voyageurs qui cherchent des adresses authentiques à Marrakech — avec une courte vidéo de présentation plutôt que de simples photos, et une carte interactive.</p>
+  <ul>
+    <li><strong>Le Channel Manager est gratuit.</strong> Ailleurs, c'est généralement un abonnement payant. Chez nous, il est inclus sans frais.</li>
+    <li><strong>Le shooting photo/vidéo est gratuit</strong> pour les hôtels et auberges (2000 dh pour les autres catégories).</li>
+  </ul>
+  <h2 style="font-family:Georgia, serif;font-size:18px;color:#3a2418;">Qu'est-ce qu'un Channel Manager, concrètement ?</h2>
+  <p>C'est l'outil qui <strong>relie en un seul système central</strong> votre compte Booking.com, votre compte Airbnb (si vous les utilisez) et votre fiche Coins Marocain.</p>
+  <ol>
+    <li><strong>Disponibilités et tarifs à jour partout</strong>, automatiquement.</li>
+    <li><strong>Aucun risque de double réservation.</strong></li>
+    <li><strong>Les réservations arrivent directement chez vous</strong>, avec les coordonnées du voyageur.</li>
+  </ol>
+  <h2 style="font-family:Georgia, serif;font-size:18px;color:#3a2418;">Connexion Booking.com et Airbnb</h2>
+  <p><strong>On ne vous demande jamais votre mot de passe.</strong> Autorisation officielle uniquement — vous gardez le contrôle de vos comptes.</p>
+  <ul>
+    <li><strong>Booking.com</strong> : autorisation depuis l'extranet (section connectivité / Channel Manager tiers).</li>
+    <li><strong>Airbnb</strong> : lien d'autorisation officiel, comme « se connecter avec Google ».</li>
+    <li>Synchronisation généralement sous 24 heures.</li>
+  </ul>
+  <h2 style="font-family:Georgia, serif;font-size:18px;color:#3a2418;">Commission</h2>
+  <ul>
+    <li>Réservation via une plateforme connectée : <strong>10 % en plus</strong> de la commission déjà facturée par Booking/Airbnb.</li>
+    <li>Réservation directe via Coins Marocain : <strong>15 %</strong>.</li>
+  </ul>
+  <p>Aucun abonnement, aucun frais fixe. Aucun frais un mois sans réservation via la plateforme.</p>
+  <h2 style="font-family:Georgia, serif;font-size:18px;color:#3a2418;">Ensuite, si cela vous convient</h2>
+  <ol>
+    <li>Vous me dites si vous voulez avancer.</li>
+    <li>Je vous envoie alors l'entente à valider (signature électronique, code OTP).</li>
+    <li>Shooting photo/vidéo gratuit, mise en ligne de la fiche, connexion du Channel Manager.</li>
+  </ol>
+  <p>Aucun engagement de durée minimale — vous pourrez résilier à tout moment, les modalités seront dans l'entente.</p>
+  <p>Si vous avez des questions, écrivez-moi ou appelez-moi — je reste disponible.</p>
+  <p>Au plaisir de vous compter parmi nos partenaires,</p>
+  <p>
+    <strong>Zakaria</strong><br/>
+    Coins Marocain — Digital Doorway SARL<br/>
+    <a href="tel:+212660159177" style="color:#b5732f;">+212 660 159 177</a>
+    ·
+    <a href="mailto:zakaria@coinsmarocain.com" style="color:#b5732f;">zakaria@coinsmarocain.com</a>
+  </p>
+</div>
+        </field>
+    </record>
+
+    <record id="mail_template_hebergement_acces" model="mail.template">
+        <field name="name">Coins — Accès partenaire hébergement (après signature)</field>
+        <field name="model_id" ref="model_coins_entente"/>
+        <field name="subject">Bienvenue — vos accès Coins Marocain ({{ object.etablissement or object.name }})</field>
+        <field name="email_from">Zakaria — Coins Marocain &lt;zakaria@agencedoorway.com&gt;</field>
+        <field name="email_to">{{ object.partner_id.email or object.contact_partenaire }}</field>
+        <field name="description">Envoyé automatiquement après signature électronique de l'entente hébergement.</field>
+        <field name="body_html" type="html">
+<div style="font-family:sans-serif;font-size:14px;color:#262220;max-width:600px;">
+  <p>Bonjour <strong><t t-out="object.partenaire_nom or (object.partner_id and object.partner_id.name) or 'partenaire'"/></strong>,</p>
+  <p>
+    Merci d'avoir validé l'entente Channel Manager pour
+    <strong><t t-out="object.etablissement or 'votre établissement'"/></strong>.
+  </p>
+  <p>Vos accès client sont prêts. Connectez-vous au portail IntelliX avec l'adresse e-mail utilisée pour la signature. Si c'est votre première connexion, un e-mail de création de mot de passe vous a été envoyé.</p>
+  <p>Prochaines étapes de notre côté :</p>
+  <ul>
+    <li>planifier le shooting photo/vidéo (inclus, sans frais) ;</li>
+    <li>connecter le Channel Manager à Booking.com et/ou Airbnb, par autorisation officielle uniquement — jamais votre mot de passe.</li>
+  </ul>
+  <p>À très vite,<br/>Zakaria<br/>Coins Marocain — Digital Doorway SARL</p>
+</div>
+        </field>
+    </record>
+
+    <record id="mail_template_zakaria_suite_rencontre" model="mail.template">
+        <field name="name">Zakaria — Suite à notre rencontre</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="subject">Suite à notre rencontre — {{ object.coins_etablissement or object.partner_name or object.name or 'Coins Marocain' }}</field>
+        <field name="email_from">Zakaria — Coins Marocain &lt;zakaria@agencedoorway.com&gt;</field>
+        <field name="email_to">{{ object.email_from }}</field>
+        <field name="use_default_to" eval="True"/>
+        <field name="description">Après une visite hôtel/riad. Prénom, établissement et lien fiche viennent de la fiche CRM. CTA = Compléter ma fiche. Signature Zakaria. Zakaria peut modifier le brouillon.</field>
+        <field name="body_html" type="html">
+<div style="margin:0;background:#F3ECDC;font-family:Jost,Segoe UI,Helvetica,Arial,sans-serif;color:#3A2E1F;">
+  <div style="max-width:600px;margin:0 auto;background:#FFFDF8;">
+    <div style="background:#3A2E1F;padding:36px 40px;text-align:center;">
+      <div style="font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:26px;color:#F3ECDC;letter-spacing:.02em;">Coins Marocain</div>
+      <div style="font-size:10.5px;letter-spacing:.25em;text-transform:uppercase;color:#C9A227;margin-top:6px;">Vos bons plans, notre mission</div>
+    </div>
+    <div style="padding:42px 44px;">
+      <t t-set="cm_prenom" t-value="((object.contact_name or (object.partner_id.name if object.partner_id else '') or '').strip().split() or ['bonjour'])[0]"/>
+      <t t-set="cm_hotel" t-value="object.coins_etablissement or object.partner_name or object.name or 'votre établissement'"/>
+      <h1 style="font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:27px;color:#3A2E1F;margin:0 0 18px;line-height:1.3;">Merci pour votre accueil</h1>
+      <p style="font-size:14.5px;line-height:1.75;color:#4E4230;margin:0 0 16px;">Bonjour <t t-out="cm_prenom"/>,</p>
+      <p style="font-size:14.5px;line-height:1.75;color:#4E4230;margin:0 0 16px;">
+        C'était un vrai plaisir de vous rencontrer et d'échanger sur la manière dont on pourrait connecter
+        <strong><t t-out="cm_hotel"/></strong>
+        à notre réseau de plus de 200 sites de réservation — Booking, Airbnb et bien d'autres, synchronisés automatiquement sans double saisie. Voici un petit récapitulatif de ce dont on a parlé.
+      </p>
+      <div style="background:#F8F2E4;border:1px solid #E4D6B0;border-radius:8px;padding:22px 24px;margin:22px 0;">
+        <div style="font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;color:#C9A227;margin-bottom:12px;font-weight:600;">Ce qu'on vous propose</div>
+        <div style="margin-bottom:14px;">
+          <div style="font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:16.5px;color:#3A2E1F;">Digitalisation <span style="font-size:12.5px;color:#8A6A2F;font-weight:500;">— 10% ou 1 500 DH/mois</span></div>
+          <div style="font-size:13px;color:#5C4D38;line-height:1.6;margin-top:2px;">Connexion à notre channel manager, déjà relié à plus de 200 sites de réservation (Booking, Airbnb, etc.) — vos disponibilités se synchronisent partout, automatiquement.</div>
+        </div>
+        <div style="margin-bottom:14px;">
+          <div style="font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:16.5px;color:#3A2E1F;">Visibilité Coins Marocain <span style="font-size:12.5px;color:#8A6A2F;font-weight:500;">— 15% de commission</span></div>
+          <div style="font-size:13px;color:#5C4D38;line-height:1.6;margin-top:2px;">Votre fiche mise en avant sur notre carte interactive, sans frais fixe — vous ne payez que sur les réservations réelles.</div>
+        </div>
+        <div>
+          <div style="font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:16.5px;color:#3A2E1F;">Marketing <span style="font-size:12.5px;color:#8A6A2F;font-weight:500;">— à partir de 2 000 DH</span></div>
+          <div style="font-size:13px;color:#5C4D38;line-height:1.6;margin-top:2px;">Site internet, réseaux sociaux et shooting photo/vidéo mensuel avec notre agence Doorway.</div>
+        </div>
+      </div>
+      <div style="text-align:center;margin:30px 0;color:#C9A227;font-size:14px;">✦</div>
+      <div style="margin:26px 0;">
+        <div style="font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;color:#C9A227;margin-bottom:12px;font-weight:600;">Notre écosystème</div>
+        <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:separate;border-spacing:10px 10px;">
+          <tr>
+            <td width="50%" style="background:#F8F2E4;border:1px solid #E4D6B0;border-radius:8px;padding:14px;text-align:center;">
+              <a href="https://coinsmarocain.com" style="font-size:13px;color:#3A2E1F;font-weight:500;text-decoration:none;">coinsmarocain.com</a>
+            </td>
+            <td width="50%" style="background:#F8F2E4;border:1px solid #E4D6B0;border-radius:8px;padding:14px;text-align:center;">
+              <a href="https://coinsquebec.com" style="font-size:13px;color:#3A2E1F;font-weight:500;text-decoration:none;">coinsquebec.com</a>
+            </td>
+          </tr>
+          <tr>
+            <td width="50%" style="background:#F8F2E4;border:1px solid #E4D6B0;border-radius:8px;padding:14px;text-align:center;">
+              <a href="https://intellixcrm.com" style="font-size:13px;color:#3A2E1F;font-weight:500;text-decoration:none;">intellixcrm.com</a>
+            </td>
+            <td width="50%" style="background:#F8F2E4;border:1px solid #E4D6B0;border-radius:8px;padding:14px;text-align:center;">
+              <a href="https://agencedoorway.com" style="font-size:13px;color:#3A2E1F;font-weight:500;text-decoration:none;">agencedoorway.com</a>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <a href="https://coinsmarocain.com/assets/video/prospection-hotels-riads.html" style="text-decoration:none;display:block;margin:20px 0 8px;">
+        <img src="https://coinsmarocain.com/assets/video/prospection-hotels-riads.jpg" width="520" alt="Voir la vidéo" style="display:block;width:100%;max-width:520px;height:auto;border:0;border-radius:10px;"/>
+      </a>
+      <p style="text-align:center;margin:0 0 28px;font-size:11px;color:#B79A5C;letter-spacing:.06em;text-transform:uppercase;">Voir la vidéo de présentation</p>
+      <div style="margin:30px 0;">
+        <div style="font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;color:#C9A227;margin-bottom:14px;font-weight:600;">Et si vous voulez aller plus loin</div>
+        <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:separate;border-spacing:12px 12px;">
+          <tr>
+            <td width="50%" style="background:#F8F2E4;border:1px solid #E4D6B0;border-radius:8px;padding:16px;text-align:center;">
+              <div style="font-size:20px;margin-bottom:6px;">🌐</div>
+              <div style="font-size:12.5px;color:#3A2E1F;font-weight:500;line-height:1.4;">Site internet</div>
+            </td>
+            <td width="50%" style="background:#F8F2E4;border:1px solid #E4D6B0;border-radius:8px;padding:16px;text-align:center;">
+              <div style="font-size:20px;margin-bottom:6px;">📷</div>
+              <div style="font-size:12.5px;color:#3A2E1F;font-weight:500;line-height:1.4;">Shooting photo &amp; vidéo</div>
+            </td>
+          </tr>
+          <tr>
+            <td width="50%" style="background:#F8F2E4;border:1px solid #E4D6B0;border-radius:8px;padding:16px;text-align:center;">
+              <div style="font-size:20px;margin-bottom:6px;">📱</div>
+              <div style="font-size:12.5px;color:#3A2E1F;font-weight:500;line-height:1.4;">Réseaux sociaux</div>
+            </td>
+            <td width="50%" style="background:#F8F2E4;border:1px solid #E4D6B0;border-radius:8px;padding:16px;text-align:center;">
+              <div style="font-size:20px;margin-bottom:6px;">🎉</div>
+              <div style="font-size:12.5px;color:#3A2E1F;font-weight:500;line-height:1.4;">Organisation d'événements</div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:30px 0 8px;">
+        <tr>
+          <td style="background:#3A2E1F;color:#F3ECDC;border-radius:8px;padding:22px 24px;text-align:center;">
+            <p style="font-size:14.5px;line-height:1.75;color:#F3ECDC;margin:0 0 16px;">Prêt·e à démarrer ? Un seul lien pour compléter votre fiche — vous pourrez cocher toutes les catégories qui s'appliquent (hébergement, resto, spa) directement dans le formulaire.</p>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto 14px;">
+              <tr>
+                <td align="center" bgcolor="#C9A227" style="background-color:#C9A227;border-radius:24px;">
+                  <a href="https://coinsmarocain.com/partenaire" t-att-href="(object.coins_partner_lien or '').strip() or 'https://coinsmarocain.com/partenaire'" target="_blank" style="display:inline-block;padding:12px 28px;font-family:Jost,Segoe UI,Helvetica,Arial,sans-serif;font-size:13.5px;font-weight:600;color:#3A2E1F;text-decoration:none;letter-spacing:.02em;">Compléter ma fiche</a>
+                </td>
+              </tr>
+            </table>
+            <p style="font-size:12px;line-height:1.6;color:#E4D6B0;margin:0;">
+              Si le bouton ne s'affiche pas, ouvrez ce lien :<br/>
+              <a href="https://coinsmarocain.com/partenaire" t-att-href="(object.coins_partner_lien or '').strip() or 'https://coinsmarocain.com/partenaire'" target="_blank" style="color:#C9A227;word-break:break-all;">
+                <t t-out="(object.coins_partner_lien or '').strip() or 'https://coinsmarocain.com/partenaire'"/>
+              </a>
+            </p>
+          </td>
+        </tr>
+      </table>
+      <div style="margin-top:34px;font-size:14px;color:#4E4230;line-height:1.7;">
+        Au plaisir de vous accueillir parmi nos partenaires,<br/>
+        <span style="font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:17px;color:#3A2E1F;">Zakaria</span><br/>
+        Coins Marocain
+      </div>
+    </div>
+    <div style="padding:20px 40px 30px;text-align:center;font-size:10.5px;color:#B79A5C;letter-spacing:.05em;">COINS MAROCAIN — MARRAKECH</div>
+  </div>
+</div>
+        </field>
+    </record>
+
+    <record id="mail_template_zakaria_suite_rencontre_restaurant" model="mail.template">
+        <field name="name">Coins Marocain — Suivi rencontre (restaurant)</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="subject">Suite à notre rencontre — {{ object.coins_etablissement or object.partner_name or object.name or 'votre établissement' }} sur Coins Marocain</field>
+        <field name="email_from">Zakaria — Coins Marocain &lt;zakaria@agencedoorway.com&gt;</field>
+        <field name="email_to">{{ object.email_from }}</field>
+        <field name="use_default_to" eval="True"/>
+        <field name="auto_delete" eval="False"/>
+        <field name="description">Envoi MANUEL depuis la fiche lead CM (bouton Envoyer suivi rencontre). Variante restaurant. Vidéo = URL placeholder à remplacer une fois hébergée — pas de pièce jointe.</field>
+        <field name="body_html" type="html">
+<div style="margin:0;background:#faf6ee;font-family:Jost,Segoe UI,sans-serif;color:#262220;">
+  <div style="max-width:600px;margin:0 auto;background:#fffdf8;border:1px solid #e6ddcc;">
+    <div style="background:linear-gradient(135deg,#e6b876,#b5732f);padding:28px 32px;color:#fffdf8;">
+      <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;">Coins Marocain</div>
+      <div style="font-family:'Playfair Display','Cormorant Garamond',Georgia,serif;font-size:28px;margin-top:6px;">Suite à notre rencontre</div>
+    </div>
+    <div style="padding:28px 32px;">
+      <t t-set="cm_prenom" t-value="((object.contact_name or (object.partner_id.name if object.partner_id else '') or '').strip().split() or ['bonjour'])[0]"/>
+      <t t-set="cm_etab" t-value="object.coins_etablissement or object.partner_name or object.name or 'votre établissement'"/>
+      <p>Bonjour <strong><t t-out="cm_prenom"/></strong>,</p>
+      <p>
+        Merci pour votre accueil et pour l'échange autour de
+        <strong><t t-out="cm_etab"/></strong>.
+        Voici un court récapitulatif de ce que Coins Marocain peut mettre en place pour votre restaurant.
+      </p>
+      <p style="text-align:center;margin:28px 0 8px;">
+        <a href="https://coinsmarocain.com/assets/video/PLACEHOLDER-a-remplacer-une-fois-hebergee.html"
+           style="background:linear-gradient(135deg,#e6b876,#b5732f);color:#fff;padding:12px 22px;text-decoration:none;border-radius:8px;font-weight:600;display:inline-block;">
+          Voir la vidéo de démonstration
+        </a>
+      </p>
+      <p style="text-align:center;font-size:12px;color:#8a4f22;margin:0 0 24px;">
+        À REMPLACER une fois la vidéo hébergée — lien cliquable uniquement, pas de pièce jointe.
+      </p>
+      <div style="background:#faf6ee;border:1px solid #e6b876;border-radius:8px;padding:20px 22px;margin:8px 0 22px;">
+        <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8a4f22;margin-bottom:14px;font-weight:600;">Trois piliers</div>
+        <div style="margin-bottom:16px;">
+          <div style="font-family:'Playfair Display','Cormorant Garamond',Georgia,serif;font-size:18px;color:#8a4f22;">Visibilité Coins Marocain</div>
+          <div style="font-size:13px;line-height:1.6;color:#5c4d38;margin-top:4px;">Votre fiche mise en avant auprès des voyageurs — <strong>15 % de commission</strong> sur les réservations via la plateforme.</div>
+        </div>
+        <div style="margin-bottom:16px;">
+          <div style="font-family:'Playfair Display','Cormorant Garamond',Georgia,serif;font-size:18px;color:#8a4f22;">Digitalisation</div>
+          <div style="font-size:13px;line-height:1.6;color:#5c4d38;margin-top:4px;">Gestion des réservations, personnel / présence, pricing dynamique — <strong>10 % des réservations ou 1 500 DH/mois</strong>.</div>
+        </div>
+        <div>
+          <div style="font-family:'Playfair Display','Cormorant Garamond',Georgia,serif;font-size:18px;color:#8a4f22;">Marketing Doorway</div>
+          <div style="font-size:13px;line-height:1.6;color:#5c4d38;margin-top:4px;">Site, réseaux sociaux et shooting photo / vidéo avec l'agence Doorway, pour faire vivre votre adresse au-delà de la fiche.</div>
+        </div>
+      </div>
+      <p>L'inscription est <strong>gratuite et sans engagement</strong>. Vous restez maître de vos tarifs et de vos disponibilités.</p>
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:28px 0 8px;">
+        <tr>
+          <td style="background:#3A2E1F;color:#F3ECDC;border-radius:8px;padding:22px 24px;text-align:center;">
+            <p style="font-size:14.5px;line-height:1.75;color:#F3ECDC;margin:0 0 16px;">Prêt·e à démarrer ? Un seul lien pour compléter votre fiche — cochez toutes les catégories qui s'appliquent (hébergement, resto, spa) dans le formulaire.</p>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
+              <tr>
+                <td align="center" bgcolor="#C9A227" style="background-color:#C9A227;border-radius:8px;">
+                  <a href="https://coinsmarocain.com/partenaire" t-att-href="(object.coins_partner_lien or '').strip() or 'https://coinsmarocain.com/partenaire'" target="_blank" style="display:inline-block;padding:12px 22px;font-weight:600;font-size:14px;color:#3A2E1F;text-decoration:none;">Compléter ma fiche</a>
+                </td>
+              </tr>
+            </table>
+            <p style="font-size:12px;color:#E4D6B0;margin:14px 0 0;">
+              Lien : <a href="https://coinsmarocain.com/partenaire" t-att-href="(object.coins_partner_lien or '').strip() or 'https://coinsmarocain.com/partenaire'" target="_blank" style="color:#C9A227;word-break:break-all;"><t t-out="(object.coins_partner_lien or '').strip() or 'https://coinsmarocain.com/partenaire'"/></a>
+            </p>
+          </td>
+        </tr>
+      </table>
+      <p style="margin-top:28px;">
+        Au plaisir de vous compter parmi nos partenaires,<br/>
+        <span style="font-family:'Playfair Display','Cormorant Garamond',Georgia,serif;font-style:italic;font-size:17px;color:#8a4f22;">Zakaria</span><br/>
+        Coins Marocain — Digital Doorway SARL<br/>
+        <a href="tel:+212660159177" style="color:#b5732f;">+212 660 159 177</a>
+        ·
+        <a href="mailto:zakaria@coinsmarocain.com" style="color:#b5732f;">zakaria@coinsmarocain.com</a>
+      </p>
+    </div>
+  </div>
+</div>
+        </field>
+    </record>
+
+    <record id="mail_template_zakaria_suite_rencontre_spa" model="mail.template">
+        <field name="name">Coins Marocain — Suivi rencontre (spa / hammam)</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="subject">Suite à notre rencontre — {{ object.coins_etablissement or object.partner_name or object.name or 'votre établissement' }} sur Coins Marocain</field>
+        <field name="email_from">Zakaria — Coins Marocain &lt;zakaria@agencedoorway.com&gt;</field>
+        <field name="email_to">{{ object.email_from }}</field>
+        <field name="use_default_to" eval="True"/>
+        <field name="auto_delete" eval="False"/>
+        <field name="description">Envoi MANUEL depuis la fiche lead CM (bouton Envoyer suivi rencontre). Variante spa / hammam. Vidéo = URL placeholder à remplacer une fois hébergée — pas de pièce jointe.</field>
+        <field name="body_html" type="html">
+<div style="margin:0;background:#faf6ee;font-family:Jost,Segoe UI,sans-serif;color:#262220;">
+  <div style="max-width:600px;margin:0 auto;background:#fffdf8;border:1px solid #e6ddcc;">
+    <div style="background:linear-gradient(135deg,#e6b876,#b5732f);padding:28px 32px;color:#fffdf8;">
+      <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;">Coins Marocain</div>
+      <div style="font-family:'Playfair Display','Cormorant Garamond',Georgia,serif;font-size:28px;margin-top:6px;">Suite à notre rencontre</div>
+    </div>
+    <div style="padding:28px 32px;">
+      <t t-set="cm_prenom" t-value="((object.contact_name or (object.partner_id.name if object.partner_id else '') or '').strip().split() or ['bonjour'])[0]"/>
+      <t t-set="cm_etab" t-value="object.coins_etablissement or object.partner_name or object.name or 'votre établissement'"/>
+      <p>Bonjour <strong><t t-out="cm_prenom"/></strong>,</p>
+      <p>
+        Merci pour votre accueil et pour l'échange autour de
+        <strong><t t-out="cm_etab"/></strong>.
+        Voici un court récapitulatif de ce que Coins Marocain peut mettre en place pour votre spa ou hammam.
+      </p>
+      <p style="text-align:center;margin:28px 0 8px;">
+        <a href="https://coinsmarocain.com/assets/video/PLACEHOLDER-a-remplacer-une-fois-hebergee.html"
+           style="background:linear-gradient(135deg,#e6b876,#b5732f);color:#fff;padding:12px 22px;text-decoration:none;border-radius:8px;font-weight:600;display:inline-block;">
+          Voir la vidéo de démonstration
+        </a>
+      </p>
+      <p style="text-align:center;font-size:12px;color:#8a4f22;margin:0 0 24px;">
+        À REMPLACER une fois la vidéo hébergée — lien cliquable uniquement, pas de pièce jointe.
+      </p>
+      <div style="background:#faf6ee;border:1px solid #e6b876;border-radius:8px;padding:20px 22px;margin:8px 0 22px;">
+        <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8a4f22;margin-bottom:14px;font-weight:600;">Trois piliers</div>
+        <div style="margin-bottom:16px;">
+          <div style="font-family:'Playfair Display','Cormorant Garamond',Georgia,serif;font-size:18px;color:#8a4f22;">Visibilité Coins Marocain</div>
+          <div style="font-size:13px;line-height:1.6;color:#5c4d38;margin-top:4px;">Votre fiche mise en avant auprès des voyageurs — <strong>15 % de commission</strong> sur les réservations via la plateforme.</div>
+        </div>
+        <div style="margin-bottom:16px;">
+          <div style="font-family:'Playfair Display','Cormorant Garamond',Georgia,serif;font-size:18px;color:#8a4f22;">Digitalisation</div>
+          <div style="font-size:13px;line-height:1.6;color:#5c4d38;margin-top:4px;">Réservations en ligne, cross-selling de soins, présence employé — <strong>10 % ou 1 500 DH/mois</strong>.</div>
+        </div>
+        <div>
+          <div style="font-family:'Playfair Display','Cormorant Garamond',Georgia,serif;font-size:18px;color:#8a4f22;">Marketing Doorway</div>
+          <div style="font-size:13px;line-height:1.6;color:#5c4d38;margin-top:4px;">Site, réseaux sociaux et shooting photo / vidéo avec l'agence Doorway, pour faire vivre votre adresse au-delà de la fiche.</div>
+        </div>
+      </div>
+      <p>L'inscription est <strong>gratuite et sans engagement</strong>. Vous restez maître de vos tarifs et de vos disponibilités.</p>
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:28px 0 8px;">
+        <tr>
+          <td style="background:#3A2E1F;color:#F3ECDC;border-radius:8px;padding:22px 24px;text-align:center;">
+            <p style="font-size:14.5px;line-height:1.75;color:#F3ECDC;margin:0 0 16px;">Prêt·e à démarrer ? Un seul lien pour compléter votre fiche — cochez toutes les catégories qui s'appliquent (hébergement, resto, spa) dans le formulaire.</p>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
+              <tr>
+                <td align="center" bgcolor="#C9A227" style="background-color:#C9A227;border-radius:8px;">
+                  <a href="https://coinsmarocain.com/partenaire" t-att-href="(object.coins_partner_lien or '').strip() or 'https://coinsmarocain.com/partenaire'" target="_blank" style="display:inline-block;padding:12px 22px;font-weight:600;font-size:14px;color:#3A2E1F;text-decoration:none;">Compléter ma fiche</a>
+                </td>
+              </tr>
+            </table>
+            <p style="font-size:12px;color:#E4D6B0;margin:14px 0 0;">
+              Lien : <a href="https://coinsmarocain.com/partenaire" t-att-href="(object.coins_partner_lien or '').strip() or 'https://coinsmarocain.com/partenaire'" target="_blank" style="color:#C9A227;word-break:break-all;"><t t-out="(object.coins_partner_lien or '').strip() or 'https://coinsmarocain.com/partenaire'"/></a>
+            </p>
+          </td>
+        </tr>
+      </table>
+      <p style="margin-top:28px;">
+        Au plaisir de vous compter parmi nos partenaires,<br/>
+        <span style="font-family:'Playfair Display','Cormorant Garamond',Georgia,serif;font-style:italic;font-size:17px;color:#8a4f22;">Zakaria</span><br/>
+        Coins Marocain — Digital Doorway SARL<br/>
+        <a href="tel:+212660159177" style="color:#b5732f;">+212 660 159 177</a>
+        ·
+        <a href="mailto:zakaria@coinsmarocain.com" style="color:#b5732f;">zakaria@coinsmarocain.com</a>
+      </p>
+    </div>
+  </div>
+</div>
+        </field>
+    </record>
+
+
+    <record id="mail_template_zakaria_suite_rencontre_activite" model="mail.template">
+        <field name="name">Coins Marocain — Suivi rencontre (activité)</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="subject">Suite à notre rencontre — {{ object.coins_etablissement or object.partner_name or object.name or 'votre établissement' }} sur Coins Marocain</field>
+        <field name="email_from">Zakaria — Coins Marocain &lt;zakaria@agencedoorway.com&gt;</field>
+        <field name="email_to">{{ object.email_from }}</field>
+        <field name="use_default_to" eval="True"/>
+        <field name="auto_delete" eval="False"/>
+        <field name="description">Envoi MANUEL depuis la fiche lead CM (bouton Envoyer suivi rencontre). Variante activité. Vidéo = URL placeholder à remplacer une fois hébergée — pas de pièce jointe.</field>
+        <field name="body_html" type="html">
+<div style="margin:0;background:#faf6ee;font-family:Jost,Segoe UI,sans-serif;color:#262220;">
+  <div style="max-width:600px;margin:0 auto;background:#fffdf8;border:1px solid #e6ddcc;">
+    <div style="background:linear-gradient(135deg,#e6b876,#b5732f);padding:28px 32px;color:#fffdf8;">
+      <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;">Coins Marocain</div>
+      <div style="font-family:'Playfair Display','Cormorant Garamond',Georgia,serif;font-size:28px;margin-top:6px;">Suite à notre rencontre</div>
+    </div>
+    <div style="padding:28px 32px;">
+      <t t-set="cm_prenom" t-value="((object.contact_name or (object.partner_id.name if object.partner_id else '') or '').strip().split() or ['bonjour'])[0]"/>
+      <t t-set="cm_etab" t-value="object.coins_etablissement or object.partner_name or object.name or 'votre établissement'"/>
+      <p>Bonjour <strong><t t-out="cm_prenom"/></strong>,</p>
+      <p>
+        Merci pour votre accueil et pour l'échange autour de
+        <strong><t t-out="cm_etab"/></strong>.
+        Voici un court récapitulatif de ce que Coins Marocain peut mettre en place pour votre activité.
+      </p>
+      <p style="text-align:center;margin:28px 0 8px;">
+        <a href="https://coinsmarocain.com/assets/video/PLACEHOLDER-a-remplacer-une-fois-hebergee.html"
+           style="background:linear-gradient(135deg,#e6b876,#b5732f);color:#fff;padding:12px 22px;text-decoration:none;border-radius:8px;font-weight:600;display:inline-block;">
+          Voir la vidéo de démonstration
+        </a>
+      </p>
+      <p style="text-align:center;font-size:12px;color:#8a4f22;margin:0 0 24px;">
+        À REMPLACER une fois la vidéo hébergée — lien cliquable uniquement, pas de pièce jointe.
+      </p>
+      <div style="background:#faf6ee;border:1px solid #e6b876;border-radius:8px;padding:20px 22px;margin:8px 0 22px;">
+        <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8a4f22;margin-bottom:14px;font-weight:600;">Trois piliers</div>
+        <div style="margin-bottom:16px;">
+          <div style="font-family:'Playfair Display','Cormorant Garamond',Georgia,serif;font-size:18px;color:#8a4f22;">Visibilité Coins Marocain</div>
+          <div style="font-size:13px;line-height:1.6;color:#5c4d38;margin-top:4px;">Votre fiche mise en avant auprès des voyageurs — <strong>15 % de commission</strong> sur les réservations via la plateforme.</div>
+        </div>
+        <div style="margin-bottom:16px;">
+          <div style="font-family:'Playfair Display','Cormorant Garamond',Georgia,serif;font-size:18px;color:#8a4f22;">Digitalisation</div>
+          <div style="font-size:13px;line-height:1.6;color:#5c4d38;margin-top:4px;">Calendrier, réservations directes, connexion au site — <strong>10 % ou 1 500 DH/mois</strong>.</div>
+        </div>
+        <div>
+          <div style="font-family:'Playfair Display','Cormorant Garamond',Georgia,serif;font-size:18px;color:#8a4f22;">Marketing Doorway</div>
+          <div style="font-size:13px;line-height:1.6;color:#5c4d38;margin-top:4px;">Site, réseaux sociaux et shooting photo / vidéo avec l'agence Doorway, pour faire vivre votre adresse au-delà de la fiche.</div>
+        </div>
+      </div>
+      <p>L'inscription est <strong>gratuite et sans engagement</strong>. Vous restez maître de vos tarifs et de vos disponibilités.</p>
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:28px 0 8px;">
+        <tr>
+          <td style="background:#3A2E1F;color:#F3ECDC;border-radius:8px;padding:22px 24px;text-align:center;">
+            <p style="font-size:14.5px;line-height:1.75;color:#F3ECDC;margin:0 0 16px;">Prêt·e à démarrer ? Un seul lien pour compléter votre fiche — cochez toutes les catégories qui s'appliquent (hébergement, resto, spa) dans le formulaire.</p>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
+              <tr>
+                <td align="center" bgcolor="#C9A227" style="background-color:#C9A227;border-radius:8px;">
+                  <a href="https://coinsmarocain.com/partenaire" t-att-href="(object.coins_partner_lien or '').strip() or 'https://coinsmarocain.com/partenaire'" target="_blank" style="display:inline-block;padding:12px 22px;font-weight:600;font-size:14px;color:#3A2E1F;text-decoration:none;">Compléter ma fiche</a>
+                </td>
+              </tr>
+            </table>
+            <p style="font-size:12px;color:#E4D6B0;margin:14px 0 0;">
+              Lien : <a href="https://coinsmarocain.com/partenaire" t-att-href="(object.coins_partner_lien or '').strip() or 'https://coinsmarocain.com/partenaire'" target="_blank" style="color:#C9A227;word-break:break-all;"><t t-out="(object.coins_partner_lien or '').strip() or 'https://coinsmarocain.com/partenaire'"/></a>
+            </p>
+          </td>
+        </tr>
+      </table>
+      <p style="margin-top:28px;">
+        Au plaisir de vous compter parmi nos partenaires,<br/>
+        <span style="font-family:'Playfair Display','Cormorant Garamond',Georgia,serif;font-style:italic;font-size:17px;color:#8a4f22;">Zakaria</span><br/>
+        Coins Marocain — Digital Doorway SARL<br/>
+        <a href="tel:+212660159177" style="color:#b5732f;">+212 660 159 177</a>
+        ·
+        <a href="mailto:zakaria@coinsmarocain.com" style="color:#b5732f;">zakaria@coinsmarocain.com</a>
+      </p>
+    </div>
+  </div>
+</div>
+        </field>
+    </record>
+
+    <record id="mail_template_cm_intro_entente" model="mail.template">
+        <field name="name">Coins Marocain — Introduction 1 (courrier de bonjour)</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="subject">Coins Marocain × {{ object.coins_etablissement or object.partner_name or object.name or 'votre établissement' }} — présentation de l'entente de partenariat</field>
+        <field name="email_from">Zakaria — Coins Marocain &lt;zakaria@agencedoorway.com&gt;</field>
+        <field name="email_to">{{ object.email_from }}</field>
+        <field name="use_default_to" eval="True"/>
+        <field name="auto_delete" eval="False"/>
+        <field name="description">Courrier de bonjour — présentation de l'entente. Corps = data/emails/email_introduction_entente.html. Lien vers le devis/entente, jamais de pièce jointe. Envoi MANUEL, à valider avant le partenaire.</field>
+        <field name="body_html" type="html"><div>Voir data/emails/email_introduction_entente.html</div></field>
+    </record>
+
+    <record id="mail_template_lien_partenaire_onboarding" model="mail.template">
+        <field name="name">Coins — Lien fiche partenaire (/partenaire)</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="subject">Complétez la fiche {{ object.coins_etablissement or object.name }} — Coins Marocain</field>
+        <field name="email_from">Zakaria — Coins Marocain &lt;zakaria@agencedoorway.com&gt;</field>
+        <field name="email_to">{{ object.email_from }}</field>
+        <field name="use_default_to" eval="False"/>
+        <field name="auto_delete" eval="False"/>
+        <field name="description">Lien tokenisé d'auto-complétion. Envoyé depuis la fiche pipeline partenariats.</field>
+        <field name="body_html" type="html">
+<div style="margin:0;background:#faf6ee;font-family:Jost,Segoe UI,sans-serif;color:#262220;">
+  <div style="max-width:600px;margin:0 auto;background:#fffdf8;border:1px solid #e6ddcc;">
+    <div style="background:linear-gradient(135deg,#e6b876,#b5732f);padding:28px 32px;color:#fffdf8;">
+      <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;">Coins Marocain</div>
+      <div style="font-family:'Cormorant Garamond',Georgia,serif;font-size:28px;margin-top:6px;">Votre fiche partenaire</div>
+    </div>
+    <div style="padding:28px 32px;">
+      <p>Bonjour <strong><t t-out="object.contact_name or 'bonjour'"/></strong>,</p>
+      <p>
+        Complétez la fiche de
+        <strong><t t-out="object.coins_etablissement or object.name"/></strong>
+        — photos, description et informations pratiques.
+        Rien n'est publié sans validation de notre équipe.
+      </p>
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:28px auto 12px;">
+        <tr>
+          <td align="center" bgcolor="#b5732f" style="background-color:#b5732f;border-radius:8px;">
+            <a href="https://coinsmarocain.com/partenaire" t-att-href="(object.coins_partner_lien or '').strip() or 'https://coinsmarocain.com/partenaire'" target="_blank" style="display:inline-block;padding:12px 22px;font-weight:600;font-size:14px;color:#ffffff;text-decoration:none;">Ouvrir ma fiche</a>
+          </td>
+        </tr>
+      </table>
+      <p style="font-size:13px;color:#8a8172;">
+        Lien personnel (ne pas transmettre) :<br/>
+        <a href="https://coinsmarocain.com/partenaire" t-att-href="(object.coins_partner_lien or '').strip() or 'https://coinsmarocain.com/partenaire'" target="_blank" style="color:#b5732f;word-break:break-all;"><t t-out="(object.coins_partner_lien or '').strip() or 'https://coinsmarocain.com/partenaire'"/></a>
+      </p>
+      <p>À bientôt,<br/>Zakaria — Coins Marocain</p>
+    </div>
+  </div>
+</div>
+        </field>
+    </record>
+</odoo>

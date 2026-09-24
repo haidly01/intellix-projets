@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="lms_portal_my_training" name="Ma formation PE">
+        <t t-call="web.frontend_layout">
+            <div class="container py-4">
+                <h1>Ma formation</h1>
+                <h3 class="mt-4">Parcours actifs</h3>
+                <ul>
+                    <li t-foreach="paths" t-as="path" t-key="path.id">
+                        <t t-esc="path.name"/> — <t t-esc="path.completion_percent"/>%
+                    </li>
+                </ul>
+                <h3 class="mt-4">Cours en cours</h3>
+                <ul>
+                    <li t-foreach="enrollments" t-as="enr" t-key="enr.id">
+                        <t t-esc="enr.course_id.title"/> (<t t-esc="enr.status"/>)
+                    </li>
+                </ul>
+            </div>
+        </t>
+    </template>
+    <template id="lms_portal_empty" name="Formation PE vide">
+        <t t-call="web.frontend_layout">
+            <div class="container py-4"><p t-esc="message"/></div>
+        </t>
+    </template>
+</odoo>

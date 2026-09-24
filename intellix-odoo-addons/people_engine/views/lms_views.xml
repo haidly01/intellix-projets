@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pe_course_tree" model="ir.ui.view">
+        <field name="name">pe.course.tree</field>
+        <field name="model">pe.course</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="title"/>
+                <field name="category"/>
+                <field name="course_type"/>
+                <field name="duration_hours"/>
+                <field name="is_mandatory"/>
+                <field name="enrollment_count"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_pe_course_form" model="ir.ui.view">
+        <field name="name">pe.course.form</field>
+        <field name="model">pe.course</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="title"/>
+                        <field name="category"/>
+                        <field name="course_type"/>
+                        <field name="duration_hours"/>
+                        <field name="difficulty"/>
+                        <field name="points_on_completion"/>
+                        <field name="badge_on_completion_id"/>
+                        <field name="passing_score"/>
+                        <field name="is_mandatory"/>
+                        <field name="is_active"/>
+                    </group>
+                    <field name="description"/>
+                    <field name="content_url"/>
+                    <field name="content_html"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_pe_learning_path_form" model="ir.ui.view">
+        <field name="name">pe.learning.path.form</field>
+        <field name="model">pe.learning.path</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_generate_claude" type="object" string="Générer (Claude)" invisible="status != 'draft'" groups="people_engine.group_manager"/>
+                    <button name="action_manager_approve" type="object" string="Approuver et activer" class="btn-primary" invisible="status != 'pending'" groups="people_engine.group_manager"/>
+                    <field name="status" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="profile_id"/>
+                        <field name="path_type"/>
+                        <field name="manager_id"/>
+                        <field name="duration_weeks"/>
+                        <field name="completion_percent"/>
+                        <field name="claude_generated"/>
+                    </group>
+                    <field name="claude_rationale"/>
+                    <field name="course_ids" widget="many2many_tags"/>
+                    <field name="enrollment_ids" readonly="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_pe_enrollment_form" model="ir.ui.view">
+        <field name="name">pe.enrollment.form</field>
+        <field name="model">pe.enrollment</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_start" type="object" string="Démarrer" invisible="status != 'not_started'"/>
+                    <button name="action_complete_course" type="object" string="Marquer complété" class="btn-primary" invisible="status not in ('in_progress', 'not_started')" groups="people_engine.group_manager"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="profile_id"/>
+                        <field name="course_id"/>
+                        <field name="path_id"/>
+                        <field name="status"/>
+                        <field name="progress_percent"/>
+                        <field name="certificate_number"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_pe_course" model="ir.actions.client">
+        <field name="name">Formation Agent IA de Qualification</field>
+        <field name="tag">pe_course_viewer_action</field>
+        <field name="params" eval="{'url': '/people_engine/static/src/html/formation_agent_ia_qualification_fr.html'}"/>
+    </record>
+
+    <record id="action_pe_course_crm" model="ir.actions.client">
+        <field name="name">Formation CRM IntelliX — Pourquoi &amp; Comment</field>
+        <field name="tag">pe_course_viewer_action</field>
+        <field name="params" eval="{'url': '/people_engine/static/src/html/formation_crm_intellix_fr.html'}"/>
+    </record>
+
+    <record id="action_pe_course_rh_gamification" model="ir.actions.client">
+        <field name="name">Formation RH &amp; Gamification — IntelliX People Engine</field>
+        <field name="tag">pe_course_viewer_action</field>
+        <field name="params" eval="{'url': '/people_engine/static/src/html/formation_rh_gamification_fr.html'}"/>
+    </record>
+
+    <record id="action_pe_course_renovation_immobilier" model="ir.actions.client">
+        <field name="name">Formation Rénovation &amp; Immobilier — Qualification Lead IA</field>
+        <field name="tag">pe_course_viewer_action</field>
+        <field name="params" eval="{'url': '/people_engine/static/src/html/formation_renovation_immobilier_fr.html'}"/>
+    </record>
+    <record id="action_pe_courses" model="ir.actions.act_window">
+        <field name="name">Cours de formation</field>
+        <field name="res_model">pe.course</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_pe_learning_paths" model="ir.actions.act_window">
+        <field name="name">Parcours de formation</field>
+        <field name="res_model">pe.learning.path</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_pe_enrollments" model="ir.actions.act_window">
+        <field name="name">Inscriptions</field>
+        <field name="res_model">pe.enrollment</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

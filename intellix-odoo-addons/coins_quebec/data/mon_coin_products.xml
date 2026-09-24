@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="product_category_mon_coin" model="product.category">
+            <field name="name">Mon Coin Commerces</field>
+        </record>
+
+        <!-- 1. Ma fiche — 0$, service non récurrent. Commission = CQ_VISIBILITE existant. -->
+        <record id="product_mc_ma_fiche" model="product.template">
+            <field name="name">Mon Coin — Ma fiche</field>
+            <field name="default_code">MC_FICHE</field>
+            <field name="type">service</field>
+            <field name="list_price">0.0</field>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="invoice_policy">order</field>
+            <field name="categ_id" ref="product_category_mon_coin"/>
+            <field name="mon_coin_kind">fiche</field>
+            <field name="mon_coin_recurrence">none</field>
+            <field name="mon_coin_itex_amount">0.0</field>
+            <field name="mon_coin_cash_amount">0.0</field>
+            <field name="mon_coin_itex_split_required" eval="False"/>
+            <field name="mon_coin_fee_trigger">none</field>
+            <field name="description"><![CDATA[
+INTERNE — ne pas dupliquer le modèle visibilité / commission.
+Référence existante : produit [CQ_VISIBILITE] Visibilité Coins Québec (default_code CQ_VISIBILITE, product.template id XML coins_marocain_partenariats.product_cq_visibilite).
+Commission % = coins_commission_pct de ce produit (15 %). Ma fiche = entrée gratuite au catalogue ; la commission voyageur reste sur CQ_VISIBILITE.
+Pas de frais de démarrage (ni 500$ ni 1000$).
+]]></field>
+            <field name="description_sale">Fiche commerçant Mon Coin — 0 $ CAD. Service unique, non récurrent. La commission visibilité reste le modèle existant (CQ_VISIBILITE, 15 %), non dupliquée ici.</field>
+        </record>
+
+        <!-- 2. Frais 500$ — 1re souscription palier payant SANS boutique. -->
+        <record id="product_mc_frais_demarrage" model="product.template">
+            <field name="name">Mon Coin — Frais de démarrage</field>
+            <field name="default_code">MC_SETUP_500</field>
+            <field name="type">service</field>
+            <field name="list_price">500.0</field>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="invoice_policy">order</field>
+            <field name="categ_id" ref="product_category_mon_coin"/>
+            <field name="mon_coin_kind">setup_500</field>
+            <field name="mon_coin_recurrence">none</field>
+            <field name="mon_coin_itex_amount">0.0</field>
+            <field name="mon_coin_cash_amount">500.0</field>
+            <field name="mon_coin_itex_split_required" eval="False"/>
+            <field name="mon_coin_fee_trigger">first_paid_no_boutique</field>
+            <field name="description"><![CDATA[
+INTERNE — one-shot 500 $ CAD.
+Déclencher uniquement à la 1re souscription d’un palier payant (Connexion / Mesure / Complet) SANS activation Boutique.
+Ne pas facturer : Ma fiche, upgrade Connexion→Mesure/Complet, ni à chaque palier.
+EXCLUSIF avec MC_SETUP_BOUTIQUE_1000 : si le parcours est Boutique, facturer 1000$ À LA PLACE de ce 500$, jamais les deux lignes.
+]]></field>
+            <field name="description_sale">Frais de démarrage 500 $ CAD — service unique. Première souscription d’un palier payant sans Boutique en ligne. Non récurrent. Taxes TPS/TVQ applicables.</field>
+        </record>
+
+        <!-- 3. Frais Boutique 1000$ — À LA PLACE du 500$, pas en plus. -->
+        <record id="product_mc_frais_boutique" model="product.template">
+            <field name="name">Mon Coin — Frais de démarrage Boutique en ligne</field>
+            <field name="default_code">MC_SETUP_BOUTIQUE_1000</field>
+            <field name="type">service</field>
+            <field name="list_price">1000.0</field>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="invoice_policy">order</field>
+            <field name="categ_id" ref="product_category_mon_coin"/>
+            <field name="mon_coin_kind">setup_boutique</field>
+            <field name="mon_coin_recurrence">none</field>
+            <field name="mon_coin_itex_amount">0.0</field>
+            <field name="mon_coin_cash_amount">1000.0</field>
+            <field name="mon_coin_itex_split_required" eval="False"/>
+            <field name="mon_coin_fee_trigger">boutique_activation</field>
+            <field name="description"><![CDATA[
+INTERNE — one-shot 1000 $ CAD. PRODUIT DISTINCT du 500$ (MC_SETUP_500).
+Le 1000$ REMPLACE le 500$ : ce n’est PAS un 1000$ en plus du 500$ Clover.
+Déclencher uniquement à l’activation du module Boutique en ligne (ouverture comptes marketplace Amazon etc. + config par canal), palier Complet.
+Ne PAS facturer à la seule souscription Complet sans canal activé.
+Si un 500$ a déjà été retenu, ne pas ajouter ce 1000$ (exclusif, pas de cumul).
+]]></field>
+            <field name="description_sale">Frais de démarrage Boutique en ligne 1000 $ CAD — service unique. Remplace le frais de 500 $ (parcours Boutique), ne s’ajoute pas. Couvre l’ouverture des comptes marketplace (Amazon, etc.) et la configuration par canal. Complet sans canal activé = pas ce frais. Taxes TPS/TVQ applicables.</field>
+        </record>
+
+        <!-- 4. Palier Connexion — 50$/mois, 100% ITEX ou argent. -->
+        <record id="product_mc_palier_connexion" model="product.template">
+            <field name="name">Mon Coin — Palier Connexion</field>
+            <field name="default_code">MC_PALIER_CONNEXION</field>
+            <field name="type">service</field>
+            <field name="list_price">50.0</field>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="invoice_policy">order</field>
+            <field name="categ_id" ref="product_category_mon_coin"/>
+            <field name="mon_coin_kind">palier_connexion</field>
+            <field name="mon_coin_recurrence">monthly</field>
+            <field name="mon_coin_itex_amount">50.0</field>
+            <field name="mon_coin_cash_amount">50.0</field>
+            <field name="mon_coin_itex_split_required" eval="False"/>
+            <field name="mon_coin_fee_trigger">none</field>
+            <field name="description"><![CDATA[
+INTERNE — abonnement 50 $ CAD / mois.
+Règlement : 50$ payable 100 % ITEX (troc existant, crm.lead team 112 / payment.transaction) OU 100 % argent. Pas de split obligatoire.
+1re souscription : ajouter MC_SETUP_500 sauf si parcours Boutique (alors MC_SETUP_BOUTIQUE_1000 à la place).
+Upgrade vers Mesure/Complet : ne pas re-facturer le 500$.
+sale_subscription non installé : récurrence mensuelle au catalogue, facture suivante manuelle.
+]]></field>
+            <field name="description_sale">Palier Connexion — 50 $ CAD / mois. Payable intégralement en ITEX ou en argent. Taxes TPS/TVQ applicables.</field>
+        </record>
+
+        <!-- 5. Palier Mesure — 150$/mois, split OBLIGATOIRE 50$ ITEX + 100$ argent. -->
+        <record id="product_mc_palier_mesure" model="product.template">
+            <field name="name">Mon Coin — Palier Mesure</field>
+            <field name="default_code">MC_PALIER_MESURE</field>
+            <field name="type">service</field>
+            <field name="list_price">150.0</field>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="invoice_policy">order</field>
+            <field name="categ_id" ref="product_category_mon_coin"/>
+            <field name="mon_coin_kind">palier_mesure</field>
+            <field name="mon_coin_recurrence">monthly</field>
+            <field name="mon_coin_itex_amount">50.0</field>
+            <field name="mon_coin_cash_amount">100.0</field>
+            <field name="mon_coin_itex_split_required" eval="True"/>
+            <field name="mon_coin_fee_trigger">none</field>
+            <field name="description"><![CDATA[
+INTERNE — abonnement 150 $ CAD / mois.
+Split OBLIGATOIRE sur le devis : ligne MC_ITEX_50 (50$) + ligne MC_ARGENT_MESURE (100$). Pas une seule ligne 150$.
+Pas de 2e wallet ITEX : la part ITEX marque le troc existant (équipe 112). Le règlement ITEX réel reste le flux payment.transaction ITEX (manuel côté caisse).
+1re souscription sans boutique : MC_SETUP_500 une fois. Upgrade depuis Connexion : pas de 500$ de nouveau.
+]]></field>
+            <field name="description_sale">Palier Mesure — 150 $ CAD / mois, dont 50 $ ITEX + 100 $ argent (deux lignes au devis). Taxes TPS/TVQ applicables.</field>
+        </record>
+
+        <!-- 6. Palier Complet — 250$/mois, split OBLIGATOIRE 50$ ITEX + 200$ argent. -->
+        <record id="product_mc_palier_complet" model="product.template">
+            <field name="name">Mon Coin — Palier Complet</field>
+            <field name="default_code">MC_PALIER_COMPLET</field>
+            <field name="type">service</field>
+            <field name="list_price">250.0</field>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="invoice_policy">order</field>
+            <field name="categ_id" ref="product_category_mon_coin"/>
+            <field name="mon_coin_kind">palier_complet</field>
+            <field name="mon_coin_recurrence">monthly</field>
+            <field name="mon_coin_itex_amount">50.0</field>
+            <field name="mon_coin_cash_amount">200.0</field>
+            <field name="mon_coin_itex_split_required" eval="True"/>
+            <field name="mon_coin_fee_trigger">none</field>
+            <field name="description"><![CDATA[
+INTERNE — abonnement 250 $ CAD / mois.
+Split OBLIGATOIRE : MC_ITEX_50 (50$) + MC_ARGENT_COMPLET (200$).
+Souscrire Complet SANS activer un canal Boutique ≠ frais 1000$.
+Activation Boutique (canaux / seuil produits) : facturer MC_SETUP_BOUTIQUE_1000 à la place du 500$, jamais 500$ + 1000$.
+]]></field>
+            <field name="description_sale">Palier Complet — 250 $ CAD / mois, dont 50 $ ITEX + 200 $ argent (deux lignes au devis). L’activation Boutique (canaux) facture 1000 $ à la place du 500 $, pas les deux. Taxes TPS/TVQ applicables.</field>
+        </record>
+
+        <!-- Lignes de split ITEX / argent (MVP devis, pas un wallet). -->
+        <record id="product_mc_part_itex" model="product.template">
+            <field name="name">Mon Coin — Part ITEX 50$</field>
+            <field name="default_code">MC_ITEX_50</field>
+            <field name="type">service</field>
+            <field name="list_price">50.0</field>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="invoice_policy">order</field>
+            <field name="categ_id" ref="product_category_mon_coin"/>
+            <field name="mon_coin_kind">itex_part</field>
+            <field name="mon_coin_recurrence">monthly</field>
+            <field name="mon_coin_itex_amount">50.0</field>
+            <field name="mon_coin_cash_amount">0.0</field>
+            <field name="mon_coin_itex_split_required" eval="False"/>
+            <field name="mon_coin_fee_trigger">none</field>
+            <field name="description"><![CDATA[
+INTERNE — ligne de devis pour la part ITEX (50 $ CAD / mois).
+Réutilise le troc ITEX existant (crm.lead Finance team 112 + payment.transaction). Ne crée pas de wallet parallèle.
+Règlement ITEX : encore manuel (marquer la ligne, encaisser via le flux ITEX déjà en place).
+]]></field>
+            <field name="description_sale">Part ITEX 50 $ CAD / mois — règlement en troc ITEX (réseau existant).</field>
+        </record>
+
+        <record id="product_mc_part_argent_mesure" model="product.template">
+            <field name="name">Mon Coin — Palier Mesure (part argent)</field>
+            <field name="default_code">MC_ARGENT_MESURE</field>
+            <field name="type">service</field>
+            <field name="list_price">100.0</field>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="invoice_policy">order</field>
+            <field name="categ_id" ref="product_category_mon_coin"/>
+            <field name="mon_coin_kind">cash_part</field>
+            <field name="mon_coin_recurrence">monthly</field>
+            <field name="mon_coin_itex_amount">0.0</field>
+            <field name="mon_coin_cash_amount">100.0</field>
+            <field name="mon_coin_itex_split_required" eval="False"/>
+            <field name="mon_coin_fee_trigger">none</field>
+            <field name="description">INTERNE — part argent du palier Mesure (100 $ CAD / mois). Toujours pairée avec MC_ITEX_50.</field>
+            <field name="description_sale">Palier Mesure — part argent 100 $ CAD / mois.</field>
+        </record>
+
+        <record id="product_mc_part_argent_complet" model="product.template">
+            <field name="name">Mon Coin — Palier Complet (part argent)</field>
+            <field name="default_code">MC_ARGENT_COMPLET</field>
+            <field name="type">service</field>
+            <field name="list_price">200.0</field>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="invoice_policy">order</field>
+            <field name="categ_id" ref="product_category_mon_coin"/>
+            <field name="mon_coin_kind">cash_part</field>
+            <field name="mon_coin_recurrence">monthly</field>
+            <field name="mon_coin_itex_amount">0.0</field>
+            <field name="mon_coin_cash_amount">200.0</field>
+            <field name="mon_coin_itex_split_required" eval="False"/>
+            <field name="mon_coin_fee_trigger">none</field>
+            <field name="description">INTERNE — part argent du palier Complet (200 $ CAD / mois). Toujours pairée avec MC_ITEX_50.</field>
+            <field name="description_sale">Palier Complet — part argent 200 $ CAD / mois.</field>
+        </record>
+    </data>
+
+    <data>
+        <function model="product.template" name="_cq_bind_mon_coin_products"/>
+    </data>
+</odoo>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="cron_pe_payroll_challenge_recalc" model="ir.cron">
+        <field name="name">PE — Recalcul challenges paie</field>
+        <field name="model_id" ref="model_pe_payroll_challenge_service"/>
+        <field name="state">code</field>
+        <field name="code">model.sudo().cron_recalculate_active_challenges()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

@@ -1,0 +1,34 @@
+{
+  "name": "renov-aides — Adapter VICIdial",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "telephony/vicidial/event",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "vd-wh",
+      "name": "Webhook VICIdial AGI",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 300],
+      "webhookId": "renov-vicidial-agi"
+    },
+    {
+      "parameters": {
+        "jsCode": "const b=$input.first().json.body||$input.first().json;\nconst ev={event_type:b.event_type||'recording_ready',call_sid:b.call_sid||b.uniqueid||'',from:b.from||b.phone_number||'',to:b.to||'',recording_url:b.recording_url||b.recording_path||'',amd_result:(b.amd_result||'unknown').toLowerCase(),duration_sec:parseInt(b.duration_sec||0,10)||0,provider:'vicidial',raw:b};\nconst engine=await this.helpers.httpRequest({method:'POST',url:($env.N8N_WEBHOOK_URL||'').replace(/\\/$/, '')+'/renov/conversation',body:ev,json:true});\nreturn [{json:{normalized:ev,engine}}];"
+      },
+      "id": "vd-norm",
+      "name": "Normalize + Forward",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [280, 300]
+    }
+  ],
+  "connections": {
+    "Webhook VICIdial AGI": { "main": [[{ "node": "Normalize + Forward", "type": "main", "index": 0 }]] }
+  },
+  "meta": { "templateCredsSetupCompleted": false },
+  "tags": [{ "name": "renov-aides" }, { "name": "telephony-vicidial" }]
+}

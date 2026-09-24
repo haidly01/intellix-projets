@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sale_order_template_view_form_coins_currency" model="ir.ui.view">
+        <field name="name">sale.order.template.form.coins.currency</field>
+        <field name="model">sale.order.template</field>
+        <field name="inherit_id" ref="intellix_catalog.sale_order_template_view_form_intellix"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='ix_template_code']" position="after">
+                <field name="currency_id"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

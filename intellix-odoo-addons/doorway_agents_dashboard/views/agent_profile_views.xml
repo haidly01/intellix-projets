@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_agent_profile_list" model="ir.ui.view">
+        <field name="name">doorway.agent.profile.list</field>
+        <field name="model">doorway.agent.profile</field>
+        <field name="arch" type="xml">
+            <list string="Agents IA">
+                <field name="name"/>
+                <field name="provider"/>
+                <field name="pipeline"/>
+                <field name="immo_agent_role" optional="hide"/>
+                <field name="haidly_agent_role" optional="hide"/>
+                <field name="agent_type"/>
+                <field name="language"/>
+                <field name="status" widget="badge"
+                       decoration-success="status == 'active'"
+                       decoration-muted="status == 'inactive'"
+                       decoration-danger="status == 'error'"/>
+                <field name="total_test_calls"/>
+                <field name="avg_call_score"/>
+                <field name="last_test_score" optional="show"/>
+                <field name="default_phone_number_id" optional="show"/>
+                <field name="last_sync"/>
+                <button name="action_open_test_wizard" type="object"
+                        string="Test" icon="fa-phone"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_agent_profile_form" model="ir.ui.view">
+        <field name="name">doorway.agent.profile.form</field>
+        <field name="model">doorway.agent.profile</field>
+        <field name="arch" type="xml">
+            <form string="Agent IA">
+                <header>
+                    <button name="action_sync_from_api" type="object"
+                            string="Sync API" class="btn-secondary"/>
+                    <button name="action_sync_now" type="object"
+                            string="Sync tous" class="btn-secondary"/>
+                    <button name="action_open_edit_wizard" type="object"
+                            string="Modifier (wizard)" class="btn-secondary"/>
+                    <button name="action_open_telephony_wizard" type="object"
+                            string="Téléphonie" class="btn-secondary"/>
+                    <button name="action_open_test_wizard" type="object"
+                            string="Appel test" class="btn-primary"/>
+                    <button name="action_archive_agent" type="object"
+                            string="Mettre en pause" class="btn-secondary"
+                            invisible="status != 'active'"
+                            confirm="Mettre cet agent en pause ?"/>
+                    <button name="action_delete_agent" type="object"
+                            string="Supprimer" class="btn-danger"
+                            confirm="Supprimer définitivement cet agent ?"/>
+                    <button name="action_sync_voicemail_detection_elevenlabs" type="object"
+                            string="Activer détection répondeur (EL)"
+                            class="btn-secondary"
+                            invisible="provider != 'elevenlabs'"/>
+                    <button name="action_setup_sophie_elevenlabs" type="object"
+                            string="Setup ElevenLabs (Sophie)"
+                            class="btn-primary"
+                            invisible="immo_agent_role != 'j0_qualification'"/>
+                    <button name="action_setup_relance_elevenlabs" type="object"
+                            string="Setup relances J+1…J+14"
+                            class="btn-secondary"
+                            invisible="immo_agent_role != 'j0_qualification' and energie_agent_role != 'j0_qualification' and haidly_agent_role != 'j0_qualification'"/>
+                    <button name="action_setup_energie_elevenlabs" type="object"
+                            string="Setup ElevenLabs (Alex)"
+                            class="btn-primary"
+                            invisible="energie_agent_role != 'j0_qualification'"/>
+                    <button name="action_setup_haidly_elevenlabs" type="object"
+                            string="Setup ElevenLabs (Haidly)"
+                            class="btn-primary"
+                            invisible="haidly_agent_role != 'j0_qualification'"/>
+                    <button name="action_create_voice_clone" type="object"
+                            string="Créer voix clone (EL)"
+                            class="btn-secondary"
+                            invisible="provider != 'elevenlabs'"/>
+                    <field name="status" widget="statusbar"
+                           statusbar_visible="active,inactive,error"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="provider"/>
+                            <field name="external_agent_id"/>
+                            <field name="pipeline"/>
+                            <field name="immo_agent_role" invisible="pipeline != 'immobilier'"/>
+                            <field name="energie_agent_role" invisible="pipeline != 'renovation' or haidly_agent_role"/>
+                            <field name="haidly_agent_role" invisible="pipeline != 'renovation' or energie_agent_role"/>
+                            <field name="agent_type"/>
+                            <field name="language"/>
+                            <field name="timezone"/>
+                        </group>
+                        <group>
+                            <field name="voice_name"/>
+                            <field name="voice_gender"/>
+                            <field name="voice_clone_id"/>
+                            <field name="export_calls_google_sheet"/>
+                            <field name="google_sheets_spreadsheet_id"
+                                   invisible="not export_calls_google_sheet"/>
+                            <field name="google_sheets_webhook_url"
+                                   invisible="not export_calls_google_sheet"/>
+                            <field name="latency_target_ms"/>
+                            <field name="default_volet"/>
+                            <field name="default_phone_number_id"/>
+                            <field name="last_sync"/>
+                            <field name="total_test_calls"/>
+                            <field name="avg_call_score"/>
+                            <field name="last_test_date"/>
+                            <field name="last_test_score"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Prompt &amp; Actions">
+                            <group>
+                                <field name="system_prompt" nolabel="1" placeholder="Décrivez ici le prompt système de l'agent..."/>
+                            </group>
+                            <group string="Actions autorisées" col="4">
+                                <field name="allow_send_email"/>
+                                <field name="allow_send_sms"/>
+                                <field name="allow_availability_check"/>
+                                <field name="allow_human_transfer"/>
+                            </group>
+                            <group string="Transfert humain">
+                                <field name="transfer_user_id"/>
+                                <field name="transfer_phone" placeholder="+15141234567"/>
+                            </group>
+                            <group string="Calendrier &amp; disponibilité" invisible="not allow_availability_check">
+                                <field name="calendar_share_public"/>
+                                <field name="calendar_user_id" readonly="1"/>
+                                <field name="calendar_partner_id" readonly="1"/>
+                                <button name="action_open_agent_calendar" type="object"
+                                        string="Ouvrir calendrier agent"
+                                        class="btn-link"
+                                        invisible="not calendar_user_id"/>
+                            </group>
+                        </page>
+                        <page string="Échantillon voix (clone)" invisible="immo_agent_role != 'j0_qualification'">
+                            <group>
+                                <field name="voice_name" placeholder="Ex: Sophie — Agent Immo Doorway"/>
+                                <field name="voice_clone_id" readonly="1"/>
+                            </group>
+                            <group string="Fichier audio (M4A, MP3, WAV)">
+                                <field name="voice_sample_file" filename="voice_sample_filename"/>
+                                <field name="voice_sample_filename" readonly="1"/>
+                            </group>
+                            <div class="alert alert-info mb-0" role="alert">
+                                <strong>Important :</strong> après avoir joint le fichier,
+                                cliquez sur <strong>Enregistrer</strong> (disquette),
+                                puis <strong>Setup ElevenLabs (Sophie)</strong>.
+                                <br/>
+                                <strong>Sans forfait « Instant Voice Cloning » :</strong>
+                                créez ou choisissez une voix dans la console ElevenLabs,
+                                copiez le <strong>Voice Clone ID</strong> ci-dessus,
+                                Enregistrer, puis Setup (le clone API sera ignoré).
+                            </div>
+                        </page>
+                        <page string="Volets (Réception / Qualif. / À froid)">
+                            <field name="volet_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="code"/>
+                                    <field name="name" readonly="1"/>
+                                    <field name="prompt_hint"/>
+                                    <field name="active"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Numéros assignés">
+                            <field name="phone_number_ids">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="phone_number"/>
+                                    <field name="phone_source"/>
+                                    <field name="trunk_id"/>
+                                    <field name="twilio_incoming_sid" optional="hide"/>
+                                    <field name="elevenlabs_phone_number_id" optional="hide"/>
+                                    <field name="sip_trunk_name"/>
+                                    <field name="twilio_sip_trunk_sid"/>
+                                    <field name="usage"/>
+                                    <field name="is_primary"/>
+                                    <field name="active"/>
+                                    <field name="notes" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Bibliothèque">
+                            <field name="library_item_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="item_type"/>
+                                    <field name="language"/>
+                                    <field name="active"/>
+                                </list>
+                                <form string="Élément bibliothèque">
+                                    <group>
+                                        <field name="sequence"/>
+                                        <field name="name"/>
+                                        <field name="item_type"/>
+                                        <field name="language"/>
+                                        <field name="active"/>
+                                    </group>
+                                    <group>
+                                        <field name="content" nolabel="1"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Appels test">
+                            <field name="test_call_ids" readonly="1">
+                                <list>
+                                    <field name="create_date"/>
+                                    <field name="call_mode"/>
+                                    <field name="phone_number"/>
+                                    <field name="state"/>
+                                    <field name="score_global"/>
+                                    <field name="duration_seconds"/>
+                                    <field name="test_send_email"/>
+                                    <field name="test_send_sms"/>
+                                    <field name="test_availability_check"/>
+                                    <field name="test_human_transfer"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes">
+                            <field name="description" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_agent_profile_search" model="ir.ui.view">
+        <field name="name">doorway.agent.profile.search</field>
+        <field name="model">doorway.agent.profile</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="external_agent_id"/>
+                <field name="pipeline"/>
+                <filter name="elevenlabs" string="ElevenLabs"
+                        domain="[('provider', '=', 'elevenlabs')]"/>
+                <filter name="n8n" string="n8n"
+                        domain="[('provider', '=', 'n8n')]"/>
+                <filter name="active" string="Actifs"
+                        domain="[('status', '=', 'active')]"/>
+                <separator/>
+                <filter name="inbound" string="Inbound"
+                        domain="[('agent_type', '=', 'inbound')]"/>
+                <filter name="outbound" string="Outbound"
+                        domain="[('agent_type', '=', 'outbound')]"/>
+                <filter name="group_pipeline" string="Pipeline"
+                        context="{'group_by': 'pipeline'}"/>
+                <filter name="group_type" string="Type"
+                        context="{'group_by': 'agent_type'}"/>
+                <filter name="group_provider" string="Provider"
+                        context="{'group_by': 'provider'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_agent_profile" model="ir.actions.act_window">
+        <field name="name">Agents (cache API)</field>
+        <field name="res_model">doorway.agent.profile</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

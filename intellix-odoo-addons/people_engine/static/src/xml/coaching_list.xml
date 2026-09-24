@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="people_engine.TeamKanbanCard">
+        <div t-att-class="'ix-k-card ' + (band === 'top' ? 'top' : '')"
+             t-on-click="() => props.onOpen(props.emp)">
+            <div class="ix-k-card-top">
+                <div class="ix-k-avatar"
+                     t-att-style="'background:' + props.avatarColor(props.emp.id)"
+                     t-esc="props.initials(props.emp.name)"/>
+                <div>
+                    <div class="ix-k-name" t-esc="props.emp.name"/>
+                    <div class="ix-k-role" t-esc="props.emp.job_title || '—'"/>
+                </div>
+            </div>
+            <div class="ix-k-score-row">
+                <span class="ix-k-score-label">Score</span>
+                <div class="ix-k-score-bar">
+                    <div class="ix-k-score-fill"
+                         t-att-style="'width:' + (props.emp.people_score || 0) + '%;background:' + props.scoreColor(props.emp.people_score)"/>
+                </div>
+                <span class="ix-k-score-num"
+                      t-att-style="'color:' + props.scoreColor(props.emp.people_score)"
+                      t-esc="Math.round(props.emp.people_score || 0)"/>
+            </div>
+            <div class="ix-k-tags">
+                <t t-if="props.emp.people_alerts_count > 0">
+                    <span class="ix-k-tag alert">
+                        <i class="fa fa-exclamation-triangle"/>
+                        <t t-esc="props.emp.people_alerts_count"/> alerte(s)
+                    </span>
+                </t>
+                <span t-att-class="'ix-k-tag ' + props.trendClass(props.emp.people_score_trend)"
+                      t-esc="props.trendLabel(props.emp.people_score_trend)"/>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="people_engine.TeamKanbanBand">
+        <div class="ix-k-col">
+            <div class="ix-k-col-head">
+                <span class="ix-k-col-title" t-esc="props.title"/>
+                <span class="ix-k-col-count" t-esc="props.employees.length"/>
+            </div>
+            <t t-foreach="props.employees" t-as="emp" t-key="emp.id">
+                <t t-component="props.KanbanCard"
+                   emp="emp"
+                   band="props.band"
+                   onOpen="props.onOpen"
+                   initials="props.initials"
+                   avatarColor="props.avatarColor"
+                   scoreColor="props.scoreColor"
+                   trendClass="props.trendClass"
+                   trendLabel="props.trendLabel"/>
+            </t>
+            <t t-if="!props.employees.length">
+                <div class="ix-k-empty" t-esc="props.emptyLabel"/>
+            </t>
+        </div>
+    </t>
+
+    <t t-name="people_engine.CoachingListView" t-inherit="web.ListView" t-inherit-mode="primary">
+        <xpath expr="//div[@t-ref='root']" position="attributes">
+            <attribute name="class" add="o_pe_coaching_list" separator=" "/>
+        </xpath>
+        <xpath expr="//div[@t-ref='root']/Layout" position="before">
+            <div class="ix-list-header-wrap" t-if="header.loaded">
+                <div class="ix-stat-row">
+                    <div class="ix-stat-card">
+                        <div class="ix-stat-label">Sessions</div>
+                        <div class="ix-stat-val indigo" t-esc="header.count"/>
+                    </div>
+                    <div class="ix-stat-card">
+                        <div class="ix-stat-label">Score moyen</div>
+                        <div t-att-class="'ix-stat-val ' + (header.avgScore >= 70 ? 'green' : header.avgScore >= 50 ? 'amber' : 'red')">
+                            <t t-esc="header.avgScore"/><span class="ix-stat-denom">/100</span>
+                        </div>
+                    </div>
+                    <div class="ix-stat-card">
+                        <div class="ix-stat-label">Non lues</div>
+                        <div t-att-class="'ix-stat-val ' + (header.unread > 0 ? 'red' : 'green')" t-esc="header.unread"/>
+                    </div>
+                    <div class="ix-stat-card">
+                        <div class="ix-stat-label">Complétées</div>
+                        <div class="ix-stat-val green" t-esc="header.done"/>
+                    </div>
+                </div>
+            </div>
+            <div class="ix-empty-state" t-if="header.loaded and header.count === 0">
+                <div class="ix-empty-ico"><i class="fa fa-brain"/></div>
+                <div class="ix-empty-title">Aucune session coaching</div>
+                <div class="ix-empty-sub">
+                    Les sessions apparaissent automatiquement après chaque appel enregistré
+                    et analysé par Claude. Lance une campagne pour générer tes premières analyses.
+                </div>
+                <button type="button" class="ix-btn-primary" t-on-click="onCreateManual">
+                    <i class="fa fa-plus"/> Créer une session manuelle
+                </button>
+                <button type="button" class="ix-btn-primary" style="background:#4ade80;margin-left:8px"
+                        t-on-click="onOpenCoachingCalls">
+                    <i class="fa fa-phone"/> Voir appels &amp; coaching
+                </button>
+            </div>
+        </xpath>
+    </t>
+
+</templates>

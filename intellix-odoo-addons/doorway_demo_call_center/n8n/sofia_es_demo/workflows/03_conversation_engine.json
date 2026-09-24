@@ -1,0 +1,143 @@
+{
+  "name": "sofia-es-demo — 03 Conversation Engine",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "sofia-es-demo/conversation",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "name": "Webhook Conversation",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        300
+      ],
+      "webhookId": "sofia-es-demo-conversation"
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * Classification rapide par mots-clés (évite appel LLM + corrige propietario/propriétaire).\n * Retourne null si pas de match → fallback Deepgram + Claude.\n */\nfunction normTranscript(t) {\n  return (t || '')\n    .toLowerCase()\n    .normalize('NFD')\n    .replace(/[\\u0300-\\u036f]/g, '')\n    .replace(/[^\\w\\s]/g, ' ')\n    .replace(/\\s+/g, ' ')\n    .trim();\n}\n\nfunction extractPostalCode(t) {\n  const nums = t.match(/\\d{2,5}/g);\n  if (nums && nums.length) {\n    const joined = nums.join('');\n    if (joined.length >= 4 && joined.length <= 6) return joined;\n  }\n  const compact = t.replace(/\\D/g, '');\n  if (compact.length >= 4 && compact.length <= 6) return compact;\n  return '';\n}\n\nfunction fastClassifyIntent(etape, transcript) {\n  const t = normTranscript(transcript);\n  if (!t) return null;\n\n  const ownerWord =\n    /\\bpropiet/i.test(t) ||\n    /\\b(propietari[oa]|propietario|propietaria|titular|dueno|duena|duno|duna)\\b/.test(t) ||\n    /\\bsoy\\s+(el\\s+)?(propietari[oa]|dueno|duena|titular)\\b/.test(t) ||\n    /\\b(es mi casa|es mia|es mio|casa propia|de mi propiedad|figura como titular)\\b/.test(t);\n  const affirm =\n    /^(si|sí|aja|ajá|claro|exacto|correcto|vale|ok|por supuesto)\\b/.test(t) ||\n    /\\b(si|sí|aja|ajá|claro|exacto|correcto|por supuesto|soy|somos|bien)\\b/.test(t);\n  const denyExplicit =\n    /\\b(no soy|no lo soy|no somos|inquilino|arrendatari[oa]|alquil|rento|no es mio|no es mia|no es de mi)\\b/.test(t);\n  const denyBare = /^(no|nop)\\s*$/i.test(t);\n  const deny = denyExplicit || denyBare;\n  const unsure =\n    /\\b(no se|no lo se|no estoy segur[oa]|quizas|tal vez|creo que|a lo mejor)\\b/.test(t);\n\n  if (etape === 'ouverture' || etape === 'Q1_clarif') {\n    if (denyExplicit && !ownerWord) return { intent: 'non' };\n    if (denyBare && !ownerWord && !affirm && t.length <= 6) return { intent: 'non' };\n    if (ownerWord || (affirm && !deny)) return { intent: 'oui' };\n    if (unsure) return { intent: 'incertain' };\n    if (/\\b(no me interesa|no gracias|dejeme|no quiero|no moleste)\\b/.test(t)) {\n      return { intent: 'pas_interesse' };\n    }\n    if (/\\b(no llame|no llamen|retiren|baja|no me llamen)\\b/.test(t)) {\n      return { intent: 'do_not_call' };\n    }\n    if (affirm) return { intent: 'oui' };\n  }\n\n  if (['Q2', 'Q2_appt', 'Q5', 'Q5_non'].includes(etape)) {\n    if (affirm && !deny) return { intent: 'oui' };\n    if (deny) return { intent: 'non' };\n  }\n\n  if (etape === 'Q3') {\n    if (/\\b(no se|no lo se|no recuerdo|no me acuerdo|no sabria|no lo tengo)\\b/.test(t)) {\n      return { intent: 'inconnu' };\n    }\n    const cp = extractPostalCode(t);\n    if (cp) return { intent: 'ok', valeur: cp };\n  }\n\n  if (etape === 'Q4' || etape === 'Q4_non') {\n    const heat = t.match(/\\b(gas|gasoleo|gasoil|electricidad|electrico|fuel|propano|pellet|lenia)\\b/);\n    if (heat) return { intent: 'ok', valeur: heat[1] };\n    if (affirm && !deny) return { intent: 'ok', valeur: t };\n    if (deny) return { intent: 'inconnu' };\n  }\n\n  if (etape === 'collect_tel') {\n    if (/\\b(este|mismo|ese|confirmo|si|sí|vale|correcto)\\b/.test(t) && !deny) {\n      return { intent: 'confirme' };\n    }\n    if (/\\d{6,}/.test(t)) return { intent: 'nouveau', valeur: t.replace(/\\D/g, '') };\n  }\n\n  return null;\n}\n\nconst _raw = $input.first().json;\nconst ev = (_raw && _raw.body && typeof _raw.body === 'object' && !Array.isArray(_raw.body))\n  ? _raw.body\n  : _raw;\nconst action = ev.action || '';\n\nif (ev.event_type === 'amd_result' && (ev.amd_result === 'machine' || ev.amd_result === 'fax')) {\n  const tel = (ev.to || ev.from || ev.raw?.To || ev.raw?.From || '').toString();\n  return [{ json: {\n    action: 'hangup', call_sid: ev.call_sid, provider: ev.provider, qualified: false,\n    write_sheet: !!tel, statut: 'repondeur', event: ev,\n    sheet_payload: tel ? {\n      telefono: tel, nombre: '', qualified: false, transcript: 'repondeur',\n      recording_url: '', call_sid: ev.call_sid, provider: ev.provider || 'twilio', statut: 'repondeur',\n    } : null,\n  } }];\n}\n\nfunction buildSheetPayload(session, ev, opts) {\n  const telefono = (session?.data?.telephone_final || session?.telephone || ev.to || ev.from || '').toString();\n  if (!telefono || !session) return null;\n  const qualified = !!(opts && opts.qualified);\n  const statut = (opts && opts.statut)\n    || (qualified ? 'qualifie' : (session.data.proprietaire ? 'partiel' : 'non_qualifie'));\n  return {\n    telefono,\n    nombre: session.data.nom_contact || 'Prospect',\n    qualified,\n    transcript: [(session.transcript_log || []).join('\\n'), session.etape ? `[etape:${session.etape}]` : ''].filter(Boolean).join('\\n'),\n    transcripcion: [(session.transcript_log || []).join('\\n'), session.etape ? `[etape:${session.etape}]` : ''].filter(Boolean).join('\\n'),\n    recording_url: ev.recording_url || session.recording_url || '',\n    call_sid: ev.call_sid || '',\n    provider: ev.provider || 'twilio',\n    lead_id: $env.DEMO_CAMPAIGN_ID || 'sofia-es-demo-abdallah',\n    statut,\n    campaign_id: $env.DEMO_CAMPAIGN_ID || 'sofia-es-demo-abdallah',\n    sheet_name: $env.GOOGLE_SHEETS_TAB_DEMO || 'Leads_Sofia_Demo_Abdallah',\n    proprietaire: session.data.proprietaire,\n    type_logement: session.data.type_logement || '',\n    code_postal: session.data.code_postal || '',\n    combles: session.data.combles,\n    acces_combles: session.data.acces_combles,\n    calefaccion: session.data.calefaccion || '',\n    creneau_rappel: session.data.creneau_rappel || '',\n    duree_sec: session.duree_sec || 0,\n  };\n}\n\nif (ev.event_type === 'call_ended' || action === 'hangup') {\n  const sdEnd = $getWorkflowStaticData('global');\n  const session = (sdEnd.sofia_sessions || {})[ev.call_sid];\n  const sheet_payload = session ? buildSheetPayload(session, ev, {\n    qualified: !!session.data.creneau_rappel,\n    statut: session.data.creneau_rappel ? 'qualifie' : (session.data.proprietaire ? 'partiel' : 'non_qualifie'),\n  }) : null;\n  if (sheet_payload && !sdEnd.sofia_sheet_written) sdEnd.sofia_sheet_written = {};\n  const write_sheet = !!sheet_payload && !(sdEnd.sofia_sheet_written || {})[ev.call_sid];\n  if (write_sheet) sdEnd.sofia_sheet_written[ev.call_sid] = true;\n  return [{ json: {\n    action: 'hangup',\n    call_sid: ev.call_sid,\n    provider: ev.provider,\n    write_sheet,\n    sheet_payload,\n    event: ev,\n    session,\n  } }];\n}\n\nconst callSid = ev.call_sid || '';\nconst sd = $getWorkflowStaticData('global');\nif (!sd.sofia_sessions) sd.sofia_sessions = {};\nconst recDurEnd = parseInt(ev.duration_sec, 10) || 0;\nif (ev.event_type === 'recording_ready' && recDurEnd > 25) {\n  const sessionEnd = sd.sofia_sessions[callSid];\n  const sheet_payload = sessionEnd ? buildSheetPayload(sessionEnd, ev, {\n    qualified: !!sessionEnd.data.creneau_rappel,\n    statut: sessionEnd.data.creneau_rappel ? 'qualifie' : (sessionEnd.data.proprietaire ? 'partiel' : 'non_qualifie'),\n  }) : null;\n  if (!sd.sofia_sheet_written) sd.sofia_sheet_written = {};\n  const write_sheet = !!sheet_payload && !sd.sofia_sheet_written[callSid];\n  if (write_sheet) sd.sofia_sheet_written[callSid] = true;\n  return [{ json: {\n    action: 'hangup',\n    call_sid: callSid,\n    provider: ev.provider || 'twilio',\n    write_sheet,\n    sheet_payload,\n    session: sessionEnd,\n    event: ev,\n  } }];\n}\nconst bucketEarly = ($env.STORAGE_BUCKET_URL || '').replace(/\\/$/, '');\nconst audioFileEarly = (n) => (bucketEarly ? `${bucketEarly}/${n}.mp3` : '');\n\nif (ev.event_type !== 'recording_ready' || (!ev.recording_url && !ev.recording_b64)) {\n  const session = sd.sofia_sessions[callSid];\n  if (session) {\n    session.transcript_log = session.transcript_log || [];\n    session.transcript_log.push(`[${session.etape}] (sin grabacion) → reintento`);\n    sd.sofia_sessions[callSid] = session;\n    return [{ json: {\n      action: 'play_audio',\n      audio_url: audioFileEarly('sofia_q1_clarif'),\n      call_sid: callSid,\n      provider: ev.provider || 'twilio',\n      qualified: false,\n      statut: 'en_cours',\n      session,\n      event: ev,\n    } }];\n  }\n  return [{ json: { action: 'hangup', error: 'no_recording', event: ev } }];\n}\n\nlet session = sd.sofia_sessions[callSid];\nif (!session) {\n  session = {\n    etape: 'ouverture', telephone: ev.to || ev.from || '', duree_sec: 0, hors_sujet_count: 0,\n    non_owner_count: 0, silence_count: 0,\n    soft_limit: parseInt($env.AGENT_SOFT_LIMIT_SEC || '110', 10) || 110,\n    data: { proprietaire: null, type_logement: null, code_postal: null, combles: null, acces_combles: null, calefaccion: null, creneau_rappel: null, nom_contact: null, telephone_final: null },\n    transcript_log: [],\n  };\n  sd.sofia_sessions[callSid] = session;\n}\nif (ev.recording_url) {\n  session.recording_url = ev.recording_url;\n}\nif (!session.transcript_log) session.transcript_log = [];\nif (session.non_owner_count == null) session.non_owner_count = 0;\nif (session.silence_count == null) session.silence_count = 0;\n\nconst bucket = ($env.STORAGE_BUCKET_URL || '').replace(/\\/$/, '');\nconst audioFile = (n) => (bucket ? `${bucket}/${n}.mp3` : '');\n\nfunction stripAgentEcho(transcript) {\n  const t = (transcript || '').trim();\n  if (!t || t.length < 80) return t;\n  const low = t.toLowerCase();\n  const markers = [\n    '¿es usted propietario',\n    'es usted propietario',\n    'propietario de una vivienda',\n    'le llamo para comprobar',\n    'codigo postal',\n    'código postal',\n    'facilitarme su codigo',\n    'facilitarme su código',\n    'donde viva',\n  ];\n  for (const m of markers) {\n    const idx = low.lastIndexOf(m);\n    if (idx >= 0) {\n      const tail = t.slice(idx + m.length).replace(/^[\\s,.:;?¿!¡-]+/, '').trim();\n      if (tail.length >= 2) return tail;\n    }\n  }\n  return t;\n}\n\nconst sttBypass = ['1', 'true', 'yes'].includes(($env.SOFIA_STT_BYPASS || '').toLowerCase())\n  || !($env.DEEPGRAM_API_KEY || '').trim();\nconst mockByEtape = {\n  ouverture: { intent: 'oui' },\n  Q1_clarif: { intent: 'oui' },\n  Q2: { intent: 'oui' },\n  Q2_appt: { intent: 'oui' },\n  Q3: { intent: 'ok', valeur: '28001' },\n  Q4: { intent: 'ok', valeur: 'gas' },\n  Q4_non: { intent: 'oui' },\n  Q5: { intent: 'oui' },\n  Q5_non: { intent: 'oui' },\n  collect_creneau: { intent: 'ok', valeur: 'mañana por la mañana' },\n  collect_nom: { intent: 'ok', valeur: 'Test Usuario' },\n  collect_tel: { intent: 'confirme' },\n};\n\nlet transcript = (ev.transcript || '').trim();\nlet classification = { intent: 'silence' };\n\nif (transcript) {\n  const fastPre = fastClassifyIntent(session.etape, transcript);\n  if (fastPre) {\n    classification = fastPre;\n  } else {\n    classification = { intent: 'oui' };\n  }\n} else if (sttBypass) {\n  transcript = `[TEST sans Deepgram — ${session.etape}]`;\n  classification = mockByEtape[session.etape] || { intent: 'oui' };\n} else if (!transcript) {\n  const recUrl = (ev.recording_url || '').endsWith('.mp3') ? ev.recording_url : (ev.recording_url || '') + '.mp3';\n  const odooBase = ($env.ODOO_URL || 'https://intellixcrm.com').replace(/\\/$/, '');\n  const sttKey = ($env.SOFIA_STT_WEBHOOK_KEY || 'doorway-sofia-stt').trim();\n  try {\n    const sttRes = await this.helpers.httpRequest({\n      method: 'POST',\n      url: odooBase + '/api/renov/stt/deepgram',\n      headers: {\n        'Content-Type': 'application/json',\n        'X-Renov-Stt-Key': sttKey,\n      },\n      body: {\n        recording_url: ev.recording_url || recUrl,\n        recording_b64: ev.recording_b64 || '',\n        language: 'es',\n      },\n      json: true,\n      timeout: 25000,\n    });\n    if (sttRes && sttRes.error) {\n      throw new Error(sttRes.error);\n    }\n    transcript = stripAgentEcho((sttRes && sttRes.transcript) || '');\n  } catch (e) {\n    transcript = `[Deepgram error — ${session.etape}: ${(e.message || e).toString().slice(0, 120)}]`;\n    classification = { intent: 'silence' };\n  }\n  const recDurStt = parseInt(ev.duration_sec, 10) || 0;\n  if (transcript.startsWith('[Deepgram error') && recDurStt >= 3) {\n    session.stt_retry_count = (session.stt_retry_count || 0) + 1;\n  }\n  const fast = !transcript.startsWith('[Deepgram error')\n    ? fastClassifyIntent(session.etape, transcript)\n    : null;\n  if (fast) {\n    classification = fast;\n  } else if (!transcript.trim() || transcript.startsWith('[Deepgram error')) {\n    classification = { intent: 'silence' };\n  } else if (!classification.intent || classification.intent === 'silence') {\n    const etape = session.etape;\n    const sys = `Classificateur JSON — conversation 100% en ESPAGNOL. Étape: ${etape}. Réponds UNIQUEMENT JSON.\nouverture/Q1_clarif: intent=oui|non|incertain|refus|pas_interesse|do_not_call|hors_sujet|silence\nIMPORTANT ouverture: \"propietario\",\"propietaria\",\"sí\",\"si\",\"soy propietario\",\"titular\",\"dueño\" → oui\nIMPORTANT ouverture: \"inquilino\",\"arrendatario\",\"no soy propietario\" → non (pas \"no\" seul si phrase incomplète)\nQ2/Q5/Q5_non: oui|non|silence\nQ2_appt/Q4_non: oui|non|silence\nQ3: {intent:ok,valeur:CP} ou {intent:inconnu}\nQ4: {intent:ok,valeur:gas|gasoleo|electricidad} ou inconnu|silence\ncollect_creneau: {intent:ok,valeur:...}\ncollect_nom: {intent:ok,valeur:nom}\ncollect_tel: confirme ou {intent:nouveau,valeur:num}`;\n    const cl = await this.helpers.httpRequest({\n      method: 'POST',\n      url: 'https://api.anthropic.com/v1/messages',\n      headers: { 'x-api-key': $env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01', 'Content-Type': 'application/json' },\n      body: { model: 'claude-3-5-haiku-20241022', max_tokens: 40, system: sys, messages: [{ role: 'user', content: `Transcription: \"${transcript}\"` }] },\n      json: true,\n      timeout: 12000,\n    });\n    try {\n      const txt = (cl.content && cl.content[0] && cl.content[0].text) || '{}';\n      const m = txt.match(/\\{[\\s\\S]*\\}/);\n      classification = JSON.parse(m ? m[0] : txt);\n    } catch (e) {\n      classification = mockByEtape[session.etape] || { intent: 'oui' };\n    }\n    const fast2 = fastClassifyIntent(session.etape, transcript);\n    if (fast2) classification = fast2;\n  }\n}\n\nlet intent = classification.intent || 'silence';\nconst valeur = classification.valeur || '';\nconst etape = session.etape;\nconst transcriptNorm = (transcript || '').toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').trim();\n\nconst ownerOverride = fastClassifyIntent(etape, transcript);\nif (intent === 'non' && ownerOverride && ownerOverride.intent === 'oui') {\n  intent = 'oui';\n}\nif ((intent === 'silence' || intent === 'incertain' || intent === 'hors_sujet') && ownerOverride && ownerOverride.intent === 'oui') {\n  intent = 'oui';\n}\nconst recDur = parseInt(ev.duration_sec, 10) || 0;\nif (recDur > 0 && recDur < 2 && !transcript.trim()) {\n  intent = 'silence';\n}\nconst explicitTenant = /\\b(no soy|no soy propietari|inquilino|arrendatari|alquil|no es mio|no es mia|no es de mi)\\b/.test(transcriptNorm);\nconst bareNo = /^(no|nop)$/.test(transcriptNorm);\nconst partialOwner = /\\bpropiet/i.test(transcriptNorm);\nif ((etape === 'ouverture' || etape === 'Q1_clarif') && partialOwner && intent !== 'oui') {\n  intent = 'oui';\n}\nif ((etape === 'ouverture' || etape === 'Q1_clarif') && intent === 'non' && !explicitTenant) {\n  intent = bareNo ? 'incertain' : (transcriptNorm ? 'incertain' : 'silence');\n}\n\nsession.transcript_log.push(\n  `[${etape}] ${transcript || '(silencio)'} → ${intent}${valeur ? ' / ' + valeur : ''}`\n);\nsession.duree_sec += Math.max(4, parseInt(ev.duration_sec, 10) || 6);\nlet route = { next: 'retry', hangup: false, qualified: false };\nif (session.duree_sec >= session.soft_limit) route = { next: 'exit_timeout', audioUrl: audioFile('sofia_exit_timeout'), hangup: true };\nelse if (intent === 'hors_sujet') {\n  session.hors_sujet_count += 1;\n  route = session.hors_sujet_count >= 3\n    ? { next: 'exit_polite', audioUrl: audioFile('sofia_exit_polite'), hangup: true }\n    : { next: 'fallback', audioUrl: audioFile('sofia_fallback'), hangup: false };\n} else if (intent === 'pas_interesse' || intent === 'refus') route = { next: 'exit_polite', audioUrl: audioFile('sofia_exit_polite'), hangup: true };\nelse if (intent === 'do_not_call') route = { next: 'exit_dnc', audioUrl: audioFile('sofia_exit_dnc'), hangup: true };\nelse if (intent === 'silence') {\n  session.silence_count += 1;\n  const retryAudio = (etape === 'ouverture' || etape === 'Q1_clarif')\n    ? audioFile('sofia_q1_clarif')\n    : (audioFile(`sofia_${etape}`) || audioFile('sofia_fallback'));\n  if (etape === 'ouverture') session.etape = 'Q1_clarif';\n  route = { next: 'retry', audioUrl: retryAudio, hangup: false };\n}\nelse {\n  session.hors_sujet_count = 0;\n  session.silence_count = 0;\n  if (etape === 'ouverture') {\n    if (intent === 'oui') { session.data.proprietaire = true; session.etape = 'Q2'; route = { next: 'play', audioUrl: audioFile('sofia_q2'), hangup: false }; }\n    else if (intent === 'non') {\n      session.non_owner_count += 1;\n      session.etape = 'Q1_clarif';\n      route = { next: 'play', audioUrl: audioFile('sofia_q1_clarif'), hangup: false };\n    }\n    else if (intent === 'incertain') { session.etape = 'Q1_clarif'; route = { next: 'play', audioUrl: audioFile('sofia_q1_clarif'), hangup: false }; }\n    else { session.etape = 'Q1_clarif'; route = { next: 'play', audioUrl: audioFile('sofia_q1_clarif'), hangup: false }; }\n  } else if (etape === 'Q1_clarif') {\n    if (intent === 'oui') { session.data.proprietaire = true; session.etape = 'Q2'; route = { next: 'play', audioUrl: audioFile('sofia_q2'), hangup: false }; }\n    else if (intent === 'non') {\n      session.non_owner_count += 1;\n      if (session.non_owner_count >= 2 && (explicitTenant || bareNo)) {\n        route = { next: 'exit_non_proprio', audioUrl: audioFile('sofia_exit_non_proprio'), hangup: true };\n      } else {\n        route = { next: 'retry', audioUrl: audioFile('sofia_q1_clarif'), hangup: false };\n      }\n    }\n    else route = { next: 'retry', audioUrl: audioFile('sofia_q1_clarif'), hangup: false };\n  } else if (etape === 'Q2') {\n    if (intent === 'oui') { session.data.combles = true; session.etape = 'Q3'; route = { next: 'play', audioUrl: audioFile('sofia_q3'), hangup: false }; }\n    else if (intent === 'non') { session.data.combles = false; session.etape = 'Q3'; route = { next: 'play', audioUrl: audioFile('sofia_q3'), hangup: false }; }\n    else route = { next: 'retry', audioUrl: audioFile('sofia_q2'), hangup: false };\n  } else if (etape === 'Q2_appt') {\n    if (intent === 'oui') { session.etape = 'collect_creneau'; route = { next: 'play', audioUrl: audioFile('sofia_conclusion'), hangup: false }; }\n    else route = { next: 'exit_polite', audioUrl: audioFile('sofia_exit_polite'), hangup: true };\n  } else if (etape === 'Q3') {\n    if (intent === 'ok') {\n      session.data.code_postal = valeur || extractPostalCode(transcriptNorm) || transcript.slice(0, 12);\n      session.etape = 'Q4';\n      route = { next: 'play', audioUrl: audioFile('sofia_q4'), hangup: false };\n    } else if (intent === 'inconnu') {\n      session.data.code_postal = 'inconnu';\n      session.etape = 'Q4';\n      route = { next: 'play', audioUrl: audioFile('sofia_q4'), hangup: false };\n    } else {\n      session.q3_retry = (session.q3_retry || 0) + 1;\n      if (session.q3_retry >= 3) {\n        session.data.code_postal = 'inconnu';\n        session.etape = 'Q4';\n        route = { next: 'play', audioUrl: audioFile('sofia_q4'), hangup: false };\n      } else {\n        const retryAudio = session.q3_retry >= 2\n          ? audioFile('sofia_q3_noknow')\n          : (audioFile('sofia_q3_repeat') || audioFile('sofia_q3'));\n        route = { next: 'retry', audioUrl: retryAudio, hangup: false };\n      }\n    }\n  } else if (etape === 'Q4') {\n    if (intent === 'ok') {\n      session.data.calefaccion = valeur || transcript.slice(0, 40);\n      session.etape = 'collect_creneau';\n      route = { next: 'play', audioUrl: audioFile('sofia_conclusion'), hangup: false };\n    } else if (intent === 'inconnu') {\n      session.data.calefaccion = 'inconnu';\n      session.etape = 'collect_creneau';\n      route = { next: 'play', audioUrl: audioFile('sofia_conclusion'), hangup: false };\n    } else route = { next: 'retry', audioUrl: audioFile('sofia_q4_non'), hangup: false };\n  } else if (etape === 'Q4_non') {\n    if (intent === 'ok') {\n      session.data.calefaccion = valeur || transcript.slice(0, 40);\n      session.etape = 'collect_creneau';\n      route = { next: 'play', audioUrl: audioFile('sofia_conclusion'), hangup: false };\n    } else route = { next: 'retry', audioUrl: audioFile('sofia_q4_non'), hangup: false };\n  } else if (etape === 'Q5') {\n    if (intent === 'oui') { session.data.acces_combles = true; session.etape = 'collect_creneau'; route = { next: 'play', audioUrl: audioFile('sofia_conclusion'), hangup: false }; }\n    else if (intent === 'non') { session.data.acces_combles = false; session.etape = 'Q5_non'; route = { next: 'play', audioUrl: audioFile('sofia_q5_non'), hangup: false }; }\n  } else if (etape === 'Q5_non') {\n    if (intent === 'oui') { session.etape = 'collect_creneau'; route = { next: 'play', audioUrl: audioFile('sofia_conclusion'), hangup: false }; }\n    else route = { next: 'exit_polite', audioUrl: audioFile('sofia_exit_polite'), hangup: true };\n  } else if (etape === 'collect_creneau' && intent === 'ok') {\n    session.data.creneau_rappel = valeur; session.etape = 'collect_nom'; route = { next: 'play', audioUrl: audioFile('sofia_collect_nom'), hangup: false };\n  } else if (etape === 'collect_nom' && intent === 'ok') {\n    session.data.nom_contact = valeur; session.etape = 'collect_tel'; route = { next: 'play', audioUrl: audioFile('sofia_collect_tel'), hangup: false };\n  } else if (etape === 'collect_tel') {\n    if (intent === 'confirme') { session.data.telephone_final = session.telephone; session.etape = 'fin_succes'; route = { next: 'play', audioUrl: audioFile('sofia_fin_succes'), hangup: true, qualified: true }; }\n    else if (intent === 'nouveau') { session.data.telephone_final = valeur || session.telephone; session.etape = 'fin_succes'; route = { next: 'play', audioUrl: audioFile('sofia_fin_succes'), hangup: true, qualified: true }; }\n  }\n}\n\nlet audio_url = route.audioUrl || '';\nif (!audio_url && !route.hangup) {\n  audio_url = audioFile('sofia_fallback');\n}\n\nconst statut = route.qualified ? 'qualifie' : (route.next === 'exit_non_proprio' ? 'non_proprietaire' : (route.next === 'exit_dnc' ? 'do_not_call' : (route.hangup ? 'non_qualifie' : 'en_cours')));\nsd.sofia_sessions[callSid] = session;\nconst telefono = session.data.telephone_final || session.telephone || ev.to || ev.from || ev.raw?.To || '';\nif (!sd.sofia_sheet_written) sd.sofia_sheet_written = {};\nconst alreadyWritten = !!sd.sofia_sheet_written[callSid];\nconst finalStatut = route.qualified ? 'qualifie' : (session.data.proprietaire && route.hangup ? 'partiel' : statut);\nconst write_sheet = route.hangup && !!telefono && !alreadyWritten && (session.transcript_log || []).length > 0;\nconst sheet_payload = write_sheet\n  ? buildSheetPayload(session, ev, { qualified: !!route.qualified, statut: finalStatut })\n  : null;\nif (write_sheet) sd.sofia_sheet_written[callSid] = true;\nreturn [{\n  json: {\n    action: route.hangup ? 'hangup' : 'play_audio',\n    audio_url,\n    call_sid: callSid,\n    provider: ev.provider || 'twilio',\n    qualified: !!route.qualified,\n    transcript,\n    write_sheet,\n    statut,\n    sheet_payload,\n    session,\n    event: ev,\n  },\n}];"
+      },
+      "name": "Sofía Engine",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.write_sheet }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "name": "Write Sheet?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        520,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const sp = $input.first().json.sheet_payload || $input.first().json;\nif (!sp || !sp.telefono) {\n  const engine = $('Sofía Engine').first().json;\n  return [{ json: engine }];\n}\nconst base = ($env.N8N_WEBHOOK_URL || '').replace(/\\/$/, '');\nawait this.helpers.httpRequest({\n  method: 'POST',\n  url: base + '/sofia-es-demo/sheets',\n  body: {\n    ...sp,\n    sheet_name: sp.sheet_name || $env.GOOGLE_SHEETS_TAB_DEMO || 'Leads_Sofia_Demo_Abdallah',\n  },\n  json: true,\n});\nconst engine = $('Sofía Engine').first().json;\nreturn [{ json: engine }];"
+      },
+      "name": "Write Google Sheet",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        760,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [$input.first()];"
+      },
+      "name": "Pass Through",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        760,
+        400
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Conversation": {
+      "main": [
+        [
+          {
+            "node": "Sofía Engine",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sofía Engine": {
+      "main": [
+        [
+          {
+            "node": "Write Sheet?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write Sheet?": {
+      "main": [
+        [
+          {
+            "node": "Write Google Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Pass Through",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write Google Sheet": {
+      "main": [
+        [
+          {
+            "node": "Pass Through",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [
+    {
+      "name": "sofia-es-demo"
+    },
+    {
+      "name": "demo-abdallah"
+    },
+    {
+      "name": "vicidial"
+    }
+  ]
+}

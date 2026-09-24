@@ -1,0 +1,14 @@
+{
+  "confirmation_qualifie": {
+    "id": "sms_confirmation_qualifie",
+    "body": "Bonjour {prenom} ! 😊\nMerci pour votre temps.\nNotre directeur des travaux vous contactera le {jour} en {moment_prefere}.\nDes questions ? Répondez à ce message !\n— Soumission Entrepreneurs"
+  },
+  "rappel_veille_visite": {
+    "id": "sms_rappel_veille",
+    "body": "Bonjour {prenom} !\nRappel : votre rencontre avec notre directeur des travaux est demain {jour} à {heure}.\nConfirmer : répondez OUI\nReplanifier : répondez REPORT\n— Soumission Entrepreneurs"
+  },
+  "relance_j3": {
+    "id": "sms_relance_j3",
+    "body": "Bonjour {prenom} !\nOn n'a pas réussi à se parler.\nSouhaitez-vous toujours la visite gratuite de notre directeur des travaux ?\nRépondez OUI et on vous rappelle !\n— Soumission Entrepreneurs"
+  }
+}

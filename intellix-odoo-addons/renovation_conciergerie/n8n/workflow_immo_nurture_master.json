@@ -1,0 +1,911 @@
+{
+  "name": "Immo Meta — Séquence relances complète (J+0 → J+30)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "immo-nurture-start",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "n0-webhook",
+      "name": "0 Webhook Nurture Start",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        400
+      ],
+      "webhookId": "immo-nurture-start"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json;\nconst body = raw.body || raw;\n\nfunction normalizePhone(phone) {\n  if (!phone) return '';\n  const d = String(phone).replace(/\\D/g, '');\n  if (d.length === 10) return '+1' + d;\n  if (d.length === 11 && d.startsWith('1')) return '+' + d;\n  return d ? '+1' + d : '';\n}\n\nconst score = (body.score || body.immo_ia_score || '').toLowerCase();\nconst skip = score === 'hot' || body.do_not_call || body.explicit_refusal || body.stop_nurture;\nconst call_answered = body.call_answered === true || body.call_answered === 'true' || (parseInt(body.call_duration_seconds || 0, 10) >= 25);\nconst skip_initial_call = body.skip_initial_call === true || body.skip_initial_call === 'true';\n\nconst ctx = {\n  ...body,\n  lead_id: body.lead_id || body.odoo_lead_id,\n  phone: normalizePhone(body.phone),\n  first_name: (body.first_name || body.lead_name || 'Bonjour').split(' ')[0],\n  full_address: body.full_address || body.property_address || '',\n  neighborhood: body.neighborhood || (body.full_address || '').split(',')[0] || 'votre secteur',\n  season: body.season || 'printemps',\n  market_days: body.market_days || '45',\n  score,\n  call_answered,\n  skip_nurture: skip,\n  skip_initial_call,\n  total_call_attempts: parseInt(body.total_call_attempts || body.immo_total_call_attempts || 0, 10),\n  n8n_base: '{{N8N_WEBHOOK_BASE}}',\n};\n\nreturn [{ json: ctx }];"
+      },
+      "id": "n1-prep",
+      "name": "1 Préparer contexte",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "skip",
+              "leftValue": "={{ $json.skip_nurture }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "n2-if-skip",
+      "name": "2 HOT ou DNC?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        480,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const j = $input.first().json;\nconst token = '{{META_IMMO_WEBHOOK_TOKEN}}';\nawait this.helpers.httpRequest({\n  method: 'POST',\n  url: 'https://intellixcrm.com/api/immo/lead/update',\n  headers: { 'X-Immo-Webhook-Token': token, 'Content-Type': 'application/json' },\n  body: { lead_id: j.lead_id, start_nurture: true, nurture_step: 10 },\n  json: true,\n});\nreturn [{ json: j }];"
+      },
+      "id": "n3-odoo-start",
+      "name": "3 Odoo start nurture",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "skipcall",
+              "leftValue": "={{ $('1 Préparer contexte').item.json.skip_initial_call }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "n3b-if-skipcall",
+      "name": "3b Appel J+0 sauté?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        960,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "noans",
+              "leftValue": "={{ $('1 Préparer contexte').item.json.call_answered }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "n4-if-noanswer",
+      "name": "4 Pas de réponse J+0?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        960,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 0.5,
+        "unit": "hours"
+      },
+      "id": "n5-wait-30m",
+      "name": "5 Wait 30min",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1200,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const c = $('1 Préparer contexte').first().json;\nconst sid = '{{TWILIO_ACCOUNT_SID}}';\nconst auth = Buffer.from(sid + ':{{TWILIO_AUTH_TOKEN}}').toString('base64');\nconst from = '{{TWILIO_FROM_IMMO}}';\nconst msg = `Bonjour ${c.first_name}! 👋\\n\\nJe viens d'essayer de vous joindre concernant votre évaluation marchande gratuite.\\n\\nRépondez simplement OUI ici et je vous rappelle dans les prochaines minutes!\\n\\n— Sophie, Maison Recherchée.`;\nawait this.helpers.httpRequest({\n  method: 'POST',\n  url: `https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`,\n  headers: { Authorization: 'Basic ' + auth, 'Content-Type': 'application/x-www-form-urlencoded' },\n  body: `To=${encodeURIComponent(c.phone)}&From=${encodeURIComponent(from)}&Body=${encodeURIComponent(msg)}`,\n});\nreturn [{ json: c }];"
+      },
+      "id": "n6-sms-30m",
+      "name": "6 SMS J+0 30min",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1440,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 3.5,
+        "unit": "hours"
+      },
+      "id": "n7-wait-4h",
+      "name": "7 Wait jusqu'à J+0 4h",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1680,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const c = $('1 Préparer contexte').first().json;\nconst sid = '{{TWILIO_ACCOUNT_SID}}';\nconst auth = Buffer.from(sid + ':{{TWILIO_AUTH_TOKEN}}').toString('base64');\nconst from = '{{TWILIO_FROM_IMMO}}';\nconst msg = `Bonjour ${c.first_name} 😊\\n\\nVotre demande d'évaluation marchande est bien reçue!\\n\\nQuel est le meilleur moment pour vous appeler cette semaine?\\n\\n☐ Matin (8h-12h)\\n☐ Après-midi (12h-17h)\\n☐ Soir (17h-20h)\\n\\n— Sophie, Maison Recherchée.`;\nawait this.helpers.httpRequest({\n  method: 'POST',\n  url: `https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`,\n  headers: { Authorization: 'Basic ' + auth, 'Content-Type': 'application/x-www-form-urlencoded' },\n  body: `To=${encodeURIComponent('whatsapp:' + c.phone)}&From=${encodeURIComponent('whatsapp:' + from)}&Body=${encodeURIComponent(msg)}`,\n});\nreturn [{ json: c }];"
+      },
+      "id": "n8-wa-4h",
+      "name": "8 WhatsApp J+0 4h",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1920,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const c = $('1 Préparer contexte').item.json;\nfunction torontoNow() {\n  return new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Toronto' }));\n}\nfunction minutesUntil(dayOffset, hour, minute = 0) {\n  const now = torontoNow();\n  const target = new Date(now);\n  target.setDate(target.getDate() + dayOffset);\n  target.setHours(hour, minute, 0, 0);\n  let m = Math.round((target - now) / 60000);\n  return m < 1 ? 1 : m;\n}\nreturn [{ json: { ...c, wait_minutes: minutesUntil(1, 10), relance_number: 1, nurture_step: 11 } }];"
+      },
+      "id": "n9-calc-j1",
+      "name": "9 Calc wait J+1 10h",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2160,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "amount": "={{ $json.wait_minutes }}",
+        "unit": "minutes"
+      },
+      "id": "n10-wait-j1",
+      "name": "10 Wait J+1 10h",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2400,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const c = $('1 Préparer contexte').first().json;\nconst base = c.n8n_base || '{{N8N_WEBHOOK_BASE}}';\nconst body = {\n  lead_id: c.lead_id,\n  phone: c.phone,\n  first_name: c.first_name,\n  property_address: c.full_address,\n  relance_number: 1,\n  days_since_request: 1,\n  previous_call_attempts: c.total_call_attempts + 1,\n  total_call_attempts: c.total_call_attempts + 1,\n};\nawait this.helpers.httpRequest({\n  method: 'POST',\n  url: base + '/webhook/immo-relance-step',\n  headers: { 'Content-Type': 'application/json' },\n  body,\n  json: true,\n});\nreturn [{ json: c }];"
+      },
+      "id": "n11-call-j1",
+      "name": "11 Appel relance J+1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2640,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const c = $('1 Préparer contexte').item.json;\nfunction torontoNow() {\n  return new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Toronto' }));\n}\nfunction minutesUntil(dayOffset, hour, minute = 0) {\n  const now = torontoNow();\n  const target = new Date(now);\n  target.setDate(target.getDate() + dayOffset);\n  target.setHours(hour, minute, 0, 0);\n  let m = Math.round((target - now) / 60000);\n  return m < 1 ? 1 : m;\n}\nreturn [{ json: { ...c, wait_minutes: minutesUntil(2, 16, 30), nurture_step: 12 } }];"
+      },
+      "id": "n12-calc-j2",
+      "name": "12 Calc J+2 16h30 SMS",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2880,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "amount": "={{ $json.wait_minutes }}",
+        "unit": "minutes"
+      },
+      "id": "n13-wait-j2",
+      "name": "13 Wait J+2",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        3120,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const c = $('1 Préparer contexte').first().json;\nconst sid = '{{TWILIO_ACCOUNT_SID}}';\nconst auth = Buffer.from(sid + ':{{TWILIO_AUTH_TOKEN}}').toString('base64');\nconst from = '{{TWILIO_FROM_IMMO}}';\nconst msg = `Bonjour ${c.first_name}!\\n\\n💡 Les propriétés dans votre secteur se vendent en moyenne en ${c.market_days} jours.\\n\\nVotre évaluation gratuite vous donne une fourchette précise.\\n\\nDisponible pour un appel rapide aujourd'hui?\\n\\n— Agence Doorway`;\nawait this.helpers.httpRequest({\n  method: 'POST',\n  url: `https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`,\n  headers: { Authorization: 'Basic ' + auth, 'Content-Type': 'application/x-www-form-urlencoded' },\n  body: `To=${encodeURIComponent(c.phone)}&From=${encodeURIComponent(from)}&Body=${encodeURIComponent(msg)}`,\n});\nreturn [{ json: c }];"
+      },
+      "id": "n14-sms-j2",
+      "name": "14 SMS J+2 valeur",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3360,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const c = $('1 Préparer contexte').item.json;\nfunction torontoNow() {\n  return new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Toronto' }));\n}\nfunction minutesUntil(dayOffset, hour) {\n  const now = torontoNow();\n  const target = new Date(now);\n  target.setDate(target.getDate() + dayOffset);\n  target.setHours(hour, 0, 0, 0);\n  let m = Math.round((target - now) / 60000);\n  return m < 1 ? 1 : m;\n}\nreturn [{ json: { ...c, wait_minutes: minutesUntil(3, 10), relance_number: 2 } }];"
+      },
+      "id": "n15-calc-j3",
+      "name": "15 Calc J+3 10h",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3600,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "amount": "={{ $json.wait_minutes }}",
+        "unit": "minutes"
+      },
+      "id": "n16-wait-j3",
+      "name": "16 Wait J+3",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        3840,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const c = $('1 Préparer contexte').first().json;\nconst base = c.n8n_base || '{{N8N_WEBHOOK_BASE}}';\nconst body = {\n  lead_id: c.lead_id,\n  phone: c.phone,\n  first_name: c.first_name,\n  property_address: c.full_address,\n  relance_number: 2,\n  days_since_request: 3,\n  market_insight: 'Les ventes récentes montrent une demande soutenue dans le secteur.',\n  neighborhood: c.neighborhood,\n  total_call_attempts: 3,\n};\nawait this.helpers.httpRequest({\n  method: 'POST',\n  url: base + '/webhook/immo-relance-step',\n  headers: { 'Content-Type': 'application/json' },\n  body,\n  json: true,\n});\nreturn [{ json: c }];"
+      },
+      "id": "n17-call-j3",
+      "name": "17 Appel relance J+3",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4080,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const c = $('1 Préparer contexte').item.json;\nfunction torontoNow() {\n  return new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Toronto' }));\n}\nfunction minutesUntil(dayOffset, hour) {\n  const now = torontoNow();\n  const target = new Date(now);\n  target.setDate(target.getDate() + dayOffset);\n  target.setHours(hour, 0, 0, 0);\n  let m = Math.round((target - now) / 60000);\n  return m < 1 ? 1 : m;\n}\nreturn [{ json: { ...c, wait_minutes: minutesUntil(5, 16) } }];"
+      },
+      "id": "n18-calc-j5",
+      "name": "18 Calc J+5 16h WA",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4320,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "amount": "={{ $json.wait_minutes }}",
+        "unit": "minutes"
+      },
+      "id": "n19-wait-j5",
+      "name": "19 Wait J+5",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        4560,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const c = $('1 Préparer contexte').first().json;\nconst sid = '{{TWILIO_ACCOUNT_SID}}';\nconst auth = Buffer.from(sid + ':{{TWILIO_AUTH_TOKEN}}').toString('base64');\nconst from = '{{TWILIO_FROM_IMMO}}';\nconst msg = `Bonjour ${c.first_name} 🏡\\n\\nCette semaine, on a aidé des propriétaires du secteur ${c.neighborhood}.\\n\\n✅ Évaluation en 24h\\n✅ Ventes comparables\\n✅ Estimation nette\\n\\nGratuit et sans engagement. On fixe ça cette semaine?`;\nawait this.helpers.httpRequest({\n  method: 'POST',\n  url: `https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`,\n  headers: { Authorization: 'Basic ' + auth, 'Content-Type': 'application/x-www-form-urlencoded' },\n  body: `To=${encodeURIComponent('whatsapp:' + c.phone)}&From=${encodeURIComponent('whatsapp:' + from)}&Body=${encodeURIComponent(msg)}`,\n});\nreturn [{ json: c }];"
+      },
+      "id": "n20-wa-j5",
+      "name": "20 WhatsApp J+5",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4800,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const c = $('1 Préparer contexte').item.json;\nfunction torontoNow() {\n  return new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Toronto' }));\n}\nfunction minutesUntil(dayOffset, hour) {\n  const now = torontoNow();\n  const target = new Date(now);\n  target.setDate(target.getDate() + dayOffset);\n  target.setHours(hour, 0, 0, 0);\n  let m = Math.round((target - now) / 60000);\n  return m < 1 ? 1 : m;\n}\nreturn [{ json: { ...c, wait_minutes: minutesUntil(7, 16), relance_number: 3 } }];"
+      },
+      "id": "n21-calc-j7",
+      "name": "21 Calc J+7 16h",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5040,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "amount": "={{ $json.wait_minutes }}",
+        "unit": "minutes"
+      },
+      "id": "n22-wait-j7",
+      "name": "22 Wait J+7",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        5280,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const c = $('1 Préparer contexte').first().json;\nconst base = c.n8n_base || '{{N8N_WEBHOOK_BASE}}';\nconst body = {\n  lead_id: c.lead_id,\n  phone: c.phone,\n  first_name: c.first_name,\n  relance_number: 3,\n  days_since_request: 7,\n  previous_attempts: 4,\n  total_call_attempts: 5,\n};\nawait this.helpers.httpRequest({\n  method: 'POST',\n  url: base + '/webhook/immo-relance-step',\n  headers: { 'Content-Type': 'application/json' },\n  body,\n  json: true,\n});\nreturn [{ json: c }];"
+      },
+      "id": "n23-call-j7",
+      "name": "23 Appel relance J+7",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5520,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const c = $('1 Préparer contexte').first().json;\nconst sid = '{{TWILIO_ACCOUNT_SID}}';\nconst auth = Buffer.from(sid + ':{{TWILIO_AUTH_TOKEN}}').toString('base64');\nconst from = '{{TWILIO_FROM_IMMO}}';\nconst msg = `Bonjour ${c.first_name}, dernier message 😊 — votre dossier expire dans 48h. Répondez OUI pour le garder actif. — Sophie, Maison Recherchée.`;\nawait this.helpers.httpRequest({\n  method: 'POST',\n  url: `https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`,\n  headers: { Authorization: 'Basic ' + auth, 'Content-Type': 'application/x-www-form-urlencoded' },\n  body: `To=${encodeURIComponent('whatsapp:' + c.phone)}&From=${encodeURIComponent('whatsapp:' + from)}&Body=${encodeURIComponent(msg)}`,\n});\nreturn [{ json: c }];"
+      },
+      "id": "n24-wa-j7",
+      "name": "24 WhatsApp J+7 dernier",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5760,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const c = $('1 Préparer contexte').item.json;\nfunction torontoNow() {\n  return new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Toronto' }));\n}\nfunction minutesUntil(dayOffset, hour) {\n  const now = torontoNow();\n  const target = new Date(now);\n  target.setDate(target.getDate() + dayOffset);\n  target.setHours(hour, 0, 0, 0);\n  let m = Math.round((target - now) / 60000);\n  return m < 1 ? 1 : m;\n}\nreturn [{ json: { ...c, wait_minutes: minutesUntil(14, 10), relance_number: 4 } }];"
+      },
+      "id": "n25-calc-j14",
+      "name": "25 Calc J+14 10h",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        6000,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "amount": "={{ $json.wait_minutes }}",
+        "unit": "minutes"
+      },
+      "id": "n26-wait-j14",
+      "name": "26 Wait J+14",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        6240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const c = $('1 Préparer contexte').first().json;\nconst base = c.n8n_base || '{{N8N_WEBHOOK_BASE}}';\nconst body = {\n  lead_id: c.lead_id,\n  phone: c.phone,\n  first_name: c.first_name,\n  relance_number: 4,\n  days_since_request: 14,\n  season: c.season,\n  total_call_attempts: 6,\n};\nawait this.helpers.httpRequest({\n  method: 'POST',\n  url: base + '/webhook/immo-relance-step',\n  headers: { 'Content-Type': 'application/json' },\n  body,\n  json: true,\n});\nreturn [{ json: c }];"
+      },
+      "id": "n27-call-j14",
+      "name": "27 Appel J+14",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        6480,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const c = $('1 Préparer contexte').first().json;\nconst sid = '{{TWILIO_ACCOUNT_SID}}';\nconst auth = Buffer.from(sid + ':{{TWILIO_AUTH_TOKEN}}').toString('base64');\nconst from = '{{TWILIO_FROM_IMMO}}';\nconst msg = `Bonjour ${c.first_name} 👋\\n\\nNotre rapport de marché ${c.season} pour votre secteur est prêt.\\n\\nRépondez OUI 📊 — Maison Recherchée.`;\nawait this.helpers.httpRequest({\n  method: 'POST',\n  url: `https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`,\n  headers: { Authorization: 'Basic ' + auth, 'Content-Type': 'application/x-www-form-urlencoded' },\n  body: `To=${encodeURIComponent(c.phone)}&From=${encodeURIComponent(from)}&Body=${encodeURIComponent(msg)}`,\n});\nreturn [{ json: c }];"
+      },
+      "id": "n28-sms-j14",
+      "name": "28 SMS J+14",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        6720,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 384,
+        "unit": "hours"
+      },
+      "id": "n29-wait-j30",
+      "name": "29 Wait J+30",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        6960,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const c = $('1 Préparer contexte').first().json;\nconst sid = '{{TWILIO_ACCOUNT_SID}}';\nconst auth = Buffer.from(sid + ':{{TWILIO_AUTH_TOKEN}}').toString('base64');\nconst from = '{{TWILIO_FROM_IMMO}}';\nconst msg = `Bonjour ${c.first_name}, votre dossier sera archivé cette semaine. Écrivez RÉACTIVER pour reprendre. — Équipe Maison Recherchée. 🏡`;\nawait this.helpers.httpRequest({\n  method: 'POST',\n  url: `https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`,\n  headers: { Authorization: 'Basic ' + auth, 'Content-Type': 'application/x-www-form-urlencoded' },\n  body: `To=${encodeURIComponent(c.phone)}&From=${encodeURIComponent(from)}&Body=${encodeURIComponent(msg)}`,\n});\nreturn [{ json: c }];"
+      },
+      "id": "n30-sms-j30",
+      "name": "30 SMS J+30 archive",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        7200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const c = $('1 Préparer contexte').first().json;\nconst token = '{{META_IMMO_WEBHOOK_TOKEN}}';\nawait this.helpers.httpRequest({\n  method: 'POST',\n  url: 'https://intellixcrm.com/api/immo/lead/update',\n  headers: { 'X-Immo-Webhook-Token': token, 'Content-Type': 'application/json' },\n  body: {\n    lead_id: c.lead_id,\n    archive_nurture: true,\n    stop_nurture: true,\n    nurture_step: 99,\n    final_status: 'not_interested'\n  },\n  json: true,\n});\nreturn [{ json: c }];"
+      },
+      "id": "n31-odoo-archive",
+      "name": "31 Odoo archivage J+30",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        7440,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const c = $('1 Préparer contexte').item.json;\nfunction torontoNow() {\n  return new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Toronto' }));\n}\nfunction minutesUntil(dayOffset, hour) {\n  const now = torontoNow();\n  const target = new Date(now);\n  target.setDate(target.getDate() + dayOffset);\n  target.setHours(hour, 0, 0, 0);\n  let m = Math.round((target - now) / 60000);\n  return m < 1 ? 1 : m;\n}\nreturn [{ json: { ...c, wait_minutes: minutesUntil(1, 10), relance_number: 1 } }];"
+      },
+      "id": "n9b-calc-j1-skip",
+      "name": "9b Calc J+1 (répondu)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        420
+      ]
+    }
+  ],
+  "connections": {
+    "0 Webhook Nurture Start": {
+      "main": [
+        [
+          {
+            "node": "1 Préparer contexte",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "1 Préparer contexte": {
+      "main": [
+        [
+          {
+            "node": "2 HOT ou DNC?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "2 HOT ou DNC?": {
+      "main": [
+        [],
+        [
+          {
+            "node": "3 Odoo start nurture",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "3 Odoo start nurture": {
+      "main": [
+        [
+          {
+            "node": "3b Appel J+0 sauté?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "3b Appel J+0 sauté?": {
+      "main": [
+        [
+          {
+            "node": "9b Calc J+1 (répondu)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "4 Pas de réponse J+0?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "4 Pas de réponse J+0?": {
+      "main": [
+        [
+          {
+            "node": "5 Wait 30min",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "9b Calc J+1 (répondu)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "5 Wait 30min": {
+      "main": [
+        [
+          {
+            "node": "6 SMS J+0 30min",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "6 SMS J+0 30min": {
+      "main": [
+        [
+          {
+            "node": "7 Wait jusqu'à J+0 4h",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "7 Wait jusqu'à J+0 4h": {
+      "main": [
+        [
+          {
+            "node": "8 WhatsApp J+0 4h",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "8 WhatsApp J+0 4h": {
+      "main": [
+        [
+          {
+            "node": "9 Calc wait J+1 10h",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "9 Calc wait J+1 10h": {
+      "main": [
+        [
+          {
+            "node": "10 Wait J+1 10h",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "9b Calc J+1 (répondu)": {
+      "main": [
+        [
+          {
+            "node": "10 Wait J+1 10h",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "10 Wait J+1 10h": {
+      "main": [
+        [
+          {
+            "node": "11 Appel relance J+1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "11 Appel relance J+1": {
+      "main": [
+        [
+          {
+            "node": "12 Calc J+2 16h30 SMS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "12 Calc J+2 16h30 SMS": {
+      "main": [
+        [
+          {
+            "node": "13 Wait J+2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "13 Wait J+2": {
+      "main": [
+        [
+          {
+            "node": "14 SMS J+2 valeur",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "14 SMS J+2 valeur": {
+      "main": [
+        [
+          {
+            "node": "15 Calc J+3 10h",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "15 Calc J+3 10h": {
+      "main": [
+        [
+          {
+            "node": "16 Wait J+3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "16 Wait J+3": {
+      "main": [
+        [
+          {
+            "node": "17 Appel relance J+3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "17 Appel relance J+3": {
+      "main": [
+        [
+          {
+            "node": "18 Calc J+5 16h WA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "18 Calc J+5 16h WA": {
+      "main": [
+        [
+          {
+            "node": "19 Wait J+5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "19 Wait J+5": {
+      "main": [
+        [
+          {
+            "node": "20 WhatsApp J+5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "20 WhatsApp J+5": {
+      "main": [
+        [
+          {
+            "node": "21 Calc J+7 16h",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "21 Calc J+7 16h": {
+      "main": [
+        [
+          {
+            "node": "22 Wait J+7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "22 Wait J+7": {
+      "main": [
+        [
+          {
+            "node": "23 Appel relance J+7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "23 Appel relance J+7": {
+      "main": [
+        [
+          {
+            "node": "24 WhatsApp J+7 dernier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "24 WhatsApp J+7 dernier": {
+      "main": [
+        [
+          {
+            "node": "25 Calc J+14 10h",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "25 Calc J+14 10h": {
+      "main": [
+        [
+          {
+            "node": "26 Wait J+14",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "26 Wait J+14": {
+      "main": [
+        [
+          {
+            "node": "27 Appel J+14",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "27 Appel J+14": {
+      "main": [
+        [
+          {
+            "node": "28 SMS J+14",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "28 SMS J+14": {
+      "main": [
+        [
+          {
+            "node": "29 Wait J+30",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "29 Wait J+30": {
+      "main": [
+        [
+          {
+            "node": "30 SMS J+30 archive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "30 SMS J+30 archive": {
+      "main": [
+        [
+          {
+            "node": "31 Odoo archivage J+30",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [
+    {
+      "name": "immo"
+    },
+    {
+      "name": "nurture"
+    },
+    {
+      "name": "doorway"
+    }
+  ]
+}

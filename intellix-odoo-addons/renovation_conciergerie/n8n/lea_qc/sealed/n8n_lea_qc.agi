@@ -1,0 +1,1460 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+n8n_lea_qc.agi — Boucle conversation Léa Québec (VICIdial + n8n) (VICIdial + TrustSIP → n8n).
+
+Installation :
+  cp n8n_sofia_es.agi /var/lib/asterisk/agi-bin/
+  chmod +x && chown asterisk:asterisk
+"""
+from __future__ import annotations
+
+import base64
+import json
+import os
+import re
+import shutil
+import signal
+import struct
+import subprocess
+import sys
+import tempfile
+import time
+import urllib.error
+import urllib.request
+from typing import Any
+
+
+class Agi:
+    def __init__(self) -> None:
+        self.env: dict[str, str] = {}
+        while True:
+            line = sys.stdin.readline().strip()
+            if not line:
+                break
+            if ": " in line:
+                key, val = line.split(": ", 1)
+                self.env[key] = val
+
+    def _w(self, cmd: str) -> bool:
+        """Écrit une commande AGI ; False si le canal est mort (pipe cassé)."""
+        try:
+            sys.stdout.write(cmd)
+            sys.stdout.flush()
+            return True
+        except (BrokenPipeError, OSError, ValueError):
+            return False
+
+    def _r(self) -> str:
+        """Lit la réponse AGI ; '' si EOF (canal raccroché)."""
+        try:
+            return sys.stdin.readline()
+        except (OSError, ValueError):
+            return ""
+
+    def verbose(self, msg: str, level: int = 1) -> None:
+        # IMPORTANT: VERBOSE renvoie "200 result=1". Il FAUT lire la réponse, sinon
+        # la prochaine commande (ex: STREAM FILE) lit cet ACK et croit avoir fini
+        # instantanément (ms=0) -> désync stdin/stdout de tout le protocole AGI.
+        if self._w(f'VERBOSE "{msg}" {level}\n'):
+            self._r()
+
+    def answer(self) -> None:
+        if self._w("ANSWER\n"):
+            self._r()
+
+    def set_variable(self, name: str, value: str) -> None:
+        # SET VARIABLE renvoie aussi "200 result=1" -> lire la réponse (anti-désync).
+        safe = value.replace('"', "")
+        if self._w(f'SET VARIABLE {name} "{safe}"\n'):
+            self._r()
+
+    def stream_file(self, filename: str, escape_digits: str = "") -> None:
+        if self._w(f'STREAM FILE {filename} "{escape_digits}"\n'):
+            self._r()
+
+    def record_file(
+        self,
+        filename: str,
+        fmt: str = "wav",
+        escape_digits: str = "#",
+        timeout_ms: int = 5000,
+        offset: int = 0,
+        beep: bool = False,
+        max_silence: int = 2,
+    ) -> None:
+        # Plancher 2 s : un s=1 produit des WAV ~16364 o (silence pur) avant que
+        # le prospect amorce la parole après un clip TTS long (ouverture).
+        max_silence = max(2, int(max_silence or 2))
+        parts = [
+            f"RECORD FILE {filename} {fmt}",
+            f'"{escape_digits}"',
+            str(timeout_ms),
+            str(offset),
+        ]
+        if beep:
+            parts.append("BEEP")
+        parts.append(f"s={max_silence}")
+        if self._w(" ".join(parts) + "\n"):
+            self._r()
+
+    def hangup(self) -> None:
+        if self._w("HANGUP\n"):
+            self._r()
+
+    def get_variable(self, name: str) -> str:
+        if not self._w(f"GET VARIABLE {name}\n"):
+            return ""
+        line = self._r().strip()
+        if "result=1" in line and "(" in line:
+            return line.split("(", 1)[1].rstrip(")").strip()
+        return ""
+
+    def exec_app(self, app: str, data: str = "") -> str:
+        """Exécute une application dialplan (MixMonitor, StopMixMonitor, …)."""
+        safe = data.replace('"', "")
+        cmd = f"EXEC {app} {safe}\n" if safe else f"EXEC {app}\n"
+        if self._w(cmd):
+            return self._r()
+        return ""
+
+
+
+def _get(agi: Agi, name: str, default: str = "") -> str:
+    return os.environ.get(name) or agi.env.get(f"agi_{name.lower()}", default) or default
+
+def _chvar(agi: Agi, name: str, default: str = "") -> str:
+    val = (os.environ.get(name) or "").strip()
+    if val:
+        return val
+    val = (agi.get_variable(name) or "").strip()
+    if val and val not in ("(null)", "undefined"):
+        return val
+    return default
+
+
+def _cfg(agi: Agi, name: str, default: str = "") -> str:
+    return _chvar(agi, name, default) or default
+
+
+
+def http_post(url: str, payload: dict[str, Any], timeout: int = 90) -> dict[str, Any]:
+    data = json.dumps(payload).encode("utf-8")
+    req = urllib.request.Request(
+        url,
+        data=data,
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+    with urllib.request.urlopen(req, timeout=timeout) as resp:
+        body = resp.read().decode("utf-8", errors="replace")
+        if not body.strip():
+            return {}
+        parsed = json.loads(body)
+        if isinstance(parsed, list) and parsed:
+            return parsed[0]
+        return parsed if isinstance(parsed, dict) else {}
+
+
+def _engine_response(result: dict[str, Any]) -> dict[str, Any]:
+    if result.get("action"):
+        return result
+    eng = result.get("engine")
+    if isinstance(eng, dict) and eng.get("action"):
+        return eng
+    if isinstance(eng, list) and eng:
+        return eng[0] if isinstance(eng[0], dict) else {}
+    return result
+
+
+def _download_audio(url: str, call_sid: str) -> str:
+    """Télécharge un clip et le place dans WAV_CACHE_DIR (résolvable par STREAM FILE
+    en relatif 'lea/<nom>'). Retourne le chemin ABSOLU sans extension du WAV caché."""
+    os.makedirs(WAV_CACHE_DIR, exist_ok=True)
+    ext = ".mp3" if ".mp3" in url.lower() else ".wav"
+    raw = f"/tmp/lea_qc_{call_sid}_{os.getpid()}{ext}"
+    req = urllib.request.Request(url, headers={"User-Agent": "doorway-lea-qc-agi/1.0"})
+    with urllib.request.urlopen(req, timeout=90) as resp:
+        data = resp.read()
+    with open(raw, "wb") as fh:
+        fh.write(data)
+    name = re.sub(r"[^a-zA-Z0-9_-]", "_", os.path.basename(url.split("?")[0]))
+    name = name.replace(".mp3", "").replace(".wav", "") or f"dl_{call_sid}"
+    cached = os.path.join(WAV_CACHE_DIR, name + ".gsm")
+    try:
+        subprocess.run(
+            ["ffmpeg", "-y", "-i", raw, "-ar", "8000", "-ac", "1", cached],
+            check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            timeout=30,
+        )
+        try:
+            os.unlink(raw)
+        except OSError:
+            pass
+        return cached.replace(".gsm", "")
+    except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
+        return raw.replace(".mp3", "").replace(".wav", "")
+
+
+# IMPORTANT : STREAM FILE de l'AGI NE JOUE RIEN pour un chemin ABSOLU sur cet
+# Asterisk (résultat endpos=0). Il faut un nom RELATIF résolu via
+# astdatadir/sounds/<lang>/ (ici /usr/share/asterisk/sounds/en/). On cache donc les
+# clips dans .../sounds/en/lea et on joue "lea/<nom>" (comme un son intégré).
+SOUNDS_LANG_ROOT = "/usr/share/asterisk/sounds/en/"
+AST_SOUNDS_ROOTS = (
+    "/usr/share/asterisk/sounds/en/",
+    "/usr/share/asterisk/sounds/",
+    "/var/lib/asterisk/sounds/en/",
+    "/var/lib/asterisk/sounds/",
+)
+
+
+def _agi_stream_name(path_or_url: str) -> str:
+    """Nom RELATIF sans extension pour STREAM FILE (ex: 'lea/lea_ouverture')."""
+    if path_or_url.startswith("http"):
+        return path_or_url
+    p = path_or_url.replace(".wav", "").replace(".mp3", "").replace(".ulaw", "").replace(".alaw", "").replace(".sln", "").replace(".gsm", "")
+    for root in AST_SOUNDS_ROOTS:
+        if p.startswith(root):
+            return p[len(root):].lstrip("/")
+    return p
+
+
+WAV_CACHE_DIR = "/usr/share/asterisk/sounds/en/lea"
+# Clips TTS longs (~8–12 s) : délai post-lecture plus long ; courts (closing, fallback) : court.
+LONG_TTS_CLIP_KEYS = (
+    "question_besoin",
+    "question_immo",
+    "question_projet",
+    "ouverture",
+    "capturer_dispo",
+    "sonder_futur",
+    "objection",
+)
+SHORT_TTS_CLIP_KEYS = ("closing", "fallback", "exit_", "timeout")
+
+
+def _post_tts_listen_delay(audio_url: str, short_sec: float, long_sec: float) -> float:
+    u = (audio_url or "").lower()
+    if any(k in u for k in SHORT_TTS_CLIP_KEYS):
+        return short_sec
+    if any(k in u for k in LONG_TTS_CLIP_KEYS):
+        return long_sec
+    return short_sec
+
+
+VOICEMAIL_KEYWORDS = (
+    "messagerie",
+    "repondeur",
+    "répondeur",
+    "laissez un message",
+    "laissez votre message",
+    "apres le bip",
+    "après le bip",
+    "boite vocale",
+    "boîte vocale",
+    "ne peut pas repondre",
+    "ne peut pas répondre",
+    "pas disponible",
+    "nous ne sommes pas disponibles",
+    "nous sommes absents",
+    "personne ne peut prendre",
+    "composez",
+    "tapez",
+    "zero",
+    "zéro",
+)
+
+MAX_CHANNEL_SEC_NO_CONV = 120
+GREETING_PEAK_STT_RETRY = 0.3
+
+
+def _cdn_to_local(url: str) -> str:
+    """Mappe une URL de bucket clip connue vers son fichier LOCAL (évite le 403
+    Cloudflare sur User-Agent non-navigateur). Retourne '' si non mappable."""
+    for pref in ("https://intellixcrm.com/lea-qc-tts/", "http://intellixcrm.com/lea-qc-tts/"):
+        if url.startswith(pref):
+            return "/var/www/lea-qc-tts/" + url[len(pref):].split("?")[0]
+    # Fallback robuste : si n8n renvoie un clip Léa via un AUTRE bucket (ex.
+    # soumission-qc-tts à cause d'un $env STORAGE_BUCKET_URL global partagé), on
+    # retombe sur le fichier LOCAL lea-qc-tts par nom de base s'il existe — sinon
+    # le téléchargement échouait (403/404) et le tour restait MUET.
+    if url.startswith("http"):
+        base = os.path.basename(url.split("?")[0])
+        if base.startswith("lea_"):
+            local = "/var/www/lea-qc-tts/" + base
+            if os.path.isfile(local):
+                return local
+    return ""
+
+
+def _ensure_wav_base(path_or_url: str, call_sid: str = "cache") -> str:
+    """Retourne le chemin sans extension d'un WAV 8 kHz lisible par STREAM FILE."""
+    os.makedirs(WAV_CACHE_DIR, exist_ok=True)
+    if path_or_url.startswith("http"):
+        _local = _cdn_to_local(path_or_url)
+        if _local:
+            path_or_url = _local  # fichier local au lieu du CDN
+        else:
+            return _download_audio(path_or_url, call_sid)
+    base = path_or_url.replace(".wav", "").replace(".mp3", "").replace(".sln", "").replace(".gsm", "")
+    # Déjà dans le cache résolvable (.gsm) -> jouable en relatif tel quel.
+    if os.path.dirname(base) == WAV_CACHE_DIR and os.path.isfile(base + ".gsm"):
+        return base
+    cache_name = re.sub(r"[^a-zA-Z0-9_-]", "_", os.path.basename(base))
+    cached = os.path.join(WAV_CACHE_DIR, cache_name + ".gsm")
+    if os.path.isfile(cached) and os.path.getsize(cached) > 100:
+        return cached.replace(".gsm", "")
+    src = ""
+    for cand in (base + ".mp3", base + ".wav", base + ".sln"):
+        if os.path.isfile(cand):
+            src = cand
+            break
+    if not src:
+        return base
+    try:
+        # IMPORTANT: produire du .gsm natif Asterisk. format_wav rejette les WAV
+        # produits par ffmpeg et STREAM FILE d'un .wav/.sln rend endpos=0 (silence).
+        # Le .gsm relatif joue correctement en temps réel (endpos = durée du clip).
+        subprocess.run(
+            ["ffmpeg", "-y", "-i", src, "-ar", "8000", "-ac", "1", cached],
+            check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            timeout=30,
+        )
+        return cached.replace(".gsm", "")
+    except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
+        return base
+
+
+def _stream_audio(agi: Agi, path_or_url: str, call_sid: str) -> None:
+    if not path_or_url:
+        return
+    try:
+        base = _ensure_wav_base(path_or_url, call_sid)
+        stream_name = _agi_stream_name(base)
+        agi.verbose(f"stream audio {stream_name}", 1)
+        agi.stream_file(stream_name)
+    except (OSError, urllib.error.URLError) as exc:
+        agi.verbose(f"play error: {exc}", 1)
+
+
+def _play_url(agi: Agi, url: str, call_sid: str) -> None:
+    _stream_audio(agi, url, call_sid)
+
+
+def _reprompt_clip_url(etape: str, last_capturer_dispo_url: str, call_sid: str = "") -> str:
+    """Repose la question de l'étape courante — pas le fallback générique."""
+    tts = "/var/www/lea-qc-tts"
+    vsuffix = "_b" if _variant_for_sid(call_sid) == "B" else ""
+    if etape in ("CAPTURER_DISPO", "CAPTURER_DISPO_CONFIRM"):
+        if last_capturer_dispo_url:
+            return last_capturer_dispo_url
+        return f"{tts}/lea_capturer_dispo{vsuffix}.mp3"
+    stage_clip = {
+        "GREETING": f"lea_ouverture{vsuffix}",
+        "GREETING_CLARIF": f"lea_ouverture{vsuffix}",
+        "QUESTION_BESOIN": f"lea_question_besoin{vsuffix}",
+        "QUESTION_PROJET": f"lea_question_projet{vsuffix}",
+        "QUESTION_IMMO": f"lea_question_immo{vsuffix}",
+        "SONDER_FUTUR": f"lea_sonder_futur{vsuffix}",
+    }
+    clip = stage_clip.get(etape)
+    if clip:
+        path = f"{tts}/{clip}.mp3"
+        if os.path.isfile(path):
+            return path
+    return f"{tts}/lea_fallback.mp3"
+
+
+def _is_voicemail_transcript(transcript: str) -> bool:
+    t = (transcript or "").lower()
+    t = t.replace("á", "a").replace("é", "e").replace("í", "i").replace("ó", "o").replace("ú", "u")
+    if not t.strip():
+        return False
+    return any(kw in t for kw in VOICEMAIL_KEYWORDS)
+
+
+MIN_CONVERSATION_TRANSCRIPT_CHARS = 12
+MIN_CONVERSATION_DURATION_SEC = 8
+
+
+def _is_conversation(
+    amd: str,
+    *,
+    transcript: str = "",
+    duration_sec: int = 0,
+    cumulative_transcript_len: int = 0,
+) -> bool:
+    """Vrai si dialogue humain réel (pas répondeur / streak vide / AMD machine)."""
+    amd_l = (amd or "human").lower()
+    if amd_l in ("machine", "fax", "answering_machine", "amd_hangup", "not_sure"):
+        return False
+    text_len = cumulative_transcript_len or len((transcript or "").strip())
+    if text_len >= MIN_CONVERSATION_TRANSCRIPT_CHARS:
+        return True
+    if int(duration_sec or 0) >= MIN_CONVERSATION_DURATION_SEC and text_len > 0:
+        return True
+    return False
+
+
+def _wav_peak_amplitude(rec_path: str) -> float:
+    """Amplitude crête PCM 0..1 (mono 16-bit). Détecte WAV quasi-muets."""
+    try:
+        with open(rec_path, "rb") as fh:
+            hdr = fh.read(44)
+            if len(hdr) < 44 or hdr[0:4] != b"RIFF":
+                return 0.0
+            peak = 0
+            while True:
+                chunk = fh.read(8192)
+                if not chunk:
+                    break
+                n = len(chunk) // 2
+                if n == 0:
+                    continue
+                for sample in struct.unpack(f"<{n}h", chunk[: n * 2]):
+                    a = abs(sample)
+                    if a > peak:
+                        peak = a
+            return peak / 32768.0
+    except (OSError, struct.error):
+        return 0.0
+
+
+def deepgram_stt(rec_path: str) -> tuple[str, float, int]:
+    """STT via Odoo (évite gros payload n8n)."""
+    stt_url = os.environ.get(
+        "SOFIA_STT_URL", "http://127.0.0.1:8069/api/renov/stt/deepgram"
+    )
+    stt_key = os.environ.get("SOFIA_STT_WEBHOOK_KEY", "doorway-sofia-stt")
+    if not os.path.isfile(rec_path):
+        return "", 0.0, 0
+    t0 = time.time()
+    with open(rec_path, "rb") as fh:
+        rec_b64 = base64.b64encode(fh.read()).decode("ascii")
+    req = urllib.request.Request(
+        stt_url,
+        data=json.dumps({"recording_b64": rec_b64, "language": "fr-CA"}).encode(),
+        headers={
+            "Content-Type": "application/json",
+            "X-Renov-Stt-Key": stt_key,
+        },
+        method="POST",
+    )
+    with urllib.request.urlopen(req, timeout=20) as resp:
+        data = json.loads(resp.read().decode("utf-8", errors="replace") or "{}")
+    stt_ms = int((time.time() - t0) * 1000)
+    return (
+        (data.get("transcript") or "").strip(),
+        float(data.get("confidence") or 0),
+        stt_ms,
+    )
+
+
+def _is_greeting_etape(etape: str, turn: int) -> bool:
+    return turn == 0 or etape in ("GREETING", "GREETING_CLARIF", "")
+
+
+def _stt_with_greeting_fallback(
+    agi: Agi,
+    rec_path: str,
+    *,
+    turn: int,
+    etape: str,
+    peak: float,
+    rec_max_silence: int,
+    call_sid: str,
+) -> tuple[str, float, int, str]:
+    """STT + retry GREETING si peak audible mais transcript vide."""
+    transcript, stt_conf, stt_ms = deepgram_stt(rec_path)
+    active_path = rec_path
+    if transcript.strip() or not _is_greeting_etape(etape, turn):
+        return transcript, stt_conf, stt_ms, active_path
+    if peak < GREETING_PEAK_STT_RETRY:
+        return transcript, stt_conf, stt_ms, active_path
+    _log_live(
+        f"STT_RETRY call={call_sid} turn={turn} peak={peak:.4f} etape={etape}"
+    )
+    agi.verbose(f"STT retry turn {turn} peak={peak:.4f}", 1)
+    transcript, stt_conf, stt_ms = deepgram_stt(rec_path)
+    if transcript.strip():
+        return transcript, stt_conf, stt_ms, active_path
+    retry_base = rec_path.replace(".wav", "_retry")
+    agi.record_file(
+        retry_base, "wav", "#", 15000, 0, False, max(rec_max_silence + 1, 3)
+    )
+    retry_path = retry_base + ".wav"
+    if os.path.isfile(retry_path) and os.path.getsize(retry_path) > 44:
+        retry_peak = _wav_peak_amplitude(retry_path)
+        _log_live(
+            f"STT_EXTENDED_REC call={call_sid} turn={turn} "
+            f"bytes={os.path.getsize(retry_path)} peak={retry_peak:.4f}"
+        )
+        transcript, stt_conf, stt_ms = deepgram_stt(retry_path)
+        if transcript.strip():
+            return transcript, stt_conf, stt_ms, retry_path
+        if retry_peak >= GREETING_PEAK_STT_RETRY:
+            peak = retry_peak
+            active_path = retry_path
+    if peak >= GREETING_PEAK_STT_RETRY:
+        _log_live(
+            f"STT_PEAK_OUI_FALLBACK call={call_sid} turn={turn} peak={peak:.4f}"
+        )
+        return "oui", max(stt_conf, 0.5), stt_ms, active_path
+    return transcript, stt_conf, stt_ms, active_path
+
+
+def _log_live(msg: str) -> None:
+    try:
+        from datetime import datetime
+        with open("/var/log/lea-qc-live.log", "a", encoding="utf-8") as fh:
+            fh.write(f"{datetime.now():%Y-%m-%d %H:%M:%S} {msg}\n")
+    except OSError:
+        pass
+
+
+def _archive_recording(rec_path: str, call_sid: str, turn: int) -> str:
+    """Copie WAV tour prospect (STT) — inbound seulement, pas la voix Léa."""
+    if not os.path.isfile(rec_path) or os.path.getsize(rec_path) <= 44:
+        return ""
+    dest_dir = "/var/www/lea-recordings"
+    try:
+        os.makedirs(dest_dir, exist_ok=True)
+        dest = os.path.join(dest_dir, f"{call_sid}_{turn}.wav")
+        if rec_path != dest:
+            shutil.copy2(rec_path, dest)
+        base = os.environ.get(
+            "LEA_RECORDINGS_URL", "https://intellixcrm.com/lea-recordings"
+        ).rstrip("/")
+        return f"{base}/{call_sid}_{turn}.wav"
+    except OSError:
+        return f"file://{rec_path}"
+
+
+def _full_recording_path(call_sid: str) -> str:
+    return f"/tmp/lea_full_{call_sid}.wav"
+
+
+def _start_full_recording(agi: Agi, call_sid: str) -> None:
+    """MixMonitor mixe prospect (rx) + Léa TTS (tx) sur le même canal."""
+    path = _full_recording_path(call_sid)
+    agi.verbose(f"MixMonitor start {path}", 1)
+    agi.exec_app("MixMonitor", path)
+    _log_live(f"MIXMONITOR_START call={call_sid} path={path}")
+
+
+def _stop_and_archive_full_recording(agi: Agi, call_sid: str, *, archive: bool = True) -> str:
+    """Arrête MixMonitor ; archive l'enregistrement complet seulement si archive=True."""
+    agi.exec_app("StopMixMonitor")
+    src = _full_recording_path(call_sid)
+    for _ in range(10):
+        if os.path.isfile(src) and os.path.getsize(src) > 44:
+            break
+        time.sleep(0.2)
+    if not os.path.isfile(src) or os.path.getsize(src) <= 44:
+        _log_live(f"MIXMONITOR_EMPTY call={call_sid}")
+        return ""
+    if not archive:
+        try:
+            discarded = os.path.getsize(src)
+            os.remove(src)
+        except OSError:
+            discarded = 0
+        _log_live(
+            f"SKIP_RECORDING call={call_sid} reason=non_conversation "
+            f"mixmonitor_discarded bytes={discarded}"
+        )
+        return ""
+    dest_dir = "/var/www/lea-recordings"
+    try:
+        os.makedirs(dest_dir, exist_ok=True)
+        dest = os.path.join(dest_dir, f"{call_sid}_full.wav")
+        shutil.copy2(src, dest)
+        base = os.environ.get(
+            "LEA_RECORDINGS_URL", "https://intellixcrm.com/lea-recordings"
+        ).rstrip("/")
+        url = f"{base}/{call_sid}_full.wav"
+        _log_live(
+            f"MIXMONITOR_ARCHIVED call={call_sid} bytes={os.path.getsize(dest)} url={url}"
+        )
+        return url
+    except OSError as exc:
+        _log_live(f"MIXMONITOR_ARCHIVE_ERR call={call_sid} err={exc}")
+        return ""
+
+
+def _odoo_creds() -> tuple[str, str]:
+    api_key = os.environ.get("LEA_TENANT_API_KEY", "").strip()
+    odoo_url = os.environ.get("LEA_ODOO_URL", "https://intellixcrm.com").rstrip("/")
+    env_path = "/etc/asterisk/lea_odoo.env"
+    if os.path.isfile(env_path):
+        for line in open(env_path, encoding="utf-8"):
+            line = line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            key, val = line.split("=", 1)
+            key, val = key.strip(), val.strip()
+            if key == "LEA_TENANT_API_KEY" and not api_key:
+                api_key = val
+            elif key == "LEA_ODOO_URL" and odoo_url == "https://intellixcrm.com":
+                odoo_url = val.rstrip("/")
+    return api_key, odoo_url
+
+
+def post_odoo_call_recording(
+    call_sid: str,
+    recording_url: str,
+    phone: str,
+    campaign: str,
+    duration_sec: int = 0,
+    *,
+    transcript: str = "",
+    cumulative_transcript_len: int = 0,
+) -> None:
+    """Upsert doorway.call.log dès qu'un WAV conversation est archivé."""
+    api_key, odoo_url = _odoo_creds()
+    if not api_key or not recording_url.startswith("https://"):
+        return
+    amd = os.environ.get("AMD_RESULT", "human")
+    if not _is_conversation(
+        amd,
+        transcript=transcript,
+        duration_sec=duration_sec,
+        cumulative_transcript_len=cumulative_transcript_len,
+    ):
+        _log_live(
+            f"SKIP_RECORDING call={call_sid} reason=non_conversation "
+            f"amd={amd} dur={duration_sec} tlen={cumulative_transcript_len}"
+        )
+        return
+    payload = {
+        "jsonrpc": "2.0",
+        "method": "call",
+        "params": {
+            "tenant_api_key": api_key,
+            "call_sid": call_sid,
+            "recording_url": recording_url,
+            "telephone": phone,
+            "campaign": campaign,
+            "duration_sec": duration_sec,
+            "agent_id": os.environ.get("AGENT_ID", ""),
+            "amd_result": amd,
+            "transcript": (transcript or "")[:2000],
+        },
+        "id": 1,
+    }
+    try:
+        http_post(
+            f"{odoo_url}/doorway/api/lea-qc/call-recording",
+            payload,
+            timeout=12,
+        )
+    except (urllib.error.URLError, json.JSONDecodeError, TimeoutError):
+        pass
+
+
+def post_odoo_call_ended(
+    call_sid: str,
+    phone: str,
+    campaign: str,
+    duration_sec: int,
+    recording_url: str = "",
+    transcript: str = "",
+    sheet: dict[str, Any] | None = None,
+) -> None:
+    api_key, odoo_url = _odoo_creds()
+    if not api_key:
+        return
+    sp = sheet or {}
+    qualified = sp.get("qualified") or sp.get("lead_ganador")
+    propietario = sp.get("proprietaire") or sp.get("propietario")
+    statut = sp.get("statut") or sp.get("etat_final") or ""
+    if not qualified and propietario and duration_sec >= 20:
+        qualified = True
+        statut = statut or "partiel"
+    payload = {
+        "jsonrpc": "2.0",
+        "method": "call",
+        "params": {
+            "tenant_api_key": api_key,
+            "call_sid": call_sid,
+            "duration_seconds": duration_sec,
+            "telephone": phone if phone not in ("s", "unknown") else sp.get("telefono", phone),
+            "campaign": campaign,
+            "amd_result": os.environ.get("AMD_RESULT", "human"),
+            "recording_url": recording_url or sp.get("recording_url", ""),
+            "transcript": transcript or sp.get("transcript", ""),
+            "agent_id": os.environ.get("AGENT_ID", ""),
+            "lead_ganador": qualified,
+            "propietario": propietario,
+            "etat_final": statut,
+            "tipo_vivienda": sp.get("type_logement"),
+            "codigo_postal": sp.get("code_postal"),
+            "nombre": sp.get("nombre"),
+        },
+        "id": 2,
+    }
+    try:
+        http_post(f"{odoo_url}/doorway/api/lea-qc/call-ended", payload, timeout=90)
+    except (urllib.error.URLError, json.JSONDecodeError, TimeoutError):
+        pass
+
+
+def _lead_id_from_callerid(agi: Agi) -> str:
+    cid = (_get(agi, "CALLERID(num)") or _get(agi, "callerid") or "").strip()
+    if len(cid) >= 20:
+        try:
+            return str(int(cid[10:20]))
+        except ValueError:
+            pass
+    lead = (os.environ.get("PARTNER_ID") or _chvar(agi, "LEAD_ID", "") or "").strip()
+    return lead if lead.isdigit() else ""
+
+
+def _mysql_query_phone(sql: str) -> str:
+    cnfs = (
+        "/opt/intellix-mcp/mysql-vicidial.cnf",
+        "/etc/mysql/debian.cnf",
+    )
+    for cnf in cnfs:
+        if not os.path.isfile(cnf):
+            continue
+        try:
+            proc = subprocess.run(
+                [
+                    "mysql",
+                    f"--defaults-extra-file={cnf}" if "intellix" in cnf else f"--defaults-file={cnf}",
+                    "-N",
+                    "-B",
+                    "-e",
+                    sql,
+                ],
+                capture_output=True,
+                text=True,
+                timeout=3,
+                check=False,
+            )
+            phone = (proc.stdout or "").strip()
+            digits = re.sub(r"\D", "", phone)
+            if len(digits) >= 9:
+                return phone
+        except (subprocess.SubprocessError, OSError):
+            continue
+    return ""
+
+
+def _mysql_lead_phone(lead_id: str) -> str:
+    if not lead_id or not lead_id.isdigit():
+        return ""
+    return _mysql_query_phone(
+        f"SELECT phone_number FROM vicidial_list WHERE lead_id='{lead_id}' LIMIT 1"
+    )
+
+
+def _mysql_phone_from_callerid(callerid: str) -> str:
+    if not callerid or callerid in ("s", "unknown"):
+        return ""
+    safe = re.sub(r"[^A-Za-z0-9]", "", callerid)
+    if not safe:
+        return ""
+    return _mysql_query_phone(
+        "SELECT phone_number FROM vicidial_auto_calls "
+        f"WHERE callerid='{safe}' ORDER BY call_time DESC LIMIT 1"
+    )
+
+
+def _mysql_phone_from_uniqueid(uniqueid: str) -> str:
+    if not uniqueid:
+        return ""
+    safe = re.sub(r"[^0-9.]", "", uniqueid)
+    if not safe:
+        return ""
+    phone = _mysql_query_phone(
+        f"SELECT phone_number FROM vicidial_auto_calls "
+        f"WHERE uniqueid='{safe}' ORDER BY call_time DESC LIMIT 1"
+    )
+    if phone:
+        return phone
+    return _mysql_query_phone(
+        f"SELECT phone_number FROM vicidial_log "
+        f"WHERE uniqueid='{safe}' ORDER BY call_date DESC LIMIT 1"
+    )
+
+
+def _valid_phone(raw: str) -> str:
+    phone = (raw or "").strip()
+    if not phone or phone in ("s", "unknown"):
+        return ""
+    if re.match(r"^[Vv]\d", phone):
+        return ""
+    digits = re.sub(r"\D", "", phone)
+    if len(digits) < 9 or len(digits) > 15:
+        return ""
+    if digits.startswith("34") and len(digits) >= 11:
+        return digits
+    if len(digits) >= 9 and not re.match(r"^[Vv]", phone):
+        return digits
+    return ""
+
+
+def _phone_from_local_channel(agi: Agi) -> str:
+    """VICIdial auto-dial : numéro encodé Local/9{10digits}@ (QC sans le 1 initial)."""
+    ch = (_get(agi, "channel") or agi.env.get("agi_channel") or "").strip()
+    m = re.search(r"Local/9(\d{10})@", ch)
+    if m:
+        ten = m.group(1)
+        return ("1" + ten) if not ten.startswith("1") else ten
+    return ""
+
+
+def _resolve_phone(agi: Agi) -> str:
+    phone = _phone_from_local_channel(agi)
+    if phone:
+        return phone
+
+    for src in (
+        os.environ.get("PHONE"),
+        _chvar(agi, "PHONE", ""),
+        _chvar(agi, "__PHONE", ""),
+        _chvar(agi, "phone_number", ""),
+        _chvar(agi, "VDAD_phone_number", ""),
+        os.environ.get("PARTNER_PHONE"),
+    ):
+        phone = _valid_phone(src or "")
+        if phone:
+            return phone
+
+    uid = (_get(agi, "UNIQUEID") or _get(agi, "CALLID") or "").strip()
+    phone = _mysql_phone_from_uniqueid(uid)
+    if phone:
+        return phone
+
+    cid = (_get(agi, "CALLERID(num)") or "").strip()
+    phone = _mysql_phone_from_callerid(cid)
+    if phone:
+        return phone
+
+    lead_id = _lead_id_from_callerid(agi)
+    phone = _mysql_lead_phone(lead_id)
+    if phone:
+        return phone
+
+    phone = _valid_phone(cid)
+    if phone:
+        return phone
+
+    ext = (_get(agi, "extension") or "").strip()
+    digits = re.sub(r"[^0-9]", "", ext)
+    if 9 <= len(digits) <= 15:
+        return digits
+
+    return "unknown"
+
+
+
+def build_payload(
+    agi: Agi,
+    event_type: str,
+    caller: str = "",
+    lead_id: str = "",
+    **extra,
+) -> dict[str, Any]:
+    uniqueid = _get(agi, "UNIQUEID", _get(agi, "CALLID"))
+    if not caller:
+        caller = _resolve_phone(agi)
+    telephone = caller if caller not in ("s", "unknown") else ""
+    if not telephone:
+        telephone = _mysql_phone_from_uniqueid(uniqueid) or _resolve_phone(agi)
+    if telephone in ("s", "unknown", ""):
+        telephone = "unknown"
+    if not lead_id:
+        lead_id = _lead_id_from_callerid(agi) or os.environ.get("PARTNER_ID", "")
+    return {
+        "source": "vicidial",
+        "event_type": event_type,
+        "call_sid": uniqueid,
+        "agent_id": _cfg(agi, "AGENT_ID", "lea-qc-2026"),
+        "stack": "n8n+deepgram+claude+elevenlabs",
+        "from": caller,
+        "to": _get(agi, "DNID"),
+        "phone_number": telephone if telephone != "unknown" else caller,
+        "telephone": telephone,
+        "provider": "vicidial",
+        "language": "fr-CA",
+        "campaign": _cfg(agi, "CAMPAIGN", "DW_QCB2C"),
+        "partner_id": lead_id,
+        "lead_id": lead_id,
+        "nombre": os.environ.get("NOMBRE", ""),
+        **extra,
+    }
+
+
+
+def _update_vicidial_duration(call_sid: str, duration_sec: int) -> None:
+    """Fix length_in_sec=0 when AMD DISPO closes log before AGI ends."""
+    if not call_sid or duration_sec <= 0:
+        return
+    import time
+    end_epoch = int(time.time())
+    start_epoch = max(0, end_epoch - duration_sec)
+    sql = (
+        f"UPDATE vicidial_log SET end_epoch={end_epoch}, length_in_sec={duration_sec}, "
+        f"start_epoch=IF(start_epoch=end_epoch OR start_epoch=0, {start_epoch}, start_epoch) "
+        f"WHERE uniqueid='{call_sid}' AND length_in_sec=0 ORDER BY call_date DESC LIMIT 1"
+    )
+    try:
+        subprocess.run(
+            ["mysql", "--defaults-extra-file=/opt/intellix-mcp/mysql-vicidial.cnf", "-e", sql],
+            capture_output=True, timeout=5, check=False,
+        )
+    except (subprocess.SubprocessError, OSError):
+        pass
+
+def _variant_for_sid(call_sid: str) -> str:
+    """Miroir EXACT de variant_for_sid (Odoo/n8n) : FNV-1a 32 bits, parité -> A/B."""
+    forced = (os.environ.get("LEA_FORCE_VARIANT") or "B").strip().upper()
+    if forced in ("A", "B"):
+        return forced
+    h = 0x811C9DC5
+    for ch in (call_sid or ""):
+        h ^= ord(ch) & 0xFF
+        h = (h * 0x01000193) & 0xFFFFFFFF
+    return "A" if (h % 2) == 0 else "B"
+
+
+def _post_json_with_retry(
+    url: str,
+    payload: dict[str, Any],
+    timeout: int = 90,
+    retries: int = 3,
+) -> bool:
+    """POST JSON-RPC avec reprises — fallback sync avant raccrochage AGI."""
+    for attempt in range(retries):
+        try:
+            http_post(url, payload, timeout=timeout)
+            return True
+        except (urllib.error.URLError, json.JSONDecodeError, TimeoutError):
+            if attempt < retries - 1:
+                time.sleep(1 + attempt)
+    return False
+
+
+def _spawn_call_cleanup(n8n_url: str, end_payload: dict[str, Any], odoo_payload: dict[str, Any] | None) -> None:
+    """POST call-ended (n8n + Odoo) dans un sous-processus détaché — survit au raccrochage."""
+    blob = base64.b64encode(
+        json.dumps(
+            {"n8n_url": n8n_url, "end_payload": end_payload, "odoo_payload": odoo_payload},
+            ensure_ascii=False,
+        ).encode("utf-8")
+    ).decode("ascii")
+    code = (
+        "import base64,json,sys,time,urllib.request\n"
+        "LOG='/var/log/asterisk/lea_qc_cleanup.log'\n"
+        "d=json.loads(base64.b64decode(sys.argv[1]))\n"
+        "def log(msg):\n"
+        "  try:\n"
+        "    with open(LOG,'a') as f: f.write(msg+'\\n')\n"
+        "  except Exception: pass\n"
+        "def post(url,payload,timeout=90,retries=3):\n"
+        "  for i in range(retries):\n"
+        "    try:\n"
+        "      req=urllib.request.Request(url,data=json.dumps(payload).encode(),"
+        "headers={'Content-Type':'application/json'},method='POST')\n"
+        "      urllib.request.urlopen(req,timeout=timeout)\n"
+        "      return True\n"
+        "    except Exception as e:\n"
+        "      if i==retries-1:\n"
+        "        log(f'FAIL {url} {e}')\n"
+        "      else:\n"
+        "        time.sleep(1+i)\n"
+        "  return False\n"
+        "sid=(d.get('end_payload') or {}).get('call_sid','')\n"
+        "post(d['n8n_url'],d['end_payload'],60,3)\n"
+        "op=d.get('odoo_payload')\n"
+        "if op and op.get('url'):\n"
+        "  ok=post(op['url'],op['body'],90,3)\n"
+        "  log(f'ODOO call-ended sid={sid} ok={ok}')\n"
+    )
+    try:
+        subprocess.Popen(
+            [sys.executable, "-c", code, blob],
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            start_new_session=True,
+        )
+    except OSError:
+        pass
+
+
+def _spawn_odoo_recording(
+    call_sid: str,
+    recording_url: str,
+    phone: str,
+    campaign: str,
+    duration_sec: int,
+    *,
+    transcript: str = "",
+    cumulative_transcript_len: int = 0,
+) -> None:
+    """Upsert doorway.call.log sans bloquer le tour conversation."""
+    api_key, odoo_url = _odoo_creds()
+    if not api_key or not recording_url.startswith("https://"):
+        return
+    amd = os.environ.get("AMD_RESULT", "human")
+    if not _is_conversation(
+        amd,
+        transcript=transcript,
+        duration_sec=duration_sec,
+        cumulative_transcript_len=cumulative_transcript_len,
+    ):
+        _log_live(
+            f"SKIP_RECORDING call={call_sid} reason=non_conversation "
+            f"amd={amd} dur={duration_sec} tlen={cumulative_transcript_len}"
+        )
+        return
+    payload = {
+        "jsonrpc": "2.0",
+        "method": "call",
+        "params": {
+            "tenant_api_key": api_key,
+            "call_sid": call_sid,
+            "recording_url": recording_url,
+            "telephone": phone,
+            "campaign": campaign,
+            "duration_sec": duration_sec,
+            "agent_id": os.environ.get("AGENT_ID", ""),
+            "amd_result": amd,
+            "transcript": (transcript or "")[:2000],
+        },
+        "id": 1,
+    }
+    blob = base64.b64encode(
+        json.dumps({"url": f"{odoo_url}/doorway/api/lea-qc/call-recording", "body": payload}).encode()
+    ).decode("ascii")
+    code = (
+        "import base64,json,sys,urllib.request\n"
+        "d=json.loads(base64.b64decode(sys.argv[1]))\n"
+        "try:\n"
+        "  req=urllib.request.Request(d['url'],data=json.dumps(d['body']).encode(),"
+        "headers={'Content-Type':'application/json'},method='POST')\n"
+        "  urllib.request.urlopen(req,timeout=12)\n"
+        "except Exception:\n"
+        "  pass\n"
+    )
+    try:
+        subprocess.Popen(
+            [sys.executable, "-c", code, blob],
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            start_new_session=True,
+        )
+    except OSError:
+        pass
+
+
+def main() -> int:
+    agi = Agi()
+    # Survivre au raccrochage du prospect : sinon SIGHUP tue l'AGI avant le POST
+    # call-ended (=> aucune ligne lea.qc.sample.call). On ignore SIGHUP et l'I/O
+    # AGI est durcie (pipe cassé toléré) pour finir proprement sur call-ended.
+    try:
+        signal.signal(signal.SIGHUP, signal.SIG_IGN)
+    except Exception:
+        pass
+    n8n_url = _cfg(agi, "N8N_WEBHOOK_URL",
+        "http://127.0.0.1:5678/webhook/lea-qc/event",
+    )
+    bucket = _cfg(agi, "STORAGE_BUCKET_URL", "https://intellixcrm.com/lea-qc-tts"
+    ).rstrip("/")
+    call_sid = _get(agi, "UNIQUEID")
+    caller = _resolve_phone(agi)
+    lead_id = _lead_id_from_callerid(agi) or os.environ.get("PARTNER_ID", "")
+    campaign = _cfg(agi, "CAMPAIGN", "DW_QCB2C")
+    amd = (_cfg(agi, "AMD_RESULT", "human") or "human").lower()
+    agi.verbose(f"lea-qc AGI start call={call_sid} amd={amd} phone={caller}")
+
+    if amd in ("machine", "fax", "answering_machine"):
+        agi.verbose("skip Léa — AMD machine", 1)
+        agi.hangup()
+        return 0
+
+    if _cfg(agi, "SOFIA_ES_ANSWER", "1") == "1":
+        agi.answer()
+
+    # Enregistrement conversation complète (prospect + Léa). Les tours RECORD FILE
+    # restent inbound-only pour le STT.
+    _start_full_recording(agi, call_sid)
+
+    opening_path = _cfg(agi, "LEA_OPENING_PATH", "/tmp/greeting_LEA")
+
+    if _cfg(agi, "SOFIA_SKIP_OPENING", "0") == "1":
+        _log_live(f"OPENING_DIALPLAN call={call_sid} amd={amd} phone={caller}")
+    else:
+        import time
+        t0 = time.time()
+        _vsuffix = "_b" if _variant_for_sid(call_sid) == "B" else ""
+        _lea_clip = f"lea_ouverture{_vsuffix}"
+        cached_gsm = os.path.join(WAV_CACHE_DIR, _lea_clip + ".gsm")
+        local_mp3 = f"/var/www/lea-qc-tts/{_lea_clip}.mp3"
+        local_wav = f"/var/www/lea-qc-tts/{_lea_clip}.wav"
+        opening_url = os.environ.get("SOFIA_OPENING_URL") or f"{bucket}/{_lea_clip}.mp3"
+        if os.path.isfile(opening_path + ".gsm"):
+            _stream_audio(agi, opening_path, call_sid)
+        elif os.path.isfile(cached_gsm):
+            _stream_audio(agi, "lea/" + _lea_clip, call_sid)
+        elif os.path.isfile(local_mp3) or os.path.isfile(local_wav):
+            _stream_audio(agi, local_mp3 if os.path.isfile(local_mp3) else local_wav, call_sid)
+        else:
+            _play_url(agi, opening_url, call_sid)
+        _log_live(f"OPENING_PLAYED call={call_sid} ms={int((time.time()-t0)*1000)} phone={caller}")
+
+    _log_live(f"OPENING call={call_sid} amd={amd} phone={caller}")
+
+    # IMPORTANT : ces réglages sont posés par le dialplan via Set() => ce sont des
+    # VARIABLES DE CANAL, PAS des variables d'environnement OS. os.environ ne les
+    # voit donc jamais et l'AGI retombait sur ses défauts (8s/4s) — la fenêtre de
+    # silence de fin de parole restait à 4s (latence inutile). On lit via _chvar
+    # (canal puis env) et on met les défauts cibles (10s / 2s).
+    rec_timeout = int(_chvar(agi, "SOFIA_RECORD_TIMEOUT", "10") or "10") * 1000
+    rec_max_silence = max(2, int(_chvar(agi, "SOFIA_RECORD_PAUSE_SEC", "2") or "2"))
+    listen_delay = float(_chvar(agi, "SOFIA_LISTEN_DELAY_SEC", "1.5") or "1.5")
+    listen_delay_short = float(
+        _chvar(agi, "SOFIA_LISTEN_DELAY_SHORT_SEC", "0.7") or "0.7"
+    )
+    listen_delay_long = float(
+        _chvar(agi, "SOFIA_LISTEN_DELAY_LONG_SEC", "1.2") or "1.2"
+    )
+    n8n_turn_timeout = int(_chvar(agi, "SOFIA_N8N_TIMEOUT_SEC", "30") or "30")
+    min_peak = float(_chvar(agi, "SOFIA_MIN_PEAK", "0.015") or "0.015")
+    max_turns = int(_chvar(agi, "SOFIA_MAX_TURNS", "12") or "12")
+    duration_total = 0
+    last_rec_url = ""
+    cumulative_transcript_len = 0
+    conversation_confirmed = False
+    engine: dict[str, Any] = {}
+    empty_streak = 0  # tours vides consécutifs : on RE-DEMANDE au lieu de raccrocher
+    await_listen_delay = False
+    pending_audio_url = ""
+    current_etape = ""
+    last_capturer_dispo_url = ""
+    # Après l'ouverture (question propriétaire incluse), laisser le temps d'amorcer
+    # la réponse AVANT le premier RECORD — sinon raccrochage perçu « sans attendre ».
+    if listen_delay > 0:
+        time.sleep(listen_delay)
+        _log_live(f"POST_OPENING_DELAY call={call_sid} sec={listen_delay}")
+
+    for turn in range(max_turns):
+        if not conversation_confirmed and duration_total >= MAX_CHANNEL_SEC_NO_CONV:
+            os.environ["AMD_RESULT"] = "machine"
+            _log_live(
+                f"MAX_CHANNEL_DURATION call={call_sid} dur={duration_total} "
+                f"confirmed={conversation_confirmed}"
+            )
+            agi.verbose(
+                f"max channel {MAX_CHANNEL_SEC_NO_CONV}s without conversation — hangup",
+                1,
+            )
+            break
+        if await_listen_delay:
+            delay = _post_tts_listen_delay(
+                pending_audio_url, listen_delay_short, listen_delay_long
+            )
+            if delay > 0:
+                time.sleep(delay)
+                _log_live(
+                    f"POST_TTS_DELAY call={call_sid} turn={turn} sec={delay} "
+                    f"clip={pending_audio_url[-48:]!r}"
+                )
+            await_listen_delay = False
+            pending_audio_url = ""
+        rec_base = f"/tmp/lea_rec_{call_sid}_{turn}"
+        agi.record_file(rec_base, "wav", "#", rec_timeout, 0, False, rec_max_silence)
+        rec_path = rec_base + ".wav"
+        if not os.path.isfile(rec_path) and turn == 0:
+            agi.verbose("retry recording (no file turn 0)", 1)
+            agi.record_file(rec_base, "wav", "#", rec_timeout, 0, False, rec_max_silence)
+
+        size = os.path.getsize(rec_path) if os.path.isfile(rec_path) else 0
+        # turn 0 : laisser un peu plus de temps au prospect d'amorcer (anti faux-vide).
+        if size <= 44 and turn == 0:
+            agi.verbose("retry turn 0 with longer timeout", 1)
+            agi.record_file(rec_base, "wav", "#", 12000, 0, False, rec_max_silence)
+            size = os.path.getsize(rec_path) if os.path.isfile(rec_path) else 0
+
+        peak = _wav_peak_amplitude(rec_path) if size > 44 else 0.0
+        # Faux vide : WAV substantiel mais crête basse → tenter STT quand même.
+        if size <= 44 or (peak < min_peak and size < 8000):
+            empty_streak += 1
+            _log_live(
+                f"EMPTY_REC call={call_sid} turn={turn} streak={empty_streak} "
+                f"bytes={size} peak={peak:.4f}"
+            )
+            agi.verbose(
+                f"empty recording turn {turn} (streak={empty_streak} bytes={size} peak={peak:.4f})",
+                1,
+            )
+            if empty_streak >= 3:
+                os.environ["AMD_RESULT"] = "machine"
+                _log_live(
+                    f"EMPTY_STREAK_MACHINE call={call_sid} streak={empty_streak}"
+                )
+                break
+            reprompt = _reprompt_clip_url(current_etape, last_capturer_dispo_url, call_sid)
+            _stream_audio(agi, reprompt, call_sid)
+            pending_audio_url = reprompt
+            await_listen_delay = True
+            continue
+        duration_total += min(10, max(1, size // 8000))
+        rec_url = ""
+        transcript = ""
+        stt_conf = 0.0
+        stt_ms = 0
+        if size > 44:
+            try:
+                transcript, stt_conf, stt_ms, rec_path = _stt_with_greeting_fallback(
+                    agi,
+                    rec_path,
+                    turn=turn,
+                    etape=current_etape,
+                    peak=peak,
+                    rec_max_silence=rec_max_silence,
+                    call_sid=call_sid,
+                )
+                if os.path.isfile(rec_path):
+                    size = os.path.getsize(rec_path)
+                agi.verbose(
+                    f"deepgram turn {turn}: conf={stt_conf:.2f} stt_ms={stt_ms} "
+                    f"rec_bytes={size} peak={peak:.4f} tlen={len(transcript)} "
+                    f"text={transcript[:80]!r}",
+                    1,
+                )
+                if _is_voicemail_transcript(transcript):
+                    agi.verbose("repondeur detecte STT — hangup", 1)
+                    os.environ["AMD_RESULT"] = "machine"
+                    break
+            except (urllib.error.URLError, json.JSONDecodeError, OSError) as exc:
+                agi.verbose(f"deepgram error turn {turn}: {exc}", 1)
+        if not transcript.strip():
+            # STT vide même si WAV archivé : ne pas envoyer un tour vide à n8n
+            # (cause timeout QUESTION_BESOIN). On RE-DEMANDE localement.
+            empty_streak += 1
+            _log_live(
+                f"EMPTY_STT call={call_sid} turn={turn} streak={empty_streak} "
+                f"bytes={size} peak={peak:.4f} stt_ms={stt_ms}"
+            )
+            agi.verbose(
+                f"empty STT turn {turn} (streak={empty_streak} peak={peak:.4f} tlen=0) — re-prompt",
+                1,
+            )
+            if empty_streak >= 3:
+                os.environ["AMD_RESULT"] = "machine"
+                _log_live(
+                    f"EMPTY_STREAK_MACHINE call={call_sid} streak={empty_streak}"
+                )
+                break
+            reprompt = _reprompt_clip_url(current_etape, last_capturer_dispo_url, call_sid)
+            _stream_audio(agi, reprompt, call_sid)
+            pending_audio_url = reprompt
+            await_listen_delay = True
+            continue
+        empty_streak = 0
+        cumulative_transcript_len += len(transcript.strip())
+        amd_now = os.environ.get("AMD_RESULT", "human")
+        if _is_conversation(
+            amd_now,
+            transcript=transcript,
+            duration_sec=duration_total,
+            cumulative_transcript_len=cumulative_transcript_len,
+        ):
+            conversation_confirmed = True
+            rec_url = _archive_recording(rec_path, call_sid, turn)
+            if rec_url.startswith("https://"):
+                last_rec_url = rec_url
+        turn_t0 = time.time()
+        turn_extra: dict[str, Any] = {
+            "recording_url": rec_url,
+            "recording_path": rec_path,
+            "transcript": transcript,
+            "stt_confidence": stt_conf,
+            "duration_sec": duration_total,
+            "amd_result": os.environ.get("AMD_RESULT", "human"),
+            "audio_peak": round(peak, 4),
+        }
+        # STT + URL HTTPS : pas de recording_b64 (~60 Ko) — POST n8n plus rapide.
+        if not (transcript.strip() and rec_url.startswith("https://")):
+            if os.path.isfile(rec_path) and size > 44:
+                with open(rec_path, "rb") as fh:
+                    turn_extra["recording_b64"] = base64.b64encode(fh.read()).decode("ascii")
+        payload = build_payload(
+            agi,
+            "recording_ready",
+            caller=caller,
+            lead_id=lead_id,
+            **turn_extra,
+        )
+        _log_live(f"N8N_POST call={call_sid} turn={turn} tlen={len(transcript)}")
+        try:
+            n8n_t0 = time.time()
+            result = http_post(n8n_url, payload, timeout=n8n_turn_timeout)
+            n8n_ms = int((time.time() - n8n_t0) * 1000)
+            engine = _engine_response(result)
+            turn_ms = int((time.time() - turn_t0) * 1000)
+            _log_live(
+                f"TURN_LATENCY call={call_sid} turn={turn} stt_ms={stt_ms} "
+                f"n8n_ms={n8n_ms} turn_ms={turn_ms} action={engine.get('action')!s}"
+            )
+            agi.verbose(
+                f"turn {turn} latency stt_ms={stt_ms} n8n_ms={n8n_ms} turn_ms={turn_ms}",
+                1,
+            )
+        except (urllib.error.URLError, json.JSONDecodeError, TimeoutError) as exc:
+            agi.verbose(f"n8n error turn {turn}: {exc}", 1)
+            _log_live(f"N8N_ERR call={call_sid} turn={turn} err={exc}")
+            # n8n down ≠ raccrocher : rejouer fallback et réessayer d'écouter.
+            empty_streak += 1
+            if empty_streak >= 3:
+                os.environ["AMD_RESULT"] = "machine"
+                _log_live(
+                    f"EMPTY_STREAK_MACHINE call={call_sid} streak={empty_streak}"
+                )
+                break
+            _stream_audio(agi, "/var/www/lea-qc-tts/lea_fallback.mp3", call_sid)
+            pending_audio_url = "/var/www/lea-qc-tts/lea_fallback.mp3"
+            await_listen_delay = True
+            continue
+
+        action = (engine.get("action") or "").lower()
+        hangup_requested = action == "hangup" or bool(engine.get("hangup"))
+        audio = engine.get("audio_url") or ""
+        eng_session = engine.get("session") if isinstance(engine.get("session"), dict) else {}
+        current_etape = eng_session.get("etape") or current_etape
+        if "capturer_dispo" in (audio or ""):
+            last_capturer_dispo_url = audio
+        # Closing / exit : n8n renvoie action=hangup + audio_url (pickClosing, exit_*).
+        # Il FAUT jouer le clip en entier AVANT de sortir de la boucle — sinon coupure
+        # perçue dès « le matin / le soir » sans message de confirmation.
+        if action == "play_audio" or (hangup_requested and audio):
+            if audio.startswith("http"):
+                _play_url(agi, audio, call_sid)
+            elif audio:
+                _stream_audio(agi, audio.replace(".mp3", "").replace(".wav", ""), call_sid)
+            elif not hangup_requested:
+                _play_url(agi, audio, call_sid)
+            if hangup_requested and audio:
+                _log_live(
+                    f"HANGUP_AFTER_AUDIO call={call_sid} turn={turn} "
+                    f"clip={audio[-56:]!r}"
+                )
+                time.sleep(0.4)
+            elif not hangup_requested:
+                pending_audio_url = audio
+                await_listen_delay = True
+        if hangup_requested:
+            break
+        # Per-turn URLs are prospect-only; full MixMonitor URL is sent at call end.
+
+    amd_end = os.environ.get("AMD_RESULT", "human")
+    archive_full = conversation_confirmed and _is_conversation(
+        amd_end,
+        duration_sec=duration_total,
+        cumulative_transcript_len=cumulative_transcript_len,
+    )
+    full_rec_url = _stop_and_archive_full_recording(
+        agi, call_sid, archive=archive_full
+    )
+    if full_rec_url:
+        last_rec_url = full_rec_url
+        _spawn_odoo_recording(
+            call_sid,
+            full_rec_url,
+            caller,
+            campaign,
+            duration_total,
+            cumulative_transcript_len=cumulative_transcript_len,
+        )
+    elif not archive_full:
+        last_rec_url = ""
+
+    end_payload = build_payload(
+        agi,
+        "call_ended",
+        caller=caller,
+        lead_id=lead_id,
+        duration_sec=duration_total,
+        recording_url=last_rec_url,
+        amd_result=amd_end,
+    )
+    if engine.get("sheet_payload"):
+        end_payload.update(engine["sheet_payload"])
+    sheet_end = engine.get("sheet_payload") if isinstance(engine.get("sheet_payload"), dict) else {}
+    eng_session = engine.get("session") if isinstance(engine.get("session"), dict) else {}
+    eng_data = eng_session.get("data") if isinstance(eng_session.get("data"), dict) else {}
+    transcript_end = (sheet_end.get("transcript") or "")[:4000]
+    if not transcript_end and eng_session.get("transcript_log"):
+        transcript_end = "\n".join(eng_session["transcript_log"])[:4000]
+    api_key, odoo_url = _odoo_creds()
+    odoo_cleanup = None
+    if api_key:
+        sp = sheet_end or {}
+        qualified = sp.get("qualified") or sp.get("lead_ganador") or engine.get("qualified")
+        propietario = sp.get("proprietaire") or sp.get("propietario") or eng_data.get("proprietaire")
+        statut = sp.get("statut") or sp.get("etat_final") or engine.get("statut") or eng_session.get("crm_action") or ""
+        if qualified and not statut:
+            statut = eng_session.get("crm_action") or "tag_lead_qualifie"
+        if not qualified and propietario and duration_total >= 20:
+            qualified = True
+            statut = statut or "partiel"
+        odoo_cleanup = {
+            "url": f"{odoo_url}/doorway/api/lea-qc/call-ended",
+            "body": {
+                "jsonrpc": "2.0",
+                "method": "call",
+                "params": {
+                    "tenant_api_key": api_key,
+                    "call_sid": call_sid,
+                    "duration_seconds": duration_total,
+                    "telephone": (
+                        caller
+                        if caller not in ("s", "unknown")
+                        else sp.get("telefono")
+                        or sp.get("telephone")
+                        or _mysql_phone_from_uniqueid(call_sid)
+                        or caller
+                    ),
+                    "campaign": campaign,
+                    "amd_result": amd_end,
+                    "recording_url": last_rec_url or sp.get("recording_url", ""),
+                    "transcript": transcript_end or sp.get("transcript", ""),
+                    "agent_id": os.environ.get("AGENT_ID", ""),
+                    "lead_ganador": qualified,
+                    "propietario": propietario,
+                    "etat_final": statut,
+                    "tipo_vivienda": sp.get("type_logement"),
+                    "codigo_postal": sp.get("code_postal"),
+                    "nombre": sp.get("nombre"),
+                },
+                "id": 2,
+            },
+        }
+    if odoo_cleanup:
+        sync_ok = _post_json_with_retry(
+            odoo_cleanup["url"], odoo_cleanup["body"], timeout=90, retries=3
+        )
+        _log_live(f"CALL_ENDED_SYNC call={call_sid} ok={sync_ok}")
+    _spawn_call_cleanup(n8n_url, end_payload, odoo_cleanup)
+    _log_live(f"CALL_ENDED_SPAWN call={call_sid} dur={duration_total}")
+
+    _update_vicidial_duration(call_sid, duration_total)
+    agi.set_variable("LEA_QUALIFIED", "1" if engine.get("qualified") else "0")
+    agi.hangup()
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

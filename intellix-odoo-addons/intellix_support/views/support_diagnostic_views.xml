@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_intellix_support_diagnostic_form" model="ir.ui.view">
+        <field name="name">intellix.support.diagnostic.form</field>
+        <field name="model">intellix.support.diagnostic</field>
+        <field name="arch" type="xml">
+            <form string="Diagnostic" create="0">
+                <sheet>
+                    <group>
+                        <field name="ticket_id" readonly="1"/>
+                        <field name="partner_id" readonly="1"/>
+                        <field name="side_origin" readonly="1"/>
+                        <field name="checks_passed" readonly="1"/>
+                        <field name="checks_warning" readonly="1"/>
+                        <field name="checks_failed" readonly="1"/>
+                    </group>
+                    <field name="summary_html" nolabel="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_intellix_support_diagnostic_list" model="ir.ui.view">
+        <field name="name">intellix.support.diagnostic.list</field>
+        <field name="model">intellix.support.diagnostic</field>
+        <field name="arch" type="xml">
+            <list create="0">
+                <field name="create_date"/>
+                <field name="ticket_id"/>
+                <field name="side_origin"/>
+                <field name="checks_passed"/>
+                <field name="checks_warning"/>
+                <field name="checks_failed"/>
+            </list>
+        </field>
+    </record>
+</odoo>

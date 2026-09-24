@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_demo_my_agent" model="ir.actions.server">
+        <field name="name">Mon agent IA</field>
+        <field name="model_id" ref="doorway_agents_dashboard.model_doorway_agent_profile"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_demo_open_my_agent()</field>
+    </record>
+
+    <record id="action_demo_my_agents_list" model="ir.actions.act_window">
+        <field name="name">Mes agents IA</field>
+        <field name="res_model">doorway.agent.profile</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('company_id', 'in', company_ids)]</field>
+        <field name="context">{'default_company_id': allowed_company_ids[0]}</field>
+    </record>
+
+    <!-- Vue demo : masquer les actions admin, garder wizard + test -->
+    <record id="view_agent_profile_form_demo" model="ir.ui.view">
+        <field name="name">doorway.agent.profile.form.demo</field>
+        <field name="model">doorway.agent.profile</field>
+        <field name="inherit_id" ref="doorway_agents_dashboard.view_agent_profile_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_sync_from_api']" position="attributes">
+                <attribute name="groups">sales_team.group_sale_manager</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_sync_now']" position="attributes">
+                <attribute name="groups">sales_team.group_sale_manager</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_delete_agent']" position="attributes">
+                <attribute name="groups">sales_team.group_sale_manager</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_setup_sophie_elevenlabs']" position="attributes">
+                <attribute name="groups">sales_team.group_sale_manager</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_setup_relance_elevenlabs']" position="attributes">
+                <attribute name="groups">sales_team.group_sale_manager</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_setup_energie_elevenlabs']" position="attributes">
+                <attribute name="groups">sales_team.group_sale_manager</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_setup_haidly_elevenlabs']" position="attributes">
+                <attribute name="groups">sales_team.group_sale_manager</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_create_voice_clone']" position="attributes">
+                <attribute name="groups">sales_team.group_sale_manager</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_sync_voicemail_detection_elevenlabs']" position="attributes">
+                <attribute name="groups">sales_team.group_sale_manager</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_open_edit_wizard']" position="attributes">
+                <attribute name="class">btn-primary</attribute>
+                <attribute name="string">Modifier Sofía</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_open_test_wizard']" position="after">
+                <button name="action_demo_open_performance"
+                        string="Performance"
+                        type="object"
+                        class="btn-secondary"
+                        groups="doorway_demo_call_center.group_demo_call_center"/>
+                <button name="action_view_demo_call_logs"
+                        string="Mes appels"
+                        type="object"
+                        class="btn-secondary"
+                        groups="doorway_demo_call_center.group_demo_call_center"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_agent_profile_list_demo" model="ir.ui.view">
+        <field name="name">doorway.agent.profile.list.demo</field>
+        <field name="model">doorway.agent.profile</field>
+        <field name="inherit_id" ref="doorway_agents_dashboard.view_agent_profile_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <button name="action_open_edit_wizard"
+                        string="Modifier"
+                        type="object"
+                        icon="fa-pencil"
+                        groups="doorway_demo_call_center.group_demo_call_center"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_demo_agent_performance" model="ir.actions.server">
+        <field name="name">Performance Sofía</field>
+        <field name="model_id" ref="doorway_agents_dashboard.model_doorway_agent_profile"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_demo_open_performance()</field>
+    </record>
+
+    <menuitem id="menu_demo_agent_performance"
+              name="Performance Sofía"
+              parent="doorway_vicidial_campaigns.menu_vicidial_app_root"
+              action="action_demo_agent_performance"
+              groups="doorway_demo_call_center.group_demo_call_center"
+              sequence="2"/>
+
+    <menuitem id="menu_demo_my_agent"
+              name="Mon agent IA (Sofía)"
+              parent="doorway_vicidial_campaigns.menu_vicidial_app_root"
+              action="action_demo_my_agent"
+              groups="doorway_demo_call_center.group_demo_call_center"
+              sequence="3"/>
+
+    <menuitem id="menu_demo_agents_list"
+              name="Liste agents IA"
+              parent="menu_demo_my_agent"
+              action="action_demo_my_agents_list"
+              groups="doorway_demo_call_center.group_demo_call_center"
+              sequence="5"/>
+</odoo>

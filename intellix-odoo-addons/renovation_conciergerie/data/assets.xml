@@ -1,0 +1,23 @@
+<odoo>
+    <record id="renovation_address_autocomplete_js" model="ir.asset">
+        <field name="name">renovation_conciergerie.address_autocomplete</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="path">renovation_conciergerie/static/src/js/address_autocomplete.js</field>
+    </record>
+    <record id="renovation_pipeline_switcher_scss" model="ir.asset">
+        <field name="name">renovation_conciergerie.pipeline_switcher_scss</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="path">renovation_conciergerie/static/src/scss/pipeline_switcher.scss</field>
+    </record>
+    <record id="renovation_confetti_js" model="ir.asset">
+        <field name="name">renovation_conciergerie.confetti_effect</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="path">renovation_conciergerie/static/src/js/confetti_effect.js</field>
+    </record>
+
+    <record id="renovation_forfait_form_css" model="ir.asset">
+        <field name="name">renovation_conciergerie.forfait_form_css</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="path">renovation_conciergerie/static/src/css/forfait_form.css</field>
+    </record>
+</odoo>

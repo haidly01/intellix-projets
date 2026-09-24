@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 140" role="img" aria-label="Maison Recherchee Real Estate">
+  <title>Maison Recherchee</title>
+  <text
+    x="260"
+    y="62"
+    text-anchor="middle"
+    fill="#FFFFFF"
+    font-family="Georgia, 'Times New Roman', Times, serif"
+    font-size="42"
+    font-weight="400"
+    letter-spacing="0.02em"
+  >Maison Recherch&#233;e</text>
+  <line x1="48" y1="92" x2="168" y2="92" stroke="#FFFFFF" stroke-width="1.5"/>
+  <text
+    x="260"
+    y="98"
+    text-anchor="middle"
+    fill="#FFFFFF"
+    font-family="Georgia, 'Times New Roman', Times, serif"
+    font-size="16"
+    font-weight="400"
+    letter-spacing="0.28em"
+  >REAL ESTATE</text>
+  <line x1="352" y1="92" x2="472" y2="92" stroke="#FFFFFF" stroke-width="1.5"/>
+</svg>

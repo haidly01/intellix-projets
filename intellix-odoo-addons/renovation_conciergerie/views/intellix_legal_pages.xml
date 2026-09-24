@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="intellix_legal_layout" name="Intellix — mise en page légale">
+            <html lang="fr">
+                <head>
+                    <meta charset="utf-8"/>
+                    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                    <title><t t-esc="page_title"/> — <t t-esc="app_name"/></title>
+                    <meta name="description" t-att-content="page_title + ' — ' + app_name"/>
+                    <style>
+                        @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;display=swap");
+                        :root {
+                            --ix-primary: #6366f1;
+                            --ix-primary-light: #818cf8;
+                            --ix-secondary: #22d3ee;
+                            --ix-purple: #a855f7;
+                            --ix-bg: #0a0a1a;
+                            --ix-surface: #1a1a2e;
+                            --ix-border: #1e293b;
+                            --ix-text: #ffffff;
+                            --ix-text-muted: #94a3b8;
+                            --ix-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+                            --ix-blue: var(--ix-primary);
+                            --ix-violet: var(--ix-purple);
+                            --ix-white: var(--ix-text);
+                            --ix-gray-light: var(--ix-text-muted);
+                            --ix-black: var(--ix-bg);
+                        }
+                        body { font-family: "DM Sans", system-ui, sans-serif; line-height: 1.65; color: var(--ix-text); margin: 0; background: var(--ix-bg); }
+                        .wrap { max-width: 820px; margin: 0 auto; padding: 2rem 1.25rem 3rem; min-height: 100vh; box-sizing: border-box; }
+                        .ix-header { text-align: center; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+                        .ix-icon { width: 48px; height: 48px; border-radius: 8px; background: var(--ix-gradient); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 0.75rem; font-family: "DM Sans", sans-serif; font-weight: 700; color: #fff; font-size: 1.1rem; }
+                        .ix-name { font-family: "DM Sans", sans-serif; font-weight: 700; font-size: 1.5rem; color: var(--ix-text); margin: 0; text-transform: lowercase; letter-spacing: -0.03em; }
+                        .ix-baseline { font-family: "DM Sans", sans-serif; font-size: 0.62rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--ix-text-muted); margin: 0.35rem 0 0; }
+                        h1 { font-family: "DM Sans", sans-serif; font-size: 1.75rem; margin: 1rem 0 0.5rem; color: var(--ix-text); font-weight: 700; }
+                        h2 { font-family: "DM Sans", sans-serif; font-size: 1.15rem; margin-top: 1.75rem; color: var(--ix-text-muted); font-weight: 600; }
+                        .meta { color: var(--ix-text-muted); font-size: 0.95rem; margin-bottom: 0; }
+                        .content { background: var(--ix-surface); border: 1px solid var(--ix-border); border-radius: 8px; padding: 1.5rem 1.25rem; }
+                        a { color: var(--ix-secondary); }
+                        a:hover { color: var(--ix-primary-light); }
+                        footer { margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.875rem; color: var(--ix-gray-light); text-align: center; }
+                        ul { padding-left: 1.25rem; }
+                    </style>
+                </head>
+                <body>
+                    <div class="wrap">
+                        <header class="ix-header">
+                            <div class="ix-icon" aria-hidden="true">IX</div>
+                            <p class="ix-name">intellix</p>
+                            <p class="ix-baseline">Intelligence · Amplifiée</p>
+                            <h1 t-esc="page_title"/>
+                            <p class="meta">
+                                Application <strong t-esc="app_name"/> —
+                                <span t-esc="company_name"/>
+                                · Dernière mise à jour : <span t-esc="last_updated"/>
+                            </p>
+                        </header>
+                        <main class="content" t-out="0"/>
+                        <footer>
+                            <p>
+                                <a t-att-href="company_website" t-esc="company_website"/>
+                                ·
+                                <a t-attf-href="mailto:#{company_email}" t-esc="company_email"/>
+                                <t t-if="company_phone"> · <span t-esc="company_phone"/></t>
+                            </p>
+                            <p>
+                                <a href="/intellix/privacy-policy">Politique de confidentialité</a>
+                                ·
+                                <a href="/intellix/terms-of-service">Conditions d'utilisation</a>
+                                ·
+                                <a href="/intellix/data-deletion">Suppression des données</a>
+                            </p>
+                        </footer>
+                    </div>
+                </body>
+            </html>
+    </template>
+
+    <template id="intellix_privacy_policy" name="Intellix — Politique de confidentialité">
+        <t t-set="page_title">Politique de confidentialité</t>
+        <t t-call="renovation_conciergerie.intellix_legal_layout">
+            <section>
+                <p>
+                    La présente politique décrit comment
+                    <strong t-esc="company_name"/> (« nous ») collecte, utilise et protège
+                    les renseignements personnels dans le cadre de la plateforme CRM
+                    <strong t-esc="app_name"/> et des intégrations associées (dont Meta
+                    / Facebook et Instagram pour la veille sociale et la gestion de la
+                    présence en ligne).
+                </p>
+                <h2>1. Responsable du traitement</h2>
+                <p>
+                    <span t-esc="company_name"/><br/>
+                    Courriel : <a t-attf-href="mailto:#{company_email}" t-esc="company_email"/><br/>
+                    Site : <a t-att-href="company_website" t-esc="company_website"/>
+                </p>
+                <h2>2. Données collectées</h2>
+                <ul>
+                    <li>Identité et coordonnées (nom, courriel, téléphone, entreprise).</li>
+                    <li>Données CRM : opportunités, historique, notes, activités.</li>
+                    <li>Données de connexion et journaux techniques (adresse IP, navigateur, horodatage).</li>
+                    <li>Données issues de Meta (Facebook / Instagram) lorsque vous connectez ces services : identifiants de page, commentaires publics, mentions et métadonnées nécessaires à la veille sociale.</li>
+                </ul>
+                <h2>3. Finalités</h2>
+                <ul>
+                    <li>Fournir et améliorer la plateforme Intellix.</li>
+                    <li>Gérer la relation client et les demandes commerciales.</li>
+                    <li>Surveiller et répondre aux interactions sur les réseaux sociaux connectés.</li>
+                    <li>Respecter nos obligations légales et assurer la sécurité du service.</li>
+                </ul>
+                <h2>4. Partage des données</h2>
+                <p>
+                    Nous ne vendons pas vos données. Elles peuvent être traitées par des
+                    sous-traitants (hébergement, messagerie, automatisation) sous contrat
+                    de confidentialité, et transmises à Meta uniquement dans le cadre des
+                    fonctionnalités que vous activez.
+                </p>
+                <h2>5. Conservation</h2>
+                <p>
+                    Les données sont conservées tant que nécessaire aux finalités ci-dessus
+                    ou conformément aux délais légaux. Vous pouvez demander la suppression
+                    (voir <a href="/intellix/data-deletion">Suppression des données</a>).
+                </p>
+                <h2>6. Vos droits</h2>
+                <p>
+                    Selon les lois applicables (notamment au Québec et au Canada), vous
+                    pouvez demander l'accès, la rectification, la portabilité ou la
+                    suppression de vos données en écrivant à
+                    <a t-attf-href="mailto:#{company_email}" t-esc="company_email"/>.
+                </p>
+                <h2>7. Sécurité</h2>
+                <p>
+                    Nous appliquons des mesures techniques et organisationnelles raisonnables
+                    (accès restreint, chiffrement en transit, sauvegardes).
+                </p>
+                <h2>8. Contact</h2>
+                <p>
+                    Pour toute question : <a t-attf-href="mailto:#{company_email}" t-esc="company_email"/>.
+                </p>
+            </section>
+        </t>
+    </template>
+
+    <template id="intellix_terms_of_service" name="Intellix — Conditions d'utilisation">
+        <t t-set="page_title">Conditions d'utilisation</t>
+        <t t-call="renovation_conciergerie.intellix_legal_layout">
+            <section>
+                <p>
+                    Les présentes conditions régissent l'utilisation de la plateforme
+                    <strong t-esc="app_name"/> opérée par <strong t-esc="company_name"/>.
+                    En accédant au service, vous acceptez ces conditions.
+                </p>
+                <h2>1. Service</h2>
+                <p>
+                    Intellix est une application de gestion de la relation client (CRM)
+                    destinée aux équipes internes et partenaires autorisés d'Agence Doorway.
+                </p>
+                <h2>2. Comptes</h2>
+                <p>
+                    Vous êtes responsable de la confidentialité de vos identifiants et de
+                    toute activité effectuée sous votre compte. L'accès est accordé sur
+                    invitation ou par un administrateur.
+                </p>
+                <h2>3. Utilisation acceptable</h2>
+                <p>Vous vous engagez à ne pas :</p>
+                <ul>
+                    <li>Utiliser le service à des fins illégales ou non autorisées.</li>
+                    <li>Tenter d'accéder à des données ou systèmes sans permission.</li>
+                    <li>Publier ou traiter du contenu violant les droits de tiers.</li>
+                    <li>Contourner les limites techniques ou de sécurité.</li>
+                </ul>
+                <h2>4. Intégrations tierces</h2>
+                <p>
+                    Les connexions Meta, Twilio ou autres services sont soumises également
+                    aux conditions de ces plateformes. Vous devez disposer des autorisations
+                    nécessaires pour les comptes que vous connectez.
+                </p>
+                <h2>5. Propriété intellectuelle</h2>
+                <p>
+                    Le logiciel, la marque et les contenus fournis par
+                    <span t-esc="company_name"/> restent notre propriété. Vos données
+                    métier vous appartiennent ; vous nous accordez une licence limitée pour
+                    les héberger et les traiter aux fins du service.
+                </p>
+                <h2>6. Limitation de responsabilité</h2>
+                <p>
+                    Le service est fourni « tel quel ». Dans les limites permises par la loi,
+                    nous ne sommes pas responsables des dommages indirects ou des pertes
+                    résultant d'une indisponibilité temporaire.
+                </p>
+                <h2>7. Résiliation</h2>
+                <p>
+                    Nous pouvons suspendre ou résilier un accès en cas de violation des
+                    présentes conditions. Vous pouvez demander la fermeture de votre compte
+                    à tout moment.
+                </p>
+                <h2>8. Droit applicable</h2>
+                <p>
+                    Les présentes conditions sont régies par les lois du Québec et les lois
+                    fédérales du Canada applicables. Tout litige sera soumis aux tribunaux
+                    compétents du Québec.
+                </p>
+                <h2>9. Contact</h2>
+                <p>
+                    <a t-attf-href="mailto:#{company_email}" t-esc="company_email"/>
+                </p>
+            </section>
+        </t>
+    </template>
+
+    <template id="intellix_data_deletion" name="Intellix — Suppression des données">
+        <t t-set="page_title">Instructions de suppression des données</t>
+        <t t-call="renovation_conciergerie.intellix_legal_layout">
+            <section>
+                <p>
+                    Conformément aux exigences de Meta (Facebook) pour les applications
+                    utilisant l'API Graph, cette page explique comment demander la suppression
+                    des données associées à votre compte dans
+                    <strong t-esc="app_name"/>.
+                </p>
+                <h2>1. Données concernées</h2>
+                <p>Sur demande, nous pouvons supprimer ou anonymiser :</p>
+                <ul>
+                    <li>Votre profil utilisateur et identifiants de connexion Intellix.</li>
+                    <li>Les données CRM liées à votre personne (contacts, activités, messages).</li>
+                    <li>Les jetons et identifiants Meta stockés pour votre compte (Facebook / Instagram).</li>
+                    <li>Les signaux de veille sociale associés à votre identifiant, le cas échéant.</li>
+                </ul>
+                <h2>2. Comment faire une demande</h2>
+                <p>Envoyez un courriel à :</p>
+                <p>
+                    <strong>
+                        <a t-attf-href="mailto:#{company_email}?subject=Demande%20de%20suppression%20des%20données%20Intellix"
+                           t-esc="company_email"/>
+                    </strong>
+                </p>
+                <p>Indiquez dans votre message :</p>
+                <ul>
+                    <li>Votre nom complet et adresse courriel associée au compte.</li>
+                    <li>L'identifiant Facebook ou Instagram concerné (si applicable).</li>
+                    <li>La mention « Demande de suppression des données — Intellix ».</li>
+                </ul>
+                <h2>3. Délai de traitement</h2>
+                <p>
+                    Nous accusons réception sous <strong>5 jours ouvrables</strong> et
+                    procédons à la suppression dans un délai maximal de
+                    <strong>30 jours</strong>, sauf obligation légale de conservation
+                    (facturation, litiges).
+                </p>
+                <h2>4. Suppression côté Meta</h2>
+                <p>
+                    Pour révoquer l'accès de l'application Intellix à votre compte Facebook,
+                    rendez-vous dans Facebook → Paramètres et confidentialité →
+                    Paramètres → Applications et sites web, puis retirez
+                    l'application Intellix.
+                </p>
+                <h2>5. Données déjà partagées avec des tiers</h2>
+                <p>
+                    La suppression dans Intellix ne supprime pas automatiquement le contenu
+                    déjà publié sur Facebook ou Instagram ; contactez Meta directement pour
+                    ces contenus.
+                </p>
+                <h2>6. Contact</h2>
+                <p>
+                    Responsable : <span t-esc="company_name"/><br/>
+                    Courriel : <a t-attf-href="mailto:#{company_email}" t-esc="company_email"/>
+                </p>
+            </section>
+        </t>
+    </template>
+</odoo>

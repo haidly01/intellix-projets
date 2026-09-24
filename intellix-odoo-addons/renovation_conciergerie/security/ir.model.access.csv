@@ -1,0 +1,54 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_renovation_service_category_user,renovation.service.category.user,model_renovation_service_category,base.group_user,1,1,1,1
+access_renovation_package_type_user,renovation.package.type.user,model_renovation_package_type,base.group_user,1,1,1,1
+access_renovation_partner_package_user,renovation.partner.package.user,model_renovation_partner_package,base.group_user,1,1,1,1
+access_renovation_partner_postal_code_user,renovation.partner.postal.code user,model_renovation_partner_postal_code,base.group_user,1,1,1,0
+access_renovation_partner_postal_code_manager,renovation.partner.postal.code manager,model_renovation_partner_postal_code,base.group_system,1,1,1,1
+access_renovation_lead_service_assignment_user,renovation.lead.service.assignment user,model_renovation_lead_service_assignment,base.group_user,1,1,1,0
+access_renovation_lead_service_assignment_manager,renovation.lead.service.assignment manager,model_renovation_lead_service_assignment,base.group_system,1,1,1,1
+access_renovation_lead_service_assignment_partner,renovation.lead.service.assignment partner,model_renovation_lead_service_assignment,renovation_conciergerie.group_renovation_partner,1,1,0,0
+access_renovation_twilio_call_log_user,renovation.twilio.call.log user,model_renovation_twilio_call_log,base.group_user,1,0,0,0
+access_renovation_twilio_call_log_partner,renovation.twilio.call.log partner,model_renovation_twilio_call_log,renovation_conciergerie.group_renovation_partner,1,0,0,0
+access_renovation_retell_call_log_user,renovation.retell.call.log user,model_renovation_retell_call_log,base.group_user,1,0,0,0
+access_renovation_retell_call_log_partner,renovation.retell.call.log partner,model_renovation_retell_call_log,renovation_conciergerie.group_renovation_partner,1,0,0,0
+access_crm_lead_partner_user,crm.lead partner user,model_crm_lead,renovation_conciergerie.group_renovation_partner,1,1,0,0
+access_crm_tag_partner_user,crm.tag partner user,sales_team.model_crm_tag,renovation_conciergerie.group_renovation_partner,1,0,0,0
+access_crm_stage_partner_user,crm.stage partner user,crm.model_crm_stage,renovation_conciergerie.group_renovation_partner,1,0,0,0
+access_calendar_event_partner_user,calendar.event partner user,calendar.model_calendar_event,renovation_conciergerie.group_renovation_partner,1,1,1,0
+access_account_move_partner_user,account.move partner user,account.model_account_move,renovation_conciergerie.group_renovation_partner,1,0,0,0
+access_sale_order_partner_user,sale.order partner user,sale.model_sale_order,renovation_conciergerie.group_renovation_partner,1,1,1,0
+access_sale_order_line_partner_user,sale.order.line partner user,sale.model_sale_order_line,renovation_conciergerie.group_renovation_partner,1,1,1,0
+access_renovation_ai_log_user,renovation.ai.log user,model_renovation_ai_log,base.group_user,1,0,0,0
+access_renovation_ai_log_manager,renovation.ai.log manager,model_renovation_ai_log,base.group_system,1,1,1,1
+access_renovation_meta_leads_map_editor_manager,renovation.meta.leads.map.editor manager,model_renovation_meta_leads_map_editor,base.group_erp_manager,1,1,1,1
+access_project_ai_task_wizard_user,project.ai.task.wizard user,model_project_ai_task_wizard,base.group_user,1,1,1,1
+access_project_ai_task_wizard_line_user,project.ai.task.wizard.line user,model_project_ai_task_wizard_line,base.group_user,1,1,1,1
+access_project_ai_user_reco_user,project.ai.user.reco user,model_project_ai_user_reco,base.group_user,1,1,1,1
+access_project_ai_help_user,project.ai.help user,model_project_ai_help,base.group_user,1,1,1,1
+access_project_ai_chat_user,project.ai.chat user,model_project_ai_chat,base.group_user,1,1,1,1
+access_renovation_ai_prompt_user,renovation.ai.prompt user,model_renovation_ai_prompt,base.group_user,1,0,0,0
+access_renovation_ai_prompt_manager,renovation.ai.prompt manager,model_renovation_ai_prompt,base.group_system,1,1,1,1
+access_base_automation_configurator,base.automation configurator,base_automation.model_base_automation,renovation_conciergerie.group_automation_configurator,1,1,1,1
+access_ir_actions_server_automation,ir.actions.server automation configurator,base.model_ir_actions_server,renovation_conciergerie.group_automation_configurator,1,1,1,1
+access_crm_lead_pipeline_assigned,crm.lead pipeline assigned,crm.model_crm_lead,renovation_conciergerie.group_doorway_pipeline_assigned,1,1,1,0
+access_crm_team_pipeline_assigned,crm.team pipeline assigned,sales_team.model_crm_team,renovation_conciergerie.group_doorway_pipeline_assigned,1,0,0,0
+access_crm_tag_pipeline_assigned,crm.tag pipeline assigned,sales_team.model_crm_tag,renovation_conciergerie.group_doorway_pipeline_assigned,1,1,1,0
+access_res_partner_pipeline_assigned,res.partner pipeline assigned,base.model_res_partner,renovation_conciergerie.group_doorway_pipeline_assigned,1,1,1,0
+access_res_partner_category_pipeline_assigned,res.partner.category pipeline assigned,base.model_res_partner_category,renovation_conciergerie.group_doorway_pipeline_assigned,1,1,1,0
+access_sale_order_pipeline_assigned,sale.order pipeline assigned,sale.model_sale_order,renovation_conciergerie.group_doorway_pipeline_assigned,1,1,1,0
+access_sale_order_line_pipeline_assigned,sale.order.line pipeline assigned,sale.model_sale_order_line,renovation_conciergerie.group_doorway_pipeline_assigned,1,1,1,1
+access_calendar_event_pipeline_assigned,calendar.event pipeline assigned,calendar.model_calendar_event,renovation_conciergerie.group_doorway_pipeline_assigned,1,1,1,0
+access_crm_lost_reason_pipeline_assigned,crm.lost.reason pipeline assigned,crm.model_crm_lost_reason,renovation_conciergerie.group_doorway_pipeline_assigned,1,0,0,0
+access_crm_lead_lost_pipeline_assigned,crm.lead.lost pipeline assigned,crm.model_crm_lead_lost,renovation_conciergerie.group_doorway_pipeline_assigned,1,1,1,0
+access_crm_activity_report_pipeline_assigned,crm.activity.report pipeline assigned,crm.model_crm_activity_report,renovation_conciergerie.group_doorway_pipeline_assigned,1,0,0,0
+access_uom_uom_pipeline_assigned,uom.uom pipeline assigned,uom.model_uom_uom,renovation_conciergerie.group_doorway_pipeline_assigned,1,0,0,0
+access_product_pricelist_pipeline_assigned,product.pricelist pipeline assigned,product.model_product_pricelist,renovation_conciergerie.group_doorway_pipeline_assigned,1,0,0,0
+access_ir_actions_act_window_user,ir.actions.act_window user read,base.model_ir_actions_act_window,base.group_user,1,0,0,0
+access_ir_actions_actions_user,ir.actions.actions user read,base.model_ir_actions_actions,base.group_user,1,0,0,0
+access_ir_actions_client_user,ir.actions.client user read,base.model_ir_actions_client,base.group_user,1,0,0,0
+access_renovation_secteur_tarif_user,renovation.secteur.tarif.user,model_renovation_secteur_tarif,base.group_user,1,0,0,0
+access_renovation_secteur_tarif_manager,renovation.secteur.tarif.manager,model_renovation_secteur_tarif,base.group_system,1,1,1,1
+access_renovation_forfait_type_user,renovation.forfait.type.user,model_renovation_forfait_type,base.group_user,1,0,0,0
+access_renovation_forfait_type_manager,renovation.forfait.type.manager,model_renovation_forfait_type,base.group_system,1,1,1,1
+access_renovation_forfait_credit_user,renovation.forfait.credit.user,model_renovation_forfait_credit,base.group_user,1,1,1,0
+access_renovation_forfait_credit_manager,renovation.forfait.credit.manager,model_renovation_forfait_credit,base.group_system,1,1,1,1

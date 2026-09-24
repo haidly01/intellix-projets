@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_coins_entente_activation_wizard_form" model="ir.ui.view">
+        <field name="name">coins.entente.activation.wizard.form</field>
+        <field name="model">coins.entente.activation.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Enregistrer une activation">
+                <group>
+                    <field name="entente_id" readonly="1"/>
+                    <field name="date"/>
+                    <field name="montant"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="note"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" type="object"
+                            string="Enregistrer" class="btn-primary"/>
+                    <button string="Annuler" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

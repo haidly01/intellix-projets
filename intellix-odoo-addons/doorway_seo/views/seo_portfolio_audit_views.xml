@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================================ -->
+    <!-- Portfolio Doorway — audit technique (4 chantiers)            -->
+    <!-- ============================================================ -->
+    <record id="view_seo_portfolio_audit_search" model="ir.ui.view">
+        <field name="name">doorway.seo.portfolio.audit.search</field>
+        <field name="model">doorway.seo.portfolio.audit</field>
+        <field name="arch" type="xml">
+            <search string="Portfolio Doorway — audit">
+                <field name="site_id" string="Site"/>
+                <field name="domain"/>
+                <field name="metric"/>
+                <filter string="Chantier 1 — Rendu &amp; pages blanches" name="c1" domain="[('chantier','=','render_health')]"/>
+                <filter string="Chantier 2 — Dilution de contenu" name="c2" domain="[('chantier','=','content_dilution')]"/>
+                <filter string="Chantier 3 — Positions mot-clé" name="c3" domain="[('chantier','=','keyword_positions')]"/>
+                <filter string="Chantier 4 — Attribution des leads" name="c4" domain="[('chantier','=','lead_attribution')]"/>
+                <separator/>
+                <filter string="Aujourd'hui" name="today" domain="[('captured_at','&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter string="Site" name="group_site" context="{'group_by': 'site_id'}"/>
+                <filter string="Chantier" name="group_chantier" context="{'group_by': 'chantier'}"/>
+                <filter string="Métrique" name="group_metric" context="{'group_by': 'metric'}"/>
+                <filter string="Date" name="group_date" context="{'group_by': 'captured_at:day'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_seo_portfolio_audit_list" model="ir.ui.view">
+        <field name="name">doorway.seo.portfolio.audit.list</field>
+        <field name="model">doorway.seo.portfolio.audit</field>
+        <field name="arch" type="xml">
+            <list string="Portfolio Doorway — audit" default_order="captured_at desc">
+                <field name="captured_at"/>
+                <field name="domain"/>
+                <field name="chantier"/>
+                <field name="metric"/>
+                <field name="value_float"/>
+                <field name="value_text"/>
+                <field name="detail" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_seo_portfolio_audit_pivot" model="ir.ui.view">
+        <field name="name">doorway.seo.portfolio.audit.pivot</field>
+        <field name="model">doorway.seo.portfolio.audit</field>
+        <field name="arch" type="xml">
+            <pivot string="Portfolio Doorway — audit" display_quantity="true">
+                <field name="domain" type="row"/>
+                <field name="chantier" type="col"/>
+                <field name="value_float" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_seo_portfolio_audit_graph" model="ir.ui.view">
+        <field name="name">doorway.seo.portfolio.audit.graph</field>
+        <field name="model">doorway.seo.portfolio.audit</field>
+        <field name="arch" type="xml">
+            <graph string="Portfolio Doorway — audit" type="bar">
+                <field name="domain"/>
+                <field name="value_float" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_seo_portfolio_audit" model="ir.actions.act_window">
+        <field name="name">Portfolio Doorway</field>
+        <field name="res_model">doorway.seo.portfolio.audit</field>
+        <field name="view_mode">list,pivot,graph</field>
+        <field name="context">{'search_default_group_site': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nofollow">
+                Aucune donnée pour l'instant — le premier envoi depuis le cycle
+                d'audit quotidien (serveur France) alimentera cette vue.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_seo_portfolio"
+              name="Portfolio Doorway"
+              parent="menu_seo_root"
+              action="action_seo_portfolio_audit"
+              sequence="10"/>
+</odoo>

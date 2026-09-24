@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Actions reconstruites (perdues avec le wipe) pour que les menus chargent. -->
+
+    <record id="action_coins_driver" model="ir.actions.act_window">
+        <field name="name">Chauffeurs</field>
+        <field name="res_model">coins.driver</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_coins_driver_contrat" model="ir.actions.act_window">
+        <field name="name">Contrats chauffeurs</field>
+        <field name="res_model">coins.driver.contrat</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_coins_driver_mouvement" model="ir.actions.act_window">
+        <field name="name">Mouvements chauffeurs</field>
+        <field name="res_model">coins.driver.mouvement</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_coins_driver_remise" model="ir.actions.act_window">
+        <field name="name">Remises quotidiennes</field>
+        <field name="res_model">coins.driver.remise_quotidienne</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_coins_detente_booking" model="ir.actions.act_window">
+        <field name="name">Réservations détente</field>
+        <field name="res_model">coins.detente_booking</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_coins_detente_booking_calendar" model="ir.actions.act_window">
+        <field name="name">Calendrier détente</field>
+        <field name="res_model">coins.detente_booking</field>
+        <field name="view_mode">calendar,list,form</field>
+    </record>
+    <record id="action_coins_detente_partner" model="ir.actions.act_window">
+        <field name="name">Partenaires détente</field>
+        <field name="res_model">coins.detente_partner</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_coins_detente_partner_planning" model="ir.actions.act_window">
+        <field name="name">Planning partenaires détente</field>
+        <field name="res_model">coins.detente_partner</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_coins_detente_package" model="ir.actions.act_window">
+        <field name="name">Forfaits détente</field>
+        <field name="res_model">coins.detente_package</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_coins_detente_dashboard" model="ir.actions.act_window">
+        <field name="name">Détente (liste)</field>
+        <field name="res_model">coins.detente_booking</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_coins_activite" model="ir.actions.act_window">
+        <field name="name">Activités</field>
+        <field name="res_model">coins.activite</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_coins_activite_booking" model="ir.actions.act_window">
+        <field name="name">Réservations activités</field>
+        <field name="res_model">coins.activite_booking</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_coins_yasmine_conversation" model="ir.actions.act_window">
+        <field name="name">Conversations Yasmine</field>
+        <field name="res_model">coins.yasmine.conversation</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_coins_wa_session" model="ir.actions.act_window">
+        <field name="name">Sessions WhatsApp</field>
+        <field name="res_model">coins.wa.session</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_coins_wa_log" model="ir.actions.act_window">
+        <field name="name">Sessions WhatsApp (log)</field>
+        <field name="res_model">coins.wa.session</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_coins_carnet" model="ir.actions.act_window">
+        <field name="name">Carnets</field>
+        <field name="res_model">coins.carnet</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_coins_carnet_badge" model="ir.actions.act_window">
+        <field name="name">Badges Carnet</field>
+        <field name="res_model">coins.carnet.badge</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_coins_carnet_tier" model="ir.actions.act_window">
+        <field name="name">Paliers Carnet</field>
+        <field name="res_model">coins.carnet.tier</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_coins_ambassador" model="ir.actions.act_window">
+        <field name="name">Ambassadeurs</field>
+        <field name="res_model">coins.ambassador</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_coins_ambassador_referral" model="ir.actions.act_window">
+        <field name="name">Parrainages</field>
+        <field name="res_model">coins.ambassador.referral</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Dashboards OWL : actions client (JS éventuellement stub) -->
+    <record id="action_coins_overview_dashboard_owl" model="ir.actions.client">
+        <field name="name">Tableau de bord Coins</field>
+        <field name="tag">coins_overview_dashboard</field>
+    </record>
+    <record id="action_coins_detente_dashboard_owl" model="ir.actions.client">
+        <field name="name">Dashboard détente</field>
+        <field name="tag">coins_detente_dashboard</field>
+    </record>
+    <record id="action_coins_activite_dashboard_owl" model="ir.actions.client">
+        <field name="name">Dashboard activités</field>
+        <field name="tag">coins_activite_dashboard</field>
+    </record>
+</odoo>

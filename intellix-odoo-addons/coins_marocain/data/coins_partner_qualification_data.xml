@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="interest_bien_etre" model="coins.partner.interest">
+        <field name="name">Bien-être / spa</field>
+        <field name="code">bien_etre</field>
+        <field name="sequence">10</field>
+    </record>
+    <record id="interest_piscine" model="coins.partner.interest">
+        <field name="name">Piscine / villa</field>
+        <field name="code">piscine</field>
+        <field name="sequence">20</field>
+    </record>
+    <record id="interest_gastronomie" model="coins.partner.interest">
+        <field name="name">Gastronomie</field>
+        <field name="code">gastronomie</field>
+        <field name="sequence">30</field>
+    </record>
+    <record id="interest_desert" model="coins.partner.interest">
+        <field name="name">Désert / aventure</field>
+        <field name="code">desert</field>
+        <field name="sequence">40</field>
+    </record>
+    <record id="interest_culture" model="coins.partner.interest">
+        <field name="name">Culture</field>
+        <field name="code">culture</field>
+        <field name="sequence">50</field>
+    </record>
+    <record id="interest_evenements" model="coins.partner.interest">
+        <field name="name">Événements / soirées</field>
+        <field name="code">evenements</field>
+        <field name="sequence">60</field>
+    </record>
+    <record id="interest_mariage" model="coins.partner.interest">
+        <field name="name">Mariage / EVJF</field>
+        <field name="code">mariage</field>
+        <field name="sequence">70</field>
+    </record>
+    <record id="interest_corporate" model="coins.partner.interest">
+        <field name="name">Team building / corporate</field>
+        <field name="code">corporate</field>
+        <field name="sequence">80</field>
+    </record>
+</odoo>

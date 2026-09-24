@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <delete model="ir.ui.menu" id="menu_vicidial_supervisor"/>
+    <record id="action_vicidial_campaign_monitor" model="ir.actions.client">
+        <field name="name">Monitoring campagnes</field>
+        <field name="tag">vicidial_campaign_monitor_action</field>
+    </record>
+
+    <record id="action_doorway_campaign" model="ir.actions.act_window">
+        <field name="name">Campagnes d'appels</field>
+        <field name="res_model">doorway.campaign</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_doorway_campaign_search_performance"/>
+        <field name="context">{'search_default_dialing_prod': 1}</field>
+    </record>
+
+    <record id="action_doorway_call_log" model="ir.actions.act_window">
+        <field name="name">Journal appels</field>
+        <field name="res_model">doorway.call.log</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_my_call_recordings" model="ir.actions.server">
+        <field name="name">Mes enregistrements</field>
+        <field name="model_id" ref="model_doorway_campaign_agent_user"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_my_call_recordings()</field>
+    </record>
+
+    <record id="action_sofia_fr_measured_calls" model="ir.actions.act_window">
+        <field name="name">Sofia FR — Appels mesurés</field>
+        <field name="res_model">doorway.call.log</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_doorway_call_log_search"/>
+        <field name="domain">[
+            ('campaign_id.vicidial_campaign_id', '=', 'DW_FRB2C'),
+        ]</field>
+        <field name="context">{'search_default_today': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun appel Sofia FR aujourd'hui.</p>
+            <p>Les conversations humaines sont enregistrées sur
+            <code>intellixcrm.com/sofia-recordings/</code> (répondeurs exclus).
+            Cliquez <strong>Écouter</strong> quand un enregistrement est disponible.</p>
+        </field>
+    </record>
+
+    <record id="action_doorway_campaign_agent" model="ir.actions.act_window">
+        <field name="name">Agents humains</field>
+        <field name="res_model">doorway.campaign.agent.user</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_vicidial_app_root"
+              name="Appels"
+              action="action_vicidial_app_home"
+              sequence="10"/>
+
+    <menuitem id="menu_vicidial_onboarding"
+              name="Visite guidée"
+              parent="menu_vicidial_app_root"
+              action="action_vicidial_onboarding_wizard"
+              groups="doorway_vicidial_campaigns.group_vicidial_qualifier"
+              sequence="0"/>
+
+    <menuitem id="menu_vicidial_calls_dashboard"
+              name="Dashboard global"
+              parent="menu_vicidial_app_root"
+              action="action_calls_coaching_dashboard"
+              groups="base.group_user"
+              sequence="1"/>
+
+    <menuitem id="menu_vicidial_root"
+              name="Superviseurs"
+              parent="menu_vicidial_app_root"
+              action="action_supervisor_dashboard"
+              groups="doorway_vicidial_campaigns.group_vicidial_supervisor"
+              sequence="5"/>
+
+    <menuitem id="menu_vicidial_monitor"
+              name="Monitoring live"
+              parent="menu_vicidial_root"
+              action="action_vicidial_campaign_monitor"
+              sequence="5"/>
+
+    <menuitem id="menu_vicidial_campaigns"
+              name="Campagnes"
+              parent="menu_vicidial_root"
+              action="action_doorway_campaign"
+              sequence="10"/>
+
+    <menuitem id="menu_vicidial_call_logs"
+              name="Journal appels"
+              parent="menu_vicidial_root"
+              action="action_doorway_call_log"
+              sequence="20"/>
+
+    <menuitem id="menu_vicidial_agents"
+              name="Agents humains"
+              parent="menu_vicidial_root"
+              action="action_doorway_campaign_agent"
+              sequence="30"/>
+
+    <menuitem id="menu_vicidial_workstation"
+              name="Mon poste d'appels"
+              parent="menu_vicidial_app_root"
+              action="action_vicidial_workstation"
+              groups="doorway_vicidial_campaigns.group_vicidial_qualifier"
+              sequence="2"/>
+
+    <menuitem id="menu_vicidial_my_recordings"
+              name="Mes enregistrements"
+              parent="menu_vicidial_app_root"
+              action="action_my_call_recordings"
+              groups="doorway_vicidial_campaigns.group_vicidial_qualifier"
+              sequence="2"/>
+
+    <menuitem id="menu_sofia_fr_measured_calls"
+              name="Appels mesurés Sofia FR"
+              parent="menu_vicidial_app_root"
+              action="action_sofia_fr_measured_calls"
+              groups="base.group_user"
+              sequence="2"/>
+
+    <menuitem id="menu_vicidial_my_coaching"
+              name="Mon coaching"
+              parent="menu_vicidial_app_root"
+              action="action_my_coaching_dashboard"
+              groups="doorway_vicidial_campaigns.group_vicidial_qualifier"
+              sequence="3"/>
+
+    <menuitem id="menu_vicidial_qualification"
+              name="Qualification CRM"
+              parent="menu_vicidial_app_root"
+              action="action_vicidial_qualification_hub"
+              groups="doorway_vicidial_campaigns.group_vicidial_qualifier"
+              sequence="6"/>
+
+    <menuitem id="menu_vicidial_callbacks"
+              name="Mes rappels"
+              parent="menu_vicidial_app_root"
+              action="action_vicidial_callbacks_calendar"
+              groups="doorway_vicidial_campaigns.group_vicidial_qualifier"
+              sequence="7"/>
+
+    <menuitem id="menu_vicidial_agent_sessions"
+              name="Sessions agents"
+              parent="menu_vicidial_root"
+              action="action_vicidial_agent_sessions"
+              groups="base.group_system"
+              sequence="26"/>
+
+    <menuitem id="menu_vicidial_call_sync"
+              name="Sync appels"
+              parent="menu_vicidial_root"
+              action="action_vicidial_call_sync"
+              groups="base.group_system"
+              sequence="25"/>
+
+    <!-- Intégration CRM -->
+    <record id="action_crm_vicidial_qualifications_team" model="ir.actions.act_window">
+        <field name="name">Qualifications Appels</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_crm_lead_vicidial_qualification_list')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_crm_lead_vicidial_qualification_form')})]"/>
+        <field name="domain">[('source_vicidial', '=', True)]</field>
+        <field name="context">{'search_default_source_vicidial': 1}</field>
+    </record>
+
+    <record id="action_crm_vicidial_qualification_hub" model="ir.actions.client">
+        <field name="name">Dashboard Qualification Appels</field>
+        <field name="tag">vicidial_qualification_hub_action</field>
+    </record>
+
+    <menuitem id="menu_crm_vicidial_qualification_hub"
+              name="Dashboard Qualification"
+              parent="crm.crm_menu_sales"
+              action="action_crm_vicidial_qualification_hub"
+              groups="doorway_vicidial_campaigns.group_vicidial_qualifier"
+              sequence="11"/>
+
+    <menuitem id="menu_crm_vicidial_qualifications"
+              name="Qualifications Appels"
+              parent="crm.crm_menu_sales"
+              action="action_crm_vicidial_qualifications_team"
+              groups="doorway_vicidial_campaigns.group_vicidial_supervisor"
+              sequence="12"/>
+
+    <menuitem id="menu_crm_vicidial_my_qualifications"
+              name="Mes qualifications Appels"
+              parent="crm.crm_menu_sales"
+              action="action_vicidial_qualification"
+              groups="doorway_vicidial_campaigns.group_vicidial_qualifier"
+              sequence="13"/>
+
+    <menuitem id="menu_crm_vicidial_campaigns"
+              name="Campagnes d'appels"
+              parent="crm.crm_menu_sales"
+              action="action_doorway_campaign"
+              groups="doorway_vicidial_campaigns.group_vicidial_supervisor"
+              sequence="14"/>
+</odoo>

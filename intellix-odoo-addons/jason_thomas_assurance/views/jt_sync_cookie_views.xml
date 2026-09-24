@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_jt_sync_cookie_list" model="ir.ui.view">
+    <field name="name">jt.sync.cookie.list</field>
+    <field name="model">jt.sync.cookie</field>
+    <field name="arch" type="xml">
+      <list string="Sessions portails">
+        <field name="portail_id"/>
+        <field name="portail_nom"/>
+        <field name="nb_cookies"/>
+        <field name="captured_at"/>
+        <field name="url_source"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="action_jt_sync_cookie" model="ir.actions.act_window">
+    <field name="name">Sync portails (cookies)</field>
+    <field name="res_model">jt.sync.cookie</field>
+    <field name="view_mode">list</field>
+  </record>
+</odoo>

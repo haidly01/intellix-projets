@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="doc_template_welcome_letter" model="pe.document.template">
+        <field name="name">Lettre de bienvenue</field>
+        <field name="document_type">letter</field>
+        <field name="sequence">10</field>
+        <field name="is_arrival_pack">True</field>
+        <field name="stage_ids" eval="[(4, ref('lifecycle_stage_arrival'))]"/>
+        <field name="description">Lettre d'accueil remise ou envoyée à l'arrivée du collaborateur.</field>
+        <field name="body_html"><![CDATA[
+<p>Bonjour,</p>
+<p>Bienvenue dans l'équipe ! Veuillez trouver ci-joint votre lettre de bienvenue.</p>
+<p>Cordialement,<br/>L'équipe RH</p>
+        ]]></field>
+    </record>
+
+    <record id="doc_template_internal_rules" model="pe.document.template">
+        <field name="name">Règlement intérieur</field>
+        <field name="document_type">policy</field>
+        <field name="sequence">20</field>
+        <field name="is_arrival_pack">True</field>
+        <field name="stage_ids" eval="[(4, ref('lifecycle_stage_arrival')), (4, ref('lifecycle_stage_active'))]"/>
+        <field name="description">Règlement intérieur et politiques de l'entreprise.</field>
+        <field name="body_html"><![CDATA[
+<p>Bonjour,</p>
+<p>Veuillez prendre connaissance du règlement intérieur ci-joint.</p>
+        ]]></field>
+    </record>
+
+    <record id="doc_template_probation_end" model="pe.document.template">
+        <field name="name">Confirmation fin de période d'essai</field>
+        <field name="document_type">letter</field>
+        <field name="sequence">30</field>
+        <field name="stage_ids" eval="[(4, ref('lifecycle_stage_probation'))]"/>
+        <field name="description">Lettre de confirmation ou prolongation de la période d'essai.</field>
+        <field name="body_html"><![CDATA[
+<p>Bonjour,</p>
+<p>Veuillez trouver ci-joint le document relatif à la fin de votre période d'essai.</p>
+        ]]></field>
+    </record>
+
+    <record id="doc_template_departure_checklist" model="pe.document.template">
+        <field name="name">Checklist de départ</field>
+        <field name="document_type">form</field>
+        <field name="sequence">40</field>
+        <field name="stage_ids" eval="[(4, ref('lifecycle_stage_departure'))]"/>
+        <field name="description">Liste des démarches et restitutions à effectuer au départ.</field>
+        <field name="body_html"><![CDATA[
+<p>Bonjour,</p>
+<p>Veuillez trouver ci-joint la checklist de départ à compléter.</p>
+        ]]></field>
+    </record>
+</odoo>

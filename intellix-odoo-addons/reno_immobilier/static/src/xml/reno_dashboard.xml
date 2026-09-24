@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="reno_immobilier.Dashboard">
+        <div class="o_reno_ix_dash">
+            <div class="wrap">
+                <header>
+                    <div>
+                        <div class="eyebrow">IntelliX · Réno Immobilier</div>
+                        <h1>Tableau de bord</h1>
+                    </div>
+                    <div class="period">
+                        <span>Du</span>
+                        <input type="date" t-att-value="state.dateFrom" t-on-change="onDateFromChange"/>
+                        <span>au</span>
+                        <input type="date" t-att-value="state.dateTo" t-on-change="onDateToChange"/>
+                        <button class="btn-refresh" t-on-click="refresh" t-att-disabled="state.loading">Actualiser</button>
+                    </div>
+                </header>
+
+                <t t-if="state.error">
+                    <div class="gap-callout" t-esc="state.error"/>
+                </t>
+                <t t-elif="state.loading &amp;&amp; !state.data.kpis">
+                    <div class="section-sub">Chargement…</div>
+                </t>
+                <t t-else="">
+                    <div class="kpi-row">
+                        <div class="kpi accent">
+                            <div class="kpi-label">Leads période</div>
+                            <div t-att-class="kpiClass(data.kpis.total)" t-esc="data.kpis.total or 0"/>
+                        </div>
+                        <div class="kpi">
+                            <div class="kpi-label">Nouveau</div>
+                            <div t-att-class="kpiClass(data.kpis.nouveau)" t-esc="data.kpis.nouveau or 0"/>
+                        </div>
+                        <div class="kpi">
+                            <div class="kpi-label">Attribué</div>
+                            <div t-att-class="kpiClass(data.kpis.attribue)" t-esc="data.kpis.attribue or 0"/>
+                        </div>
+                        <div class="kpi">
+                            <div class="kpi-label">En contact</div>
+                            <div t-att-class="kpiClass(data.kpis.en_contact)" t-esc="data.kpis.en_contact or 0"/>
+                        </div>
+                        <div class="kpi">
+                            <div class="kpi-label">Gagné</div>
+                            <div t-att-class="kpiClass(data.kpis.gagne)" t-esc="data.kpis.gagne or 0"/>
+                        </div>
+                        <div class="kpi">
+                            <div class="kpi-label">Perdu / à relancer</div>
+                            <div t-att-class="kpiClass(data.kpis.perdu_relancer)" t-esc="data.kpis.perdu_relancer or 0"/>
+                        </div>
+                    </div>
+
+                    <section>
+                        <div class="gap-panel">
+                            <div class="gap-header">
+                                <div class="gap-title-block">
+                                    <div class="section-title">Lacunes de couverture — service × région</div>
+                                    <div class="section-sub">Où recruter en priorité. Chaque case croise un service avec une région ; une case vide veut dire aucun partenaire actif pour cette combinaison.</div>
+                                </div>
+                                <div class="legend">
+                                    <div class="legend-item"><span class="dot ok"></span> Couvert</div>
+                                    <div class="legend-item"><span class="dot warn"></span> Forfait faible</div>
+                                    <div class="legend-item"><span class="dot gap"></span> Aucun partenaire</div>
+                                </div>
+                            </div>
+
+                            <t t-if="!(data.matrix.rows or []).length">
+                                <div class="section-sub">Aucune région à afficher : pas de lead géolocalisé ni de partenaire actif avec service et zone renseignés.</div>
+                            </t>
+                            <div t-else="" class="matrix-scroll">
+                                <table class="matrix">
+                                    <thead>
+                                        <tr>
+                                            <th class="region-col">Région</th>
+                                            <t t-foreach="data.matrix.services or []" t-as="svc" t-key="svc.key">
+                                                <th t-esc="svc.label"/>
+                                            </t>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="data.matrix.rows or []" t-as="row" t-key="row.name">
+                                            <tr>
+                                                <td class="region-name">
+                                                    <t t-esc="row.name"/>
+                                                    <span class="count" t-esc="row.leads_label"/>
+                                                </td>
+                                                <t t-foreach="row.cells or []" t-as="cell" t-key="row.name + '-' + cell.key">
+                                                    <td>
+                                                        <div t-att-class="'cell ' + (cell.tone or 'na')" t-esc="cell.value"/>
+                                                    </td>
+                                                </t>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="gap-callout">
+                                <b t-esc="(data.matrix.callout and data.matrix.callout.title) or 'Priorité de recrutement'"/>
+                                <t t-esc="' — ' + ((data.matrix.callout and data.matrix.callout.body) or '')"/>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="two-col">
+                        <div class="card">
+                            <div class="section-title" style="margin-bottom:4px;">Jumelage</div>
+                            <div class="section-sub" t-esc="data.jumelage.note"/>
+                            <div class="jumelage-bar">
+                                <div class="jseg-auto" t-att-style="'width:' + (data.jumelage.auto_pct or 0) + '%;'"/>
+                                <div class="jseg-manuel" t-att-style="'width:' + (data.jumelage.manuel_pct or 0) + '%;'"/>
+                                <div class="jseg-none" t-att-style="'width:' + (data.jumelage.aucun_pct or 0) + '%;'"/>
+                            </div>
+                            <div class="jum-legend">
+                                <div class="jum-row">
+                                    <span class="lbl"><span class="dot ok"></span>Auto</span>
+                                    <span class="val" t-esc="data.jumelage.auto_pct_label"/>
+                                </div>
+                                <div class="jum-row">
+                                    <span class="lbl"><span class="dot warn"></span>Manuel</span>
+                                    <span class="val" t-esc="data.jumelage.manuel_pct_label"/>
+                                </div>
+                                <div class="jum-row">
+                                    <span class="lbl"><span class="dot" style="background:var(--line);"></span>Sans match</span>
+                                    <span class="val" t-esc="data.jumelage.aucun_pct_label"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="section-title" style="margin-bottom:4px;">Sources</div>
+                            <div class="section-sub" style="margin-bottom:16px;">Volume par origine, période sélectionnée</div>
+                            <t t-if="!(data.sources or []).length">
+                                <div class="section-sub">Aucun lead sur la période</div>
+                            </t>
+                            <t t-foreach="data.sources or []" t-as="src" t-key="src.name">
+                                <div class="src-row">
+                                    <div class="src-name" t-esc="src.name"/>
+                                    <div class="src-track">
+                                        <div class="src-fill" t-att-style="'width:' + (src.pct or 0) + '%;'"/>
+                                    </div>
+                                    <div class="src-val" t-esc="src.count"/>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+
+                    <section>
+                        <div class="section-head">
+                            <div>
+                                <div class="section-title">Partenaires — forfaits actifs</div>
+                                <div class="section-sub" t-esc="data.partners_subtitle"/>
+                            </div>
+                        </div>
+                        <t t-if="!(visiblePartners or []).length">
+                            <div class="section-sub">Aucun forfait actif</div>
+                        </t>
+                        <div class="partner-grid">
+                            <t t-foreach="visiblePartners" t-as="p" t-key="p.id">
+                                <div class="p-card">
+                                    <div class="p-top">
+                                        <div>
+                                            <div class="p-name" t-esc="p.name"/>
+                                            <div class="p-services" t-esc="p.place"/>
+                                        </div>
+                                        <div t-att-class="'p-status ' + (p.status === 'faible' ? 'faible' : 'actif')" t-esc="p.status_label"/>
+                                    </div>
+                                    <div class="p-track">
+                                        <div t-att-class="'p-fill' + (p.status === 'faible' ? ' low' : '')" t-att-style="'width:' + (p.fill or 0) + '%;'"/>
+                                    </div>
+                                    <div class="p-quota" t-esc="p.quota"/>
+                                </div>
+                            </t>
+                        </div>
+                        <t t-if="!state.showAllPartners and (data.partners_hidden or 0) > 0">
+                            <div class="show-more">
+                                <button t-on-click="showMorePartners">
+                                    Voir les <t t-esc="data.partners_hidden"/> autres partenaires
+                                </button>
+                            </div>
+                        </t>
+                    </section>
+                </t>
+            </div>
+        </div>
+    </t>
+</templates>

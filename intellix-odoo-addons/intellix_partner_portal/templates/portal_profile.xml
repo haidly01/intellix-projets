@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_profile" name="Portail — Mon profil">
+        <t t-call="intellix_partner_portal.ipp_portal_layout">
+            <t t-if="request.params.get('saved')">
+                <div class="ipp-alert-success">Profil enregistré avec succès.</div>
+            </t>
+
+            <h1 class="ipp-page-title">Mon profil partenaire</h1>
+            <p class="ipp-page-sub">Zones, services, capacité et mode pause — pensez à enregistrer après vos changements.</p>
+
+            <form action="/my/profil" method="post" id="ipp-profile-form">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <input type="hidden" name="coverage_mode" id="ipp-coverage-mode" t-att-value="partner.coverage_mode or 'city'"/>
+
+                <div class="ipp-card" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+                    <div style="width:52px;height:52px;border-radius:12px;background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.25);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#f59e0b;flex-shrink:0">
+                        <t t-esc="(partner.name or 'IX')[:2].upper()"/>
+                    </div>
+                    <div style="flex:1;min-width:200px">
+                        <div style="font-size:18px;font-weight:700;margin-bottom:4px" t-esc="partner.name"/>
+                        <div style="font-size:14px;color:#b4b4d0">
+                            <t t-esc="partner.email or ''"/> · <t t-esc="partner.phone or ''"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ipp-card">
+                    <div class="ipp-card-title">Zone de couverture</div>
+                    <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+                        <button type="button" class="ipp-zone-type-btn" data-zone-type="province" t-attf-class="ipp-zone-type-btn #{partner.coverage_mode == 'province' and 'active' or ''}">Province</button>
+                        <button type="button" class="ipp-zone-type-btn" data-zone-type="city" t-attf-class="ipp-zone-type-btn #{(partner.coverage_mode == 'city' or not partner.coverage_mode) and 'active' or ''}">Villes</button>
+                        <button type="button" class="ipp-zone-type-btn" data-zone-type="radius" t-attf-class="ipp-zone-type-btn #{partner.coverage_mode == 'radius' and 'active' or ''}">Rayon km</button>
+                        <button type="button" class="ipp-zone-type-btn" data-zone-type="postal" t-attf-class="ipp-zone-type-btn #{partner.coverage_mode == 'postal' and 'active' or ''}">Codes postaux</button>
+                    </div>
+
+                    <div class="ipp-zone-panel" data-zone-panel="province" t-attf-class="ipp-zone-panel #{partner.coverage_mode == 'province' and 'active' or ''}">
+                        <label style="font-size:14px;color:#b4b4d0;display:block;margin-bottom:8px">Province desservie</label>
+                        <input type="text" name="state_name" class="ipp-input" t-att-value="partner.state_id.name or 'Québec'" placeholder="Ex: Québec"/>
+                    </div>
+
+                    <div class="ipp-zone-panel" data-zone-panel="city" t-attf-class="ipp-zone-panel #{(partner.coverage_mode == 'city' or not partner.coverage_mode) and 'active' or ''}">
+                        <t t-foreach="zone_cities" t-as="city">
+                            <span class="ipp-zone-pill" t-esc="city"/>
+                        </t>
+                        <input type="text" name="city_text" class="ipp-input" style="margin-top:8px" t-att-value="partner.city_text or ''" placeholder="Villes séparées par des virgules (ex: Laval, Montréal-Nord, Longueuil)"/>
+                    </div>
+
+                    <div class="ipp-zone-panel" data-zone-panel="postal" t-attf-class="ipp-zone-panel #{partner.coverage_mode == 'postal' and 'active' or ''}">
+                        <input type="text" name="postal_codes_text" class="ipp-input" t-att-value="partner.postal_codes_text or ''" placeholder="Codes postaux (ex: H7T1A1 J7E2B2)"/>
+                    </div>
+
+                    <div class="ipp-zone-panel" data-zone-panel="radius" t-attf-class="ipp-zone-panel #{partner.coverage_mode == 'radius' and 'active' or ''}">
+                        <label style="font-size:14px;color:#b4b4d0;display:block;margin-bottom:8px">Rayon (km)</label>
+                        <input type="number" name="coverage_radius_km" class="ipp-input" t-att-value="partner.coverage_radius_km or 40" step="1" min="1"/>
+                    </div>
+                </div>
+
+                <div class="ipp-grid-2">
+                    <div class="ipp-card">
+                        <div class="ipp-card-title">Services offerts</div>
+                        <div style="display:flex;flex-direction:column;gap:4px;max-height:360px;overflow:auto">
+                            <t t-foreach="all_services" t-as="svc">
+                                <label class="ipp-service-label">
+                                    <input type="checkbox" name="service_ids" t-att-value="svc.id" t-att-checked="svc.id in partner.service_category_ids.ids and 'checked' or None"/>
+                                    <t t-esc="svc.name"/>
+                                </label>
+                            </t>
+                        </div>
+                    </div>
+
+                    <div class="ipp-card">
+                        <div class="ipp-card-title">Capacité mensuelle</div>
+                        <div style="margin-bottom:14px">
+                            <div style="font-size:28px;font-weight:700;color:#f59e0b;margin-bottom:6px">
+                                <input type="number" name="monthly_lead_capacity" t-att-value="partner.monthly_lead_capacity or 15" min="1" max="999" style="width:72px;background:transparent;border:none;color:#f59e0b;font:inherit;font-weight:700"/>
+                                <span style="font-size:15px;color:#b4b4d0;font-weight:400"> leads/mois</span>
+                            </div>
+                            <div class="ipp-progress-bar" style="margin-bottom:6px">
+                                <div class="ipp-progress-fill" t-attf-style="width:#{capacity_percent}%"/>
+                            </div>
+                            <div style="font-size:14px;color:#b4b4d0">
+                                <t t-esc="partner.leads_used_this_month"/> / <t t-esc="partner.monthly_lead_capacity or 15"/> utilisés ce mois
+                            </div>
+                        </div>
+                        <div class="ipp-divider"/>
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+                            <div>
+                                <div style="font-size:15px;font-weight:600;margin-bottom:4px">Mode Pause</div>
+                                <div style="font-size:13px;color:#b4b4d0">Aucun lead attribué pendant la pause</div>
+                            </div>
+                            <div data-ipp-toggle="">
+                                <input type="checkbox" name="partner_pause_mode" t-att-checked="partner.partner_pause_mode and 'checked' or None" style="display:none"/>
+                                <div t-attf-class="ipp-toggle #{partner.partner_pause_mode and 'on' or ''}"><div class="ipp-toggle-dot"/></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ipp-save-bar">
+                    <button type="submit" class="ipp-btn-primary">Enregistrer les modifications</button>
+                </div>
+            </form>
+        </t>
+    </template>
+</odoo>

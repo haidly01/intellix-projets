@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="module_category_riad" model="ir.module.category">
+        <field name="name">Module Hébergement</field>
+        <field name="sequence">55</field>
+    </record>
+
+    <record id="res_groups_privilege_riad" model="res.groups.privilege">
+        <field name="name">Module Hébergement</field>
+        <field name="sequence">55</field>
+        <field name="category_id" ref="module_category_riad"/>
+    </record>
+
+    <record id="group_riad_user" model="res.groups">
+        <field name="name">Utilisateur</field>
+        <field name="sequence">10</field>
+        <field name="privilege_id" ref="res_groups_privilege_riad"/>
+        <field name="implied_ids" eval="[(4, ref('coins_marocain.group_coins_user'))]"/>
+    </record>
+
+    <record id="group_riad_manager" model="res.groups">
+        <field name="name">Manager</field>
+        <field name="sequence">20</field>
+        <field name="privilege_id" ref="res_groups_privilege_riad"/>
+        <field name="implied_ids" eval="[(4, ref('group_riad_user'))]"/>
+        <field name="user_ids" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+    </record>
+
+    <record id="rule_establishment_user" model="ir.rule">
+        <field name="name">Riad establishment: assigned</field>
+        <field name="model_id" ref="model_intellix_riad_establishment"/>
+        <field name="domain_force">[('id', 'in', user.riad_establishment_ids.ids)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_user'))]"/>
+    </record>
+    <record id="rule_establishment_manager" model="ir.rule">
+        <field name="name">Riad establishment: manager all</field>
+        <field name="model_id" ref="model_intellix_riad_establishment"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_manager'))]"/>
+    </record>
+
+    <record id="rule_space_mode_user" model="ir.rule">
+        <field name="name">Riad space mode: assigned</field>
+        <field name="model_id" ref="model_intellix_riad_space_mode"/>
+        <field name="domain_force">[('establishment_id', 'in', user.riad_establishment_ids.ids)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_user'))]"/>
+    </record>
+    <record id="rule_space_mode_manager" model="ir.rule">
+        <field name="name">Riad space mode: manager all</field>
+        <field name="model_id" ref="model_intellix_riad_space_mode"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_manager'))]"/>
+    </record>
+
+    <record id="rule_table_user" model="ir.rule">
+        <field name="name">Riad table: assigned</field>
+        <field name="model_id" ref="model_intellix_riad_table"/>
+        <field name="domain_force">[('establishment_id', 'in', user.riad_establishment_ids.ids)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_user'))]"/>
+    </record>
+    <record id="rule_table_manager" model="ir.rule">
+        <field name="name">Riad table: manager all</field>
+        <field name="model_id" ref="model_intellix_riad_table"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_manager'))]"/>
+    </record>
+
+    <record id="rule_practitioner_user" model="ir.rule">
+        <field name="name">Riad practitioner: assigned</field>
+        <field name="model_id" ref="model_intellix_riad_practitioner"/>
+        <field name="domain_force">[('establishment_id', 'in', user.riad_establishment_ids.ids)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_user'))]"/>
+    </record>
+    <record id="rule_practitioner_manager" model="ir.rule">
+        <field name="name">Riad practitioner: manager all</field>
+        <field name="model_id" ref="model_intellix_riad_practitioner"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_manager'))]"/>
+    </record>
+
+    <record id="rule_wellness_slot_user" model="ir.rule">
+        <field name="name">Riad wellness slot: assigned</field>
+        <field name="model_id" ref="model_intellix_riad_wellness_slot"/>
+        <field name="domain_force">[('establishment_id', 'in', user.riad_establishment_ids.ids)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_user'))]"/>
+    </record>
+    <record id="rule_wellness_slot_manager" model="ir.rule">
+        <field name="name">Riad wellness slot: manager all</field>
+        <field name="model_id" ref="model_intellix_riad_wellness_slot"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_manager'))]"/>
+    </record>
+
+    <record id="rule_event_user" model="ir.rule">
+        <field name="name">Riad event: assigned</field>
+        <field name="model_id" ref="model_intellix_riad_event"/>
+        <field name="domain_force">[('establishment_id', 'in', user.riad_establishment_ids.ids)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_user'))]"/>
+    </record>
+    <record id="rule_event_manager" model="ir.rule">
+        <field name="name">Riad event: manager all</field>
+        <field name="model_id" ref="model_intellix_riad_event"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_manager'))]"/>
+    </record>
+
+    <record id="rule_event_task_user" model="ir.rule">
+        <field name="name">Riad event task: assigned</field>
+        <field name="model_id" ref="model_intellix_riad_event_task"/>
+        <field name="domain_force">[('establishment_id', 'in', user.riad_establishment_ids.ids)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_user'))]"/>
+    </record>
+    <record id="rule_event_task_manager" model="ir.rule">
+        <field name="name">Riad event task: manager all</field>
+        <field name="model_id" ref="model_intellix_riad_event_task"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_manager'))]"/>
+    </record>
+
+    <record id="rule_pe_profile_user" model="ir.rule">
+        <field name="name">Riad staff profile: assigned establishment</field>
+        <field name="model_id" ref="people_engine.model_pe_employee_profile"/>
+        <field name="domain_force">[('riad_establishment_id', 'in', user.riad_establishment_ids.ids)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_user'))]"/>
+    </record>
+    <record id="rule_pe_profile_manager" model="ir.rule">
+        <field name="name">Riad staff profile: manager all riad</field>
+        <field name="model_id" ref="people_engine.model_pe_employee_profile"/>
+        <field name="domain_force">[('riad_establishment_id', '!=', False)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_manager'))]"/>
+    </record>
+    <record id="rule_pe_profile_riad_company" model="ir.rule">
+        <field name="name">Riad staff profile: isolated by company</field>
+        <field name="model_id" ref="people_engine.model_pe_employee_profile"/>
+        <field name="domain_force">['|', ('riad_establishment_id', '=', False), ('company_id', 'in', company_ids + [False])]</field>
+    </record>
+    <record id="rule_hr_employee_riad_company" model="ir.rule">
+        <field name="name">Riad employees: isolated by company</field>
+        <field name="model_id" ref="hr.model_hr_employee"/>
+        <field name="active" eval="False"/>
+        <field name="domain_force">['|', ('riad_establishment_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="rule_pe_summary_user" model="ir.rule">
+        <field name="name">Riad presence summary: assigned establishment</field>
+        <field name="model_id" ref="people_engine.model_pe_presence_summary"/>
+        <field name="domain_force">[('riad_establishment_id', 'in', user.riad_establishment_ids.ids)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_user'))]"/>
+    </record>
+    <record id="rule_pe_summary_manager" model="ir.rule">
+        <field name="name">Riad presence summary: manager all riad</field>
+        <field name="model_id" ref="people_engine.model_pe_presence_summary"/>
+        <field name="domain_force">[('riad_establishment_id', '!=', False)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_manager'))]"/>
+    </record>
+    <record id="rule_pe_summary_pe_hr" model="ir.rule">
+        <field name="name">Riad presence summary: PE HR keeps full access</field>
+        <field name="model_id" ref="people_engine.model_pe_presence_summary"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('people_engine.group_hr')), (4, ref('people_engine.group_admin'))]"/>
+    </record>
+
+    <record id="rule_pe_log_user" model="ir.rule">
+        <field name="name">Riad presence log: assigned establishment</field>
+        <field name="model_id" ref="people_engine.model_pe_presence_log"/>
+        <field name="domain_force">[('riad_establishment_id', 'in', user.riad_establishment_ids.ids)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_user'))]"/>
+    </record>
+    <record id="rule_pe_log_manager" model="ir.rule">
+        <field name="name">Riad presence log: manager all riad</field>
+        <field name="model_id" ref="people_engine.model_pe_presence_log"/>
+        <field name="domain_force">[('riad_establishment_id', '!=', False)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_manager'))]"/>
+    </record>
+    <record id="rule_pe_log_pe_hr" model="ir.rule">
+        <field name="name">Riad presence log: PE HR keeps full access</field>
+        <field name="model_id" ref="people_engine.model_pe_presence_log"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('people_engine.group_hr')), (4, ref('people_engine.group_admin'))]"/>
+    </record>
+
+    <record id="rule_pe_absence_user" model="ir.rule">
+        <field name="name">Riad absence: assigned establishment</field>
+        <field name="model_id" ref="people_engine.model_pe_absence_detected"/>
+        <field name="domain_force">[('riad_establishment_id', 'in', user.riad_establishment_ids.ids)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_user'))]"/>
+    </record>
+    <record id="rule_pe_absence_manager" model="ir.rule">
+        <field name="name">Riad absence: manager all riad</field>
+        <field name="model_id" ref="people_engine.model_pe_absence_detected"/>
+        <field name="domain_force">[('riad_establishment_id', '!=', False)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_manager'))]"/>
+    </record>
+    <record id="rule_presence_corr_user" model="ir.rule">
+        <field name="name">Riad presence correction: assigned establishment</field>
+        <field name="model_id" ref="model_intellix_riad_presence_correction"/>
+        <field name="domain_force">[('establishment_id', 'in', user.riad_establishment_ids.ids)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_user'))]"/>
+    </record>
+    <record id="rule_police_fiche_user" model="ir.rule">
+        <field name="name">Riad police fiche: assigned</field>
+        <field name="model_id" ref="model_intellix_riad_police_fiche"/>
+        <field name="domain_force">[('establishment_id', 'in', user.riad_establishment_ids.ids)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_user'))]"/>
+    </record>
+    <record id="rule_police_fiche_manager" model="ir.rule">
+        <field name="name">Riad police fiche: manager all</field>
+        <field name="model_id" ref="model_intellix_riad_police_fiche"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_manager'))]"/>
+    </record>
+
+    <record id="rule_tax_bordereau_user" model="ir.rule">
+        <field name="name">Riad tax bordereau: assigned</field>
+        <field name="model_id" ref="model_intellix_riad_tax_bordereau"/>
+        <field name="domain_force">[('establishment_id', 'in', user.riad_establishment_ids.ids)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_user'))]"/>
+    </record>
+    <record id="rule_tax_bordereau_manager" model="ir.rule">
+        <field name="name">Riad tax bordereau: manager all</field>
+        <field name="model_id" ref="model_intellix_riad_tax_bordereau"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_manager'))]"/>
+    </record>
+
+    <record id="rule_experience_thread_user" model="ir.rule">
+        <field name="name">Riad experience thread: assigned</field>
+        <field name="model_id" ref="model_intellix_riad_experience_thread"/>
+        <field name="domain_force">[('establishment_id', 'in', user.riad_establishment_ids.ids)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_user'))]"/>
+    </record>
+    <record id="rule_experience_thread_manager" model="ir.rule">
+        <field name="name">Riad experience thread: manager all</field>
+        <field name="model_id" ref="model_intellix_riad_experience_thread"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_manager'))]"/>
+    </record>
+
+    <record id="rule_privatisation_user" model="ir.rule">
+        <field name="name">Riad privatisation: assigned</field>
+        <field name="model_id" ref="model_intellix_riad_privatisation"/>
+        <field name="domain_force">[('establishment_id', 'in', user.riad_establishment_ids.ids)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_user'))]"/>
+    </record>
+    <record id="rule_privatisation_manager" model="ir.rule">
+        <field name="name">Riad privatisation: manager all</field>
+        <field name="model_id" ref="model_intellix_riad_privatisation"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_manager'))]"/>
+    </record>
+
+    <record id="rule_presence_corr_manager" model="ir.rule">
+        <field name="name">Riad presence correction: manager all</field>
+        <field name="model_id" ref="model_intellix_riad_presence_correction"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_manager'))]"/>
+    </record>
+
+    <record id="rule_comp_riad_user" model="ir.rule">
+        <field name="name">Riad comp-set: assigned</field>
+        <field name="model_id" ref="model_intellix_riad_comp_riad"/>
+        <field name="domain_force">[('establishment_id', 'in', user.riad_establishment_ids.ids)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_user'))]"/>
+    </record>
+    <record id="rule_comp_riad_manager" model="ir.rule">
+        <field name="name">Riad comp-set: manager all</field>
+        <field name="model_id" ref="model_intellix_riad_comp_riad"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_manager'))]"/>
+    </record>
+    <record id="rule_comp_rate_user" model="ir.rule">
+        <field name="name">Riad comp rate: assigned</field>
+        <field name="model_id" ref="model_intellix_riad_comp_rate"/>
+        <field name="domain_force">[('establishment_id', 'in', user.riad_establishment_ids.ids)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_user'))]"/>
+    </record>
+    <record id="rule_comp_rate_manager" model="ir.rule">
+        <field name="name">Riad comp rate: manager all</field>
+        <field name="model_id" ref="model_intellix_riad_comp_rate"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_manager'))]"/>
+    </record>
+
+    <record id="rule_menu_item_user" model="ir.rule">
+        <field name="name">Riad menu: assigned establishment</field>
+        <field name="model_id" ref="model_intellix_riad_menu_item"/>
+        <field name="domain_force">[('establishment_id', 'in', user.riad_establishment_ids.ids)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_user'))]"/>
+    </record>
+    <record id="rule_menu_item_manager" model="ir.rule">
+        <field name="name">Riad menu: manager all riad</field>
+        <field name="model_id" ref="model_intellix_riad_menu_item"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_manager'))]"/>
+    </record>
+    <record id="rule_menu_item_company" model="ir.rule">
+        <field name="name">Riad menu: isolated by company</field>
+        <field name="model_id" ref="model_intellix_riad_menu_item"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="rule_pe_absence_pe_hr" model="ir.rule">
+        <field name="name">Riad absence: PE HR keeps full access</field>
+        <field name="model_id" ref="people_engine.model_pe_absence_detected"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('people_engine.group_hr')), (4, ref('people_engine.group_admin'))]"/>
+    </record>
+
+    <!-- Isolation Coins (source de vérité résas / biens) pour utilisateurs Module Hébergement -->
+    <record id="rule_coins_property_riad_user" model="ir.rule">
+        <field name="name">Riad coins.property: assigned establishments</field>
+        <field name="model_id" ref="coins_marocain.model_coins_property"/>
+        <field name="domain_force">[('id', 'in', user.riad_establishment_ids.property_id.ids)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_user'))]"/>
+    </record>
+    <record id="rule_coins_property_riad_manager" model="ir.rule">
+        <field name="name">Riad coins.property: manager all</field>
+        <field name="model_id" ref="coins_marocain.model_coins_property"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_manager'))]"/>
+    </record>
+    <record id="rule_coins_reservation_riad_user" model="ir.rule">
+        <field name="name">Riad coins.reservation: assigned establishments</field>
+        <field name="model_id" ref="coins_marocain.model_coins_reservation"/>
+        <field name="domain_force">[('property_id', 'in', user.riad_establishment_ids.property_id.ids)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_user'))]"/>
+    </record>
+    <record id="rule_coins_reservation_riad_manager" model="ir.rule">
+        <field name="name">Riad coins.reservation: manager all</field>
+        <field name="model_id" ref="coins_marocain.model_coins_reservation"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_manager'))]"/>
+    </record>
+    <record id="rule_coins_room_riad_user" model="ir.rule">
+        <field name="name">Riad coins.property.room: assigned establishments</field>
+        <field name="model_id" ref="coins_marocain.model_coins_property_room"/>
+        <field name="domain_force">[('property_id', 'in', user.riad_establishment_ids.property_id.ids)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_user'))]"/>
+    </record>
+    <record id="rule_coins_room_riad_manager" model="ir.rule">
+        <field name="name">Riad coins.property.room: manager all</field>
+        <field name="model_id" ref="coins_marocain.model_coins_property_room"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_riad_manager'))]"/>
+    </record>
+</odoo>

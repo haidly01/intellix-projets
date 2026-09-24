@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_riad_event_list" model="ir.ui.view">
+        <field name="name">intellix.riad.event.list</field>
+        <field name="model">intellix.riad.event</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="date_start"/>
+                <field name="name"/>
+                <field name="establishment_id"/>
+                <field name="event_kind"/>
+                <field name="guest_count"/>
+                <field name="task_progress_label"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_riad_event_form" model="ir.ui.view">
+        <field name="name">intellix.riad.event.form</field>
+        <field name="model">intellix.riad.event</field>
+        <field name="arch" type="xml">
+            <form class="o_riad_charter_form o_riad_event_form" string="Nouvel événement">
+                <header>
+                    <button name="action_confirm" type="object" string="Confirmer"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_start" type="object" string="Démarrer"
+                            invisible="state != 'confirmed'"/>
+                    <button name="action_done" type="object" string="Terminer"
+                            invisible="state not in ('confirmed', 'in_progress')"/>
+                    <button name="action_cancel" type="object" string="Annuler"
+                            invisible="state in ('done', 'cancelled')"/>
+                    <button name="action_open_task_kanban" type="object"
+                            string="Vue Kanban jour J" invisible="state == 'draft'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,confirmed,in_progress,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>Nouvel événement</h1>
+                    </div>
+                    <p class="o_riad_form_subtitle">
+                        Regroupe chambres, restaurant et bien-être sous un seul dossier client
+                    </p>
+                    <group string="Informations générales">
+                        <group>
+                            <field name="name" placeholder="Ex. Privatisation weekend — Groupe Dupont"/>
+                            <field name="partner_id" placeholder="Rechercher ou créer un contact…"/>
+                            <field name="establishment_id"/>
+                            <field name="establishment_property_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="guest_count" placeholder="Ex. 6"/>
+                            <field name="day_start" placeholder="jj/mm/aaaa"/>
+                            <field name="day_end" placeholder="jj/mm/aaaa"/>
+                            <field name="date_start" invisible="1"/>
+                            <field name="date_end" invisible="1"/>
+                        </group>
+                    </group>
+                    <group string="Modèle de checklist">
+                        <field name="checklist_kind" widget="radio" options="{'horizontal': true}"/>
+                        <field name="template_id" invisible="1"/>
+                        <field name="event_kind" invisible="1"/>
+                        <div class="text-muted">
+                            Sélectionner un modèle applique automatiquement sa checklist de tâches — personnalisable ensuite dans l'onglet Tâches
+                        </div>
+                        <field name="template_preview_html" nolabel="1" invisible="not template_id"/>
+                    </group>
+                    <group string="Chambres concernées">
+                        <field name="room_ids" widget="many2many_tags"
+                               domain="[('property_id', '=', establishment_property_id)]"
+                               options="{'no_create': True}"/>
+                    </group>
+                    <group string="Options incluses">
+                        <group>
+                            <field name="is_full_privatisation"/>
+                            <div class="text-muted">
+                                Si activé, bloque automatiquement toutes les chambres, le restaurant et le bien-être externe sur la période
+                            </div>
+                            <field name="conflict_html" invisible="not conflict_html"/>
+                            <field name="acknowledge_conflicts" invisible="not conflict_html"/>
+                        </group>
+                        <group>
+                            <field name="include_half_board"/>
+                            <field name="include_group_wellness"/>
+                            <field name="referral_source" placeholder="Code créateur / lien de référence…"/>
+                            <field name="privatisation_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Tâches" name="tasks">
+                            <field name="task_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="assignee_id"/>
+                                    <field name="date_deadline"/>
+                                    <field name="state"/>
+                                    <field name="establishment_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Chambres" name="rooms">
+                            <field name="reservation_ids"/>
+                        </page>
+                        <page string="Restaurant" name="restaurant">
+                            <group>
+                                <field name="meal_plan"/>
+                                <field name="table_ids" widget="many2many_tags"/>
+                            </group>
+                        </page>
+                        <page string="Bien-être" name="wellness">
+                            <field name="wellness_slot_ids"/>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_riad_event" model="ir.actions.act_window">
+        <field name="name">Événements</field>
+        <field name="res_model">intellix.riad.event</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_riad_event_task_kanban" model="ir.ui.view">
+        <field name="name">intellix.riad.event.task.kanban</field>
+        <field name="model">intellix.riad.event.task</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_small_column" on_create="quick_create">
+                <field name="name"/>
+                <field name="assignee_id"/>
+                <field name="assignee_initial"/>
+                <field name="date_deadline"/>
+                <field name="is_late"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_card">
+                            <div class="fw-bold mb-2"><field name="name"/></div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="o_riad_kavatar"><field name="assignee_initial"/></span>
+                                <span t-att-class="record.is_late.raw_value ? 'text-danger' : 'text-muted'">
+                                    <field name="date_deadline"/>
+                                </span>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_riad_event_task_list" model="ir.ui.view">
+        <field name="name">intellix.riad.event.task.list</field>
+        <field name="model">intellix.riad.event.task</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="event_id"/>
+                <field name="name"/>
+                <field name="assignee_id"/>
+                <field name="date_deadline"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_riad_event_task_form" model="ir.ui.view">
+        <field name="name">intellix.riad.event.task.form</field>
+        <field name="model">intellix.riad.event.task</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="todo,doing,done"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="event_id"/>
+                        <field name="establishment_id" invisible="1"/>
+                        <field name="assignee_id"/>
+                        <field name="date_deadline"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_riad_event_task_search" model="ir.ui.view">
+        <field name="name">intellix.riad.event.task.search</field>
+        <field name="model">intellix.riad.event.task</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="assignee_id"/>
+                <field name="event_id"/>
+                <filter name="todo" string="À faire" domain="[('state', '=', 'todo')]"/>
+                <filter name="doing" string="En cours" domain="[('state', '=', 'doing')]"/>
+                <filter name="late" string="En retard" domain="[('state', '!=', 'done'), ('date_deadline', '&lt;', context_today())]"/>
+                <group>
+                    <filter name="group_state" string="Statut" context="{'group_by': 'state'}"/>
+                    <filter name="group_event" string="Événement" context="{'group_by': 'event_id'}"/>
+                    <filter name="group_assignee" string="Responsable" context="{'group_by': 'assignee_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_riad_event_task" model="ir.actions.act_window">
+        <field name="name">Tâches événements</field>
+        <field name="res_model">intellix.riad.event.task</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_riad_event_task_search"/>
+        <field name="context">{'search_default_group_state': 1}</field>
+    </record>
+
+    <record id="view_riad_event_template_list" model="ir.ui.view">
+        <field name="name">intellix.riad.event.template.list</field>
+        <field name="model">intellix.riad.event.template</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="event_kind"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_riad_event_template_form" model="ir.ui.view">
+        <field name="name">intellix.riad.event.template.form</field>
+        <field name="model">intellix.riad.event.template</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="event_kind"/>
+                        <field name="active"/>
+                    </group>
+                    <field name="line_ids">
+                        <list editable="bottom">
+                            <field name="sequence" widget="handle"/>
+                            <field name="name"/>
+                            <field name="offset_days"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_riad_event_template" model="ir.actions.act_window">
+        <field name="name">Modèles de checklist</field>
+        <field name="res_model">intellix.riad.event.template</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

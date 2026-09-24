@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="crm_tag_vicidial" model="crm.tag">
+        <field name="name">Appels</field>
+        <field name="color">4</field>
+    </record>
+    <record id="crm_tag_france" model="crm.tag">
+        <field name="name">France</field>
+        <field name="color">2</field>
+    </record>
+    <record id="crm_tag_a_qualifier" model="crm.tag">
+        <field name="name">À qualifier</field>
+        <field name="color">1</field>
+    </record>
+</odoo>

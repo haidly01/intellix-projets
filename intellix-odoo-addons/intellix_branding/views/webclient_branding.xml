@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="webclient_intellix_branded" inherit_id="web.webclient_bootstrap" name="Intellix — Client web">
+        <xpath expr="//t[@t-call='web.layout']" position="before">
+            <t t-set="html_data" t-value="{'data-bs-theme': (doorway_theme or 'light')}"/>
+        </xpath>
+        <xpath expr="//t[@t-set='body_classname']" position="replace">
+            <t t-set="body_classname" t-value="'o_web_client o_intellix_branded o_doorway_' + (doorway_theme or 'light')"/>
+        </xpath>
+        <xpath expr="//meta[@name='theme-color']" position="attributes">
+            <attribute name="content">#6366f1</attribute>
+        </xpath>
+        <!-- Styles critiques : non cachés séparément (les assets /web/assets/* sont immutable) -->
+        <xpath expr="//t[@t-set='head_web']" position="inside">
+            <style id="intellix-critical-css">
+                body.o_web_client .o_main_navbar,
+                .o_web_client .o_main_navbar,
+                .o_web_client.o_intellix_branded .o_main_navbar {
+                    background: linear-gradient(90deg, #6366f1 0%, #7c3aed 50%, #a855f7 100%) !important;
+                    background-color: #6366f1 !important;
+                    border-bottom: none !important;
+                }
+                .o_spreadsheet_dashboard_action {
+                    display: flex;
+                    flex-direction: column;
+                    height: 100%;
+                    min-height: 0;
+                    overflow: hidden;
+                    background-color: var(--ix-bg, #f8f9fb) !important;
+                }
+                .o_spreadsheet_dashboard_action .o_content.o_component_with_search_panel {
+                    flex: 1 1 auto;
+                    min-height: 0;
+                    overflow: hidden;
+                }
+                .o_spreadsheet_dashboard_action .o_renderer {
+                    flex: 1 1 auto;
+                    min-height: 0;
+                    height: 100%;
+                    overflow: auto;
+                }
+                .o_spreadsheet_dashboard_action .o-spreadsheet {
+                    color-scheme: dark !important;
+                }
+                .o_spreadsheet_dashboard_action .o-spreadsheet .o-grid,
+                .o_spreadsheet_dashboard_action .o-spreadsheet .o-grid-background,
+                .o_spreadsheet_dashboard_action .o-spreadsheet .o-grid-container {
+                    background-color: var(--ix-bg, #f8f9fb) !important;
+                }
+                .o_spreadsheet_dashboard_action .o-spreadsheet .bg-white {
+                    background-color: var(--ix-surface, #ffffff) !important;
+                }
+            </style>
+        </xpath>
+    </template>
+</odoo>

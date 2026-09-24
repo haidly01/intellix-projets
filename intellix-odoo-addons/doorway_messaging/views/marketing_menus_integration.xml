@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Sections sous Messages -->
+    <menuitem id="menu_messaging_discuss"
+              name="Discussion"
+              parent="menu_messaging_root"
+              sequence="8"/>
+    <record id="menu_messaging_discuss" model="ir.ui.menu">
+        <field name="action" ref="mail.action_discuss"/>
+        <field name="sequence">8</field>
+    </record>
+
+    <menuitem id="menu_messaging_email_marketing"
+              name="Email marketing"
+              parent="menu_messaging_root"
+              sequence="60"
+              groups="mass_mailing.group_mass_mailing_user"/>
+
+    <menuitem id="menu_messaging_sms_marketing"
+              name="SMS marketing"
+              parent="menu_messaging_root"
+              sequence="70"
+              groups="mass_mailing.group_mass_mailing_user"/>
+
+    <!-- Discussion (ex-Discuss racine) -->
+    <record id="mail.main_menu_discuss" model="ir.ui.menu">
+        <field name="name">Messagerie</field>
+        <field name="parent_id" ref="menu_messaging_discuss"/>
+        <field name="sequence" eval="1"/>
+    </record>
+    <record id="mail.menu_channel" model="ir.ui.menu">
+        <field name="name">Canaux</field>
+        <field name="parent_id" ref="menu_messaging_discuss"/>
+        <field name="sequence" eval="2"/>
+    </record>
+    <record id="mail.menu_configuration" model="ir.ui.menu">
+        <field name="name">Configuration</field>
+        <field name="parent_id" ref="menu_messaging_discuss"/>
+        <field name="sequence" eval="3"/>
+    </record>
+
+    <record id="mail.menu_root_discuss" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+
+    <!-- Email marketing (ex-app racine) -->
+    <record id="mass_mailing.mass_mailing_menu" model="ir.ui.menu">
+        <field name="name">Envois email</field>
+        <field name="parent_id" ref="menu_messaging_email_marketing"/>
+        <field name="sequence" eval="1"/>
+    </record>
+    <record id="mass_mailing.mass_mailing_mailing_list_menu" model="ir.ui.menu">
+        <field name="name">Listes de diffusion</field>
+        <field name="parent_id" ref="menu_messaging_email_marketing"/>
+        <field name="sequence" eval="2"/>
+    </record>
+    <record id="mass_mailing.menu_email_campaigns" model="ir.ui.menu">
+        <field name="name">Campagnes email</field>
+        <field name="parent_id" ref="menu_messaging_email_marketing"/>
+        <field name="sequence" eval="3"/>
+    </record>
+    <record id="mass_mailing.menu_mass_mailing_report" model="ir.ui.menu">
+        <field name="name">Rapports</field>
+        <field name="parent_id" ref="menu_messaging_email_marketing"/>
+        <field name="sequence" eval="90"/>
+    </record>
+    <record id="mass_mailing.mass_mailing_configuration" model="ir.ui.menu">
+        <field name="name">Configuration</field>
+        <field name="parent_id" ref="menu_messaging_email_marketing"/>
+        <field name="sequence" eval="100"/>
+    </record>
+
+    <record id="mass_mailing.mass_mailing_menu_root" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+
+    <!-- SMS marketing (ex-app racine) -->
+    <record id="mass_mailing_sms.mass_mailing_sms_menu_mass_sms" model="ir.ui.menu">
+        <field name="name">Envois SMS</field>
+        <field name="parent_id" ref="menu_messaging_sms_marketing"/>
+        <field name="sequence" eval="1"/>
+    </record>
+    <record id="mass_mailing_sms.mass_mailing_sms_menu_contacts" model="ir.ui.menu">
+        <field name="name">Listes de diffusion</field>
+        <field name="parent_id" ref="menu_messaging_sms_marketing"/>
+        <field name="sequence" eval="2"/>
+    </record>
+    <record id="mass_mailing_sms.menu_email_campaigns" model="ir.ui.menu">
+        <field name="name">Campagnes SMS</field>
+        <field name="parent_id" ref="menu_messaging_sms_marketing"/>
+        <field name="sequence" eval="5"/>
+    </record>
+    <record id="mass_mailing_sms.mass_mailing_sms_menu_reporting" model="ir.ui.menu">
+        <field name="name">Rapports</field>
+        <field name="parent_id" ref="menu_messaging_sms_marketing"/>
+        <field name="sequence" eval="80"/>
+    </record>
+    <record id="mass_mailing_sms.mass_mailing_sms_menu_configuration" model="ir.ui.menu">
+        <field name="name">Configuration</field>
+        <field name="parent_id" ref="menu_messaging_sms_marketing"/>
+        <field name="sequence" eval="100"/>
+    </record>
+
+    <record id="mass_mailing_sms.mass_mailing_sms_menu_root" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+
+</odoo>

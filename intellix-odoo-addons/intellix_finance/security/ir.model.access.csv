@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_itex_lead_document_user,itex.lead.document.user,model_itex_lead_document,sales_team.group_sale_salesman,1,1,1,1
+access_itex_lead_document_manager,itex.lead.document.manager,model_itex_lead_document,sales_team.group_sale_manager,1,1,1,1
+access_itex_exchange_service_user,itex.exchange.service.user,model_itex_exchange_service,sales_team.group_sale_salesman,1,1,1,0
+access_itex_exchange_service_manager,itex.exchange.service.manager,model_itex_exchange_service,sales_team.group_sale_manager,1,1,1,1

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="pe_config_payroll_project" model="ir.config_parameter">
+        <field name="key">people_engine.payroll_project_id</field>
+        <field name="value">1</field>
+    </record>
+</odoo>

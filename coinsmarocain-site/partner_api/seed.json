@@ -1,0 +1,111 @@
+{
+  "accounts": [
+    {
+      "id": "a_karine",
+      "token": "cm-test-admin-karine",
+      "role": "admin",
+      "status": "published",
+      "name": "Admin Coins Marocain",
+      "contact_name": "Karine",
+      "email": "karine@agencedoorway.com",
+      "phone": "+212 660 15 91 77",
+      "region": "Médina",
+      "category": "autre",
+      "description": "Modération des fiches commerçants.",
+      "address": "Marrakech",
+      "lat": 31.6295,
+      "lng": -7.9811,
+      "video_url": "",
+      "photos": [],
+      "services": [],
+      "packages": [],
+      "featured": false,
+      "stats": {"views": 0, "clicks": 0, "bookings": 0},
+      "created_at": "2026-08-17T00:00:00+00:00",
+      "updated_at": "2026-08-17T00:00:00+00:00"
+    },
+    {
+      "id": "m_riad_ames",
+      "token": "cm-test-riad-ames",
+      "role": "merchant",
+      "status": "published",
+      "name": "Riad des Âmes",
+      "contact_name": "Amina El Fassi",
+      "email": "amina.riad.test@coinsmarocain.test",
+      "phone": "+212 524 38 00 11",
+      "region": "Médina",
+      "category": "hebergement",
+      "description": "Riad intimiste dans la médina — patio, terrasse et petit-déjeuner maison. On filme le lieu, pas une brochure.",
+      "address": "Derb Sidi Bouloukat, Médina, Marrakech",
+      "lat": 31.6258,
+      "lng": -7.9891,
+      "video_url": "/assets/video/villa-nafsi.mp4",
+      "photos": ["/assets/img/og-default.jpg"],
+      "services": [
+        {"name": "Chambre patio", "price": "1 200 MAD", "unit": "nuit"},
+        {"name": "Suite terrasse", "price": "1 800 MAD", "unit": "nuit"}
+      ],
+      "packages": [
+        {"name": "2 nuits + petit-déjeuner", "price": "2 400 MAD", "unit": "2 personnes"}
+      ],
+      "featured": true,
+      "stats": {"views": 860, "clicks": 94, "bookings": 12},
+      "created_at": "2026-08-10T12:00:00+00:00",
+      "updated_at": "2026-08-17T09:00:00+00:00"
+    },
+    {
+      "id": "m_cafe_epices",
+      "token": "cm-test-cafe-epices",
+      "role": "merchant",
+      "status": "published",
+      "name": "Café des Souks",
+      "contact_name": "Youssef",
+      "email": "youssef.cafe.test@coinsmarocain.test",
+      "phone": "+212 524 44 00 22",
+      "region": "Médina",
+      "category": "resto",
+      "description": "Terrasse au-dessus des souks, thé à la menthe et tajines du jour.",
+      "address": "Place des Épices, Médina, Marrakech",
+      "lat": 31.6304,
+      "lng": -7.9896,
+      "video_url": "/assets/video/dar-sacada-snippet.mp4",
+      "photos": [],
+      "services": [
+        {"name": "Thé à la menthe", "price": "25 MAD", "unit": "verre"},
+        {"name": "Tajine du jour", "price": "90 MAD", "unit": "personne"}
+      ],
+      "packages": [],
+      "featured": false,
+      "stats": {"views": 420, "clicks": 51, "bookings": 7},
+      "created_at": "2026-08-12T12:00:00+00:00",
+      "updated_at": "2026-08-17T09:00:00+00:00"
+    },
+    {
+      "id": "m_hammam_ksar",
+      "token": "cm-test-hammam-ksar",
+      "role": "merchant",
+      "status": "published",
+      "name": "Hammam du Ksar",
+      "contact_name": "Leila",
+      "email": "leila.hammam.test@coinsmarocain.test",
+      "phone": "+212 524 37 00 33",
+      "region": "Hivernage",
+      "category": "bien-etre",
+      "description": "Hammam traditionnel et gommage au savon noir, Hivernage.",
+      "address": "Hivernage, Marrakech",
+      "lat": 31.6215,
+      "lng": -8.0085,
+      "video_url": "/assets/video/dar-sacada-detente-snippet.mp4",
+      "photos": [],
+      "services": [
+        {"name": "Hammam + gommage", "price": "350 MAD", "unit": "personne"}
+      ],
+      "packages": [],
+      "featured": false,
+      "stats": {"views": 310, "clicks": 40, "bookings": 5},
+      "created_at": "2026-08-13T12:00:00+00:00",
+      "updated_at": "2026-08-17T09:00:00+00:00"
+    }
+  ],
+  "events": []
+}

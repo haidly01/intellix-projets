@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="cron_cc_sync_vicidial_status" model="ir.cron">
+        <field name="name">CC — Sync VICIdial statuts</field>
+        <field name="model_id" ref="model_pe_employee_profile"/>
+        <field name="state">code</field>
+        <field name="code">model.sudo().sync_cc_status_from_vicidial()</field>
+        <field name="interval_number">2</field>
+        <field name="interval_type">minutes</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <record id="cron_cc_refresh_leaderboards" model="ir.cron">
+        <field name="name">CC — Refresh leaderboards</field>
+        <field name="model_id" ref="model_pe_callcenter_service"/>
+        <field name="state">code</field>
+        <field name="code">model.sudo().refresh_leaderboards()</field>
+        <field name="interval_number">5</field>
+        <field name="interval_type">minutes</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <record id="cron_cc_check_daily_objectives" model="ir.cron">
+        <field name="name">CC — Vérif objectifs journaliers</field>
+        <field name="model_id" ref="model_pe_callcenter_service"/>
+        <field name="state">code</field>
+        <field name="code">model.sudo().check_daily_objectives()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <record id="cron_cc_generate_daily_challenges" model="ir.cron">
+        <field name="name">CC — Générer défis quotidiens</field>
+        <field name="model_id" ref="model_pe_callcenter_service"/>
+        <field name="state">code</field>
+        <field name="code">model.sudo().generate_daily_challenges()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <record id="cron_cc_refresh_daily_stats" model="ir.cron">
+        <field name="name">CC — Stats journalières agents</field>
+        <field name="model_id" ref="model_pe_employee_profile"/>
+        <field name="state">code</field>
+        <field name="code">model.sudo().search([('department_pe_id','!=',False)]).refresh_daily_cc_stats()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

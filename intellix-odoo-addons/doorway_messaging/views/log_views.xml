@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_message_log_tree" model="ir.ui.view">
+        <field name="name">doorway.message.log.tree</field>
+        <field name="model">doorway.message.log</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="date_envoi"/>
+                <field name="campaign_id"/>
+                <field name="canal"/>
+                <field name="destinataire"/>
+                <field name="statut"/>
+                <field name="lead_id"/>
+                <field name="partner_id"/>
+                <field name="message_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_message_log_form" model="ir.ui.view">
+        <field name="name">doorway.message.log.form</field>
+        <field name="model">doorway.message.log</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="campaign_id"/>
+                        <field name="canal"/>
+                        <field name="destinataire"/>
+                        <field name="statut"/>
+                        <field name="date_envoi"/>
+                        <field name="date_lecture"/>
+                        <field name="message_id"/>
+                        <field name="lead_id"/>
+                        <field name="partner_id"/>
+                    </group>
+                    <field name="corps_envoye"/>
+                    <field name="erreur_msg"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_message_log" model="ir.actions.act_window">
+        <field name="name">Historique envois</field>
+        <field name="res_model">doorway.message.log</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

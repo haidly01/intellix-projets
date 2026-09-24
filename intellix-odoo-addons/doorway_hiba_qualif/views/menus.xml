@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_pipeline_coins_quebec" model="ir.actions.act_window">
+        <field name="name">Coins Québec</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">kanban,list,form,calendar,activity</field>
+        <field name="domain" eval="[('type', '=', 'opportunity'), ('team_id', '=', ref('crm_team_coins_quebec'))]"/>
+        <field name="context" eval="{
+            'default_type': 'opportunity',
+            'default_team_id': ref('crm_team_coins_quebec'),
+            'search_default_team_id': [ref('crm_team_coins_quebec')],
+            'show_user_team_stages': 0,
+        }"/>
+    </record>
+
+    <record id="action_hiba_rdv_month" model="ir.actions.act_window">
+        <field name="name">RDV Martin</field>
+        <field name="res_model">calendar.event</field>
+        <field name="view_mode">list,calendar,form</field>
+        <field name="domain">['|', ('hiba_booked_by', '=', uid), ('user_id', '=', uid)]</field>
+        <field name="context">{'search_default_hiba_this_month': 1}</field>
+    </record>
+
+    <record id="view_calendar_event_search_hiba" model="ir.ui.view">
+        <field name="name">calendar.event.search.hiba.month</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <filter name="hiba_this_month" string="Ce mois (bookés Hiba)"
+                        domain="[('start', '&gt;=', (context_today()).strftime('%Y-%m-01'))]"/>
+                <filter name="hiba_present" string="Présents"
+                        domain="[('hiba_presence', '=', 'present')]"/>
+                <filter name="hiba_booked" string="Bookés"
+                        domain="[('hiba_presence', '=', 'booked')]"/>
+                <filter name="hiba_noshow" string="Absents"
+                        domain="[('hiba_presence', '=', 'noshow')]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <menuitem id="menu_crm_coins_quebec"
+              name="Coins Québec"
+              parent="crm.crm_menu_root"
+              action="action_pipeline_coins_quebec"
+              sequence="1"
+              groups="doorway_hiba_qualif.group_pipeline_tab_coins_quebec"/>
+
+    <menuitem id="menu_crm_hiba_rdv_month"
+              name="RDV Martin"
+              parent="crm.crm_menu_root"
+              action="action_hiba_rdv_month"
+              sequence="2"
+              groups="doorway_hiba_qualif.group_pipeline_tab_coins_quebec"/>
+
+    <menuitem id="menu_doorway_pipeline_coins_quebec"
+              name="Coins Québec"
+              parent="renovation_conciergerie.menu_doorway_pipelines_root"
+              action="action_pipeline_coins_quebec"
+              sequence="5"
+              groups="doorway_hiba_qualif.group_pipeline_tab_coins_quebec"/>
+
+    <record id="action_hiba_my_attendance" model="ir.actions.act_window">
+        <field name="name">Mon pointage</field>
+        <field name="res_model">hr.attendance</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('employee_id.user_id', '=', uid)]</field>
+        <field name="context">{'create': True}</field>
+    </record>
+
+    <record id="action_hiba_my_payslip" model="ir.actions.server">
+        <field name="name">Ma paie freelance</field>
+        <field name="model_id" ref="people_engine.model_pe_payslip_live"/>
+        <field name="state">code</field>
+        <field name="code">action = env["pe.payslip.live"].action_open_my_payslip()</field>
+    </record>
+
+    <menuitem id="menu_hiba_my_attendance"
+              name="Mon pointage"
+              parent="people_engine.menu_people_engine_root"
+              action="action_hiba_my_attendance"
+              sequence="3"
+              groups="doorway_hiba_qualif.group_hiba_freelance"/>
+
+    <menuitem id="menu_hiba_my_payslip"
+              name="Ma paie freelance"
+              parent="people_engine.menu_people_engine_root"
+              action="action_hiba_my_payslip"
+              sequence="4"
+              groups="doorway_hiba_qualif.group_hiba_freelance"/>
+</odoo>

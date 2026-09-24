@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="paperformat_tax_bordereau" model="report.paperformat">
+        <field name="name">Bordereau taxe de séjour</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">12</field>
+        <field name="margin_bottom">12</field>
+        <field name="margin_left">14</field>
+        <field name="margin_right">14</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+    </record>
+
+    <record id="action_report_tax_bordereau" model="ir.actions.report">
+        <field name="name">Bordereau de versement — taxe de séjour</field>
+        <field name="model">intellix.riad.tax.bordereau</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">intellix_riad.report_tax_bordereau</field>
+        <field name="report_file">intellix_riad.report_tax_bordereau</field>
+        <field name="print_report_name">'Bordereau_taxe_T%s_%s' % (object.quarter or '', object.year or '')</field>
+        <field name="paperformat_id" ref="paperformat_tax_bordereau"/>
+        <field name="binding_model_id" ref="model_intellix_riad_tax_bordereau"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="action_report_tax_annex" model="ir.actions.report">
+        <field name="name">Justificatif interne — ne pas déposer à la commune</field>
+        <field name="model">intellix.riad.tax.bordereau</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">intellix_riad.report_tax_annex</field>
+        <field name="report_file">intellix_riad.report_tax_annex</field>
+        <field name="print_report_name">'Justificatif_interne_taxe_T%s_%s' % (object.quarter or '', object.year or '')</field>
+        <field name="paperformat_id" ref="paperformat_tax_bordereau"/>
+        <field name="binding_model_id" ref="model_intellix_riad_tax_bordereau"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- Libellés lus sur le modèle communal : Marrakech n'est pas figé dans le QWeb. -->
+    <template id="report_tax_bordereau">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="tpl" t-value="doc.template_id"/>
+                <t t-call="web.basic_layout">
+                    <div class="page" style="font-family:Times New Roman,Times,serif;color:#111;font-size:12px;">
+                        <div style="text-align:center;line-height:1.35;margin-bottom:14px;">
+                            <div style="font-size:11px;letter-spacing:.12em;" t-esc="tpl.kingdom_label"/>
+                            <div style="font-weight:bold;margin-top:4px;" t-esc="tpl.authority_name"/>
+                            <div t-if="tpl.authority_line_2" t-esc="tpl.authority_line_2"/>
+                            <div t-if="tpl.authority_line_3" t-esc="tpl.authority_line_3"/>
+                            <div style="margin-top:8px;font-weight:bold;letter-spacing:.16em;" t-esc="tpl.tax_title"/>
+                        </div>
+
+                        <div style="text-align:center;font-size:14px;margin:16px 0 18px;text-decoration:underline;">
+                            <t t-esc="tpl.document_title"/>
+                            <t t-esc="doc.quarter_ordinal"/> TRIMESTRE
+                            Année <t t-esc="doc.year"/>
+                        </div>
+
+                        <table style="width:100%;border-collapse:collapse;margin-bottom:10px;">
+                            <tr>
+                                <td style="padding:5px 0;width:48%;" t-esc="tpl.operator_name_label"/>
+                                <td style="padding:5px 0;border-bottom:1px solid #111;">
+                                    <t t-esc="doc.operator_name or ''"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding:5px 0;" t-esc="tpl.operator_address_label"/>
+                                <td style="padding:5px 0;border-bottom:1px solid #111;">
+                                    <t t-esc="doc.operator_address or ''"/>
+                                </td>
+                            </tr>
+                            <tr t-if="tpl.show_cin">
+                                <td style="padding:5px 0;" t-esc="tpl.operator_cin_label"/>
+                                <td style="padding:5px 0;border-bottom:1px solid #111;">
+                                    <t t-esc="doc.operator_cin or ''"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding:5px 0;">
+                                    <t t-esc="tpl.phone_label"/>
+                                    <t t-if="tpl.show_fax"> / <t t-esc="tpl.fax_label"/></t>
+                                </td>
+                                <td style="padding:5px 0;border-bottom:1px solid #111;">
+                                    <t t-esc="doc.operator_phone or ''"/>
+                                    <t t-if="tpl.show_fax and doc.operator_fax">
+                                        &#160;/&#160;<t t-esc="doc.operator_fax"/>
+                                    </t>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div t-if="tpl.show_operator_nature" style="margin:10px 0 16px;">
+                            <t t-esc="tpl.nature_label"/> :
+                            <span style="margin-left:12px;">
+                                <t t-if="doc.operator_nature == 'proprietaire'">☑</t>
+                                <t t-else="">☐</t>
+                                <t t-esc="tpl.nature_proprietaire_label"/>
+                            </span>
+                            <span style="margin-left:18px;">
+                                <t t-if="doc.operator_nature == 'directeur'">☑</t>
+                                <t t-else="">☐</t>
+                                <t t-esc="tpl.nature_directeur_label"/>
+                            </span>
+                            <span style="margin-left:18px;">
+                                <t t-if="doc.operator_nature == 'gerant'">☑</t>
+                                <t t-else="">☐</t>
+                                <t t-esc="tpl.nature_gerant_label"/>
+                            </span>
+                        </div>
+
+                        <table style="width:100%;border-collapse:collapse;text-align:center;margin:18px 0;">
+                            <tr>
+                                <th style="border:1px solid #111;padding:8px 6px;width:25%;" t-esc="tpl.col_clients"/>
+                                <th style="border:1px solid #111;padding:8px 6px;width:25%;" t-esc="tpl.col_nights"/>
+                                <th style="border:1px solid #111;padding:8px 6px;width:25%;" t-esc="tpl.col_rate"/>
+                                <th style="border:1px solid #111;padding:8px 6px;width:25%;" t-esc="tpl.col_amount"/>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #111;padding:14px 6px;font-size:15px;" t-esc="doc.guests_count"/>
+                                <td style="border:1px solid #111;padding:14px 6px;font-size:15px;" t-esc="doc.nights_count"/>
+                                <td style="border:1px solid #111;padding:14px 6px;font-size:15px;">
+                                    <t t-esc="'%.2f' % (doc.tax_rate or 0)"/>
+                                    <t t-esc="doc.currency_id.symbol or 'DH'"/>
+                                </td>
+                                <td style="border:1px solid #111;padding:14px 6px;font-size:15px;font-weight:bold;">
+                                    <t t-esc="doc.amount_figure"/>
+                                    <t t-esc="doc.currency_id.symbol or 'DH'"/>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <p style="margin:16px 0 6px;">
+                            <t t-esc="tpl.settled_text"/>
+                            (chiffre) <span style="border-bottom:1px solid #111;padding:0 8px;font-weight:bold;" t-esc="doc.amount_figure"/>
+                            <t t-esc="tpl.currency_word or 'dirhams'"/>
+                        </p>
+                        <p style="margin:8px 0 18px;">
+                            <t t-esc="tpl.in_letters_label"/> :
+                            <span style="border-bottom:1px solid #111;padding:0 6px;" t-esc="doc.amount_letter or ''"/>
+                        </p>
+
+                        <p style="margin:18px 0;" t-esc="tpl.certification_text"/>
+
+                        <table style="width:100%;margin-top:22px;">
+                            <tr>
+                                <td style="width:55%;vertical-align:top;">
+                                    <t t-esc="tpl.date_prefix"/>
+                                    <t t-esc="tpl.city_for_date or ''"/> le
+                                    <span style="border-bottom:1px solid #111;padding:0 10px;" t-esc="doc.print_date or ''"/>
+                                </td>
+                                <td style="width:45%;text-align:center;vertical-align:top;">
+                                    <div t-esc="tpl.declarant_label"/>
+                                    <div style="margin-top:48px;border-top:1px solid #111;width:70%;margin-left:auto;margin-right:auto;"></div>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div t-if="tpl.show_admin_box" style="margin-top:28px;border:1px solid #111;padding:10px 12px;">
+                            <div style="font-weight:bold;margin-bottom:8px;" t-esc="tpl.admin_box_title or tpl.service_name"/>
+                            <table style="width:100%;">
+                                <tr>
+                                    <td style="padding:4px 0;width:40%;" t-esc="tpl.admin_declaration_no"/>
+                                    <td style="padding:4px 0;border-bottom:1px solid #111;">&#160;</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:4px 0;" t-esc="tpl.admin_received"/>
+                                    <td style="padding:4px 0;border-bottom:1px solid #111;">&#160;</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:4px 0;" t-esc="tpl.admin_ordonnateur"/>
+                                    <td style="padding:4px 0;border-bottom:1px solid #111;">&#160;</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div style="margin-top:10px;font-size:10px;color:#555;" t-esc="tpl.footer_note"/>
+                        <div t-if="doc.due_date" style="font-size:10px;color:#555;">
+                            Échéance de dépôt : <t t-esc="doc.due_date"/>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_tax_annex">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.basic_layout">
+                    <div class="page" style="font-family:Georgia,serif;color:#241A12;font-size:12px;">
+                        <div style="border:2px solid #8A1C1C;padding:8px 12px;margin-bottom:14px;color:#8A1C1C;font-weight:bold;text-align:center;">
+                            JUSTIFICATIF INTERNE — NE PAS DÉPOSER À LA COMMUNE
+                            <div style="font-weight:normal;margin-top:4px;font-size:11px;">
+                                Distinct des fiches de police (DGSN). Ce tableau n'est pas le bordereau officiel.
+                            </div>
+                        </div>
+                        <h2 style="color:#0E4632;margin:0 0 8px;">Détail des séjours — <t t-esc="doc.name"/></h2>
+                        <p>
+                            Période <t t-esc="doc.date_from"/> → <t t-esc="doc.date_to"/>
+                            · Taux <t t-esc="'%.2f' % (doc.tax_rate or 0)"/>
+                            <t t-esc="doc.currency_id.symbol or 'DH'"/> / personne / nuit
+                        </p>
+                        <table style="width:100%;border-collapse:collapse;">
+                            <tr style="background:#FBF7EF;">
+                                <th style="border:1px solid #E4D9C4;padding:6px;">Réservation</th>
+                                <th style="border:1px solid #E4D9C4;padding:6px;">Client</th>
+                                <th style="border:1px solid #E4D9C4;padding:6px;">Arrivée</th>
+                                <th style="border:1px solid #E4D9C4;padding:6px;">Départ</th>
+                                <th style="border:1px solid #E4D9C4;padding:6px;">Pers.</th>
+                                <th style="border:1px solid #E4D9C4;padding:6px;">Nuits</th>
+                                <th style="border:1px solid #E4D9C4;padding:6px;">Taxe</th>
+                            </tr>
+                            <t t-foreach="doc.annex_rows()" t-as="row">
+                                <tr>
+                                    <td style="border:1px solid #E4D9C4;padding:5px;" t-esc="row['name']"/>
+                                    <td style="border:1px solid #E4D9C4;padding:5px;" t-esc="row['guest']"/>
+                                    <td style="border:1px solid #E4D9C4;padding:5px;" t-esc="row['check_in'] or ''"/>
+                                    <td style="border:1px solid #E4D9C4;padding:5px;" t-esc="row['check_out'] or ''"/>
+                                    <td style="border:1px solid #E4D9C4;padding:5px;text-align:right;" t-esc="row['guests']"/>
+                                    <td style="border:1px solid #E4D9C4;padding:5px;text-align:right;" t-esc="row['nights']"/>
+                                    <td style="border:1px solid #E4D9C4;padding:5px;text-align:right;" t-esc="'%.2f' % row['tax']"/>
+                                </tr>
+                            </t>
+                        </table>
+                        <p style="margin-top:12px;">
+                            Totaux bordereau :
+                            <t t-esc="doc.guests_count"/> clients ·
+                            <t t-esc="doc.nights_count"/> nuitées ·
+                            <t t-esc="doc.amount_figure"/>
+                            <t t-esc="doc.currency_id.symbol or 'DH'"/>
+                        </p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

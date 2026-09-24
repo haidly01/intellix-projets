@@ -1,0 +1,576 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="jurisdiction_ma" model="pe.legal.jurisdiction">
+        <field name="name">📚 Bibliothèque Légale Maroc — Droit du Travail</field>
+        <field name="code">MA</field>
+        <field name="country">MA</field>
+        <field name="main_law">Code du Travail 65-99 (Loi 65-99), Loi 18-12, Loi 65-00, Dahir CNSS, Loi 19-12</field>
+    </record>
+
+    <!-- Chapitre 0 — Base légale -->
+    <record id="legal_ma_ref" model="pe.legal.article">
+        <field name="jurisdiction_id" ref="jurisdiction_ma"/>
+        <field name="code">MA-REF</field>
+        <field name="title">Base légale de référence</field>
+        <field name="content">Code du Travail marocain : Loi 65-99 (promulguée par Dahir n° 1-03-194 du 14 Rejeb 1424 / 11 septembre 2003), et ses modifications ultérieures.
+
+Textes complémentaires :
+• Loi 18-12 relative aux accidents du travail
+• Loi 65-00 relative à la couverture médicale de base (AMO)
+• Dahir 1-72-184 sur la CNSS
+• Loi 19-12 fixant les conditions de travail et d'emploi des employés de maison
+• Circulaires ANAPEC et Ministère de l'Emploi</field>
+        <field name="plain_language">Référentiel juridique marocain pour les relations de travail : Code du Travail 65-99 et textes complémentaires (CNSS, AMO, accidents du travail, employés de maison).</field>
+        <field name="category">general</field>
+        <field name="is_current" eval="True"/>
+        <field name="source_url">https://www.emploi.gov.ma</field>
+    </record>
+
+    <!-- Chapitre 1 — Contrats de travail -->
+    <record id="legal_ma_ct_cdi" model="pe.legal.article">
+        <field name="jurisdiction_id" ref="jurisdiction_ma"/>
+        <field name="code">MA-CT-CDI</field>
+        <field name="title">CDI — Contrat à Durée Indéterminée</field>
+        <field name="content">BASE LÉGALE : Art. 16 à 19, Code du Travail 65-99
+
+Mentions obligatoires :
+• Identité employeur (ICE, RC, IF)
+• Identité salarié (CIN, adresse)
+• Nature et catégorie de l'emploi
+• Date de prise d'effet
+• Lieu de travail
+• Durée du travail (max 44h/semaine secteur non agricole)
+• Rémunération de base + accessoires
+• Clause de période d'essai (si applicable)
+• Convention collective applicable (si existante)
+• Référence CNSS employeur
+
+Période d'essai (Art. 13-14) :
+• Cadres et assimilés : 45 jours
+• Employés et techniciens : 15 jours
+• Ouvriers : 8 jours
+→ Renouvelable une seule fois
+→ Résiliation sans préavis ni indemnité pendant la période
+
+Langue : arabe obligatoire (version française admise en bilingue)</field>
+        <field name="plain_language">Le CDI doit contenir les mentions légales (identités, poste, lieu, durée 44h max, rémunération, CNSS). Période d'essai : 8 à 45 jours selon catégorie, renouvelable une fois.</field>
+        <field name="employer_obligations">Rédiger le contrat en arabe (bilingue accepté), respecter la durée légale de la période d'essai, déclarer le salarié à la CNSS.</field>
+        <field name="employee_rights">Recevoir un contrat signé en deux exemplaires avec toutes les mentions obligatoires.</field>
+        <field name="category">general</field>
+        <field name="is_current" eval="True"/>
+    </record>
+
+    <record id="legal_ma_ct_cdd" model="pe.legal.article">
+        <field name="jurisdiction_id" ref="jurisdiction_ma"/>
+        <field name="code">MA-CT-CDD</field>
+        <field name="title">CDD — Contrat à Durée Déterminée</field>
+        <field name="content">BASE LÉGALE : Art. 16, 17 Code du Travail
+
+Cas autorisés UNIQUEMENT :
+1. Remplacement d'un salarié absent
+2. Accroissement temporaire d'activité
+3. Travaux saisonniers
+4. Ouverture d'entreprise pour la première fois (max 1 an, renouvelable une fois)
+5. Lancement d'un nouveau produit (max 1 an, renouvelable une fois)
+
+Durée maximale : 1 an renouvelable une fois (2 ans max)
+→ Au-delà = requalification automatique en CDI
+
+Mentions supplémentaires obligatoires :
+• Motif précis du CDD
+• Date de début et date de fin
+• Événement marquant la fin (si terme imprécis)</field>
+        <field name="plain_language">Le CDD n'est autorisé que dans 5 cas précis. Durée max 2 ans ; au-delà, requalification en CDI automatique.</field>
+        <field name="employer_obligations">Justifier le motif du CDD par écrit, respecter la durée maximale, ne pas renouveler au-delà des limites légales.</field>
+        <field name="employee_rights">Bénéficier de la requalification en CDI si la durée légale est dépassée.</field>
+        <field name="category">general</field>
+        <field name="is_current" eval="True"/>
+    </record>
+
+    <record id="legal_ma_ct_em" model="pe.legal.article">
+        <field name="jurisdiction_id" ref="jurisdiction_ma"/>
+        <field name="code">MA-CT-EM</field>
+        <field name="title">Contrat — Employé de maison</field>
+        <field name="content">BASE LÉGALE : Loi 19-12
+
+Spécificités :
+• SMIG spécifique : 60% du SMIG général
+• Congé annuel : 1,5 jour/mois (18 jours/an)
+• Repos hebdomadaire : 24h consécutives
+• Préavis : 8 jours (&lt; 6 mois ancienneté) / 1 mois (&gt; 6 mois ancienneté)
+• Pas d'heures supplémentaires applicables
+• Déclaration CNSS obligatoire depuis 2018</field>
+        <field name="plain_language">Régime spécifique pour employés de maison : SMIG à 60%, congés 18 j/an, préavis 8 jours ou 1 mois, déclaration CNSS obligatoire.</field>
+        <field name="employer_obligations">Déclarer à la CNSS, respecter le SMIG spécifique, accorder repos hebdomadaire de 24h.</field>
+        <field name="employee_rights">SMIG à 60% du SMIG général, congés payés, protection sociale CNSS.</field>
+        <field name="category">general</field>
+        <field name="is_current" eval="True"/>
+    </record>
+
+    <record id="legal_ma_ct_stg" model="pe.legal.article">
+        <field name="jurisdiction_id" ref="jurisdiction_ma"/>
+        <field name="code">MA-CT-STG</field>
+        <field name="title">Contrat de stage / alternance</field>
+        <field name="content">BASE LÉGALE : Circulaires ANAPEC + Art. 22 Code du Travail
+
+A) Stage de formation professionnelle
+• Indemnité minimum : non obligatoire légalement (usage : 1 500 à 3 000 MAD/mois)
+• Durée max recommandée : 6 mois
+
+B) Contrat d'insertion professionnelle (ANAPEC)
+• Exonération patronale charges sociales
+• Durée : 18 mois (renouvelable 6 mois)
+• Indemnité : 1 600 MAD/mois (prise en charge État)
+
+Mentions obligatoires :
+• Nom du tuteur de stage
+• Objectifs pédagogiques
+• Durée précise
+• Gratification (si applicable)
+• Clause de confidentialité recommandée</field>
+        <field name="plain_language">Deux types : stage classique (6 mois max recommandé) ou contrat ANAPEC (18 mois, exonération charges, 1 600 MAD/mois).</field>
+        <field name="category">general</field>
+        <field name="is_current" eval="True"/>
+    </record>
+
+    <!-- Chapitre 2 — Rémunération -->
+    <record id="legal_ma_rem" model="pe.legal.article">
+        <field name="jurisdiction_id" ref="jurisdiction_ma"/>
+        <field name="code">MA-REM</field>
+        <field name="title">Rémunération &amp; Salaires</field>
+        <field name="content">SMIG 2024-2025 (secteur non agricole) :
+→ 17,10 MAD/heure
+→ ~3 111 MAD/mois (base 44h/semaine)
+
+SMAG (agricole) :
+→ 98,56 MAD/jour
+
+Heures supplémentaires (Art. 201-204) :
+• Diurnes semaine (+25%)
+• Nocturnes semaine (+50%) [22h-6h]
+• Diurnes dimanche/férié (+50%)
+• Nocturnes dimanche/férié (+100%)
+
+Éléments de salaire :
+• Salaire de base
+• Primes (ancienneté obligatoire si &gt; 2 ans)
+• Indemnités (transport, représentation, panier)
+• Avantages en nature (valorisés selon barème CNSS)
+
+Prime d'ancienneté (Art. 350) — OBLIGATOIRE :
+• 2 à 5 ans : +5%
+• 5 à 12 ans : +10%
+• 12 à 20 ans : +15%
+• 20 à 25 ans : +20%
+• +25 ans : +25%</field>
+        <field name="plain_language">SMIG 17,10 MAD/h (~3 111 MAD/mois). Heures sup de +25% à +100%. Prime d'ancienneté obligatoire dès 2 ans (5% à 25%).</field>
+        <field name="employer_obligations">Respecter le SMIG, payer les heures sup au taux légal, verser la prime d'ancienneté obligatoire.</field>
+        <field name="employee_rights">Percevoir au minimum le SMIG, majorations heures sup, prime d'ancienneté après 2 ans.</field>
+        <field name="category">compensation</field>
+        <field name="is_current" eval="True"/>
+    </record>
+
+    <!-- Chapitre 3 — Congés -->
+    <record id="legal_ma_cong" model="pe.legal.article">
+        <field name="jurisdiction_id" ref="jurisdiction_ma"/>
+        <field name="code">MA-CONG</field>
+        <field name="title">Congés &amp; Absences</field>
+        <field name="content">Congé annuel payé (Art. 231-270) :
+• 1,5 jour ouvrable/mois travaillé = 18 jours/an
+• Après 5 ans d'ancienneté : +1,5 jour/5 ans (max 30 jours/an)
+• Jeunes &lt; 18 ans : 2 jours/mois = 24 jours/an
+
+Congés spéciaux (Art. 274) :
+• Mariage du salarié : 4 jours
+• Mariage d'un enfant : 2 jours
+• Décès conjoint/enfant/parent direct : 3 jours
+• Décès frère/sœur : 2 jours
+• Circoncision d'un enfant : 2 jours
+• Accouchement de l'épouse : 3 jours
+• Opération chirurgicale conjoint/enfant : 2 jours
+
+Congé maternité (Art. 152-156) :
+• Durée : 14 semaines (98 jours) — 7 semaines avant + 7 semaines après
+• Indemnité journalière CNSS (si cotisée 54 jours)
+• Protection contre licenciement pendant congé
+
+Congé maladie :
+• Certificat médical obligatoire dans les 48h
+• Maintien du salaire selon convention collective
+• CNSS prend le relais après 3 jours (indemnité journalière)</field>
+        <field name="plain_language">18 jours de congé/an minimum, congés spéciaux pour événements familiaux, maternité 14 semaines, maladie avec certificat sous 48h.</field>
+        <field name="employer_obligations">Accorder les congés légaux, protéger la salariée en congé maternité, respecter les congés spéciaux.</field>
+        <field name="employee_rights">Congé annuel payé, congés spéciaux, protection maternité, indemnités CNSS maladie.</field>
+        <field name="category">leave</field>
+        <field name="is_current" eval="True"/>
+    </record>
+
+    <!-- Chapitre 4 — Rupture -->
+    <record id="legal_ma_rupt_prev" model="pe.legal.article">
+        <field name="jurisdiction_id" ref="jurisdiction_ma"/>
+        <field name="code">MA-RUPT-PREV</field>
+        <field name="title">Préavis de licenciement</field>
+        <field name="content">BASE LÉGALE : Art. 43-51
+
+CDI — Cadres et assimilés :
+• &lt; 1 an : 1 mois
+• 1 à 5 ans : 2 mois
+• &gt; 5 ans : 3 mois
+
+CDI — Employés/Techniciens/Ouvriers :
+• &lt; 1 an : 8 jours
+• 1 à 5 ans : 1 mois
+• &gt; 5 ans : 2 mois
+
+→ Dispense de préavis = paiement de l'indemnité compensatrice</field>
+        <field name="plain_language">Préavis selon catégorie et ancienneté : de 8 jours à 3 mois. Indemnité compensatrice si dispense de préavis.</field>
+        <field name="employer_obligations">Respecter le délai de préavis ou verser l'indemnité compensatrice équivalente.</field>
+        <field name="employee_rights">Bénéficier du préavis ou de son indemnité compensatrice.</field>
+        <field name="category">notice</field>
+        <field name="is_current" eval="True"/>
+        <field name="applicable_action_ids" eval="[(4, ref('action_type_termination'))]"/>
+    </record>
+
+    <record id="legal_ma_rupt_ind" model="pe.legal.article">
+        <field name="jurisdiction_id" ref="jurisdiction_ma"/>
+        <field name="code">MA-RUPT-IND</field>
+        <field name="title">Indemnité de licenciement</field>
+        <field name="content">BASE LÉGALE : Art. 52-53
+
+Calcul (ancienneté × salaire journalier moyen × coefficient) :
+• 1 à 5 ans : 96h de salaire par année
+• 5 à 10 ans : 144h de salaire par année
+• 10 à 15 ans : 192h de salaire par année
+• +15 ans : 240h de salaire par année
+
+Base de calcul :
+Salaire journalier moyen = (salaire des 52 dernières semaines) / 364
+
+NON applicable si :
+• Faute grave du salarié
+• Force majeure
+• Rupture pendant période d'essai</field>
+        <field name="plain_language">Indemnité calculée en heures de salaire par année d'ancienneté (96h à 240h/an). Non due en cas de faute grave.</field>
+        <field name="employer_obligations">Calculer et verser l'indemnité selon le barème légal sur base des 52 dernières semaines.</field>
+        <field name="employee_rights">Percevoir l'indemnité de licenciement sauf faute grave ou force majeure.</field>
+        <field name="category">dismissal</field>
+        <field name="is_current" eval="True"/>
+        <field name="applicable_action_ids" eval="[(4, ref('action_type_termination'))]"/>
+    </record>
+
+    <record id="legal_ma_rupt_fg" model="pe.legal.article">
+        <field name="jurisdiction_id" ref="jurisdiction_ma"/>
+        <field name="code">MA-RUPT-FG</field>
+        <field name="title">Faute grave — Licenciement</field>
+        <field name="content">BASE LÉGALE : Art. 39, 62-63
+
+Cas légaux de faute grave (licenciement sans indemnité) :
+1. Délit portant atteinte à l'honneur, la confiance ou les mœurs
+2. Divulgation de secret professionnel
+3. Vol, détournement de fonds
+4. Consommation d'alcool/drogue sur le lieu de travail
+5. Agression physique
+6. Injures graves
+7. Refus délibéré d'exécuter un ordre
+8. Absence injustifiée &gt; 4 jours ou 8 demi-journées/an
+9. Dommages matériels intentionnels
+10. Inobservation répétée des règles de sécurité
+
+PROCÉDURE OBLIGATOIRE (Art. 62-63) :
+1. Convocation par lettre RAR
+2. Entretien préalable (délai minimum 8 jours)
+3. Lettre de licenciement motivée par RAR
+4. Délai : max 1 mois après constat de la faute</field>
+        <field name="plain_language">10 cas de faute grave listés à l'Art. 39. Procédure obligatoire : convocation RAR, entretien (8 jours min), licenciement motivé sous 1 mois.</field>
+        <field name="employer_obligations">Respecter la procédure Art. 62-63, documenter les faits, notifier par RAR dans le délai d'un mois.</field>
+        <field name="employee_rights">Être convoqué à un entretien préalable, connaître les faits reprochés, se faire assister.</field>
+        <field name="penalties">Licenciement annulable si procédure non respectée. Dommages-intérêts possibles.</field>
+        <field name="category">discipline</field>
+        <field name="is_current" eval="True"/>
+        <field name="applicable_action_ids" eval="[(4, ref('action_type_termination')), (4, ref('action_type_formal_warn'))]"/>
+    </record>
+
+    <record id="legal_ma_rupt_dem" model="pe.legal.article">
+        <field name="jurisdiction_id" ref="jurisdiction_ma"/>
+        <field name="code">MA-RUPT-DEM</field>
+        <field name="title">Démission</field>
+        <field name="content">BASE LÉGALE : Art. 35-38
+
+• Lettre écrite obligatoire
+• Respect du délai de préavis (identique au licenciement)
+• Pas d'indemnité de licenciement
+• MAIS : indemnité de congés payés acquis non pris
+• Solde de tout compte obligatoire
+
+Démission abusive (Art. 46) :
+→ Si préjudice causé à l'employeur = dommages-intérêts</field>
+        <field name="plain_language">Démission par écrit avec préavis identique au licenciement. Pas d'indemnité licenciement mais congés acquis dus. Démission abusive = dommages-intérêts.</field>
+        <field name="employer_obligations">Établir le solde de tout compte, verser les congés acquis non pris.</field>
+        <field name="employee_rights">Percevoir le solde de congés acquis, certificat de travail, attestation CNSS.</field>
+        <field name="category">dismissal</field>
+        <field name="is_current" eval="True"/>
+    </record>
+
+    <!-- Chapitre 5 — Documents -->
+    <record id="legal_ma_doc" model="pe.legal.article">
+        <field name="jurisdiction_id" ref="jurisdiction_ma"/>
+        <field name="code">MA-DOC</field>
+        <field name="title">Documents obligatoires</field>
+        <field name="content">À l'embauche :
+✓ Contrat de travail signé (2 exemplaires)
+✓ Règlement intérieur (si +10 salariés)
+✓ Fiche de poste
+✓ Attestation d'affiliation CNSS
+
+Mensuellement :
+✓ Bulletin de paie (Art. 371)
+  Mentions obligatoires :
+  • Nom employeur + ICE
+  • Nom salarié + matricule CNSS
+  • Période de paie
+  • Salaire de base brut
+  • Détail des primes et indemnités
+  • Retenues (IGR/IR, CNSS, AMO)
+  • Salaire net à payer
+  • Congés acquis et pris
+
+À la rupture :
+✓ Certificat de travail (Art. 72)
+✓ Reçu pour solde de tout compte
+✓ Attestation de travail pour CNSS (Formulaire 1)
+✓ Lettre de licenciement (si licenciement)</field>
+        <field name="plain_language">Checklist documents : contrat et CNSS à l'embauche, bulletin détaillé chaque mois, certificat et solde de tout compte à la sortie.</field>
+        <field name="employer_obligations">Remettre tous les documents aux échéances légales avec les mentions obligatoires.</field>
+        <field name="employee_rights">Recevoir contrat, bulletins conformes, certificat de travail et attestation CNSS à la sortie.</field>
+        <field name="category">general</field>
+        <field name="is_current" eval="True"/>
+    </record>
+
+    <!-- Chapitre 6 — Modèles de lettres -->
+    <record id="legal_ma_mdl_avert" model="pe.legal.article">
+        <field name="jurisdiction_id" ref="jurisdiction_ma"/>
+        <field name="code">MA-MDL-AVERT</field>
+        <field name="title">Modèle — Lettre d'avertissement</field>
+        <field name="content">Objet : Avertissement
+
+[Ville], le [Date]
+
+Madame/Monsieur [Prénom Nom],
+Matricule : [X]
+Poste : [X]
+
+Nous avons constaté le [date] : [description précise du manquement].
+
+Ce comportement est contraire à [article du règlement intérieur / obligations contractuelles / Art. X du Code du Travail].
+
+Nous vous adressons par la présente un avertissement formel et vous demandons de bien vouloir vous conformer à vos obligations.
+
+Tout renouvellement de ce comportement nous contraindrait à envisager des mesures disciplinaires plus sévères.
+
+Nous vous demandons de nous retourner ce courrier signé avec la mention "Lu et approuvé".
+
+La Direction</field>
+        <field name="plain_language">Modèle d'avertissement écrit : décrire le manquement, référencer la règle violée, demander signature "Lu et approuvé".</field>
+        <field name="category">discipline</field>
+        <field name="is_current" eval="True"/>
+        <field name="applicable_action_ids" eval="[(4, ref('action_type_formal_warn')), (4, ref('action_type_warning'))]"/>
+    </record>
+
+    <record id="legal_ma_mdl_med" model="pe.legal.article">
+        <field name="jurisdiction_id" ref="jurisdiction_ma"/>
+        <field name="code">MA-MDL-MED</field>
+        <field name="title">Modèle — Mise en demeure</field>
+        <field name="content">Objet : Mise en demeure — [Motif]
+
+Lettre Recommandée avec Accusé de Réception
+
+[Ville], le [Date]
+
+Madame/Monsieur [Prénom Nom],
+
+Malgré nos avertissements des [dates], nous constatons que [description du manquement persistant].
+
+Nous vous mettons en demeure de [action attendue] dans un délai de [X] jours à compter de la réception de la présente.
+
+À défaut, nous nous réservons le droit d'engager la procédure de licenciement prévue aux articles 62 et 63 du Code du Travail.
+
+La Direction</field>
+        <field name="plain_language">Mise en demeure par LRAR avant licenciement : rappeler les avertissements, fixer un délai, mentionner Art. 62-63.</field>
+        <field name="category">discipline</field>
+        <field name="is_current" eval="True"/>
+        <field name="applicable_action_ids" eval="[(4, ref('action_type_formal_warn'))]"/>
+    </record>
+
+    <record id="legal_ma_mdl_conv" model="pe.legal.article">
+        <field name="jurisdiction_id" ref="jurisdiction_ma"/>
+        <field name="code">MA-MDL-CONV</field>
+        <field name="title">Modèle — Convocation entretien préalable</field>
+        <field name="content">Objet : Convocation à entretien préalable
+
+Lettre RAR ou remise en main propre contre décharge
+
+[Ville], le [Date]
+
+Madame/Monsieur [Prénom Nom],
+
+Nous envisageons de mettre fin à votre contrat de travail. Avant toute décision définitive, nous vous convions à un entretien préalable le [Date] à [Heure] à [Lieu].
+
+Lors de cet entretien, vous pourrez vous expliquer sur les faits qui vous sont reprochés. Vous pouvez vous faire assister par un délégué du personnel ou toute personne de votre choix appartenant à l'entreprise.
+
+La Direction</field>
+        <field name="plain_language">Convocation RAR à l'entretien préalable (Art. 62-63) : date, lieu, droit d'assistance.</field>
+        <field name="category">notice</field>
+        <field name="is_current" eval="True"/>
+        <field name="applicable_action_ids" eval="[(4, ref('action_type_termination'))]"/>
+    </record>
+
+    <record id="legal_ma_mdl_lic" model="pe.legal.article">
+        <field name="jurisdiction_id" ref="jurisdiction_ma"/>
+        <field name="code">MA-MDL-LIC</field>
+        <field name="title">Modèle — Licenciement faute grave</field>
+        <field name="content">Objet : Notification de licenciement pour faute grave
+
+Lettre RAR
+
+[Ville], le [Date]
+
+Suite à l'entretien préalable du [date], et après examen attentif de votre situation, nous avons décidé de procéder à votre licenciement pour faute grave.
+
+Les faits reprochés sont les suivants :
+[Description précise et datée des faits — Art. 39 §X]
+
+En conséquence, votre contrat de travail prend fin à la date de réception de la présente lettre, sans préavis ni indemnité de licenciement.
+
+Nous vous remettrons votre certificat de travail, votre solde de tout compte et votre attestation CNSS [à notre siège / par courrier].
+
+La Direction</field>
+        <field name="plain_language">Lettre de licenciement faute grave par RAR : faits datés, référence Art. 39, sans préavis ni indemnité.</field>
+        <field name="category">dismissal</field>
+        <field name="is_current" eval="True"/>
+        <field name="applicable_action_ids" eval="[(4, ref('action_type_termination'))]"/>
+    </record>
+
+    <record id="legal_ma_mdl_cert" model="pe.legal.article">
+        <field name="jurisdiction_id" ref="jurisdiction_ma"/>
+        <field name="code">MA-MDL-CERT</field>
+        <field name="title">Modèle — Certificat de travail</field>
+        <field name="content">CERTIFICAT DE TRAVAIL
+
+Je soussigné(e), [Nom Directeur], [Titre], de la société [Raison sociale], [ICE], sise à [Adresse],
+
+certifie que Madame/Monsieur [Prénom Nom], né(e) le [date] à [lieu], titulaire de la CIN n° [X],
+
+a été employé(e) au sein de notre société du [date] au [date] en qualité de [Poste / Catégorie professionnelle].
+
+Ce certificat lui est délivré à sa demande pour servir et valoir ce que de droit.
+
+[Ville], le [Date]
+Signature + Cachet de la société</field>
+        <field name="plain_language">Modèle certificat de travail obligatoire (Art. 72) : identités, dates, poste, signature et cachet.</field>
+        <field name="category">general</field>
+        <field name="is_current" eval="True"/>
+    </record>
+
+    <!-- Chapitre 7 — Évaluation -->
+    <record id="legal_ma_eval" model="pe.legal.article">
+        <field name="jurisdiction_id" ref="jurisdiction_ma"/>
+        <field name="code">MA-EVAL</field>
+        <field name="title">Grille d'évaluation annuelle</field>
+        <field name="content">PRINCIPES LÉGAUX :
+• Aucun texte n'impose de format obligatoire
+• MAIS l'évaluation peut servir de base à :
+  → Promotion (Art. 350 : ancienneté)
+  → Sanction disciplinaire (doit être documentée)
+  → Licenciement pour insuffisance professionnelle (distinct de la faute grave — nécessite preuves écrites)
+
+GRILLE RECOMMANDÉE /100 :
+
+A. PERFORMANCE MÉTIER (40 pts)
+   • Atteinte des objectifs fixés     /15
+   • Qualité du travail produit        /15
+   • Productivité et efficacité        /10
+
+B. COMPORTEMENT PROFESSIONNEL (30 pts)
+   • Ponctualité et assiduité         /10
+   • Respect des procédures           /10
+   • Relation avec collègues/clients  /10
+
+C. DÉVELOPPEMENT (30 pts)
+   • Initiative et autonomie          /10
+   • Montée en compétences            /10
+   • Adaptation aux changements       /10
+
+SCORE GLOBAL :
+90-100 : Exceptionnel → Augmentation/Prime recommandée
+75-89  : Très bien    → Dans les attentes
+60-74  : Satisfaisant → Axes d'amélioration à définir
+&lt; 60   : Insuffisant  → Plan d'amélioration obligatoire (PIP) — 3 mois minimum avant mesure disciplinaire</field>
+        <field name="plain_language">Grille /100 recommandée : performance 40%, comportement 30%, développement 30%. Score &lt; 60 = PIP obligatoire 3 mois minimum.</field>
+        <field name="category">general</field>
+        <field name="is_current" eval="True"/>
+    </record>
+
+    <record id="legal_ma_pip" model="pe.legal.article">
+        <field name="jurisdiction_id" ref="jurisdiction_ma"/>
+        <field name="code">MA-PIP</field>
+        <field name="title">Plan d'amélioration des performances (PIP)</field>
+        <field name="content">Objet : Plan d'amélioration des performances
+
+[Ville], le [Date]
+
+Suite à votre évaluation du [date] ayant obtenu un score de [X]/100, nous mettons en place le plan suivant :
+
+OBJECTIFS À ATTEINDRE (3 mois) :
+1. [Objectif précis et mesurable] — échéance : [date]
+2. [Objectif précis et mesurable] — échéance : [date]
+3. [Objectif précis et mesurable] — échéance : [date]
+
+MOYENS MIS À DISPOSITION :
+• Formation : [X]
+• Accompagnement : [X]
+• Ressources : [X]
+
+POINTS DE SUIVI :
+• Bimensuel avec [responsable]
+• Prochain bilan : [date]
+
+À l'issue de cette période, un bilan sera établi. Sans amélioration significative, nous pourrions être contraints d'envisager une mesure disciplinaire.
+
+Signature salarié : _______________  Date : _______
+Signature DRH :     _______________  Date : _______</field>
+        <field name="plain_language">PIP de 3 mois avec objectifs mesurables, moyens, suivi bimensuel et signatures des deux parties.</field>
+        <field name="category">discipline</field>
+        <field name="is_current" eval="True"/>
+        <field name="applicable_action_ids" eval="[(4, ref('action_type_pip'))]"/>
+    </record>
+
+    <!-- Chapitre 8 — Cotisations -->
+    <record id="legal_ma_cot" model="pe.legal.article">
+        <field name="jurisdiction_id" ref="jurisdiction_ma"/>
+        <field name="code">MA-COT</field>
+        <field name="title">Cotisations sociales — Taux 2025</field>
+        <field name="content">CNSS (Caisse Nationale de Sécurité Sociale) :
+                    Employeur    Salarié    Total
+Prestations sociales  8,98%      4,48%     13,46%
+Prestations familiales 6,40%      —         6,40%
+AMO (maladie)         2,26%      2,26%      4,52%
+TOTAL                17,64%      6,74%     24,38%
+
+Plafond cotisable CNSS : 6 000 MAD/mois
+(prestations sociales seulement — AMO sans plafond)
+
+IR (Impôt sur le Revenu) — Barème 2025 :
+0 à 30 000 MAD/an      : 0%
+30 001 à 50 000        : 10%
+50 001 à 60 000        : 20%
+60 001 à 80 000        : 30%
+80 001 à 180 000       : 34%
++180 000               : 38%
+
+Abattement forfaitaire frais professionnels : 20% (max 30 000 MAD/an)</field>
+        <field name="plain_language">CNSS 2025 : 17,64% employeur + 6,74% salarié. Plafond 6 000 MAD. IR progressif de 0% à 38% avec abattement 20%.</field>
+        <field name="employer_obligations">Déclarer et verser les cotisations CNSS/AMO, retenir l'IR sur salaire, émettre bulletins conformes.</field>
+        <field name="category">compensation</field>
+        <field name="is_current" eval="True"/>
+    </record>
+</odoo>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="base_automation.base_automation_act" model="ir.actions.act_window">
+        <field name="name">Règles d'automatisation</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créez votre première règle d'automatisation
+            </p>
+            <p>
+                Automatisez le CRM sans développeur : envoi de courriel, changement d'étape,
+                activité de suivi, notification, etc.
+            </p>
+        </field>
+    </record>
+
+    <!-- CRM → Configuration → Automatisations (sans mode développeur) -->
+    <menuitem id="menu_crm_automation_rules"
+              name="Automatisations"
+              parent="crm.crm_menu_config"
+              action="base_automation.base_automation_act"
+              groups="renovation_conciergerie.group_automation_configurator"
+              sequence="5"/>
+
+    <!-- Paramètres → Automatisation (évite un second menu « Technique ») -->
+    <menuitem id="menu_doorway_technical_automation"
+              name="Automatisation"
+              parent="base.menu_administration"
+              groups="renovation_conciergerie.group_automation_configurator"
+              sequence="108">
+        <menuitem id="menu_doorway_technical_automation_list"
+                  name="Règles d'automatisation"
+                  action="base_automation.base_automation_act"
+                  sequence="1"/>
+    </menuitem>
+</odoo>

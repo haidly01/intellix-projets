@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="mail_template_crm_lead_partner_followup" model="mail.template">
+        <field name="name">Lead CRM - Suivi partenaire</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="subject">Suivi de votre demande - ${object.name}</field>
+        <field name="email_from">info@agencedoorway.com</field>
+        <field name="body_html" type="html">
+            <div>
+                <p>Bonjour,</p>
+                <p>Nous faisons suite a votre demande <strong>${object.name}</strong>.</p>
+                <p>Un partenaire va vous contacter prochainement pour organiser une visite.</p>
+                <p>Cordialement,</p>
+                <p>${user.name}</p>
+            </div>
+        </field>
+    </record>
+
+    <record id="sms_template_crm_lead_partner_followup" model="sms.template">
+        <field name="name">Lead CRM - Confirmation de contact</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="body">Bonjour, nous avons bien recu votre demande ${object.name}. Un partenaire vous contacte rapidement.</field>
+    </record>
+</odoo>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_visits" name="Portail — Mes visites">
+        <t t-call="intellix_partner_portal.ipp_portal_layout">
+            <div class="topbar">
+                <div>
+                    <h1>Mes visites</h1>
+                    <div class="sub">Rendez-vous planifiés avec vos contacts</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <t t-if="not visits">
+                    <div class="empty">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+                        <div class="t">Aucune visite planifiée</div>
+                        <div class="s">Les visites confirmées avec vos membres apparaîtront ici automatiquement.</div>
+                    </div>
+                </t>
+                <table t-else="">
+                    <thead>
+                        <tr>
+                            <th>Visite</th>
+                            <th>Début</th>
+                            <th>Fin</th>
+                            <th>Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="visits" t-as="ev">
+                            <td class="t-name" t-esc="ev.name or '—'"/>
+                            <td t-esc="ev.start"/>
+                            <td t-esc="ev.stop"/>
+                            <td><span class="status-tag active">Planifiée</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </t>
+    </template>
+</odoo>

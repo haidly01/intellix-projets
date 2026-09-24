@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pe_coaching_session_tree_dashboard" model="ir.ui.view">
+        <field name="name">pe.coaching.session.tree.dashboard</field>
+        <field name="model">pe.coaching.session</field>
+        <field name="inherit_id" ref="people_engine.view_pe_coaching_session_tree"/>
+        <field name="arch" type="xml">
+            <list position="attributes">
+                <attribute name="js_class">people_engine_coaching_list</attribute>
+                <attribute name="class">ix-coaching-list</attribute>
+            </list>
+            <field name="employee_id" position="after">
+                <field name="score" string="Score" widget="progressbar" options="{'max_value': 100}"/>
+                <field name="read_by_agent" column_invisible="1"/>
+            </field>
+            <field name="status" position="attributes">
+                <attribute name="decoration-success">status in ('delivered', 'acknowledged', 'approved')</attribute>
+                <attribute name="decoration-warning">status in ('pending_manager', 'pending_hr', 'generating')</attribute>
+                <attribute name="decoration-info">status == 'draft'</attribute>
+                <attribute name="decoration-danger">status == 'cancelled'</attribute>
+            </field>
+            <field name="claude_generated_at" position="attributes">
+                <attribute name="string">Généré par Claude</attribute>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_pe_coaching_session_form_dashboard" model="ir.ui.view">
+        <field name="name">pe.coaching.session.form.dashboard</field>
+        <field name="model">pe.coaching.session</field>
+        <field name="inherit_id" ref="people_engine.view_pe_coaching_session_form"/>
+        <field name="arch" type="xml">
+            <field name="manager_id" position="after">
+                <field name="score"/>
+                <field name="coaching_call_id"/>
+                <field name="read_by_agent"/>
+            </field>
+            <page name="claude" position="inside">
+                <field name="insights" readonly="1"/>
+            </page>
+        </field>
+    </record>
+
+    <record id="action_pe_coaching_sessions" model="ir.actions.act_window">
+        <field name="name">Sessions coaching IA</field>
+        <field name="res_model">pe.coaching.session</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucune session coaching
+            </p>
+            <p>
+                Les sessions apparaissent automatiquement après chaque appel enregistré
+                et analysé par Claude.
+            </p>
+        </field>
+    </record>
+</odoo>

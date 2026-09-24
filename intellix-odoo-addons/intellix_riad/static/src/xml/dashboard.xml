@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="intellix_riad.Dashboard">
+        <div class="o_action o_riad_screen">
+            <RiadShell page="shellPage"/>
+            <div class="main">
+                <div class="topbar">
+                    <div class="property-switch">
+                        <span class="dot"/>
+                        <select t-on-change="onEstablishmentChange">
+                            <t t-foreach="state.data.establishments or []" t-as="est" t-key="est.id">
+                                <option t-att-value="est.id" t-att-selected="state.establishmentId === est.id" t-esc="est.name"/>
+                            </t>
+                        </select>
+                    </div>
+                    <div class="topbar-right">
+                        <button class="btn-new" t-on-click="newReservation" t-esc="labels.newReservation"/>
+                        <div class="avatar" t-esc="state.data.user and state.data.user.initial or 'R'"/>
+                    </div>
+                </div>
+                <div class="content">
+                    <div class="page-head">
+                        <div>
+                            <div class="eyebrow" t-esc="labels.dashboard"/>
+                            <h1><t t-esc="labels.hello"/> <t t-esc="state.data.user and state.data.user.name or ''"/></h1>
+                        </div>
+                        <div class="date-today" t-esc="state.data.today_label"/>
+                    </div>
+                    <div class="riad-demo-banner" t-if="state.data.has_channex_demo">
+                        DÉMO CHANNNEX — occupation et réservations prefixées [DÉMO] / DEMO-CHANNEX- sont fictives. Hors production.
+                    </div>
+
+                    <div class="kpi-row">
+                        <div class="kpi">
+                            <div class="label" t-esc="labels.occupancy"/>
+                            <div class="value" t-esc="kpis.occupancy_pct or '0%'"/>
+                            <div class="sub" t-esc="kpis.occupancy_sub or ''"/>
+                        </div>
+                        <div class="kpi">
+                            <div class="label" t-esc="labels.bookingsToday"/>
+                            <div class="value" t-esc="kpis.bookings_today or 0"/>
+                            <div class="sub" t-esc="kpis.bookings_sub or ''"/>
+                        </div>
+                        <div class="kpi terracotta">
+                            <div class="label" t-esc="labels.revenue"/>
+                            <div class="value" t-esc="kpis.revenue or '0€'"/>
+                            <div class="sub" t-esc="kpis.revenue_sub or ''"/>
+                        </div>
+                        <div class="kpi">
+                            <div class="label" t-esc="labels.wellnessSlots"/>
+                            <div class="value" t-esc="kpis.wellness_count or 0"/>
+                            <div class="sub" t-esc="kpis.wellness_sub or ''"/>
+                        </div>
+                        <div t-att-class="'kpi ' + (kpis.reply_css or '')">
+                            <div class="label" t-esc="labels.replyTime"/>
+                            <div class="value" t-esc="kpis.reply_time or '—'"/>
+                            <div class="sub" t-esc="kpis.reply_sub or ''"/>
+                        </div>
+                    </div>
+
+                    <div class="grid">
+                        <div>
+                            <div class="riad-card">
+                                <div class="card-head">
+                                    <h3 t-esc="labels.occupation7"/>
+                                    <button class="link" t-on-click="openCalendar" t-esc="labels.seeCalendar"/>
+                                </div>
+                                <table class="occ-table">
+                                    <tr>
+                                        <th/>
+                                        <t t-foreach="week.days or []" t-as="day" t-key="day.key">
+                                            <th t-esc="day.label"/>
+                                        </t>
+                                    </tr>
+                                    <t t-foreach="week.groups or []" t-as="group" t-key="group.emplacement">
+                                        <t t-foreach="group.rooms or []" t-as="room" t-key="room.id">
+                                            <tr>
+                                                <td class="occ-room">
+                                                    <t t-esc="room.name"/>
+                                                    <t t-if="room.emplacement_label">
+                                                        <span> — <t t-esc="room.emplacement_label"/></span>
+                                                    </t>
+                                                </td>
+                                                <t t-foreach="room.cells or []" t-as="cell" t-key="cell.date">
+                                                    <td>
+                                                        <div t-att-class="'occ-cell ' + (cell.css or 'free')"
+                                                             t-att-title="cell.guest"
+                                                             t-on-click="() => this.onCellClick(room, cell)"/>
+                                                    </td>
+                                                </t>
+                                            </tr>
+                                        </t>
+                                    </t>
+                                </table>
+                            </div>
+
+                            <div class="riad-card" t-if="terrace.enabled !== false">
+                                <div class="card-head">
+                                    <h3 t-esc="labels.terraceToday"/>
+                                    <span class="mode-badge">
+                                        <span class="pulse"/>
+                                        <t t-esc="terrace.badge or ''"/>
+                                    </span>
+                                </div>
+                                <div class="mode-timeline">
+                                    <div class="mode-seg wellness"
+                                         t-att-style="'flex:' + (terrace.flex_wellness or 10)"
+                                         t-esc="terrace.wellness_label"/>
+                                    <div class="mode-seg restaurant"
+                                         t-att-style="'flex:' + (terrace.flex_restaurant or 7)"
+                                         t-esc="terrace.restaurant_label"/>
+                                </div>
+                                <div class="mode-caption">
+                                    <t t-foreach="terrace.captions or []" t-as="cap" t-key="cap_index">
+                                        <span t-esc="cap"/>
+                                    </t>
+                                </div>
+                            </div>
+
+                            <div class="riad-card">
+                                <div class="card-head">
+                                    <h3 t-esc="labels.pricing"/>
+                                    <button class="link" t-on-click="() => this.shellNav('settings')" t-esc="labels.seePricing"/>
+                                </div>
+                                <div t-att-class="'value ' + (pricing.css or '')"
+                                     style="font-family:Fraunces,serif;font-size:28px;margin:4px 0 6px">
+                                    <t t-esc="pricing.label or '—'"/>
+                                </div>
+                                <div class="muted" t-esc="pricing.sub or ''"/>
+                            </div>
+
+                            <div class="riad-card">
+                                <div class="card-head">
+                                    <h3 t-esc="labels.upcomingEvents"/>
+                                    <button class="link" t-on-click="() => this.shellNav('events')" t-esc="labels.seeAll"/>
+                                </div>
+                                <t t-if="!(state.data.events or []).length">
+                                    <div class="muted" t-esc="labels.noEvents"/>
+                                </t>
+                                <t t-foreach="state.data.events or []" t-as="ev" t-key="ev.id">
+                                    <div class="events-item" t-on-click="() => this.openEvent(ev)">
+                                        <span class="date-chip" t-esc="ev.date_chip"/>
+                                        <div class="title" t-esc="ev.title"/>
+                                        <div class="meta" t-esc="ev.meta"/>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="riad-card">
+                                <div class="card-head">
+                                    <h3 t-esc="labels.wellnessToday"/>
+                                    <button class="link" t-on-click="() => this.shellNav('wellness')" t-esc="labels.planning"/>
+                                </div>
+                                <t t-if="!(state.data.wellness_today or []).length">
+                                    <div class="muted" t-esc="labels.noSlots"/>
+                                </t>
+                                <ul class="wl" t-else="">
+                                    <t t-foreach="state.data.wellness_today or []" t-as="slot" t-key="slot.id">
+                                        <li>
+                                            <div>
+                                                <div class="who" t-esc="slot.who"/>
+                                                <div class="what" t-esc="slot.time"/>
+                                            </div>
+                                            <span t-att-class="'tag ' + (slot.css or 'massage')" t-esc="slot.type"/>
+                                        </li>
+                                    </t>
+                                </ul>
+                            </div>
+
+                            <div class="riad-card">
+                                <div class="card-head">
+                                    <h3 t-esc="labels.inbox"/>
+                                    <button class="link" t-on-click="() => this.shellNav('mails')" t-esc="labels.seeAll"/>
+                                </div>
+                                <t t-if="!(state.data.inbox or []).length">
+                                    <div class="muted" t-esc="labels.noInbox"/>
+                                </t>
+                                <t t-foreach="state.data.inbox or []" t-as="item" t-key="item_index">
+                                    <div class="inbox-item" t-on-click="() => this.openInbox(item)">
+                                        <div t-att-class="'inbox-ico ' + (item.css or 'ico-mail')" t-esc="item.icon"/>
+                                        <div class="inbox-text">
+                                            <b t-esc="item.title"/>
+                                            <span class="snippet" t-esc="item.snippet"/>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+
+                            <div class="riad-card">
+                                <div class="card-head">
+                                    <h3 t-esc="labels.attendance"/>
+                                    <button class="link" t-on-click="() => this.shellNav('personnel')" t-esc="labels.monthlyReport"/>
+                                </div>
+                                <t t-if="!(state.data.attendance_today or []).length">
+                                    <div class="muted" t-esc="labels.noStaff"/>
+                                </t>
+                                <ul class="wl" t-else="">
+                                    <t t-foreach="state.data.attendance_today or []" t-as="person" t-key="person.id">
+                                        <li class="punch-item">
+                                            <div>
+                                                <div class="who" t-on-click="() => this.openStaff(person)" t-esc="person.who"/>
+                                                <div class="what" t-esc="person.what"/>
+                                                <t t-if="state.data.can_punch and !person.locked">
+                                                    <div class="punch-row">
+                                                        <button class="punch-btn" t-on-click="() => this.punch(person, 'present')" t-esc="labels.present"/>
+                                                        <button class="punch-btn" t-on-click="() => this.startPunch(person, 'late')" t-esc="labels.late"/>
+                                                        <button class="punch-btn" t-on-click="() => this.startPunch(person, 'absent')" t-esc="labels.absent"/>
+                                                    </div>
+                                                    <t t-if="state.punchingId === person.id and state.punchMode === 'late'">
+                                                        <div class="punch-extra">
+                                                            <input type="time" t-att-value="state.arrival" t-on-change="onArrivalChange"/>
+                                                            <button class="punch-btn primary" t-on-click="() => this.confirmLate(person)" t-esc="labels.validate"/>
+                                                        </div>
+                                                    </t>
+                                                    <t t-if="state.punchingId === person.id and state.punchMode === 'absent'">
+                                                        <div class="punch-extra">
+                                                            <button class="punch-btn" t-on-click="() => this.punch(person, 'leave')" t-esc="labels.leave"/>
+                                                            <button class="punch-btn" t-on-click="() => this.punch(person, 'illness')" t-esc="labels.illness"/>
+                                                            <button class="punch-btn" t-on-click="() => this.punch(person, 'unjustified')" t-esc="labels.unjustified"/>
+                                                        </div>
+                                                    </t>
+                                                </t>
+                                                <div class="what" t-if="person.locked" t-esc="labels.monthLocked"/>
+                                            </div>
+                                            <span t-att-class="'tag ' + (person.css or 'muted')" t-esc="person.status"/>
+                                        </li>
+                                    </t>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="footnote">Module Hébergement IntelliX · multi-établissements · occupation groupée étage / RDC</div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

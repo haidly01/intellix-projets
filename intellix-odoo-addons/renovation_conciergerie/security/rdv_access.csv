@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_reno_partner_rdv_pipeline,reno.partner.rdv.pipeline,model_renovation_partner_rdv,renovation_conciergerie.group_doorway_pipeline_assigned,1,1,1,1
+access_reno_partner_rdv_user,reno.partner.rdv.user,model_renovation_partner_rdv,base.group_user,1,1,0,0
+access_reno_partner_rdv_manager,reno.partner.rdv.manager,model_renovation_partner_rdv,sales_team.group_sale_manager,1,1,1,1
+access_reno_book_martin_pipeline,reno.book.martin.pipeline,model_renovation_book_martin_wizard,renovation_conciergerie.group_doorway_pipeline_assigned,1,1,1,1
+access_reno_book_martin_salesman,reno.book.martin.salesman,model_renovation_book_martin_wizard,sales_team.group_sale_salesman,1,1,1,1
+access_reno_book_martin_manager,reno.book.martin.manager,model_renovation_book_martin_wizard,sales_team.group_sale_manager,1,1,1,1

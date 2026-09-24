@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_agent_profile_kanban_performance" model="ir.ui.view">
+        <field name="name">doorway.agent.profile.kanban.performance</field>
+        <field name="model">doorway.agent.profile</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_dashboard doorway_agent_kanban">
+                <field name="name"/>
+                <field name="status"/>
+                <field name="pipeline"/>
+                <field name="language"/>
+                <field name="total_appels"/>
+                <field name="appels_7j"/>
+                <field name="taux_decroches"/>
+                <field name="taux_conversion"/>
+                <field name="leads_qualifies"/>
+                <field name="leads_qualifies_30j"/>
+                <field name="score_ia_moyen"/>
+                <field name="cout_total_eur"/>
+                <field name="cout_par_lead"/>
+                <field name="nb_campagnes_actives"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="doorway_agent_card">
+                            <div class="agent_card_header d-flex align-items-center gap-2 mb-2">
+                                <div class="agent_avatar_circle">
+                                    <t t-esc="record.name.value.substring(0,2).toUpperCase()"/>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <strong><field name="name"/></strong>
+                                    <div class="text-muted small">
+                                        <field name="language"/> · <field name="pipeline"/>
+                                    </div>
+                                </div>
+                                <field name="status" widget="badge"
+                                       decoration-success="status == 'active'"
+                                       decoration-warning="status == 'inactive'"
+                                       decoration-danger="status == 'error'"/>
+                            </div>
+                            <div class="agent_kpi_grid">
+                                <div class="kpi_cell">
+                                    <span class="kpi_val"><field name="appels_7j"/></span>
+                                    <span class="kpi_lbl">Appels 7j</span>
+                                </div>
+                                <div class="kpi_cell">
+                                    <span class="kpi_val text-success"><field name="taux_decroches"/>%</span>
+                                    <span class="kpi_lbl">Décroché</span>
+                                </div>
+                                <div class="kpi_cell">
+                                    <span class="kpi_val text-primary"><field name="taux_conversion"/>%</span>
+                                    <span class="kpi_lbl">Conversion</span>
+                                </div>
+                                <div class="kpi_cell">
+                                    <span class="kpi_val text-warning"><field name="leads_qualifies_30j"/></span>
+                                    <span class="kpi_lbl">Leads 30j</span>
+                                </div>
+                                <div class="kpi_cell">
+                                    <span class="kpi_val"><field name="score_ia_moyen"/>/100</span>
+                                    <span class="kpi_lbl">Score IA</span>
+                                </div>
+                                <div class="kpi_cell">
+                                    <span class="kpi_val"><field name="cout_par_lead"/>€</span>
+                                    <span class="kpi_lbl">€/lead</span>
+                                </div>
+                            </div>
+                            <div class="mt-2 small text-muted">
+                                <field name="nb_campagnes_actives"/> campagne(s) active(s)
+                            </div>
+                            <div class="agent_card_actions mt-2 d-flex gap-2">
+                                <button class="btn btn-sm btn-outline-primary" type="object"
+                                        name="action_view_performance">Performance</button>
+                                <button class="btn btn-sm btn-outline-secondary" type="object"
+                                        name="action_view_calls">Appels</button>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="action_agent_dashboard_kanban" model="ir.actions.act_window">
+        <field name="name">Dashboard Agents IA</field>
+        <field name="res_model">doorway.agent.profile</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_agent_profile_kanban_performance')}),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_agent_profile_list')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_agent_profile_form')}),
+        ]"/>
+        <field name="search_view_id" ref="view_agent_profile_search_performance"/>
+        <field name="context">{'search_default_active': 1}</field>
+    </record>
+
+    <menuitem id="menu_agent_dashboard_kanban"
+              name="Dashboard Agents"
+              parent="menu_agents_root"
+              action="action_agent_dashboard_kanban"
+              sequence="3"/>
+</odoo>

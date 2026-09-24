@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Espace commerçant — Coins Marocain</title>
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://coinsmarocain.com/espace/commercant/">
+<link href="https://fonts.googleapis.com/css2?family=Cardo:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/cm-espace.css">
+</head>
+<body class="cm-espace">
+  <nav class="page-nav" aria-label="Espaces Coins Marocain">
+    <a href="/">Accueil</a>
+    <a href="/partenaires">Partenaires</a>
+    <a href="/carte">Carte</a>
+    <span class="current">Espace commerçant</span>
+    <a href="/espace/admin/?token=cm-test-admin-karine">Admin</a>
+  </nav>
+  <div class="frame-label" id="frameLabel">Complétez votre fiche, puis envoyez en modération</div>
+
+  <div class="app">
+    <aside class="sidebar">
+      <div class="side-logo">Mon lieu</div>
+      <nav class="side-nav">
+        <button type="button" class="on" data-tab="dash">Tableau de bord</button>
+        <button type="button" data-tab="fiche">Ma fiche</button>
+        <a id="sideMap" href="/carte">Voir sur la carte</a>
+      </nav>
+      <div class="side-merchant">
+        <b id="sideName">—</b>
+        <span id="sideMeta">—</span>
+      </div>
+    </aside>
+    <main class="main">
+      <div id="needToken" class="panel hidden">
+        <h3>Lien d’accès requis</h3>
+        <p>Créez votre espace, puis complétez la fiche (vidéo, photos, prix).</p>
+        <p><a class="btn" href="/partenaires#professionnel">Créer mon espace</a>
+        <a class="btn btn-ghost" href="/espace/commercant/?token=cm-test-riad-ames">Compte test</a></p>
+      </div>
+
+      <section id="tab-dash">
+        <div class="topbar">
+          <div>
+            <h1 id="hello">Bonjour</h1>
+            <div class="sub" id="sub">Complétez votre fiche pour apparaître sur la carte</div>
+          </div>
+          <span class="pill draft" id="kStatus">—</span>
+        </div>
+        <div class="checklist" id="checklist"></div>
+        <div class="kpi-row">
+          <div class="kpi"><span>Vues du pin</span><b id="kViews">0</b></div>
+          <div class="kpi"><span>Clics</span><b id="kClicks">0</b></div>
+          <div class="kpi"><span>Demandes</span><b id="kBook">0</b></div>
+          <div class="kpi"><span>Quartier</span><b id="kRegion">—</b></div>
+        </div>
+        <div class="grid-2">
+          <div class="panel">
+            <div class="panel-head"><h3>Votre pin</h3><a id="pinMap" href="/carte">Voir sur la carte →</a></div>
+            <div class="pin-preview">
+              <div class="status" id="pinStatus">● Brouillon</div>
+              <div class="play" aria-hidden="true"></div>
+            </div>
+            <p id="pinMeta" style="font-size:13px;color:var(--muted);margin:0"></p>
+          </div>
+          <div class="panel">
+            <h3>Après publication</h3>
+            <p style="color:var(--muted);font-size:14px">Votre pin s’ouvre en snap vidéo sur la carte Marrakech, comme les villas et riads déjà en ligne.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="tab-fiche" class="hidden">
+        <div class="topbar">
+          <div>
+            <h1>Compléter la fiche</h1>
+            <div class="sub">Vidéo et photos depuis votre téléphone, description, services et prix. Puis modération.</div>
+          </div>
+        </div>
+        <form id="fiche" class="form-grid panel">
+          <label>Nom du lieu <input name="name" required></label>
+          <div class="row">
+            <label>Contact <input name="contact_name"></label>
+            <label>Téléphone <input name="phone"></label>
+          </div>
+          <div class="row">
+            <label>Quartier
+              <select name="region">
+                <option>Médina</option>
+                <option>Guéliz</option>
+                <option>Hivernage</option>
+                <option>Palmeraie</option>
+                <option>Route de l'Ourika</option>
+                <option>Agafay</option>
+              </select>
+            </label>
+            <label>Catégorie
+              <select name="category">
+                <option value="resto">Restaurant</option>
+                <option value="hebergement">Hébergement</option>
+                <option value="bien-etre">Bien-être / hammam</option>
+                <option value="experiences">Expériences</option>
+                <option value="evenements">Événements</option>
+                <option value="autre">Autre</option>
+              </select>
+            </label>
+          </div>
+          <label>Adresse <input name="address" placeholder="Rue, quartier, Marrakech"></label>
+          <label>Description
+            <textarea name="description" rows="4" placeholder="Ce qu’on y vit, l’ambiance, ce que vous proposez."></textarea>
+          </label>
+          <div class="media-field">
+            <span class="media-label">Votre vidéo</span>
+            <span class="hint">Choisissez une vidéo dans votre téléphone ou votre ordinateur. C’est elle qui joue sur la carte.</span>
+            <input type="hidden" name="video_url" id="video_url" value="">
+            <div id="videoPreview" class="media-preview"></div>
+            <label class="media-pick">
+              <input type="file" id="videoFile" accept="video/mp4,video/quicktime,video/webm,video/*" hidden>
+              <span class="btn btn-ghost">Ajouter une vidéo</span>
+            </label>
+            <p class="hint" id="videoStatus"></p>
+          </div>
+          <div class="media-field">
+            <span class="media-label">Photos du lieu</span>
+            <span class="hint">Ajoutez jusqu’à 6 photos depuis votre appareil. Une suffit pour commencer.</span>
+            <div id="photoList" class="photo-list"></div>
+            <label class="media-pick">
+              <input type="file" id="photoFiles" accept="image/jpeg,image/png,image/webp,image/*" multiple hidden>
+              <span class="btn btn-ghost">Ajouter des photos</span>
+            </label>
+            <p class="hint" id="photoStatus"></p>
+          </div>
+          <div>
+            <h3 style="font-family:Cardo,serif;font-size:16px;margin:8px 0">Services &amp; prix</h3>
+            <div id="services"></div>
+            <button type="button" class="btn btn-ghost" data-add="services">+ Service</button>
+          </div>
+          <div>
+            <h3 style="font-family:Cardo,serif;font-size:16px;margin:8px 0">Forfaits</h3>
+            <div id="packages"></div>
+            <button type="button" class="btn btn-ghost" data-add="packages">+ Forfait</button>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn" type="submit">Enregistrer le brouillon</button>
+            <button class="btn btn-gold" type="button" id="submitMod">Envoyer en modération</button>
+          </div>
+          <p class="status" id="ficheStatus" role="status"></p>
+        </form>
+      </section>
+    </main>
+  </div>
+<script src="/assets/cm-partner-api.js"></script>
+<script>
+var state = { account: null, photos: [] };
+function ytId(url) {
+  var m = String(url || "").match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/|embed\/))([\w-]{6,})/);
+  return m ? m[1] : "";
+}
+function hasVideo(url) {
+  return !!(url && (url.indexOf("http") === 0 || url.indexOf("/") === 0));
+}
+function renderVideo(url) {
+  var box = document.getElementById("videoPreview");
+  var hidden = document.getElementById("video_url");
+  hidden.value = url || "";
+  if (!url) { box.innerHTML = ""; return; }
+  var id = ytId(url);
+  if (id) {
+    box.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + id + '" allowfullscreen title="Aperçu vidéo"></iframe>';
+    return;
+  }
+  box.innerHTML = '<video src="' + url.replace(/"/g, "") + '" muted playsinline controls></video>' +
+    '<button type="button" class="media-remove" data-remove-video="1">Retirer</button>';
+}
+function renderPhotos(list) {
+  state.photos = (list || []).slice();
+  var box = document.getElementById("photoList");
+  box.innerHTML = state.photos.map(function (url, i) {
+    return '<div class="photo-item"><img src="' + String(url).replace(/"/g, "") + '" alt="">' +
+      '<button type="button" class="media-remove" data-remove-photo="' + i + '">Retirer</button></div>';
+  }).join("");
+}
+function errLabel(code) {
+  if (code === "too_large") return "Fichier trop lourd (vidéo 40 Mo max, photo 8 Mo).";
+  if (code === "type") return "Format non accepté. Vidéo : MP4. Photos : JPG ou PNG.";
+  return "Envoi impossible. Réessayez.";
+}
+function offerRows(id, items) {
+  var box = document.getElementById(id);
+  box.innerHTML = "";
+  (items && items.length ? items : [{ name: "", price: "", unit: "" }]).forEach(function (it) {
+    var row = document.createElement("div");
+    row.className = "offer-row";
+    row.innerHTML =
+      '<input data-k="name" placeholder="Nom" value="' + (it.name || "").replace(/"/g, "&quot;") + '">' +
+      '<input data-k="price" placeholder="Prix" value="' + (it.price || "").replace(/"/g, "&quot;") + '">' +
+      '<input data-k="unit" placeholder="Unité / détail" value="' + (it.unit || "").replace(/"/g, "&quot;") + '">';
+    box.appendChild(row);
+  });
+}
+function readOffers(id) {
+  return Array.prototype.map.call(document.querySelectorAll("#" + id + " .offer-row"), function (row) {
+    return {
+      name: row.querySelector('[data-k="name"]').value,
+      price: row.querySelector('[data-k="price"]').value,
+      unit: row.querySelector('[data-k="unit"]').value
+    };
+  }).filter(function (x) { return x.name; });
+}
+function checks(acc) {
+  var items = [
+    { ok: !!(acc.description && acc.description.length > 20), t: "Description", d: "Quelques phrases sur le lieu" },
+    { ok: hasVideo(acc.video_url), t: "Vidéo", d: "Fichier depuis votre téléphone" },
+    { ok: (acc.photos || []).length > 0, t: "Au moins une photo", d: "Depuis votre appareil" },
+    { ok: (acc.services || []).length > 0, t: "Services & prix", d: "Ce que vous proposez" },
+    { ok: !!(acc.address), t: "Adresse", d: "Pour le pin sur la carte" }
+  ];
+  document.getElementById("checklist").innerHTML = items.map(function (it) {
+    return '<div class="check' + (it.ok ? " ok" : "") + '"><b>' + (it.ok ? "✓ " : "○ ") + it.t + "</b><span>" + it.d + "</span></div>";
+  }).join("");
+}
+function fill(acc) {
+  state.account = acc;
+  document.getElementById("hello").textContent = "Bonjour, " + (acc.name || "commerçant");
+  document.getElementById("sub").textContent = acc.status === "draft"
+    ? "Espace créé — complétez vidéo, photos et prix, puis envoyez en modération."
+    : "Voici ce que votre pin a généré";
+  document.getElementById("sideName").textContent = acc.name || "—";
+  document.getElementById("sideMeta").textContent = (acc.region || "Médina") + " · " + (acc.category || "");
+  document.getElementById("kViews").textContent = (acc.stats && acc.stats.views) || 0;
+  document.getElementById("kClicks").textContent = (acc.stats && acc.stats.clicks) || 0;
+  document.getElementById("kBook").textContent = (acc.stats && acc.stats.bookings) || 0;
+  document.getElementById("kRegion").textContent = acc.region || "—";
+  document.getElementById("kStatus").outerHTML = '<span class="pill ' + (acc.status === "published" ? "pub" : acc.status === "pending" ? "pend" : "draft") + '" id="kStatus">' +
+    (acc.status === "published" ? "Publié" : acc.status === "pending" ? "En modération" : "Brouillon") + "</span>";
+  document.getElementById("pinStatus").textContent = acc.status === "published" ? "● En ligne" : acc.status === "pending" ? "● En modération" : "● Brouillon";
+  document.getElementById("pinMeta").textContent = acc.address || "Adresse à compléter";
+  var mapUrl = "/carte?pin=" + encodeURIComponent(acc.id || "");
+  document.getElementById("pinMap").href = mapUrl;
+  document.getElementById("sideMap").href = mapUrl;
+  var f = document.getElementById("fiche");
+  ["name", "contact_name", "phone", "region", "category", "address", "description", "video_url"].forEach(function (k) {
+    if (f[k]) f[k].value = acc[k] || "";
+  });
+  renderVideo(acc.video_url || "");
+  renderPhotos(acc.photos || []);
+  offerRows("services", acc.services);
+  offerRows("packages", acc.packages);
+  checks(acc);
+}
+function showTab(id) {
+  ["dash", "fiche"].forEach(function (t) {
+    document.getElementById("tab-" + t).classList.toggle("hidden", t !== id);
+    var btn = document.querySelector('.side-nav [data-tab="' + t + '"]');
+    if (btn) btn.classList.toggle("on", t === id);
+  });
+}
+document.querySelectorAll("[data-tab]").forEach(function (el) {
+  el.addEventListener("click", function () { showTab(el.getAttribute("data-tab")); });
+});
+document.querySelectorAll("[data-add]").forEach(function (btn) {
+  btn.addEventListener("click", function () {
+    offerRows(btn.getAttribute("data-add"), readOffers(btn.getAttribute("data-add")).concat([{ name: "", price: "", unit: "" }]));
+  });
+});
+document.getElementById("videoFile").addEventListener("change", function () {
+  var file = this.files && this.files[0];
+  this.value = "";
+  if (!file) return;
+  var st = document.getElementById("videoStatus");
+  st.textContent = "Envoi de la vidéo…";
+  CMPartner.upload(file, "video").then(function (j) {
+    fill(j.account);
+    st.textContent = "Vidéo ajoutée.";
+  }).catch(function (err) {
+    st.textContent = errLabel(err.message);
+  });
+});
+document.getElementById("photoFiles").addEventListener("change", function () {
+  var files = Array.prototype.slice.call(this.files || []);
+  this.value = "";
+  if (!files.length) return;
+  var st = document.getElementById("photoStatus");
+  st.textContent = "Envoi des photos…";
+  var chain = Promise.resolve();
+  files.forEach(function (file) {
+    chain = chain.then(function () { return CMPartner.upload(file, "photo"); }).then(function (j) {
+      fill(j.account);
+    });
+  });
+  chain.then(function () { st.textContent = "Photos ajoutées."; }).catch(function (err) {
+    st.textContent = errLabel(err.message);
+  });
+});
+document.getElementById("fiche").addEventListener("click", function (e) {
+  var vbtn = e.target.closest("[data-remove-video]");
+  if (vbtn) {
+    e.preventDefault();
+    CMPartner.post("/merchant/media-remove", { token: CMPartner.currentToken(), kind: "video", url: document.getElementById("video_url").value })
+      .then(function (j) { fill(j.account); });
+    return;
+  }
+  var pbtn = e.target.closest("[data-remove-photo]");
+  if (pbtn) {
+    e.preventDefault();
+    var url = (state.photos || [])[Number(pbtn.getAttribute("data-remove-photo"))];
+    if (!url) return;
+    CMPartner.post("/merchant/media-remove", { token: CMPartner.currentToken(), kind: "photo", url: url })
+      .then(function (j) { fill(j.account); });
+  }
+});
+document.getElementById("fiche").addEventListener("submit", function (e) {
+  e.preventDefault();
+  var f = e.target;
+  var st = document.getElementById("ficheStatus");
+  st.textContent = "Enregistrement…";
+  CMPartner.put("/merchant", {
+    token: CMPartner.currentToken(),
+    name: f.name.value,
+    contact_name: f.contact_name.value,
+    phone: f.phone.value,
+    region: f.region.value,
+    category: f.category.value,
+    address: f.address.value,
+    description: f.description.value,
+    video_url: document.getElementById("video_url").value,
+    photos: state.photos || [],
+    services: readOffers("services"),
+    packages: readOffers("packages")
+  }).then(function (j) {
+    fill(j.account);
+    st.className = "status ok";
+    st.textContent = "Brouillon enregistré. Quand c’est prêt : Envoyer en modération.";
+  }).catch(function (err) {
+    st.className = "status err";
+    st.textContent = "Erreur : " + err.message;
+  });
+});
+document.getElementById("submitMod").addEventListener("click", function () {
+  var st = document.getElementById("ficheStatus");
+  document.getElementById("fiche").requestSubmit();
+  setTimeout(function () {
+    CMPartner.post("/merchant/submit", { token: CMPartner.currentToken() }).then(function (j) {
+      fill(j.account);
+      st.className = "status ok";
+      st.textContent = "Envoyé en modération. Après validation, la fiche sort sur la carte.";
+    }).catch(function (err) {
+      st.className = "status err";
+      st.textContent = "Ajoutez au moins le nom et une description. (" + err.message + ")";
+    });
+  }, 400);
+});
+(function boot() {
+  var token = CMPartner.currentToken();
+  if (!token) {
+    document.getElementById("needToken").classList.remove("hidden");
+    document.getElementById("tab-dash").classList.add("hidden");
+    return;
+  }
+  CMPartner.session(token).then(function (s) {
+    if (s.account.role === "admin") {
+      location.href = "/espace/admin/?token=" + encodeURIComponent(s.account.token);
+      return;
+    }
+    fill(s.account);
+    var wantFiche = location.hash === "#fiche" || s.account.status === "draft" || new URLSearchParams(location.search).get("next") === "fiche";
+    if (wantFiche) showTab("fiche");
+  }).catch(function () {
+    document.getElementById("needToken").classList.remove("hidden");
+    document.getElementById("tab-dash").classList.add("hidden");
+  });
+})();
+</script>
+</body>
+</html>

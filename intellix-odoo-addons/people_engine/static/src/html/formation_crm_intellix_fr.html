@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Formation CRM IntelliX — Pourquoi & Comment</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a12;
+  --bg2: #0e0e1c;
+  --bg3: #13131f;
+  --card: #161624;
+  --card2: #1b1b2c;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.13);
+  --indigo: #6366f1;
+  --indigo2: #818cf8;
+  --indigo-light: #a5b4fc;
+  --violet: #8b5cf6;
+  --cyan: #06b6d4;
+  --cyan-light: #67e8f9;
+  --green: #4ade80;
+  --amber: #fbbf24;
+  --red: #f87171;
+  --pink: #f472b6;
+  --text: #f0f0ff;
+  --text2: #9898b8;
+  --text3: #55557a;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; line-height: 1.6; }
+
+/* ── HERO ── */
+.hero {
+  background: var(--bg);
+  padding: 3.5rem 2rem 0;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -80px; left: 50%; transform: translateX(-50%);
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(99,102,241,0.10) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-inner { max-width: 1180px; margin: 0 auto; position: relative; }
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(99,102,241,0.12);
+  border: 1px solid rgba(99,102,241,0.28);
+  border-radius: 100px;
+  padding: 5px 16px;
+  font-size: 12px; font-weight: 600;
+  color: var(--indigo-light);
+  letter-spacing: 0.04em; text-transform: uppercase;
+  margin-bottom: 1.4rem;
+}
+.eyebrow-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--indigo); }
+h1 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(30px, 5vw, 56px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.2rem;
+}
+.gradient-text {
+  background: linear-gradient(120deg, #fff 0%, var(--indigo-light) 40%, var(--cyan-light) 80%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-sub {
+  font-size: 17px; color: var(--text2); max-width: 620px; line-height: 1.7; margin-bottom: 2.5rem;
+}
+.hero-stats {
+  display: flex; gap: 0; flex-wrap: wrap;
+  border: 1px solid var(--border); border-radius: 16px;
+  overflow: hidden; background: var(--card);
+  margin-bottom: 0;
+}
+.hero-stat {
+  flex: 1; min-width: 150px;
+  padding: 1.4rem 1.6rem;
+  border-right: 1px solid var(--border);
+}
+.hero-stat:last-child { border-right: none; }
+.hero-stat-val {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 26px; font-weight: 700;
+  background: linear-gradient(135deg, var(--indigo-light), var(--cyan-light));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: block; margin-bottom: 3px;
+}
+.hero-stat-label { font-size: 12px; color: var(--text3); line-height: 1.4; }
+
+/* ── NAV ── */
+.nav-outer {
+  position: sticky; top: 0; z-index: 200;
+  background: rgba(10,10,18,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-inner {
+  max-width: 1180px; margin: 0 auto;
+  padding: 0 2rem;
+  display: flex; gap: 2px;
+  overflow-x: auto; scrollbar-width: none;
+}
+.nav-inner::-webkit-scrollbar { display: none; }
+.nb {
+  background: none; border: none; cursor: pointer;
+  color: var(--text3); font-family: 'Inter', sans-serif;
+  font-size: 13px; font-weight: 500;
+  padding: 13px 15px;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: color .2s, border-color .2s;
+  display: flex; align-items: center; gap: 7px;
+}
+.nb:hover { color: var(--text2); }
+.nb.on { color: var(--indigo-light); border-bottom-color: var(--indigo); }
+.nb-tag {
+  background: rgba(99,102,241,0.15);
+  color: var(--indigo-light);
+  border-radius: 4px; padding: 1px 6px;
+  font-size: 10px; font-weight: 700;
+}
+.nb.on .nb-tag { background: rgba(99,102,241,0.3); }
+
+/* ── MAIN ── */
+.main { max-width: 1180px; margin: 0 auto; padding: 2.5rem 2rem 4rem; }
+.mod { display: none; }
+.mod.on { display: block; }
+
+/* ── MODULE HEADER ── */
+.mhdr {
+  display: flex; align-items: flex-start; gap: 1.25rem;
+  padding-bottom: 2rem; margin-bottom: 2.5rem;
+  border-bottom: 1px solid var(--border);
+}
+.micon {
+  width: 54px; height: 54px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px; flex-shrink: 0;
+}
+.mhdr h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 24px; font-weight: 700; margin-bottom: 5px;
+}
+.mhdr p { color: var(--text2); font-size: 14px; line-height: 1.65; max-width: 650px; }
+
+/* ── SECTION TITLE ── */
+.stitle {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 18px; font-weight: 700;
+  margin: 2.5rem 0 1.25rem;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+  color: var(--text);
+}
+
+/* ── CARDS ── */
+.card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.5rem;
+  margin-bottom: 1.5rem; transition: border-color .2s;
+}
+.card:hover { border-color: var(--border2); }
+.card h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px; font-weight: 600;
+  margin-bottom: 1rem;
+  display: flex; align-items: center; gap: 9px;
+}
+.card p { color: var(--text2); font-size: 13.5px; line-height: 1.7; margin-bottom: .8rem; }
+.card p:last-child { margin-bottom: 0; }
+.card h4 {
+  font-size: 11px; font-weight: 700;
+  color: var(--indigo-light);
+  text-transform: uppercase; letter-spacing: .08em;
+  margin: 1.2rem 0 .6rem;
+}
+
+/* ── GRIDS ── */
+.g2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px,1fr)); gap: 1.5rem; }
+.g3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 1.25rem; }
+.g4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 1rem; }
+
+/* ── FEATURE CARDS ── */
+.feat {
+  background: var(--card2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.4rem;
+  transition: border-color .2s, transform .2s;
+}
+.feat:hover { border-color: rgba(99,102,241,0.35); transform: translateY(-2px); }
+.feat-icon {
+  width: 42px; height: 42px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; margin-bottom: 12px;
+}
+.feat h4 { font-size: 14px; font-weight: 600; margin-bottom: 7px; color: var(--text); }
+.feat p { font-size: 13px; color: var(--text2); line-height: 1.6; }
+
+/* ── METRICS ── */
+.mrow { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px,1fr)); gap: 1rem; margin: 1.5rem 0; }
+.mc {
+  background: var(--card2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.1rem 1rem; text-align: center;
+}
+.mv {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 22px; font-weight: 700; display: block; margin-bottom: 4px;
+}
+.ml { font-size: 11px; color: var(--text3); line-height: 1.4; }
+.mc.indigo .mv { color: var(--indigo-light); }
+.mc.green .mv { color: var(--green); }
+.mc.cyan .mv { color: var(--cyan-light); }
+.mc.amber .mv { color: var(--amber); }
+.mc.violet .mv { color: #c4b5fd; }
+.mc.pink .mv { color: var(--pink); }
+
+/* ── STEPS ── */
+.steps { counter-reset: s; }
+.step { display: flex; gap: 1.2rem; margin-bottom: 1.5rem; position: relative; }
+.step:not(:last-child)::before {
+  content: ''; position: absolute;
+  left: 18px; top: 38px; bottom: -20px; width: 2px;
+  background: var(--border);
+}
+.snum {
+  width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+  background: rgba(99,102,241,0.14); border: 1px solid rgba(99,102,241,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; color: var(--indigo-light);
+  counter-increment: s;
+}
+.snum::after { content: counter(s); }
+.sc h4 { font-size: 14px; font-weight: 600; margin-bottom: 5px; }
+.sc p { font-size: 13px; color: var(--text2); line-height: 1.65; }
+
+/* ── TABLES ── */
+.dt { width: 100%; border-collapse: collapse; font-size: 13px; }
+.dt th {
+  text-align: left; padding: 9px 14px;
+  font-size: 10.5px; text-transform: uppercase;
+  letter-spacing: .07em; color: var(--text3);
+  border-bottom: 1px solid var(--border); font-weight: 600;
+}
+.dt td {
+  padding: 11px 14px; border-bottom: 1px solid var(--border);
+  color: var(--text2); vertical-align: top; line-height: 1.55;
+}
+.dt tr:last-child td { border-bottom: none; }
+.dt tr:hover td { background: rgba(255,255,255,0.018); }
+
+/* ── TAGS ── */
+.tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 10px; border-radius: 100px;
+  font-size: 11.5px; font-weight: 500; margin: 2px;
+}
+.ti { background: rgba(99,102,241,0.13); color: var(--indigo-light); border: 1px solid rgba(99,102,241,0.25); }
+.tc { background: rgba(6,182,212,0.1); color: var(--cyan-light); border: 1px solid rgba(6,182,212,0.2); }
+.tg { background: rgba(74,222,128,0.1); color: var(--green); border: 1px solid rgba(74,222,128,0.2); }
+.ta { background: rgba(251,191,36,0.1); color: var(--amber); border: 1px solid rgba(251,191,36,0.2); }
+.tr { background: rgba(248,113,113,0.1); color: var(--red); border: 1px solid rgba(248,113,113,0.2); }
+.tv { background: rgba(139,92,246,0.13); color: #c4b5fd; border: 1px solid rgba(139,92,246,0.25); }
+
+/* ── HIGHLIGHT / WARN ── */
+.hl {
+  background: rgba(99,102,241,0.07); border: 1px solid rgba(99,102,241,0.2);
+  border-left: 3px solid var(--indigo);
+  border-radius: 10px; padding: 1.2rem 1.4rem; margin: 1rem 0;
+}
+.hl-title { font-weight: 600; font-size: 13px; color: var(--indigo-light); margin-bottom: 6px; }
+.hl p { font-size: 13px; color: var(--text2); line-height: 1.7; }
+.warn {
+  background: rgba(251,191,36,0.06); border: 1px solid rgba(251,191,36,0.2);
+  border-left: 3px solid var(--amber);
+  border-radius: 10px; padding: 1.2rem 1.4rem; margin: 1rem 0;
+}
+.warn-title { font-weight: 600; font-size: 13px; color: var(--amber); margin-bottom: 6px; }
+.warn p { font-size: 13px; color: rgba(251,191,36,0.8); line-height: 1.7; }
+.tip {
+  background: rgba(74,222,128,0.06); border: 1px solid rgba(74,222,128,0.18);
+  border-left: 3px solid var(--green);
+  border-radius: 10px; padding: 1.2rem 1.4rem; margin: 1rem 0;
+}
+.tip-title { font-weight: 600; font-size: 13px; color: var(--green); margin-bottom: 6px; }
+.tip p { font-size: 13px; color: rgba(74,222,128,0.75); line-height: 1.7; }
+
+/* ── PROCESS FLOW ── */
+.flow {
+  display: flex; align-items: center; gap: 0;
+  flex-wrap: wrap; margin: 1.5rem 0;
+}
+.fstep {
+  background: var(--card2); border: 1px solid var(--border);
+  border-radius: 10px; padding: .9rem 1.2rem;
+  text-align: center; flex: 1; min-width: 110px;
+}
+.fstep-num { font-size: 10px; color: var(--text3); margin-bottom: 4px; }
+.fstep-label { font-size: 13px; font-weight: 600; color: var(--text); }
+.fstep-sub { font-size: 11px; color: var(--text2); margin-top: 3px; line-height: 1.4; }
+.farrow { color: var(--text3); font-size: 18px; padding: 0 6px; flex-shrink: 0; }
+
+/* ── UI MOCK ── */
+.ui-mock {
+  background: #0c0c1a; border: 1px solid var(--border2);
+  border-radius: 14px; padding: 1.5rem;
+  font-size: 13px; margin: 1.25rem 0;
+}
+.ui-bar {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--card2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 8px 12px; margin-bottom: 12px;
+  font-size: 12px; color: var(--text2);
+}
+.ui-dot { width: 8px; height: 8px; border-radius: 50%; }
+.ui-row {
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+  gap: 8px; align-items: center;
+  padding: 10px 12px; border-radius: 8px;
+  border-bottom: 1px solid var(--border); font-size: 12px;
+}
+.ui-row:last-child { border-bottom: none; }
+.ui-row:hover { background: rgba(255,255,255,0.025); }
+.ui-row.head { background: rgba(99,102,241,0.06); font-weight: 600; font-size: 10.5px; color: var(--text3); text-transform: uppercase; letter-spacing: .06em; }
+.ui-name { font-weight: 600; color: var(--text); }
+.ui-company { font-size: 11px; color: var(--text3); }
+.ui-score-bar { height: 5px; border-radius: 100px; background: var(--border); overflow: hidden; }
+.ui-score-fill { height: 100%; border-radius: 100px; }
+
+/* ── KANBAN ── */
+.kanban { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: 1rem; margin: 1.5rem 0; }
+.kol { background: var(--card2); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; }
+.kol-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+.kcard { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 10px; margin-bottom: 8px; }
+.kcard:last-child { margin-bottom: 0; }
+.kcard-name { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+.kcard-meta { font-size: 11px; color: var(--text3); }
+.kcard-tag { display: inline-block; padding: 2px 8px; border-radius: 100px; font-size: 10px; font-weight: 600; margin-top: 6px; }
+
+/* ── CHECKLIST ── */
+.cl { list-style: none; }
+.cl li {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 8px 0; font-size: 13.5px; color: var(--text2);
+  border-bottom: 1px solid rgba(255,255,255,0.04); line-height: 1.55;
+}
+.cl li:last-child { border-bottom: none; }
+.ck { color: var(--green); font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+.cx { color: var(--red); font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+
+/* ── COMPARISON TABLE ── */
+.comp-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+.without { background: rgba(248,113,113,0.05); border: 1px solid rgba(248,113,113,0.18); border-radius: 12px; padding: 1.25rem; }
+.with { background: rgba(74,222,128,0.05); border: 1px solid rgba(74,222,128,0.18); border-radius: 12px; padding: 1.25rem; }
+.cmp-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 10px; }
+.without .cmp-label { color: var(--red); }
+.with .cmp-label { color: var(--green); }
+.without li, .with li { font-size: 13px; color: var(--text2); line-height: 1.6; margin-bottom: 6px; padding-left: 16px; position: relative; }
+.without li::before { content: '✗'; position: absolute; left: 0; color: var(--red); font-size: 11px; }
+.with li::before { content: '✓'; position: absolute; left: 0; color: var(--green); font-size: 11px; }
+
+/* ── ROLE CARD ── */
+.role-card {
+  background: var(--card2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.4rem;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.role-avatar {
+  width: 44px; height: 44px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; font-weight: 700;
+  font-family: 'Space Grotesk', sans-serif;
+  margin-bottom: 4px;
+}
+.role-name { font-size: 15px; font-weight: 600; }
+.role-title { font-size: 12px; color: var(--text3); margin-bottom: 6px; }
+.role-actions li { font-size: 13px; color: var(--text2); line-height: 1.6; margin-bottom: 5px; padding-left: 14px; position: relative; }
+.role-actions li::before { content: '→'; position: absolute; left: 0; color: var(--indigo-light); font-size: 11px; }
+
+/* ── FOOTER ── */
+.pfooter {
+  max-width: 1180px; margin: 0 auto;
+  padding: 2rem; border-top: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 12px; color: var(--text3);
+}
+
+@media (max-width: 720px) {
+  .comp-row { grid-template-columns: 1fr; }
+  .g2, .g3, .g4 { grid-template-columns: 1fr; }
+  .main { padding: 1.5rem 1rem; }
+  .hero { padding: 2rem 1rem 0; }
+  .nav-inner { padding: 0 1rem; }
+  .hero-stats { flex-direction: column; }
+  .hero-stat { border-right: none; border-bottom: 1px solid var(--border); }
+  .hero-stat:last-child { border-bottom: none; }
+  .flow { flex-direction: column; }
+  .farrow { transform: rotate(90deg); }
+  .ui-row { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════ HERO ═══════ -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow"><span class="eyebrow-dot"></span>IntelliX Academy · Formation CRM</div>
+    <h1><span class="gradient-text">Pourquoi & Comment<br>utiliser IntelliX CRM</span></h1>
+    <p class="hero-sub">De la fiche contact jusqu'à la vente signée — comprendre la logique du CRM, maîtriser les modules, et transformer votre pipeline en machine à revenus prévisibles.</p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="hero-stat-val">7 modules</span>
+        <span class="hero-stat-label">de formation progressive</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-val">Odoo 19</span>
+        <span class="hero-stat-label">base technologique IntelliX</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-val">Call Center + SaaS</span>
+        <span class="hero-stat-label">deux modèles couverts</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-val">IA intégrée</span>
+        <span class="hero-stat-label">Léa, Alex, Sofia, Sophie</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ NAV ═══════ -->
+<div class="nav-outer">
+  <div class="nav-inner">
+    <button class="nb on" onclick="sw(0)"><span class="nb-tag">01</span> C'est quoi un CRM</button>
+    <button class="nb" onclick="sw(1)"><span class="nb-tag">02</span> Interface IntelliX</button>
+    <button class="nb" onclick="sw(2)"><span class="nb-tag">03</span> Pipeline & Leads</button>
+    <button class="nb" onclick="sw(3)"><span class="nb-tag">04</span> Agents & Humains IA</button>
+    <button class="nb" onclick="sw(4)"><span class="nb-tag">05</span> People Engine</button>
+    <button class="nb" onclick="sw(5)"><span class="nb-tag">06</span> Messagerie & Crédits</button>
+    <button class="nb" onclick="sw(6)"><span class="nb-tag">07</span> Bonnes Pratiques</button>
+  </div>
+</div>
+
+<!-- ═══════ CONTENT ═══════ -->
+<div class="main">
+
+<!-- ══════════════════════════════════════════════
+     MODULE 01 — C'EST QUOI UN CRM
+══════════════════════════════════════════════ -->
+<div class="mod on" id="m0">
+  <div class="mhdr">
+    <div class="micon" style="background:rgba(99,102,241,0.13);">🧠</div>
+    <div>
+      <h2>C'est quoi un CRM — et pourquoi c'est vital</h2>
+      <p>Le CRM n'est pas un carnet d'adresses amélioré. C'est le système nerveux central de votre activité commerciale — sans lui, vous perdez des leads, vous oubliez des relances, et vous ne savez jamais vraiment où en est votre chiffre d'affaires.</p>
+    </div>
+  </div>
+
+  <div class="stitle">🔎 La définition simple</div>
+  <div class="card">
+    <h3>💡 CRM = Customer Relationship Management</h3>
+    <p>Un CRM est un logiciel qui centralise toutes vos interactions avec vos prospects et clients : chaque appel, chaque email, chaque WhatsApp, chaque devis, chaque note. Tout au même endroit, relié à la même fiche contact.</p>
+    <div class="hl">
+      <div class="hl-title">📌 La métaphore parfaite</div>
+      <p>Imaginez que vous embauchez une nouvelle commerciale demain. Sans CRM, elle ne sait rien : qui a appelé, ce qui a été dit, ce qui est en attente. Avec IntelliX, elle ouvre la fiche et voit l'historique complet en 30 secondes — et peut reprendre exactement là où l'IA ou le collègue précédent s'est arrêté.</p>
+    </div>
+  </div>
+
+  <div class="stitle">⚡ Avec vs Sans CRM — La réalité terrain</div>
+  <div class="comp-row">
+    <div class="without">
+      <div class="cmp-label">❌ Sans CRM (Excel / mémoire / WhatsApp)</div>
+      <ul>
+        <li>Leads perdus dans des tableaux Excel non synchronisés</li>
+        <li>Relances oubliées — "j'y pensais ce matin mais j'avais une réunion"</li>
+        <li>Personne ne sait qui a rappelé qui, ni ce qui a été dit</li>
+        <li>Pipeline invisible — impossible de prévoir le CA du mois prochain</li>
+        <li>Un commercial qui part emporte toute sa base avec lui</li>
+        <li>Impossible de savoir quelle source génère les meilleurs leads</li>
+        <li>Chaque agent IA opère en silo — pas de mémoire inter-agents</li>
+      </ul>
+    </div>
+    <div class="with">
+      <div class="cmp-label">✅ Avec IntelliX CRM</div>
+      <ul>
+        <li>Chaque lead entrant est capturé automatiquement (web, Meta, n8n)</li>
+        <li>Rappels automatiques selon le scoring et la classification</li>
+        <li>Historique complet sur chaque contact : appels, messages, notes IA</li>
+        <li>Pipeline visuel avec CA prévisionnel en temps réel</li>
+        <li>Base appartient à l'entreprise, accessible à toute l'équipe</li>
+        <li>Rapport de source : Meta vs web vs téléphone vs partenaire</li>
+        <li>Léa, Alex, Sofia et Sofia ES partagent le même historique contact</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="stitle">🎯 Les 4 problèmes qu'IntelliX résout concrètement</div>
+  <div class="g2">
+    <div class="feat">
+      <div class="feat-icon" style="background:rgba(99,102,241,0.13);">📉</div>
+      <h4>Problème 1 — Fuite de leads</h4>
+      <p>En moyenne, 60% des leads non-rappelés dans les 5 minutes sont perdus définitivement. IntelliX déclenche l'appel IA automatiquement à la réception du lead, 24h/24.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon" style="background:rgba(6,182,212,0.1);">🔄</div>
+      <h4>Problème 2 — Manque de suivi</h4>
+      <p>Un prospect dit "rappelez-moi dans 2 semaines". Sans CRM, 90% du temps ce rappel n'arrive jamais. Dans IntelliX, le rappel est planifié automatiquement avec le contexte exact du premier échange.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon" style="background:rgba(74,222,128,0.1);">📊</div>
+      <h4>Problème 3 — Pilotage à l'aveugle</h4>
+      <p>Votre directeur demande combien de ventes ce mois — vous cherchez dans 3 fichiers différents. IntelliX donne le dashboard en temps réel : leads, calls, conversions, CA par campagne.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon" style="background:rgba(251,191,36,0.1);">🤝</div>
+      <h4>Problème 4 — Coordination humain + IA</h4>
+      <p>Léa qualifie un prospect chaud à 22h. Le conseiller humain reprend le dossier à 9h avec tout le contexte : nom, situation, budget, objections soulevées. Zéro perte d'information.</p>
+    </div>
+  </div>
+
+  <div class="stitle">📐 La logique fondamentale d'IntelliX</div>
+  <div class="card">
+    <h3>🔗 Le flux universel de toute interaction commerciale</h3>
+    <div class="flow">
+      <div class="fstep">
+        <div class="fstep-num">ENTRÉE</div>
+        <div class="fstep-label">Lead Brut</div>
+        <div class="fstep-sub">Web, Meta, CSV, appel entrant</div>
+      </div>
+      <div class="farrow">→</div>
+      <div class="fstep">
+        <div class="fstep-num">QUALIFICATION</div>
+        <div class="fstep-label">Agent IA</div>
+        <div class="fstep-sub">Léa / Alex / Sofia — scoring</div>
+      </div>
+      <div class="farrow">→</div>
+      <div class="fstep">
+        <div class="fstep-num">ENRICHISSEMENT</div>
+        <div class="fstep-label">CRM IntelliX</div>
+        <div class="fstep-sub">Fiche, historique, score</div>
+      </div>
+      <div class="farrow">→</div>
+      <div class="fstep">
+        <div class="fstep-num">CONVERSION</div>
+        <div class="fstep-label">Humain + Devis</div>
+        <div class="fstep-sub">Transfert, négociation, signature</div>
+      </div>
+      <div class="farrow">→</div>
+      <div class="fstep">
+        <div class="fstep-num">FIDÉLISATION</div>
+        <div class="fstep-label">Suivi Client</div>
+        <div class="fstep-sub">Upsell, NPS, renouvellement</div>
+      </div>
+    </div>
+    <p style="font-size:13px;color:var(--text2);">Chaque étape crée des données dans IntelliX. Ces données alimentent les décisions suivantes. Plus le cycle tourne, plus votre CRM devient intelligent sur votre marché spécifique.</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     MODULE 02 — INTERFACE INTELLIX
+══════════════════════════════════════════════ -->
+<div class="mod" id="m1">
+  <div class="mhdr">
+    <div class="micon" style="background:rgba(6,182,212,0.1);">🖥️</div>
+    <div>
+      <h2>L'interface IntelliX — Navigation & Modules</h2>
+      <p>Comprendre l'architecture de l'interface pour se déplacer efficacement. IntelliX est construit sur Odoo 19 avec des modules propriétaires Doorway — voici ce que vous voyez et ce que ça fait.</p>
+    </div>
+  </div>
+
+  <div class="stitle">🗺️ Cartographie des modules IntelliX</div>
+  <div class="g3">
+    <div class="feat">
+      <div class="feat-icon" style="background:rgba(99,102,241,0.13);">📋</div>
+      <h4>CRM & Leads Bruts</h4>
+      <p>Module <code style="font-size:11px;background:rgba(0,0,0,0.3);padding:2px 5px;border-radius:4px">doorway_leads_bruts</code> — 23+ sources d'entrée, pipeline visuel, scoring automatique. C'est votre salle de contrôle des prospects.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon" style="background:rgba(6,182,212,0.1);">📞</div>
+      <h4>Campagnes VICIdial</h4>
+      <p>Module <code style="font-size:11px;background:rgba(0,0,0,0.3);padding:2px 5px;border-radius:4px">doorway_vicidial_campaigns</code> — Interface WebRTC 3 panneaux : liste d'appels, fiche contact en temps réel, script dynamique.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon" style="background:rgba(74,222,128,0.1);">🤖</div>
+      <h4>Agents Dashboard</h4>
+      <p>Module <code style="font-size:11px;background:rgba(0,0,0,0.3);padding:2px 5px;border-radius:4px">doorway_agents_dashboard</code> — Supervision des agents IA et humains, A/B testing, wizard de configuration 7 étapes.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon" style="background:rgba(139,92,246,0.13);">💬</div>
+      <h4>Messagerie Omnicanale</h4>
+      <p>Module <code style="font-size:11px;background:rgba(0,0,0,0.3);padding:2px 5px;border-radius:4px">doorway_messaging</code> — Email, SMS, WhatsApp, LinkedIn, GMB depuis une seule interface. Historique unifié par contact.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon" style="background:rgba(251,191,36,0.1);">🏆</div>
+      <h4>People Engine (RH)</h4>
+      <p>Module <code style="font-size:11px;background:rgba(0,0,0,0.3);padding:2px 5px;border-radius:4px">people_engine</code> — Gestion RH intelligente : score /100, paie, disciplinaire, gamification, coaching IA.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon" style="background:rgba(248,113,113,0.1);">💳</div>
+      <h4>Crédits & Facturation</h4>
+      <p>Module <code style="font-size:11px;background:rgba(0,0,0,0.3);padding:2px 5px;border-radius:4px">doorway_credits</code> — SaaS multi-tenant, Stripe intégré, 89$/user/mois. Suivi de la consommation en temps réel.</p>
+    </div>
+  </div>
+
+  <div class="stitle">📱 Simulation de la vue Pipeline</div>
+  <div class="card">
+    <h3>👁️ Vue liste — Module Leads Bruts</h3>
+    <div class="ui-mock">
+      <div class="ui-bar">
+        <div class="ui-dot" style="background:#f87171"></div>
+        <div class="ui-dot" style="background:#fbbf24"></div>
+        <div class="ui-dot" style="background:#4ade80"></div>
+        <span style="margin-left:4px;color:var(--text3);">IntelliX CRM — Leads Bruts · Campagne DW_QCB2C</span>
+      </div>
+      <div class="ui-row head">
+        <div>Contact</div><div>Source</div><div>Score</div><div>Statut</div><div>Action</div>
+      </div>
+      <div class="ui-row">
+        <div><div class="ui-name">Marie Dupont</div><div class="ui-company">Lyon · Propriétaire</div></div>
+        <div><span class="tag tc">Meta</span></div>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:var(--green);margin-bottom:3px;">88/100</div>
+          <div class="ui-score-bar"><div class="ui-score-fill" style="width:88%;background:var(--green)"></div></div>
+        </div>
+        <div><span class="tag tg">🔥 Chaud</span></div>
+        <div><span style="font-size:11px;color:var(--indigo-light);cursor:pointer;">Transférer →</span></div>
+      </div>
+      <div class="ui-row">
+        <div><div class="ui-name">Jean-Marc Lebrun</div><div class="ui-company">Paris · TNS</div></div>
+        <div><span class="tag ti">Web</span></div>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:var(--amber);margin-bottom:3px;">54/100</div>
+          <div class="ui-score-bar"><div class="ui-score-fill" style="width:54%;background:var(--amber)"></div></div>
+        </div>
+        <div><span class="tag ta">🌡️ Tiède</span></div>
+        <div><span style="font-size:11px;color:var(--indigo-light);cursor:pointer;">Nurturing →</span></div>
+      </div>
+      <div class="ui-row">
+        <div><div class="ui-name">Amina Benali</div><div class="ui-company">Marseille · Locataire</div></div>
+        <div><span class="tag tv">CSV</span></div>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:var(--text3);margin-bottom:3px;">22/100</div>
+          <div class="ui-score-bar"><div class="ui-score-fill" style="width:22%;background:var(--text3)"></div></div>
+        </div>
+        <div><span class="tag tr">❄️ Froid</span></div>
+        <div><span style="font-size:11px;color:var(--text3);cursor:pointer;">Archiver</span></div>
+      </div>
+    </div>
+    <div class="tip">
+      <div class="tip-title">💡 Raccourci clavier utile</div>
+      <p>Depuis n'importe quelle liste Odoo/IntelliX, appuyez sur <strong>Ctrl+K</strong> pour la recherche rapide. Tapez le nom, le numéro, ou l'entreprise — vous tombez direct sur la fiche.</p>
+    </div>
+  </div>
+
+  <div class="stitle">📊 Vue Kanban — Pipeline visuel</div>
+  <div class="card">
+    <h3>🗂️ Exemple : Pipeline Campagne Rénovation QC</h3>
+    <div class="kanban">
+      <div class="kol">
+        <div class="kol-title" style="color:var(--text3)">Nouveau · 14</div>
+        <div class="kcard">
+          <div class="kcard-name">Robert Tremblay</div>
+          <div class="kcard-meta">Laval · Rénovation cuisine</div>
+          <div class="kcard-tag" style="background:rgba(6,182,212,0.1);color:var(--cyan-light)">Web Form</div>
+        </div>
+        <div class="kcard">
+          <div class="kcard-name">Isabelle Roy</div>
+          <div class="kcard-meta">Longueuil · Thermopompe</div>
+          <div class="kcard-tag" style="background:rgba(139,92,246,0.1);color:#c4b5fd">Meta Ads</div>
+        </div>
+      </div>
+      <div class="kol">
+        <div class="kol-title" style="color:var(--cyan-light)">En cours · 8</div>
+        <div class="kcard">
+          <div class="kcard-name">Pierre Gauthier</div>
+          <div class="kcard-meta">Brossard · Isolation</div>
+          <div class="kcard-tag" style="background:rgba(251,191,36,0.1);color:var(--amber)">Rappel J+3</div>
+        </div>
+      </div>
+      <div class="kol">
+        <div class="kol-title" style="color:var(--amber)">Devis envoyé · 5</div>
+        <div class="kcard">
+          <div class="kcard-name">Chantal Morin</div>
+          <div class="kcard-meta">Montréal · Toiture</div>
+          <div class="kcard-tag" style="background:rgba(251,191,36,0.12);color:var(--amber)">Décision 3j</div>
+        </div>
+      </div>
+      <div class="kol">
+        <div class="kol-title" style="color:var(--green)">Gagné · 3</div>
+        <div class="kcard">
+          <div class="kcard-name">Michel Bouchard</div>
+          <div class="kcard-meta">Québec · 18 500$</div>
+          <div class="kcard-tag" style="background:rgba(74,222,128,0.1);color:var(--green)">✓ Signé</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     MODULE 03 — PIPELINE & LEADS
+══════════════════════════════════════════════ -->
+<div class="mod" id="m2">
+  <div class="mhdr">
+    <div class="micon" style="background:rgba(74,222,128,0.1);">🎯</div>
+    <div>
+      <h2>Pipeline & Gestion des Leads — Les 3 niveaux</h2>
+      <p>IntelliX structure les prospects en 3 niveaux de maturité — Brut, Enrichi, Premium. Comprendre cette hiérarchie est fondamental pour prioriser votre énergie commerciale.</p>
+    </div>
+  </div>
+
+  <div class="stitle">🏗️ Architecture des 3 niveaux de leads</div>
+  <div class="g3">
+    <div class="card" style="border-top:3px solid var(--text3)">
+      <h3>⬜ Niveau 1 — Lead Brut</h3>
+      <p>Contact entrant qui n'a pas encore été qualifié. Source : formulaire web, CSV importé, publicité Meta, scraping, appel entrant non qualifié.</p>
+      <h4>Données typiques</h4>
+      <p>Nom + téléphone (obligatoire) + email (facultatif) + source d'acquisition + date d'entrée.</p>
+      <h4>Action déclenchée</h4>
+      <p>Appel automatique par agent IA dans les 5 minutes. Aucune intervention humaine requise à ce stade.</p>
+      <div class="mrow" style="margin-top:1rem">
+        <div class="mc"><span class="mv" style="color:var(--text2)">961</span><span class="ml">actifs en PROD actuellement</span></div>
+        <div class="mc"><span class="mv" style="color:var(--text2)">352</span><span class="ml">avec téléphone vérifié</span></div>
+      </div>
+    </div>
+    <div class="card" style="border-top:3px solid var(--amber)">
+      <h3>🟡 Niveau 2 — Lead Enrichi</h3>
+      <p>Contact qualifié par l'IA : besoin confirmé, budget approximatif, délai identifié. Score Claude entre 30 et 74/100.</p>
+      <h4>Données ajoutées</h4>
+      <p>Transcript d'appel, classification chaud/tiède, données sectorielles (type logement, superficie, situation), intent_detected.</p>
+      <h4>Action déclenchée</h4>
+      <p>Envoi automatique de documentation + planification rappel humain dans les 48h pour les &gt;50 pts.</p>
+    </div>
+    <div class="card" style="border-top:3px solid var(--green)">
+      <h3>🟢 Niveau 3 — Lead Premium</h3>
+      <p>Contact qualifié à fort potentiel. Score Claude ≥75. Besoin urgent, budget confirmé, décideur identifié.</p>
+      <h4>Données complètes</h4>
+      <p>Tous les champs enrichis + enregistrement de l'appel + notes du conseiller + devis en cours.</p>
+      <h4>Action déclenchée</h4>
+      <p>Transfert immédiat ou rappel &lt;30 minutes par conseiller humain. Priorité P1 dans VICIdial.</p>
+    </div>
+  </div>
+
+  <div class="stitle">🔍 Anatomie d'une fiche contact IntelliX</div>
+  <div class="card">
+    <h3>📄 Les champs clés à remplir — et pourquoi</h3>
+    <table class="dt">
+      <thead>
+        <tr><th>Section</th><th>Champ</th><th>Rempli par</th><th>Utilité concrète</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td rowspan="3"><strong>Identité</strong></td>
+          <td>Prénom + Nom</td><td>Source / IA</td><td>Personnalisation des appels ("Bonjour Marie")</td>
+        </tr>
+        <tr>
+          <td>Téléphone + Format</td><td>Source / n8n</td><td>Formatage automatique pour Africa-Con / Twilio</td>
+        </tr>
+        <tr>
+          <td>Email</td><td>Source / IA</td><td>Séquences email nurturing, envoi devis</td>
+        </tr>
+        <tr>
+          <td rowspan="3"><strong>Qualification</strong></td>
+          <td>Score /100</td><td>Claude via n8n</td><td>Priorisation automatique de la file d'appel</td>
+        </tr>
+        <tr>
+          <td>Classification</td><td>Claude via n8n</td><td>Déclenche le workflow (chaud/tiède/froid)</td>
+        </tr>
+        <tr>
+          <td>Intent détecté</td><td>Claude via n8n</td><td>Personnalise le prochain message ou script</td>
+        </tr>
+        <tr>
+          <td rowspan="2"><strong>Contexte</strong></td>
+          <td>Source acquisition</td><td>n8n automatique</td><td>Rapport ROI par canal marketing</td>
+        </tr>
+        <tr>
+          <td>Campagne liée</td><td>n8n automatique</td><td>Attribution correcte du CA par campagne</td>
+        </tr>
+        <tr>
+          <td rowspan="2"><strong>Suivi</strong></td>
+          <td>Historique activités</td><td>Tous les modules</td><td>Continuité entre agents IA, humains, messages</td>
+        </tr>
+        <tr>
+          <td>Prochain rappel</td><td>IA / Humain</td><td>Déclenche automatiquement le suivant</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="stitle">⚙️ Workflow de traitement d'un lead — étape par étape</div>
+  <div class="card">
+    <h3>🔄 De la réception à la décision — 0 à 48 heures</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="snum"></div>
+        <div class="sc">
+          <h4>Réception du lead (T=0)</h4>
+          <p>Le webhook n8n reçoit le lead (Meta, formulaire, API). Création automatique de la fiche dans <em>doorway_leads_bruts</em>. Vérification Bloctel si marché France. Assignation à la campagne correspondante.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="snum"></div>
+        <div class="sc">
+          <h4>Premier appel IA (T+5 min)</h4>
+          <p>L'agent IA (Léa/Alex/Sofia) est déclenché via Africa-Con SIP. Le script est injecté avec les données de la fiche. Deepgram transcrit en temps réel. Claude score chaque réponse.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="snum"></div>
+        <div class="sc">
+          <h4>Post-call processing (T+5 min après raccroché)</h4>
+          <p>Transcript complet sauvegardé dans la fiche. Score mis à jour. Classification assignée. Action déclenchée selon le segment (transfert, SMS, rappel J+3, archivage).</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="snum"></div>
+        <div class="sc">
+          <h4>Gestion humaine ou nurturing (T+30 min à T+48h)</h4>
+          <p>Chaud → Conseiller reçoit notification Slack + accès fiche complète avec transcript résumé. Tiède → Séquence automatique. Froid → Tag "À enrichir" ou archivage après 3 tentatives.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     MODULE 04 — AGENTS & HUMAINS IA
+══════════════════════════════════════════════ -->
+<div class="mod" id="m3">
+  <div class="mhdr">
+    <div class="micon" style="background:rgba(139,92,246,0.13);">🤖</div>
+    <div>
+      <h2>Les Humains IA — Léa, Alex, Sofia, Sophie</h2>
+      <p>IntelliX appelle ses agents IA "Humains IA" — une nouvelle catégorie entre l'humain et le bot. Comprendre leur configuration, leurs campagnes, et leur coordination avec les agents humains.</p>
+    </div>
+  </div>
+
+  <div class="stitle">👥 Les 4 Humains IA actifs</div>
+  <div class="g4">
+    <div class="role-card">
+      <div class="role-avatar" style="background:rgba(99,102,241,0.15);color:var(--indigo-light)">L</div>
+      <div class="role-name">Léa</div>
+      <div class="role-title">Qualification QC B2C · ext.86013</div>
+      <ul class="role-actions">
+        <li>Campagne DW_QCB2C — particuliers québécois</li>
+        <li>Qualification rénovation, thermopompe, toiture</li>
+        <li>Appels sortants depuis +1 438 790 5970</li>
+        <li>Langue : français québécois</li>
+      </ul>
+    </div>
+    <div class="role-card">
+      <div class="role-avatar" style="background:rgba(6,182,212,0.13);color:var(--cyan-light)">A</div>
+      <div class="role-name">Alex</div>
+      <div class="role-title">Qualification QC B2B · ext.86023</div>
+      <ul class="role-actions">
+        <li>Campagne DW_QCB2B — entreprises québécoises</li>
+        <li>Décideurs, directeurs, propriétaires d'entreprise</li>
+        <li>Ton plus formel, questions orientées ROI</li>
+        <li>Transfert prioritaire vers Zakaria</li>
+      </ul>
+    </div>
+    <div class="role-card">
+      <div class="role-avatar" style="background:rgba(251,191,36,0.13);color:var(--amber)">S</div>
+      <div class="role-name">Sofia FR</div>
+      <div class="role-title">Qualification France · ext.86022</div>
+      <ul class="role-actions">
+        <li>Campagne DW_FRB2C — marché France</li>
+        <li>Assurance, rénovation, énergie</li>
+        <li>Conformité RGPD + Bloctel intégrée</li>
+        <li>A/B test actif : sofia-script.json vs candidat</li>
+      </ul>
+    </div>
+    <div class="role-card">
+      <div class="role-avatar" style="background:rgba(248,113,113,0.13);color:var(--red)">S</div>
+      <div class="role-name">Sofia ES</div>
+      <div class="role-title">Qualification Espagne · ext.86010</div>
+      <ul class="role-actions">
+        <li>Campagne DW_ESREN — marché espagnol</li>
+        <li>Rénovation énergétique (BERDE, aides EU)</li>
+        <li>Depuis +34 632 395 675</li>
+        <li>1 462 prospects AvaTrade testés</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="stitle">⚙️ Configuration d'un agent IA — Wizard 7 étapes</div>
+  <div class="card">
+    <h3>🧙 Module doorway_agents_dashboard — Wizard de configuration</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="snum"></div>
+        <div class="sc">
+          <h4>Étape 1 — Identité de l'agent</h4>
+          <p>Nom, prénom, persona (ton, caractère, degré de formalité), langue principale et accents acceptés. C'est ici que vous définissez si l'agent tutoie ou vouvoie, s'il est chaleureux ou professionnel.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="snum"></div>
+        <div class="sc">
+          <h4>Étape 2 — Voix ElevenLabs</h4>
+          <p>Sélection du voice_id, paramètres Stability/Similarity/Style, modèle (turbo v2.5 recommandé). Test d'écoute intégré avant validation.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="snum"></div>
+        <div class="sc">
+          <h4>Étape 3 — Script de base + branches</h4>
+          <p>Chargement du fichier JSON de script (ex: sofia-script.json). Définition des branches par réponse. Injection des variables dynamiques depuis la fiche contact ({{prenom}}, {{source}}, etc.).</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="snum"></div>
+        <div class="sc">
+          <h4>Étape 4 — Campagne et SIP</h4>
+          <p>Association à une campagne Africa-Con (ex: DW_FRB2C), numéro caller ID selon le marché, paramètre NAT/STUN pour la qualité VoIP.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="snum"></div>
+        <div class="sc">
+          <h4>Étape 5 — Règles de transfert</h4>
+          <p>Définir : à quel score déclencher un transfert chaud ? Vers quel groupe d'agents VICIdial ? Quel message d'introduction pour le conseiller humain qui reçoit ?</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="snum"></div>
+        <div class="sc">
+          <h4>Étape 6 — Post-call actions</h4>
+          <p>Configuration des workflows n8n déclenchés après chaque appel : mise à jour CRM, envoi SMS, notification Slack, planification rappel.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="snum"></div>
+        <div class="sc">
+          <h4>Étape 7 — A/B Testing (optionnel)</h4>
+          <p>Activer le mode A/B : 50% des appels sur script A (actif), 50% sur script B (candidat). Seuil de décision : 100 appels. KPI principal : taux de qualification.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     MODULE 05 — PEOPLE ENGINE
+══════════════════════════════════════════════ -->
+<div class="mod" id="m4">
+  <div class="mhdr">
+    <div class="micon" style="background:rgba(251,191,36,0.1);">🏆</div>
+    <div>
+      <h2>People Engine — Le module RH Intelligent</h2>
+      <p>People Engine transforme la gestion RH en système de performance mesurable. Score /100, gamification, coaching IA, plans de développement — pour les call centers qui veulent réduire le turnover et augmenter la performance.</p>
+    </div>
+  </div>
+
+  <div class="stitle">📊 Le Score Performance /100</div>
+  <div class="card">
+    <h3>🎯 Composition du Score Agent</h3>
+    <div class="g3" style="margin-bottom:1.5rem">
+      <div class="mc indigo" style="padding:1.4rem">
+        <span class="mv">40 pts</span>
+        <span class="ml">Performance<br>KPIs quantitatifs<br>(appels, conversion, CA)</span>
+      </div>
+      <div class="mc cyan" style="padding:1.4rem">
+        <span class="mv">30 pts</span>
+        <span class="ml">Engagement<br>Présence, ponctualité,<br>participation formations</span>
+      </div>
+      <div class="mc green" style="padding:1.4rem">
+        <span class="mv">30 pts</span>
+        <span class="ml">Croissance<br>Progression mensuelle,<br>auto-évaluation, objectifs</span>
+      </div>
+    </div>
+    <table class="dt">
+      <thead><tr><th>Score</th><th>Niveau</th><th>Couleur dashboard</th><th>Action automatique</th></tr></thead>
+      <tbody>
+        <tr><td><strong>85–100</strong></td><td>🥇 Elite</td><td style="color:var(--green)">■ Vert</td><td>Badge gamification + proposition évolution</td></tr>
+        <tr><td><strong>65–84</strong></td><td>🥈 Confirmé</td><td style="color:var(--cyan-light)">■ Cyan</td><td>Objectif mensuel personnalisé</td></tr>
+        <tr><td><strong>45–64</strong></td><td>🥉 En progression</td><td style="color:var(--amber)">■ Amber</td><td>Session coaching IA planifiée</td></tr>
+        <tr><td><strong>0–44</strong></td><td>⚠️ À accompagner</td><td style="color:var(--red)">■ Rouge</td><td>Alerte manager + plan de développement 30j</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="stitle">🎮 Gamification — Motiver sans manipuler</div>
+  <div class="g2">
+    <div class="card">
+      <h3>🏅 Système de badges</h3>
+      <div class="g2" style="gap:.8rem">
+        <div style="background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:1rem;text-align:center">
+          <div style="font-size:28px">🎯</div>
+          <div style="font-size:12px;font-weight:600;color:var(--text);margin:4px 0">Sniper</div>
+          <div style="font-size:11px;color:var(--text3)">15 qualifs consécutives</div>
+        </div>
+        <div style="background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:1rem;text-align:center">
+          <div style="font-size:28px">🔥</div>
+          <div style="font-size:12px;font-weight:600;color:var(--text);margin:4px 0">On Fire</div>
+          <div style="font-size:11px;color:var(--text3)">3 jours consécutifs &gt;80%</div>
+        </div>
+        <div style="background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:1rem;text-align:center">
+          <div style="font-size:28px">⚡</div>
+          <div style="font-size:12px;font-weight:600;color:var(--text);margin:4px 0">Speed Closer</div>
+          <div style="font-size:11px;color:var(--text3)">Transfert &lt;90 secondes</div>
+        </div>
+        <div style="background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:1rem;text-align:center">
+          <div style="font-size:28px">🏆</div>
+          <div style="font-size:12px;font-weight:600;color:var(--text);margin:4px 0">Top du Mois</div>
+          <div style="font-size:11px;color:var(--text3)">N°1 score équipe</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>📈 Impact business de la gamification</h3>
+      <div class="mrow">
+        <div class="mc green"><span class="mv">+40%</span><span class="ml">Taux de conversion moyen call center gamifié</span></div>
+        <div class="mc indigo"><span class="mv">+28%</span><span class="ml">Rétention agents sur 12 mois</span></div>
+        <div class="mc amber"><span class="mv">-35%</span><span class="ml">Taux de turnover annuel</span></div>
+      </div>
+      <div class="warn" style="margin-top:1rem">
+        <div class="warn-title">⚠️ Principe fondamental</div>
+        <p>La gamification People Engine récompense la progression, pas uniquement le résultat. Un agent qui était à 30 et monte à 50 reçoit un badge "Croissance" — même s'il n'est pas encore en tête du classement.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     MODULE 06 — MESSAGERIE & CRÉDITS
+══════════════════════════════════════════════ -->
+<div class="mod" id="m5">
+  <div class="mhdr">
+    <div class="micon" style="background:rgba(6,182,212,0.1);">💬</div>
+    <div>
+      <h2>Messagerie Omnicanale & Système de Crédits</h2>
+      <p>Envoyer le bon message, sur le bon canal, au bon moment — et comprendre la tarification à la consommation d'IntelliX.</p>
+    </div>
+  </div>
+
+  <div class="stitle">📡 Les 5 canaux — Quand utiliser quoi</div>
+  <div class="g3">
+    <div class="feat">
+      <div class="feat-icon" style="background:rgba(74,222,128,0.1);">📞</div>
+      <h4>Appel IA (0,22€/min)</h4>
+      <p>Qualification initiale, rappels urgents, détection de signal chaud. Canal le plus efficace pour la qualification mais aussi le plus coûteux. Réserver aux leads frais (&lt;48h) et aux rappels P1.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon" style="background:rgba(99,102,241,0.13);">📧</div>
+      <h4>Email (0,006€/envoi)</h4>
+      <p>Envoi de devis, documentation, nurturing long terme. Le canal le moins cher. Idéal pour les leads tièdes en séquence automatique. Taux d'ouverture moyen : 24% en B2C France.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon" style="background:rgba(251,191,36,0.1);">💬</div>
+      <h4>WhatsApp (0,030€/msg)</h4>
+      <p>Confirmation de rendez-vous, relances courtes, envoi de liens. Taux d'ouverture : 85–95%. À utiliser avec parcimonie — le prospect doit avoir consenti explicitement.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon" style="background:rgba(6,182,212,0.1);">📱</div>
+      <h4>SMS (0,016€/msg)</h4>
+      <p>Confirmations flash, rappels d'appel, codes de vérification. Taux d'ouverture similaire à WhatsApp mais moins interactif. Mention STOP obligatoire en France.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon" style="background:rgba(139,92,246,0.13);">💼</div>
+      <h4>LinkedIn + GMB</h4>
+      <p>Prospection B2B et avis clients. LinkedIn via module messaging pour les campagnes B2B (Zakaria, Martin). GMB pour la réputation locale des clients agence.</p>
+    </div>
+  </div>
+
+  <div class="stitle">💳 Comprendre le système de crédits IntelliX</div>
+  <div class="card">
+    <h3>🏗️ Deux modèles de tarification</h3>
+    <div class="g2">
+      <div style="background:var(--card2);border:1px solid rgba(99,102,241,0.25);border-radius:14px;padding:1.5rem">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--indigo-light);margin-bottom:8px">MODÈLE CALL CENTER</div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;color:var(--text);margin-bottom:4px">20€<span style="font-size:16px;font-weight:400;color:var(--text2)">/poste/mois</span></div>
+        <p style="font-size:13px;color:var(--text2);margin-bottom:1rem;line-height:1.6">CRM + RH (People Engine) + Gamification. Pour les call centers avec agents humains + IA. Par poste actif = par agent qui se connecte au moins 1x/mois.</p>
+        <ul class="cl">
+          <li><span class="ck">✓</span> Accès CRM complet</li>
+          <li><span class="ck">✓</span> People Engine score /100</li>
+          <li><span class="ck">✓</span> Gamification + badges</li>
+          <li><span class="ck">✓</span> Dashboard superviseur</li>
+          <li><span class="cx">+</span> Consommation IA facturée séparément</li>
+        </ul>
+      </div>
+      <div style="background:var(--card2);border:1px solid rgba(6,182,212,0.25);border-radius:14px;padding:1.5rem">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--cyan-light);margin-bottom:8px">MODÈLE SAAS (AUTRES INDUSTRIES)</div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;color:var(--text);margin-bottom:4px">89$<span style="font-size:16px;font-weight:400;color:var(--text2)">/user/mois</span></div>
+        <p style="font-size:13px;color:var(--text2);margin-bottom:1rem;line-height:1.6">Pour les PME et agences qui n'ont pas de call center. Intègre le CRM complet sans les modules call center spécialisés.</p>
+        <ul class="cl">
+          <li><span class="ck">✓</span> CRM complet Odoo 19</li>
+          <li><span class="ck">✓</span> Messagerie omnicanale</li>
+          <li><span class="ck">✓</span> Agents IA en option</li>
+          <li><span class="ck">✓</span> Support & onboarding</li>
+          <li><span class="cx">+</span> People Engine non inclus</li>
+        </ul>
+      </div>
+    </div>
+    <h4>Consommations IA — Tarification à l'usage</h4>
+    <table class="dt" style="margin-top:.5rem">
+      <thead><tr><th>Service</th><th>Tarif</th></tr></thead>
+      <tbody>
+        <tr><td>Agent IA vocal</td><td>0,22€/min</td></tr>
+        <tr><td>SMS</td><td>0,016€/msg</td></tr>
+        <tr><td>Email</td><td>0,006€/msg</td></tr>
+        <tr><td>WhatsApp</td><td>0,030€/msg</td></tr>
+        <tr><td>Lead qualifié vendu</td><td>150€/lead</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     MODULE 07 — BONNES PRATIQUES
+══════════════════════════════════════════════ -->
+<div class="mod" id="m6">
+  <div class="mhdr">
+    <div class="micon" style="background:rgba(74,222,128,0.1);">✨</div>
+    <div>
+      <h2>Bonnes Pratiques — Utiliser IntelliX comme un Pro</h2>
+      <p>Les erreurs les plus communes, les réflexes à adopter dès la première semaine, et les routines quotidiennes qui font la différence entre un CRM sous-utilisé et un moteur de croissance.</p>
+    </div>
+  </div>
+
+  <div class="stitle">📅 Routines quotidiennes recommandées</div>
+  <div class="g2">
+    <div class="card">
+      <h3>🌅 Matin (9h00 — 15 min)</h3>
+      <ul class="cl">
+        <li><span class="ck">✓</span> Ouvrir le dashboard leads : vérifier les leads P1 entrés la nuit</li>
+        <li><span class="ck">✓</span> Consulter les rappels du jour planifiés automatiquement</li>
+        <li><span class="ck">✓</span> Vérifier les notifications de transferts non traités (&gt;30 min)</li>
+        <li><span class="ck">✓</span> Lire le rapport KPIs de la veille (envoyé à 20h)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>🌆 Fin de journée (18h00 — 10 min)</h3>
+      <ul class="cl">
+        <li><span class="ck">✓</span> Mettre à jour les fiches des leads contactés manuellement</li>
+        <li><span class="ck">✓</span> Qualifier les appels "injoignables" (3 tentatives = archivage)</li>
+        <li><span class="ck">✓</span> Planifier les rappels du lendemain sur les tièdes importants</li>
+        <li><span class="ck">✓</span> Vérifier le stock de crédits disponibles pour les campagnes du lendemain</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="stitle">🚨 Les 8 erreurs fatales à éviter</div>
+  <div class="card">
+    <h3>⚠️ Ce qui tue un CRM en 30 jours</h3>
+    <table class="dt">
+      <thead><tr><th>#</th><th>Erreur</th><th>Conséquence</th><th>Solution</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>Ne pas mettre à jour les fiches après un appel humain</td>
+          <td>L'agent IA rappelle avec un contexte obsolète</td>
+          <td>Règle d'équipe : 2 minutes pour noter après chaque appel</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>Laisser des leads P1 sans action &gt;1 heure</td>
+          <td>Le prospect signe ailleurs — taux de conversion -60%</td>
+          <td>Alerte Slack automatique si P1 non traité après 30 min</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>Importer des contacts sans vérification Bloctel (France)</td>
+          <td>Amende CNIL jusqu'à 75 000€</td>
+          <td>Workflow n8n de vérification obligatoire avant import</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>Dupliquer les fiches (même contact = 2 entrées)</td>
+          <td>L'IA appelle 2x le même prospect — irritation + opt-out</td>
+          <td>Activer la déduplication automatique dans doorway_leads_bruts</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>Ne pas tagger la source d'acquisition</td>
+          <td>Impossible de calculer le ROI par canal</td>
+          <td>Source = champ obligatoire dans tous les formulaires et imports</td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>Changer plusieurs variables IA en même temps</td>
+          <td>Impossible de savoir ce qui a amélioré ou dégradé les KPIs</td>
+          <td>Protocole A/B : 1 seule variable modifiée par test</td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td>Utiliser l'email pour les leads chauds</td>
+          <td>Taux d'ouverture 24% vs 90% pour un appel — lead perdu</td>
+          <td>Hiérarchie : chaud = appel → tiède = SMS/WA → froid = email</td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td>Ne jamais regarder les transcripts d'appels IA</td>
+          <td>Les erreurs du script se répètent indéfiniment</td>
+          <td>Écouter 10 transcripts chaque mardi — 15 minutes suffisent</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="stitle">🏆 Les 10 commandements IntelliX CRM</div>
+  <div class="card">
+    <h3>📜 À afficher dans votre espace de travail</h3>
+    <div class="g2">
+      <ul class="cl">
+        <li><span class="ck">1.</span><div><strong>Tu centraliseras tout</strong> — chaque email, appel, note va dans la fiche. Aucune info ne reste dans ta messagerie personnelle.</div></li>
+        <li><span class="ck">2.</span><div><strong>Tu répondras aux P1 en 30 minutes</strong> — un lead chaud non rappelé en 30 min perd 80% de sa valeur.</div></li>
+        <li><span class="ck">3.</span><div><strong>Tu ne dupliqueras jamais</strong> — 1 contact = 1 fiche. En cas de doute, fusionner avant d'importer.</div></li>
+        <li><span class="ck">4.</span><div><strong>Tu tagueras toujours la source</strong> — sans attribution, pas de ROI calculable, pas de budget marketing intelligent.</div></li>
+        <li><span class="ck">5.</span><div><strong>Tu laisseras l'IA travailler la nuit</strong> — les agents IA peuvent appeler 24h/24. Configurer les créneaux appropriés selon le marché.</div></li>
+      </ul>
+      <ul class="cl">
+        <li><span class="ck">6.</span><div><strong>Tu liras les transcripts chaque semaine</strong> — 15 minutes d'écoute valent mieux que 2 heures de réunion pour améliorer la qualification.</div></li>
+        <li><span class="ck">7.</span><div><strong>Tu testeras un seul changement à la fois</strong> — le A/B testing n'a de sens que si les variables sont isolées.</div></li>
+        <li><span class="ck">8.</span><div><strong>Tu scoreras tes agents humains</strong> — People Engine sert autant pour les humains que pour les IA. Données = décisions objectives.</div></li>
+        <li><span class="ck">9.</span><div><strong>Tu archiveras proprement</strong> — un lead froid archivé proprement peut être rouvert dans 6 mois. Un lead supprimé est perdu définitivement.</div></li>
+        <li><span class="ck">10.</span><div><strong>Tu suivras 5 KPIs, pas 50</strong> — joignabilité, qualification, transfert, durée moyenne, coût/lead. Le reste est du bruit tant que ces 5 ne sont pas optimaux.</div></li>
+      </ul>
+    </div>
+
+    <div class="tip" style="margin-top:1.5rem">
+      <div class="tip-title">🚀 Règle d'or pour les nouveaux utilisateurs IntelliX</div>
+      <p>La première semaine, ne personnalisez rien. Utilisez les configurations par défaut, observez les métriques, écoutez les premiers appels IA. C'est après avoir vu le comportement du système sur votre marché que vous saurez exactement quoi optimiser — et dans quel ordre.</p>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<div class="pfooter">
+  <span>IntelliX CRM — Formation CRM · Odoo 19 · Agence Doorway Inc. · 2025</span>
+  <span>intellixcrm.com</span>
+</div>
+
+<script>
+function sw(i) {
+  document.querySelectorAll('.mod').forEach((m, j) => m.classList.toggle('on', j === i));
+  document.querySelectorAll('.nb').forEach((b, j) => b.classList.toggle('on', j === i));
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

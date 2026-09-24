@@ -1,0 +1,141 @@
+/*
+ * Traffic Manager — thème sombre Intellix (seq. 50100).
+ * Même approche que doorway_agents_dashboard : surfaces --ix-surface, texte clair.
+ */
+.dtm-app.o_intellix_client_action {
+    --dtm-text: var(--ix-text, #f1f5f9);
+    --dtm-text-muted: var(--ix-text-muted, #94a3b8);
+    --dtm-surface: var(--ix-surface, #1a1a2e);
+    --dtm-surface-alt: var(--ix-surface-elevated, #1e1e32);
+    --dtm-border: var(--ix-border, #334155);
+    background-color: var(--ix-bg, #0a0a1a) !important;
+    color: var(--dtm-text) !important;
+    font-family: var(--ix-font, "DM Sans", system-ui, sans-serif);
+}
+
+.dtm-app.o_intellix_client_action .dtm-header h1 {
+    color: var(--dtm-text) !important;
+}
+
+.dtm-app.o_intellix_client_action .dtm-header .dtm-subtitle,
+.dtm-app.o_intellix_client_action .dtm-loading,
+.dtm-app.o_intellix_client_action .dtm-empty,
+.dtm-app.o_intellix_client_action .dtm-alerts > .dtm-section-head h2,
+.dtm-app.o_intellix_client_action > .dtm-section-head h2 {
+    color: var(--dtm-text-muted) !important;
+}
+
+.dtm-app.o_intellix_client_action .dtm-kpi,
+.dtm-app.o_intellix_client_action .dtm-benchmarks,
+.dtm-app.o_intellix_client_action .dtm-alert-card,
+.dtm-app.o_intellix_client_action .dtm-table,
+.dtm-app.o_intellix_client_action .dtm-reco-card,
+.dtm-app.o_intellix_client_action .dtm-creative-tile,
+.dtm-app.o_intellix_client_action .dtm-drawer,
+.dtm-app.o_intellix_client_action .dtm-settings-card,
+.dtm-app.o_intellix_client_action .dtm-wizard-body,
+.dtm-app.o_intellix_client_action .dtm-proposal-card,
+.dtm-app.o_intellix_client_action .dtm-channel-card,
+.dtm-app.o_intellix_client_action .dtm-zone-card,
+.dtm-app.o_intellix_client_action .dtm-foundation-card,
+.dtm-app.o_intellix_client_action .dtm-mini-card,
+.dtm-app.o_intellix_client_action .dtm-reco-mini {
+    background: var(--dtm-surface) !important;
+    color: var(--dtm-text) !important;
+    border-color: var(--dtm-border) !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35) !important;
+}
+
+.dtm-app.o_intellix_client_action .dtm-chip:not(.active) {
+    background: var(--dtm-surface-alt) !important;
+    color: var(--dtm-text) !important;
+    border-color: var(--dtm-border) !important;
+}
+
+.dtm-app.o_intellix_client_action .dtm-chip.active {
+    background: #534AB7 !important;
+    color: #fff !important;
+    border-color: #534AB7 !important;
+}
+
+.dtm-app.o_intellix_client_action .dtm-table th {
+    background: var(--dtm-surface-alt) !important;
+    color: var(--dtm-text-muted) !important;
+    border-bottom-color: var(--dtm-border) !important;
+}
+
+.dtm-app.o_intellix_client_action .dtm-table td,
+.dtm-app.o_intellix_client_action .dtm-table td strong,
+.dtm-app.o_intellix_client_action .dtm-kpi__value,
+.dtm-app.o_intellix_client_action .dtm-benchmark,
+.dtm-app.o_intellix_client_action .dtm-reco-card h3,
+.dtm-app.o_intellix_client_action .dtm-creative-tile__body strong {
+    color: var(--dtm-text) !important;
+}
+
+.dtm-app.o_intellix_client_action .dtm-kpi__label,
+.dtm-app.o_intellix_client_action .dtm-muted,
+.dtm-app.o_intellix_client_action .dtm-benchmarks h2,
+.dtm-app.o_intellix_client_action .dtm-creative-metrics,
+.dtm-app.o_intellix_client_action .dtm-alert-card .dtm-zone,
+.dtm-app.o_intellix_client_action .dtm-reco-card .dtm-muted {
+    color: var(--dtm-text-muted) !important;
+}
+
+/* Titres alertes / recos : le CSS de base force #111827 sur strong */
+.dtm-app.o_intellix_client_action .dtm-alert-card strong,
+.dtm-app.o_intellix_client_action .dtm-reco-card strong,
+.dtm-app.o_intellix_client_action .dtm-reco-card__head strong,
+.dtm-app.o_intellix_client_action .dtm-benchmark,
+.dtm-app.o_intellix_client_action .dtm-drawer__head h2,
+.dtm-app.o_intellix_client_action .dtm-wizard-body h2 {
+    color: var(--dtm-text) !important;
+}
+
+.dtm-app.o_intellix_client_action .dtm-table__row:hover {
+    background: var(--ix-surface-hover, #2a2a48) !important;
+}
+
+.dtm-app.o_intellix_client_action .dtm-table td,
+.dtm-app.o_intellix_client_action .dtm-table th {
+    border-bottom-color: var(--dtm-border) !important;
+}
+
+.dtm-app.o_intellix_client_action .dtm-drawer__head {
+    border-bottom-color: var(--dtm-border) !important;
+}
+
+.dtm-app.o_intellix_client_action .dtm-tabs {
+    border-bottom-color: var(--dtm-border) !important;
+}
+
+.dtm-app.o_intellix_client_action .dtm-tabs button {
+    color: var(--dtm-text-muted) !important;
+}
+
+.dtm-app.o_intellix_client_action .dtm-tabs button.active {
+    color: var(--ix-primary-light, #a5b4fc) !important;
+    border-bottom-color: #534AB7 !important;
+}
+
+.dtm-app.o_intellix_client_action .dtm-btn--ghost {
+    color: var(--ix-primary-light, #a5b4fc) !important;
+}
+
+.dtm-app.o_intellix_client_action .dtm-form input,
+.dtm-app.o_intellix_client_action .dtm-form textarea,
+.dtm-app.o_intellix_client_action .dtm-form select {
+    background: var(--dtm-surface-alt) !important;
+    color: var(--dtm-text) !important;
+    border-color: var(--dtm-border) !important;
+}
+
+.dtm-app.o_intellix_client_action .dtm-settings-form {
+    cursor: default;
+    text-align: left;
+    margin-bottom: 1.5rem;
+}
+
+.dtm-app.o_intellix_client_action .dtm-settings-form code {
+    color: var(--ix-primary-light, #a5b4fc);
+}

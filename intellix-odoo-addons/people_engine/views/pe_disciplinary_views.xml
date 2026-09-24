@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Incidents -->
+    <record id="view_pe_disciplinary_incident_tree" model="ir.ui.view">
+        <field name="name">pe.disciplinary.incident.tree</field>
+        <field name="model">pe.disciplinary.incident</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="gravite == 'critique'" decoration-warning="gravite in ('modere', 'grave')">
+                <field name="name"/>
+                <field name="date_incident"/>
+                <field name="employee_id"/>
+                <field name="type_incident"/>
+                <field name="gravite" widget="badge"/>
+                <field name="statut" widget="badge"/>
+                <field name="sanction_suggeree"/>
+                <field name="incident_count_30d"/>
+                <field name="jours_prescription"/>
+                <field name="source"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pe_disciplinary_incident_form" model="ir.ui.view">
+        <field name="name">pe.disciplinary.incident.form</field>
+        <field name="model">pe.disciplinary.incident</field>
+        <field name="arch" type="xml">
+            <form string="Incident disciplinaire">
+                <header>
+                    <button name="action_create_procedure" type="object" string="Créer procédure"
+                            class="btn-primary" invisible="procedure_id or statut in ('clos', 'prescrit', 'ignore')"
+                            groups="people_engine.group_manager"/>
+                    <button name="action_close" type="object" string="Clore"
+                            invisible="statut in ('clos', 'prescrit', 'ignore')"
+                            groups="people_engine.group_hr"/>
+                    <button name="action_ignore" type="object" string="Ignorer"
+                            invisible="statut in ('clos', 'prescrit', 'ignore')"
+                            groups="people_engine.group_manager"/>
+                    <field name="statut" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="employee_id"/>
+                            <field name="superviseur_id"/>
+                            <field name="profile_id" readonly="1"/>
+                            <field name="date_incident"/>
+                            <field name="date_detection"/>
+                        </group>
+                        <group>
+                            <field name="type_incident"/>
+                            <field name="gravite"/>
+                            <field name="source"/>
+                            <field name="procedure_id" readonly="1"/>
+                            <field name="alert_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="description"/>
+                        <field name="preuves"/>
+                    </group>
+                    <group string="Paie">
+                        <field name="impact_paie"/>
+                        <field name="heures_concernees"/>
+                    </group>
+                    <group string="Escalade">
+                        <field name="incident_count_30d"/>
+                        <field name="sanction_suggeree"/>
+                        <field name="jours_prescription"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_pe_disciplinary_incident_search" model="ir.ui.view">
+        <field name="name">pe.disciplinary.incident.search</field>
+        <field name="model">pe.disciplinary.incident</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="employee_id"/>
+                <filter string="Nouveaux" name="new" domain="[('statut', '=', 'nouveau')]"/>
+                <filter string="Sans procédure" name="no_proc" domain="[('procedure_id', '=', False), ('statut', 'not in', ('ignore', 'prescrit'))]"/>
+                <filter string="Prescription proche" name="prescription" domain="[('jours_prescription', '&lt;=', 10), ('jours_prescription', '&gt;', 0)]"/>
+                <group>
+                    <filter string="Employé" name="group_employee" context="{'group_by': 'employee_id'}"/>
+                    <filter string="Type" name="group_type" context="{'group_by': 'type_incident'}"/>
+                    <filter string="Statut" name="group_statut" context="{'group_by': 'statut'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Procedures -->
+    <record id="view_pe_disciplinary_procedure_tree" model="ir.ui.view">
+        <field name="name">pe.disciplinary.procedure.tree</field>
+        <field name="model">pe.disciplinary.procedure</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="type_sanction"/>
+                <field name="statut" widget="badge"/>
+                <field name="date_ouverture"/>
+                <field name="recidive"/>
+                <field name="montant_impact_paie"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pe_disciplinary_procedure_form" model="ir.ui.view">
+        <field name="name">pe.disciplinary.procedure.form</field>
+        <field name="model">pe.disciplinary.procedure</field>
+        <field name="arch" type="xml">
+            <form string="Procédure disciplinaire">
+                <header>
+                    <button name="action_send_convocation" type="object" string="Convocation"
+                            invisible="statut != 'draft'" groups="people_engine.group_hr"/>
+                    <button name="action_generate_avertissement" type="object" string="Avertissement écrit"
+                            invisible="statut not in ('draft', 'convocation', 'entretien')"
+                            groups="people_engine.group_hr"/>
+                    <button name="action_apply_sanction" type="object" string="Appliquer sanction"
+                            groups="people_engine.group_hr"/>
+                    <button name="action_apply_payroll_impact" type="object" string="Impact paie"
+                            invisible="not impact_paie" groups="people_engine.group_hr"/>
+                    <button name="action_close" type="object" string="Clôturer"
+                            invisible="statut == 'closed'" groups="people_engine.group_hr"/>
+                    <field name="statut" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_letters" type="object" class="oe_stat_button" icon="fa-envelope-o">
+                            <field name="lettre_count" widget="statinfo" string="Lettres"/>
+                        </button>
+                    </div>
+                    <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="employee_id"/>
+                            <field name="superviseur_id"/>
+                            <field name="incident_id"/>
+                            <field name="type_sanction"/>
+                            <field name="legal_article_id" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="date_ouverture"/>
+                            <field name="date_convocation"/>
+                            <field name="date_entretien"/>
+                            <field name="date_sanction"/>
+                            <field name="recidive"/>
+                            <field name="recidive_count"/>
+                            <field name="prescription_ok"/>
+                        </group>
+                    </group>
+                    <field name="description_faits"/>
+                    <group string="Impact paie">
+                        <field name="impact_paie"/>
+                        <field name="jours_mise_a_pied"/>
+                        <field name="heures_deduction"/>
+                        <field name="montant_impact_paie"/>
+                        <field name="paie_impact_id"/>
+                    </group>
+                    <notebook>
+                        <page string="Incidents liés">
+                            <field name="incident_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="type_incident"/>
+                                    <field name="date_incident"/>
+                                    <field name="gravite"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Lettres">
+                            <field name="lettre_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="type_lettre"/>
+                                    <field name="date_lettre"/>
+                                    <field name="state" widget="badge"/>
+                                    <button name="action_print_letter" type="object" string="PDF" icon="fa-print"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Alerts -->
+    <record id="view_pe_supervisor_alert_tree" model="ir.ui.view">
+        <field name="name">pe.supervisor.alert.tree</field>
+        <field name="model">pe.supervisor.alert</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="niveau == 'critique'" decoration-warning="niveau == 'warning' and not lu">
+                <field name="date_alerte"/>
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="type_alerte"/>
+                <field name="niveau" widget="badge"/>
+                <field name="lu"/>
+                <field name="action_requise"/>
+                <field name="state" widget="badge"/>
+                <button name="action_contact" type="object" string="Contacter" icon="fa-envelope"/>
+                <button name="action_create_incident" type="object" string="Incident" icon="fa-gavel"/>
+                <button name="action_ignore" type="object" string="Ignorer" icon="fa-times"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pe_supervisor_alert_form" model="ir.ui.view">
+        <field name="name">pe.supervisor.alert.form</field>
+        <field name="model">pe.supervisor.alert</field>
+        <field name="arch" type="xml">
+            <form string="Alerte superviseur">
+                <header>
+                    <button name="action_contact" type="object" string="Contacter"/>
+                    <button name="action_create_incident" type="object" string="Créer incident" class="btn-primary"/>
+                    <button name="action_ignore" type="object" string="Ignorer"/>
+                    <button name="action_mark_read" type="object" string="Marquer lu"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="employee_id"/>
+                        <field name="superviseur_id"/>
+                        <field name="type_alerte"/>
+                        <field name="niveau"/>
+                        <field name="date_alerte"/>
+                        <field name="lu"/>
+                        <field name="action_requise"/>
+                        <field name="auto_generee"/>
+                        <field name="incident_id"/>
+                    </group>
+                    <field name="message"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_pe_supervisor_alert_search" model="ir.ui.view">
+        <field name="name">pe.supervisor.alert.search</field>
+        <field name="model">pe.supervisor.alert</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="employee_id"/>
+                <filter string="Actives" name="active" domain="[('state', '=', 'active')]"/>
+                <filter string="Non lues" name="unread" domain="[('lu', '=', False)]"/>
+                <filter string="Action requise" name="action" domain="[('action_requise', '=', True), ('state', '=', 'active')]"/>
+                <group>
+                    <filter string="Type" name="group_type" context="{'group_by': 'type_alerte'}"/>
+                    <filter string="Niveau" name="group_niveau" context="{'group_by': 'niveau'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Letters -->
+    <record id="view_pe_disciplinary_letter_form" model="ir.ui.view">
+        <field name="name">pe.disciplinary.letter.form</field>
+        <field name="model">pe.disciplinary.letter</field>
+        <field name="arch" type="xml">
+            <form string="Lettre disciplinaire">
+                <header>
+                    <button name="action_print_letter" type="object" string="Imprimer PDF" class="btn-primary"/>
+                    <button name="action_mark_sent" type="object" string="Marquer envoyée" groups="people_engine.group_hr"/>
+                    <button name="action_mark_signed" type="object" string="Signée employé"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name" readonly="1"/>
+                        <field name="procedure_id"/>
+                        <field name="employee_id"/>
+                        <field name="type_lettre"/>
+                        <field name="date_lettre"/>
+                        <field name="legal_article_id"/>
+                        <field name="impact_paie_preview"/>
+                        <field name="signed_date"/>
+                    </group>
+                    <field name="content_html"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="action_pe_disciplinary_incident" model="ir.actions.act_window">
+        <field name="name">Incidents disciplinaires</field>
+        <field name="res_model">pe.disciplinary.incident</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_pe_disciplinary_incident_search"/>
+        <field name="context">{'search_default_new': 1}</field>
+    </record>
+
+    <record id="action_pe_disciplinary_procedure" model="ir.actions.act_window">
+        <field name="name">Procédures disciplinaires</field>
+        <field name="res_model">pe.disciplinary.procedure</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_pe_supervisor_alert" model="ir.actions.act_window">
+        <field name="name">Alertes superviseur</field>
+        <field name="res_model">pe.supervisor.alert</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_pe_supervisor_alert_search"/>
+        <field name="context">{'search_default_active': 1, 'search_default_action': 1}</field>
+    </record>
+
+    <record id="action_pe_disciplinary_letter" model="ir.actions.act_window">
+        <field name="name">Lettres disciplinaires</field>
+        <field name="res_model">pe.disciplinary.letter</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Menus -->
+    <menuitem id="menu_pe_disciplinary_root"
+        name="Disciplinaire"
+        parent="menu_pe_team"
+        sequence="15"
+        groups="people_engine.group_manager"/>
+
+    <menuitem id="menu_pe_supervisor_alerts"
+        name="Alertes superviseur"
+        parent="menu_pe_disciplinary_root"
+        action="action_pe_supervisor_alert"
+        sequence="5"
+        groups="people_engine.group_manager"/>
+
+    <menuitem id="menu_pe_disciplinary_incidents"
+        name="Incidents"
+        parent="menu_pe_disciplinary_root"
+        action="action_pe_disciplinary_incident"
+        sequence="10"
+        groups="people_engine.group_manager"/>
+
+    <menuitem id="menu_pe_disciplinary_procedures"
+        name="Procédures"
+        parent="menu_pe_disciplinary_root"
+        action="action_pe_disciplinary_procedure"
+        sequence="20"
+        groups="people_engine.group_hr"/>
+
+    <menuitem id="menu_pe_disciplinary_letters"
+        name="Lettres RH"
+        parent="menu_pe_disciplinary_root"
+        action="action_pe_disciplinary_letter"
+        sequence="30"
+        groups="people_engine.group_hr"/>
+</odoo>

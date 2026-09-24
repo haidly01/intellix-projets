@@ -1,0 +1,19 @@
+# secrets / environnement
+.env
+.env.*
+*.pem
+*.key
+*.log
+# bruit
+__pycache__/
+*.pyc
+*.bak
+*.bak.*
+*.bak_*
+*.bak-*
+.DS_Store
+# médias (non versionnés ici : le code seul)
+*.mp4
+*.mov
+*.webm
+*.zip

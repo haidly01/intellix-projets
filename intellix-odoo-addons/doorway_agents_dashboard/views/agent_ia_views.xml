@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_doorway_agent_ia_list" model="ir.ui.view">
+        <field name="name">doorway.agent.ia.list</field>
+        <field name="model">doorway.agent.ia</field>
+        <field name="arch" type="xml">
+            <list string="Agents vocaux IA">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="pipeline"/>
+                <field name="agent_type"/>
+                <field name="langue"/>
+                <field name="is_active"/>
+                <field name="call_count"/>
+                <field name="avg_quality_score"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_doorway_agent_ia_form" model="ir.ui.view">
+        <field name="name">doorway.agent.ia.form</field>
+        <field name="model">doorway.agent.ia</field>
+        <field name="arch" type="xml">
+            <form string="Agent vocal IA">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="pipeline"/>
+                            <field name="agent_type"/>
+                            <field name="langue"/>
+                            <field name="is_active"/>
+                        </group>
+                        <group>
+                            <field name="elevenlabs_voice_id"/>
+                            <field name="elevenlabs_agent_id"/>
+                            <field name="twilio_phone_number"/>
+                            <field name="twilio_webhook_url"/>
+                            <field name="call_count"/>
+                            <field name="avg_quality_score"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Prompt système">
+                            <field name="system_prompt" nolabel="1"/>
+                        </page>
+                        <page string="Sessions">
+                            <field name="session_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="call_status"/>
+                                    <field name="date_start"/>
+                                    <field name="duration"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_doorway_agent_ia" model="ir.actions.act_window">
+        <field name="name">Agents vocaux</field>
+        <field name="res_model">doorway.agent.ia</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

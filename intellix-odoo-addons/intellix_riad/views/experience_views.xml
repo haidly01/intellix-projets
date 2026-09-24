@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_riad_experience_thread_list" model="ir.ui.view">
+        <field name="name">intellix.riad.experience.thread.list</field>
+        <field name="model">intellix.riad.experience.thread</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="inbound_at"/>
+                <field name="establishment_id"/>
+                <field name="channel"/>
+                <field name="guest_name"/>
+                <field name="intent"/>
+                <field name="decision" widget="badge"/>
+                <field name="response_seconds" optional="show"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_riad_experience_thread_form" model="ir.ui.view">
+        <field name="name">intellix.riad.experience.thread.form</field>
+        <field name="model">intellix.riad.experience.thread</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_mark_replied" type="object"
+                            string="Marquer répondu (Anna)"
+                            invisible="replied_at"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-warning" role="alert"
+                         invisible="decision != 'escalate'">
+                        L'agent n'a pas répondu — Anna doit prendre le fil.
+                        Prix, plainte, privatisation et hors script ne sont jamais automatiques.
+                    </div>
+                    <group>
+                        <group>
+                            <field name="establishment_id"/>
+                            <field name="channel"/>
+                            <field name="guest_name"/>
+                            <field name="inbox_id"/>
+                            <field name="reservation_id"/>
+                        </group>
+                        <group>
+                            <field name="intent"/>
+                            <field name="decision"/>
+                            <field name="inbound_at"/>
+                            <field name="replied_at"/>
+                            <field name="response_seconds"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="inbound_text"/>
+                        <field name="reply_text"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_riad_experience_thread" model="ir.actions.act_window">
+        <field name="name">Créateur d'Expérience</field>
+        <field name="res_model">intellix.riad.experience.thread</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_escalate': 1}</field>
+    </record>
+
+    <record id="view_riad_experience_thread_search" model="ir.ui.view">
+        <field name="name">intellix.riad.experience.thread.search</field>
+        <field name="model">intellix.riad.experience.thread</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="guest_name"/>
+                <field name="inbound_text"/>
+                <filter name="escalate" string="À traiter par Anna"
+                        domain="[('decision', '=', 'escalate'), ('replied_at', '=', False)]"/>
+                <filter name="auto" string="Réponses auto" domain="[('decision', '=', 'auto')]"/>
+                <group>
+                    <filter name="group_intent" string="Intention" context="{'group_by': 'intent'}"/>
+                    <filter name="group_channel" string="Canal" context="{'group_by': 'channel'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+</odoo>

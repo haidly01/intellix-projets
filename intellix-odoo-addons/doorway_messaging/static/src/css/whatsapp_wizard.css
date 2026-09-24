@@ -1,0 +1,704 @@
+/* ============================================================
+   WhatsApp Wizard — IntelliX dark theme (doorway_messaging)
+   ============================================================ */
+
+:root {
+    --wa-bg-deep: #0e0e1a;
+    --wa-bg-modal: #12121f;
+    --wa-bg-shell: #1a1a2a;
+    --wa-bg-input: rgba(255, 255, 255, 0.07);
+    --wa-bg-card: rgba(255, 255, 255, 0.06);
+    --wa-border: rgba(255, 255, 255, 0.12);
+    --wa-border-soft: rgba(255, 255, 255, 0.08);
+
+    --wa-text-primary: #f0f0ff;
+    --wa-text-secondary: #d4d4f0;
+    --wa-text-muted: rgba(255, 255, 255, 0.55);
+    --wa-text-hint: rgba(255, 255, 255, 0.35);
+    --wa-text-empty: rgba(255, 255, 255, 0.25);
+
+    --wa-green: #25d366;
+    --wa-green-hover: #1aaf55;
+    --wa-green-header: #075e54;
+    --wa-green-light: rgba(37, 211, 102, 0.15);
+    --wa-green-text: #4ade80;
+
+    --wa-indigo: #6366f1;
+    --wa-indigo-hover: #4338ca;
+    --wa-indigo-light: rgba(99, 102, 241, 0.2);
+    --wa-indigo-text: #c7c7ff;
+
+    --wa-bubble-in-bg: #2a2a42;
+    --wa-bubble-in-txt: #d4d4f0;
+    --wa-bubble-out-bg: #1a4a2a;
+    --wa-bubble-out-txt: #a8f0b8;
+}
+
+/* Dialog shell — masquer le formulaire Odoo natif */
+.o_whatsapp_wizard_dialog .o_form_sheet,
+.o_whatsapp_wizard_dialog .o_form_sheet_bg,
+.o_whatsapp_wizard_dialog footer.o_form_buttons_view {
+    display: none !important;
+}
+
+.o_whatsapp_wizard_dialog .o_form_view {
+    background: transparent !important;
+    padding: 0 !important;
+}
+
+.o_whatsapp_wizard_dialog .modal-body,
+.o_whatsapp_wizard_dialog .o_content {
+    padding: 0 !important;
+    background: var(--wa-bg-shell) !important;
+}
+
+.wa-wizard-root {
+    background: var(--wa-bg-modal);
+    border-radius: 14px;
+    overflow: hidden;
+    color: var(--wa-text-primary);
+    font-family: inherit;
+    min-width: 560px;
+    max-width: 720px;
+}
+
+/* Header */
+.wa-modal-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    background: var(--wa-green-header);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.wa-header-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--wa-green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.wa-header-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.wa-header-title {
+    font-weight: 700;
+    font-size: 15px;
+    color: #fff;
+}
+
+.wa-header-sub {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.wa-header-close {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+
+.wa-header-close:hover {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+/* Stepper */
+.wa-stepper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    padding: 14px 24px;
+    background: var(--wa-bg-deep);
+    border-bottom: 1px solid var(--wa-border-soft);
+}
+
+.wa-step-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    min-width: 80px;
+}
+
+.wa-step-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.wa-step-num.active {
+    background: var(--wa-indigo);
+    color: #fff;
+}
+
+.wa-step-num.done {
+    background: var(--wa-green);
+    color: #fff;
+}
+
+.wa-step-num.idle {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--wa-text-muted);
+}
+
+.wa-step-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.wa-step-label.active {
+    color: var(--wa-indigo-text);
+    font-weight: 600;
+}
+
+.wa-step-label.done {
+    color: var(--wa-green-text);
+}
+
+.wa-step-label.idle {
+    color: var(--wa-text-muted);
+}
+
+.wa-step-line {
+    flex: 1;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 0 8px;
+    margin-bottom: 20px;
+    max-width: 60px;
+}
+
+.wa-step-line.done {
+    background: var(--wa-green);
+}
+
+/* Body */
+.wa-step-body {
+    padding: 22px;
+    min-height: 340px;
+}
+
+.wa-section-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--wa-text-muted);
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.wa-recipient-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: var(--wa-bg-card);
+    border: 1px solid var(--wa-border);
+    border-radius: 10px;
+    margin-bottom: 16px;
+}
+
+.wa-recipient-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--wa-indigo-light);
+    color: var(--wa-indigo-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.wa-recipient-info {
+    flex: 1;
+}
+
+.wa-recipient-name {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.wa-recipient-phone {
+    font-size: 12px;
+    color: var(--wa-text-muted);
+}
+
+/* Templates */
+.wa-template-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.wa-template-chip {
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--wa-border);
+    background: var(--wa-bg-card);
+    color: var(--wa-text-secondary);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.wa-template-chip:hover,
+.wa-template-chip.active {
+    border-color: var(--wa-green);
+    background: var(--wa-green-light);
+    color: var(--wa-green-text);
+}
+
+/* Chat preview */
+.wa-chat-preview {
+    background: #0a0a14;
+    border: 1px solid var(--wa-border-soft);
+    border-radius: 10px;
+    height: 110px;
+    overflow-y: auto;
+    padding: 10px 12px;
+    margin-bottom: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.wa-chat-empty {
+    color: var(--wa-text-empty);
+    font-size: 12px;
+    text-align: center;
+    padding: 30px 0;
+}
+
+.wa-bubble {
+    max-width: 85%;
+    padding: 7px 11px;
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 1.4;
+    position: relative;
+}
+
+.wa-bubble-in {
+    align-self: flex-start;
+    background: var(--wa-bubble-in-bg);
+    color: var(--wa-bubble-in-txt);
+    border-bottom-left-radius: 3px;
+}
+
+.wa-bubble-out {
+    align-self: flex-end;
+    background: var(--wa-bubble-out-bg);
+    color: var(--wa-bubble-out-txt);
+    border-bottom-right-radius: 3px;
+}
+
+.wa-bubble-time {
+    font-size: 10px;
+    color: var(--wa-text-hint);
+    margin-top: 3px;
+    text-align: right;
+}
+
+/* Compose */
+.wa-compose-wrap {
+    background: var(--wa-bg-input);
+    border: 1px solid var(--wa-border);
+    border-radius: 12px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.wa-compose-textarea {
+    background: transparent;
+    border: none;
+    color: var(--wa-text-primary);
+    font-size: 14px;
+    line-height: 1.5;
+    resize: none;
+    min-height: 80px;
+    width: 100%;
+    outline: none;
+}
+
+.wa-compose-textarea::placeholder {
+    color: var(--wa-text-hint);
+}
+
+.wa-compose-tools {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: space-between;
+}
+
+.wa-compose-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.wa-tool-btn {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--wa-border-soft);
+    color: var(--wa-text-muted);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.wa-tool-btn:hover {
+    color: var(--wa-text-primary);
+    border-color: var(--wa-border);
+}
+
+.wa-send-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--wa-green);
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.wa-send-btn:hover {
+    background: var(--wa-green-hover);
+}
+
+/* Step 2 — channels */
+.wa-channel-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 16px;
+    background: var(--wa-bg-deep);
+    border-radius: 8px;
+    padding: 4px;
+}
+
+.wa-channel-tab {
+    flex: 1;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--wa-text-muted);
+    font-size: 13px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.wa-channel-tab.active {
+    background: var(--wa-indigo);
+    color: #fff;
+    font-weight: 600;
+}
+
+.wa-channel-textarea {
+    width: 100%;
+    min-height: 120px;
+    background: var(--wa-bg-input);
+    border: 1px solid var(--wa-border);
+    border-radius: 10px;
+    color: var(--wa-text-primary);
+    padding: 12px;
+    font-size: 14px;
+    resize: vertical;
+    outline: none;
+}
+
+/* Step 3 — confirm */
+.wa-confirm-card {
+    background: var(--wa-bg-card);
+    border: 1px solid var(--wa-border);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 14px;
+}
+
+.wa-confirm-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--wa-border-soft);
+    font-size: 13px;
+}
+
+.wa-confirm-row:last-child {
+    border-bottom: none;
+}
+
+.wa-confirm-label {
+    color: var(--wa-text-muted);
+}
+
+.wa-confirm-value {
+    color: var(--wa-text-primary);
+    font-weight: 600;
+    text-align: right;
+    max-width: 60%;
+}
+
+.wa-timing-chips {
+    display: flex;
+    gap: 8px;
+    margin: 12px 0;
+}
+
+.wa-timing-chip {
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--wa-border);
+    background: var(--wa-bg-card);
+    color: var(--wa-text-muted);
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.wa-timing-chip.active {
+    border-color: var(--wa-indigo);
+    background: var(--wa-indigo-light);
+    color: var(--wa-indigo-text);
+}
+
+.wa-checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0;
+    font-size: 13px;
+    color: var(--wa-text-secondary);
+}
+
+.wa-checkbox-row input {
+    accent-color: var(--wa-green);
+}
+
+/* Step 4 — success */
+.wa-success-panel {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.wa-success-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--wa-green-light);
+    color: var(--wa-green);
+    font-size: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+}
+
+.wa-success-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--wa-green-text);
+    margin-bottom: 8px;
+}
+
+.wa-success-sub {
+    color: var(--wa-text-muted);
+    font-size: 13px;
+}
+
+/* Footer */
+.wa-modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 18px;
+    background: var(--wa-bg-deep);
+    border-top: 1px solid var(--wa-border);
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.wa-footer-meta {
+    font-size: 11px;
+    color: var(--wa-text-hint);
+}
+
+.wa-footer-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-left: auto;
+}
+
+.btn-wa-primary {
+    background: var(--wa-green);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-wa-primary:hover:not(:disabled) {
+    background: var(--wa-green-hover);
+}
+
+.btn-wa-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-wa-claude {
+    background: var(--wa-indigo);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 13px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-wa-claude:hover {
+    background: var(--wa-indigo-hover);
+}
+
+.btn-wa-back,
+.btn-wa-ghost {
+    background: transparent;
+    border: 1px solid var(--wa-border);
+    color: var(--wa-text-muted);
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 13px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-wa-back:hover,
+.btn-wa-ghost:hover {
+    color: var(--wa-text-primary);
+    border-color: var(--wa-text-muted);
+}
+
+/* Log form */
+.wa-log-form {
+    background: var(--wa-bg-modal);
+    color: var(--wa-text-primary);
+}
+
+.wa-log-form .o_form_sheet,
+.wa-log-form .o_form_sheet_bg {
+    background: var(--wa-bg-modal) !important;
+}
+
+.wa-log-topbar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.wa-log-badge,
+.wa-log-status {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.wa-log-badge {
+    background: var(--wa-indigo-light);
+    color: var(--wa-indigo-text);
+}
+
+.wa-log-status {
+    background: var(--wa-green-light);
+    color: var(--wa-green-text);
+}
+
+.wa-log-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 24px;
+}
+
+.wa-log-form .o_field_widget,
+.wa-log-form .o_form_label,
+.wa-log-form label {
+    font-size: 14px;
+    color: var(--wa-text-primary) !important;
+}
+
+.wa-log-form .o_field_widget input,
+.wa-log-form .o_field_widget textarea,
+.wa-log-form .o_field_widget select {
+    background: var(--wa-bg-input) !important;
+    color: var(--wa-text-primary) !important;
+    border: 1px solid var(--wa-border) !important;
+    border-radius: 8px !important;
+}
+
+.wa-log-form footer {
+    background: var(--wa-bg-deep);
+    border-top: 1px solid var(--wa-border);
+    padding: 12px 16px;
+}
+
+@media (max-width: 600px) {
+    .wa-wizard-root {
+        min-width: auto;
+    }
+
+    .wa-log-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .wa-modal-footer {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .wa-footer-actions {
+        margin-left: 0;
+        justify-content: flex-end;
+    }
+}

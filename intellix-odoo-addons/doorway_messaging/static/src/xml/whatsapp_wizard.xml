@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="doorway_messaging.WhatsAppWizard">
+        <div class="wa-wizard-root">
+
+            <!-- HEADER -->
+            <div class="wa-modal-header">
+                <div class="wa-header-icon">
+                    <i class="fa fa-whatsapp"/>
+                </div>
+                <div class="wa-header-info">
+                    <span class="wa-header-title">Nouveau message WhatsApp</span>
+                    <span class="wa-header-sub">Twilio direct · doorway.wa.log</span>
+                </div>
+                <button class="wa-header-close" t-on-click="onClose" title="Fermer">
+                    <i class="fa fa-times"/>
+                </button>
+            </div>
+
+            <!-- STEPPER -->
+            <div class="wa-stepper">
+                <t t-foreach="stepItems" t-as="s" t-key="s.num">
+                    <div t-att-class="'wa-step-item ' + stepClass(s.num)">
+                        <div t-att-class="'wa-step-num ' + stepNumClass(s.num)">
+                            <t t-if="s.num &lt; state.step"><i class="fa fa-check"/></t>
+                            <t t-else=""><t t-esc="s.num"/></t>
+                        </div>
+                        <span t-att-class="'wa-step-label ' + stepLabelClass(s.num)">
+                            <t t-esc="s.label"/>
+                        </span>
+                    </div>
+                    <t t-if="s.num &lt; 3">
+                        <div t-att-class="'wa-step-line ' + (s.num &lt; state.step ? 'done' : '')"/>
+                    </t>
+                </t>
+            </div>
+
+            <!-- BODY -->
+            <div class="wa-step-body">
+
+                <!-- Étape 1 : Composer -->
+                <t t-if="state.step === 1">
+                    <div class="wa-section-label">Destinataire</div>
+                    <div class="wa-recipient-row">
+                        <div class="wa-recipient-avatar">
+                            <t t-esc="recipientInitial"/>
+                        </div>
+                        <div class="wa-recipient-info">
+                            <div class="wa-recipient-name"><t t-esc="recipientName"/></div>
+                            <div class="wa-recipient-phone"><t t-esc="props.phone"/></div>
+                        </div>
+                    </div>
+
+                    <div class="wa-section-label">Modèle</div>
+                    <div class="wa-template-row">
+                        <button t-foreach="templateKeys" t-as="tpl" t-key="tpl"
+                                t-att-class="'wa-template-chip ' + (state.template === tpl ? 'active' : '')"
+                                t-on-click="() => this.applyTemplate(tpl)">
+                            <t t-esc="templateLabels[tpl]"/>
+                        </button>
+                    </div>
+
+                    <div class="wa-section-label">Aperçu conversation</div>
+                    <div class="wa-chat-preview" t-ref="chatScroll">
+                        <t t-if="!chatHistory.length">
+                            <div class="wa-chat-empty">Tapez un message et cliquez sur l'aperçu</div>
+                        </t>
+                        <t t-foreach="chatHistory" t-as="msg" t-key="msg_index">
+                            <div t-att-class="'wa-bubble ' + (msg.dir === 'in' ? 'wa-bubble-in' : 'wa-bubble-out')">
+                                <t t-esc="msg.text"/>
+                                <div class="wa-bubble-time">
+                                    <t t-esc="msg.time"/>
+                                    <t t-if="msg.dir === 'out' and msg.read"> ✓✓</t>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+
+                    <div class="wa-compose-wrap">
+                        <textarea class="wa-compose-textarea"
+                                  t-att-placeholder="composePlaceholder"
+                                  t-att-value="state.message"
+                                  t-on-input="onMessageInput"
+                                  rows="4"/>
+                        <div class="wa-compose-tools">
+                            <div class="wa-compose-actions">
+                                <button class="wa-tool-btn" t-on-click="insertVariable">
+                                    <i class="fa fa-code"/> Variable
+                                </button>
+                                <button class="wa-tool-btn" t-on-click="previewMessage">
+                                    <i class="fa fa-eye"/> Aperçu
+                                </button>
+                            </div>
+                            <button class="wa-send-btn" t-on-click="previewMessage" title="Aperçu dans le chat">
+                                <i class="fa fa-arrow-up"/>
+                            </button>
+                        </div>
+                    </div>
+                </t>
+
+                <!-- Étape 2 : Par canal -->
+                <t t-if="state.step === 2">
+                    <div class="wa-channel-tabs">
+                        <button t-att-class="'wa-channel-tab ' + (state.activeTab === 'wa' ? 'active' : '')"
+                                t-on-click="() => this.setActiveTab('wa')">
+                            <i class="fa fa-whatsapp"/> WhatsApp
+                        </button>
+                        <button t-att-class="'wa-channel-tab ' + (state.activeTab === 'sms' ? 'active' : '')"
+                                t-on-click="() => this.setActiveTab('sms')">
+                            <i class="fa fa-comment"/> SMS
+                        </button>
+                        <button t-att-class="'wa-channel-tab ' + (state.activeTab === 'email' ? 'active' : '')"
+                                t-on-click="() => this.setActiveTab('email')">
+                            <i class="fa fa-envelope"/> Email
+                        </button>
+                    </div>
+
+                    <t t-if="state.activeTab === 'wa'">
+                        <textarea class="wa-channel-textarea"
+                                  t-att-value="state.waMessage"
+                                  t-on-input="onWaMessageInput"
+                                  placeholder="Message WhatsApp…"/>
+                    </t>
+                    <t t-if="state.activeTab === 'sms'">
+                        <textarea class="wa-channel-textarea"
+                                  t-att-value="state.smsMessage"
+                                  t-on-input="onSmsMessageInput"
+                                  placeholder="Message SMS (160 car. max)…"/>
+                    </t>
+                    <t t-if="state.activeTab === 'email'">
+                        <textarea class="wa-channel-textarea"
+                                  t-att-value="state.emailMessage"
+                                  t-on-input="onEmailMessageInput"
+                                  placeholder="Corps de l'email…"/>
+                    </t>
+
+                    <div class="wa-section-label mt-3">Destinataire</div>
+                    <div class="wa-recipient-row">
+                        <div class="wa-recipient-avatar"><t t-esc="recipientInitial"/></div>
+                        <div class="wa-recipient-info">
+                            <div class="wa-recipient-name"><t t-esc="recipientName"/></div>
+                            <div class="wa-recipient-phone"><t t-esc="props.phone"/></div>
+                        </div>
+                    </div>
+                </t>
+
+                <!-- Étape 3 : Confirmer -->
+                <t t-if="state.step === 3">
+                    <div class="wa-confirm-card">
+                        <div class="wa-confirm-row">
+                            <span class="wa-confirm-label">Canal</span>
+                            <span class="wa-confirm-value">WhatsApp</span>
+                        </div>
+                        <div class="wa-confirm-row">
+                            <span class="wa-confirm-label">Destinataire</span>
+                            <span class="wa-confirm-value"><t t-esc="props.phone"/></span>
+                        </div>
+                        <div class="wa-confirm-row">
+                            <span class="wa-confirm-label">Message</span>
+                            <span class="wa-confirm-value"><t t-esc="confirmPreview"/></span>
+                        </div>
+                    </div>
+
+                    <div class="wa-section-label">Timing</div>
+                    <div class="wa-timing-chips">
+                        <button t-att-class="'wa-timing-chip ' + (state.timing === 'now' ? 'active' : '')"
+                                t-on-click="() => this.setTiming('now')">Immédiat</button>
+                        <button t-att-class="'wa-timing-chip ' + (state.timing === 'schedule' ? 'active' : '')"
+                                t-on-click="() => this.setTiming('schedule')">Planifier</button>
+                        <button t-att-class="'wa-timing-chip ' + (state.timing === 'retry' ? 'active' : '')"
+                                t-on-click="() => this.setTiming('retry')">Relance auto</button>
+                    </div>
+
+                    <div class="wa-checkbox-row">
+                        <input type="checkbox" id="wa-log-crm"
+                               t-att-checked="state.logCrm"
+                               t-on-change="onLogCrmChange"/>
+                        <label for="wa-log-crm">Journaliser dans le CRM</label>
+                    </div>
+                    <div class="wa-checkbox-row">
+                        <input type="checkbox" id="wa-relance"
+                               t-att-checked="state.relanceAuto"
+                               t-on-change="onRelanceChange"/>
+                        <label for="wa-relance">Relance automatique J+2</label>
+                    </div>
+                </t>
+
+                <!-- Étape 4 : Succès -->
+                <t t-if="state.step === 4">
+                    <div class="wa-success-panel">
+                        <div class="wa-success-icon"><i class="fa fa-check"/></div>
+                        <div class="wa-success-title">Message envoyé !</div>
+                        <div class="wa-success-sub">
+                            Votre message WhatsApp a été transmis à <t t-esc="props.phone"/>.
+                        </div>
+                    </div>
+                </t>
+
+            </div>
+
+            <!-- FOOTER -->
+            <div class="wa-modal-footer">
+                <span class="wa-footer-meta">
+                    <i class="fa fa-lock"/> Chiffré de bout en bout
+                </span>
+                <div class="wa-footer-actions">
+                    <t t-if="state.step &gt; 1 and state.step &lt; 4">
+                        <button class="btn-wa-back" t-on-click="goBack">
+                            <i class="fa fa-arrow-left"/> Retour
+                        </button>
+                    </t>
+                    <t t-if="state.step &lt; 4">
+                        <button class="btn-wa-ghost" t-on-click="onClose">Annuler</button>
+                        <button class="btn-wa-claude" t-on-click="adaptWithClaude"
+                                t-if="state.step === 1">
+                            <i class="fa fa-magic"/> Adapter avec Claude
+                        </button>
+                        <button class="btn-wa-primary" t-on-click="goNext"
+                                t-att-disabled="state.sending">
+                            <t t-if="state.step &lt; 3">
+                                Suivant <i class="fa fa-arrow-right"/>
+                            </t>
+                            <t t-else="">
+                                <i class="fa fa-paper-plane"/>
+                                <t t-if="state.sending"> Envoi…</t>
+                                <t t-else=""> Envoyer</t>
+                            </t>
+                        </button>
+                    </t>
+                    <t t-if="state.step === 4">
+                        <button class="btn-wa-primary" t-on-click="resetWizard">
+                            <i class="fa fa-plus"/> Nouveau message
+                        </button>
+                        <button class="btn-wa-ghost" t-on-click="onClose">Fermer</button>
+                    </t>
+                </div>
+            </div>
+
+        </div>
+    </t>
+
+</templates>

@@ -1,0 +1,396 @@
+# Translation of Module Hébergement to English (US).
+msgid ""
+msgstr ""
+"Project-Id-Version: intellix_riad 19.0.1.7.0\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. module: intellix_riad
+#: model:ir.ui.menu,name:intellix_riad.menu_riad_root
+msgid "Module Hébergement"
+msgstr "Hospitality module"
+
+#. module: intellix_riad
+#: model:ir.ui.menu,name:intellix_riad.menu_riad_dashboard
+#: model:ir.actions.client,name:intellix_riad.action_riad_dashboard
+msgid "Tableau de bord"
+msgstr "Dashboard"
+
+#. module: intellix_riad
+#: model:ir.ui.menu,name:intellix_riad.menu_riad_reservations
+#: model:ir.actions.client,name:intellix_riad.action_riad_calendar
+msgid "Réservations"
+msgstr "Reservations"
+
+#. module: intellix_riad
+#: model:ir.ui.menu,name:intellix_riad.menu_riad_police
+#: model:ir.actions.act_window,name:intellix_riad.action_riad_police_fiche
+msgid "Fiches de police"
+msgstr "Police registration forms"
+
+#. module: intellix_riad
+#: model:ir.ui.menu,name:intellix_riad.menu_riad_tax_bordereau
+#: model:ir.actions.act_window,name:intellix_riad.action_riad_tax_bordereau
+msgid "Bordereaux taxe de séjour"
+msgstr "Tourist tax slips"
+
+#. module: intellix_riad
+#: model:ir.ui.menu,name:intellix_riad.menu_riad_tax_bordereau_template
+#: model:ir.actions.act_window,name:intellix_riad.action_riad_tax_bordereau_template
+msgid "Modèles de bordereau (communes)"
+msgstr "Tax slip templates (communes)"
+
+#. module: intellix_riad
+#: model:ir.ui.menu,name:intellix_riad.menu_riad_experience
+#: model:ir.actions.act_window,name:intellix_riad.action_riad_experience_thread
+msgid "Créateur d'Expérience"
+msgstr "Experience Creator"
+
+#. module: intellix_riad
+msgid "Temps de réponse"
+msgstr "Response time"
+
+#. module: intellix_riad
+#: model:ir.ui.menu,name:intellix_riad.menu_riad_restaurant
+msgid "Restaurant"
+msgstr "Restaurant"
+
+#. module: intellix_riad
+#: model:ir.ui.menu,name:intellix_riad.menu_riad_wellness
+msgid "Bien-être & beauté"
+msgstr "Wellness & beauty"
+
+#. module: intellix_riad
+#: model:ir.ui.menu,name:intellix_riad.menu_riad_events
+msgid "Événements"
+msgstr "Events"
+
+#. module: intellix_riad
+#: model:ir.ui.menu,name:intellix_riad.menu_riad_personnel
+msgid "Personnel"
+msgstr "Staff"
+
+#. module: intellix_riad
+#: model:ir.ui.menu,name:intellix_riad.menu_riad_settings
+msgid "Paramètres"
+msgstr "Settings"
+
+#. module: intellix_riad
+#: model:ir.ui.menu,name:intellix_riad.menu_riad_establishment
+msgid "Établissements"
+msgstr "Properties"
+
+#. module: intellix_riad
+#: model:ir.model.fields,field_description:intellix_riad.field_intellix_riad_establishment__tourist_tax_rate
+msgid "Taxe de séjour (DH / personne / nuit)"
+msgstr "Tourist tax (DH / person / night)"
+
+#. module: intellix_riad
+#: model:ir.model.fields,field_description:intellix_riad.field_coins_reservation__riad_tourist_tax_amount
+msgid "Taxe de séjour"
+msgstr "Tourist tax"
+
+#. module: intellix_riad
+#: model:ir.model.fields,field_description:intellix_riad.field_coins_reservation__riad_taxable_guests
+msgid "Personnes taxables"
+msgstr "Taxable guests"
+
+#. module: intellix_riad
+#: model:ir.model.fields,field_description:intellix_riad.field_intellix_riad_police_fiche__lastname
+msgid "Nom"
+msgstr "Last name"
+
+#. module: intellix_riad
+#: model:ir.model.fields,field_description:intellix_riad.field_intellix_riad_police_fiche__firstname
+msgid "Prénom"
+msgstr "First name"
+
+#. module: intellix_riad
+#: model:ir.model.fields,field_description:intellix_riad.field_intellix_riad_police_fiche__birth_date
+msgid "Date de naissance"
+msgstr "Date of birth"
+
+#. module: intellix_riad
+#: model:ir.model.fields,field_description:intellix_riad.field_intellix_riad_police_fiche__birth_place
+msgid "Lieu de naissance"
+msgstr "Place of birth"
+
+#. module: intellix_riad
+#: model:ir.model.fields,field_description:intellix_riad.field_intellix_riad_police_fiche__nationality_id
+msgid "Nationalité"
+msgstr "Nationality"
+
+#. module: intellix_riad
+#: model:ir.model.fields,field_description:intellix_riad.field_intellix_riad_police_fiche__passport_number
+msgid "N° de passeport"
+msgstr "Passport number"
+
+#. module: intellix_riad
+#: model:ir.model.fields,field_description:intellix_riad.field_intellix_riad_police_fiche__entry_date
+msgid "Date d'entrée au Maroc"
+msgstr "Date of entry into Morocco"
+
+#. module: intellix_riad
+#: model:ir.model.fields,field_description:intellix_riad.field_intellix_riad_police_fiche__phone
+msgid "Téléphone mobile"
+msgstr "Mobile phone"
+
+#. module: intellix_riad
+#: model:ir.model.fields,field_description:intellix_riad.field_intellix_riad_police_fiche__email
+msgid "Adresse électronique"
+msgstr "Email address"
+
+#. module: intellix_riad
+#: model:ir.model.fields,field_description:intellix_riad.field_intellix_riad_police_fiche__passport_image
+msgid "Photo du passeport"
+msgstr "Passport photo"
+
+#. module: intellix_riad
+#: model:ir.model.fields.selection,name:intellix_riad.selection__intellix_riad_police_fiche__state__draft
+msgid "À compléter"
+msgstr "To complete"
+
+#. module: intellix_riad
+#: model:ir.model.fields.selection,name:intellix_riad.selection__intellix_riad_police_fiche__state__ready
+msgid "Prête à transmettre"
+msgstr "Ready to submit"
+
+#. module: intellix_riad
+#: model:ir.model.fields.selection,name:intellix_riad.selection__intellix_riad_police_fiche__state__exported
+msgid "Transmise"
+msgstr "Submitted"
+
+#. module: intellix_riad
+#: model:ir.model.fields.selection,name:intellix_riad.selection__intellix_riad_police_fiche__state__not_required
+msgid "Non concerné (Marocain)"
+msgstr "Not required (Moroccan national)"
+
+#. module: intellix_riad
+#. odoo-javascript
+#: code:addons/intellix_riad/static/src/js/labels.js:0
+msgid "Tous les modules →"
+msgstr "All apps →"
+
+#. module: intellix_riad
+#. odoo-javascript
+#: code:addons/intellix_riad/static/src/js/labels.js:0
+msgid "Bonjour"
+msgstr "Hello"
+
+#. module: intellix_riad
+#. odoo-javascript
+#: code:addons/intellix_riad/static/src/js/labels.js:0
+msgid "Taux d'occupation"
+msgstr "Occupancy rate"
+
+#. module: intellix_riad
+#. odoo-javascript
+#: code:addons/intellix_riad/static/src/js/labels.js:0
+msgid "Réservations aujourd'hui"
+msgstr "Bookings today"
+
+#. module: intellix_riad
+#. odoo-javascript
+#: code:addons/intellix_riad/static/src/js/labels.js:0
+msgid "Revenu du jour"
+msgstr "Today's revenue"
+
+#. module: intellix_riad
+#. odoo-javascript
+#: code:addons/intellix_riad/static/src/js/labels.js:0
+msgid "Créneaux bien-être"
+msgstr "Wellness slots"
+
+#. module: intellix_riad
+#. odoo-javascript
+#: code:addons/intellix_riad/static/src/js/labels.js:0
+msgid "Occupation — 7 prochains jours"
+msgstr "Occupancy — next 7 days"
+
+#. module: intellix_riad
+#. odoo-javascript
+#: code:addons/intellix_riad/static/src/js/labels.js:0
+msgid "Voir le calendrier →"
+msgstr "Open calendar →"
+
+#. module: intellix_riad
+#. odoo-javascript
+#: code:addons/intellix_riad/static/src/js/labels.js:0
+msgid "Terrasse — mode du jour"
+msgstr "Terrace — today's mode"
+
+#. module: intellix_riad
+#. odoo-javascript
+#: code:addons/intellix_riad/static/src/js/labels.js:0
+msgid "Prochains événements"
+msgstr "Upcoming events"
+
+#. module: intellix_riad
+#. odoo-javascript
+#: code:addons/intellix_riad/static/src/js/labels.js:0
+msgid "Tout voir →"
+msgstr "See all →"
+
+#. module: intellix_riad
+#. odoo-javascript
+#: code:addons/intellix_riad/static/src/js/labels.js:0
+msgid "Aucun événement à venir."
+msgstr "No upcoming events."
+
+#. module: intellix_riad
+#. odoo-javascript
+#: code:addons/intellix_riad/static/src/js/labels.js:0
+msgid "Bien-être — aujourd'hui"
+msgstr "Wellness — today"
+
+#. module: intellix_riad
+#. odoo-javascript
+#: code:addons/intellix_riad/static/src/js/labels.js:0
+msgid "Planning →"
+msgstr "Schedule →"
+
+#. module: intellix_riad
+#. odoo-javascript
+#: code:addons/intellix_riad/static/src/js/labels.js:0
+msgid "Aucun créneau aujourd'hui."
+msgstr "No slots today."
+
+#. module: intellix_riad
+#. odoo-javascript
+#: code:addons/intellix_riad/static/src/js/labels.js:0
+msgid "Boîte de réception"
+msgstr "Inbox"
+
+#. module: intellix_riad
+#. odoo-javascript
+#: code:addons/intellix_riad/static/src/js/labels.js:0
+msgid "Aucune demande récente."
+msgstr "No recent requests."
+
+#. module: intellix_riad
+#. odoo-javascript
+#: code:addons/intellix_riad/static/src/js/labels.js:0
+msgid "Personnel — présences aujourd'hui"
+msgstr "Staff — attendance today"
+
+#. module: intellix_riad
+#. odoo-javascript
+#: code:addons/intellix_riad/static/src/js/labels.js:0
+msgid "Rapport mensuel →"
+msgstr "Monthly report →"
+
+#. module: intellix_riad
+#. odoo-javascript
+#: code:addons/intellix_riad/static/src/js/labels.js:0
+msgid "Aucune fiche équipe pour cet établissement."
+msgstr "No staff records for this property."
+
+#. module: intellix_riad
+#. odoo-javascript
+#: code:addons/intellix_riad/static/src/js/labels.js:0
+msgid "Présent"
+msgstr "Present"
+
+#. module: intellix_riad
+#. odoo-javascript
+#: code:addons/intellix_riad/static/src/js/labels.js:0
+msgid "Retard"
+msgstr "Late"
+
+#. module: intellix_riad
+#. odoo-javascript
+#: code:addons/intellix_riad/static/src/js/labels.js:0
+msgid "Absent"
+msgstr "Absent"
+
+#. module: intellix_riad
+#. odoo-javascript
+#: code:addons/intellix_riad/static/src/js/labels.js:0
+msgid "Valider"
+msgstr "Confirm"
+
+#. module: intellix_riad
+#. odoo-javascript
+#: code:addons/intellix_riad/static/src/js/labels.js:0
+msgid "Congé planifié"
+msgstr "Planned leave"
+
+#. module: intellix_riad
+#. odoo-javascript
+#: code:addons/intellix_riad/static/src/js/labels.js:0
+msgid "Maladie"
+msgstr "Sick leave"
+
+#. module: intellix_riad
+#. odoo-javascript
+#: code:addons/intellix_riad/static/src/js/labels.js:0
+msgid "Non justifiée"
+msgstr "Unjustified"
+
+#. module: intellix_riad
+#. odoo-javascript
+#: code:addons/intellix_riad/static/src/js/labels.js:0
+msgid "Mois clos — rapport envoyé"
+msgstr "Month closed — report sent"
+
+#. module: intellix_riad
+#. odoo-javascript
+#: code:addons/intellix_riad/static/src/js/labels.js:0
+msgid "Nouvelle réservation"
+msgstr "New reservation"
+
+#. module: intellix_riad
+#. odoo-javascript
+#: code:addons/intellix_riad/static/src/js/labels.js:0
+msgid "Calendrier des chambres"
+msgstr "Room calendar"
+
+#. module: intellix_riad
+#. odoo-javascript
+#: code:addons/intellix_riad/static/src/js/labels.js:0
+msgid "Disponibilité — 14 prochains jours"
+msgstr "Availability — next 14 days"
+
+#. module: intellix_riad
+#. odoo-javascript
+#: code:addons/intellix_riad/static/src/js/labels.js:0
+msgid "Vert OTA · Terracotta site · Laiton saisie manuelle"
+msgstr "Green OTA · Terracotta website · Brass manual"
+
+#. module: intellix_riad
+#. odoo-python
+#: code:addons/intellix_riad/models/police_fiche.py:0
+msgid "Les fiches de police se conservent au moins 2 ans et ne peuvent pas être supprimées."
+msgstr "Police forms must be kept for at least 2 years and cannot be deleted."
+
+#. module: intellix_riad
+#. odoo-python
+#: code:addons/intellix_riad/models/police_fiche.py:0
+msgid "Aucune fiche à imprimer : les nationaux marocains ne sont pas concernés."
+msgstr "Nothing to print: Moroccan nationals are not required to file a form."
+
+#. module: intellix_riad
+#. odoo-python
+#: code:addons/intellix_riad/models/dashboard.py:0
+msgid "%s chambre(s) / %s ce soir"
+msgstr "%s room(s) / %s tonight"
+
+#. module: intellix_riad
+#. odoo-python
+#: code:addons/intellix_riad/models/dashboard.py:0
+msgid "%s via Channex · %s site direct"
+msgstr "%s via Channex · %s direct website"
+
+#. module: intellix_riad
+#. odoo-python
+#: code:addons/intellix_riad/models/dashboard.py:0
+msgid "Chambres + bien-être + resto"
+msgstr "Rooms + wellness + restaurant"
+
+#. module: intellix_riad
+#. odoo-python
+#: code:addons/intellix_riad/models/dashboard.py:0
+msgid "%s résidente(s) · %s externe(s)"
+msgstr "%s in-house · %s external"

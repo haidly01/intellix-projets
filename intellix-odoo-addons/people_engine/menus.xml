@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_people_engine_root"
+        name="RH"
+        action="action_pe_home"
+        sequence="30"
+        web_icon="people_engine,static/description/icon.png"
+        groups="base.group_user"/>
+
+    <!-- Vue d'ensemble GLOBALE (superviseur) — landing des gestionnaires/RH/admin.
+         Séquence la plus basse → s'affiche en premier ; cachée aux employés. -->
+    <menuitem id="menu_pe_dashboard_global"
+        name="Vue d'ensemble"
+        parent="menu_people_engine_root"
+        action="action_pe_rh_global"
+        sequence="5"
+        groups="people_engine.group_manager"/>
+
+    <!-- Tableau de bord PERSONNEL (hub « Bonjour, … ») — tous les employés. -->
+    <menuitem id="menu_pe_dashboard_employee"
+        name="Mon tableau de bord"
+        parent="menu_people_engine_root"
+        action="action_pe_rh_hub"
+        sequence="10"
+        groups="people_engine.group_employee"/>
+
+    <!-- Vue RH (menu_pe_dashboard_hr) retiré : doublon avec l'entrée RH ;
+         action_pe_hr_dashboard reste accessible via le hub et Vue d'ensemble. -->
+    <delete model="ir.ui.menu" id="menu_pe_dashboard_hr"/>
+
+    <menuitem id="menu_pe_team"
+        name="Équipe"
+        parent="menu_people_engine_root"
+        sequence="25"
+        groups="people_engine.group_hr,people_engine.group_manager"/>
+
+    <menuitem id="menu_pe_team_dashboard"
+        name="Tableau de bord équipe"
+        parent="menu_pe_team"
+        action="action_pe_team_dashboard"
+        sequence="1"
+        groups="people_engine.group_hr,people_engine.group_manager"/>
+
+    <!-- Drill-down détaillé de l'équipe directe (kanban par bande). -->
+    <menuitem id="menu_pe_dashboard_manager"
+        name="Équipe (détail)"
+        parent="menu_pe_team"
+        action="action_dashboard_manager"
+        sequence="5"
+        groups="people_engine.group_manager"/>
+
+    <menuitem id="menu_pe_team_profiles"
+        name="Profils &amp; équipe"
+        parent="menu_pe_team"
+        action="action_pe_team_profiles"
+        sequence="10"
+        groups="people_engine.group_hr"/>
+
+    <menuitem id="menu_pe_team_invite"
+        name="Inviter un collaborateur"
+        parent="menu_pe_team"
+        action="action_pe_invite_collaborator"
+        sequence="20"
+        groups="people_engine.group_hr"/>
+
+    <menuitem id="menu_pe_document_bank"
+        name="Modèles de documents"
+        parent="menu_pe_team"
+        action="action_pe_document_bank"
+        sequence="25"
+        groups="people_engine.group_hr"/>
+
+    <menuitem id="menu_pe_document_models_config"
+        name="Modèles de documents"
+        parent="menu_pe_config"
+        action="action_pe_document_bank"
+        sequence="15"
+        groups="people_engine.group_hr"/>
+
+    <menuitem id="menu_pe_employee_documents"
+        name="Documents envoyés"
+        parent="menu_pe_team"
+        action="action_pe_employee_documents"
+        sequence="27"
+        groups="people_engine.group_hr"/>
+
+    <menuitem id="menu_pe_team_access"
+        name="Accès &amp; permissions"
+        parent="menu_pe_team"
+        action="action_pe_user_access_server"
+        sequence="30"
+        groups="people_engine.group_admin"/>
+
+    <menuitem id="menu_pe_coaching"
+        name="Coaching IA"
+        parent="menu_people_engine_root"
+        sequence="40"
+        groups="people_engine.group_manager"/>
+
+    <menuitem id="menu_pe_coaching_sessions"
+        name="Sessions coaching"
+        parent="menu_pe_coaching"
+        action="action_pe_coaching_sessions"
+        sequence="10"/>
+
+    <menuitem id="menu_pe_coaching_plans"
+        name="Plans de développement"
+        parent="menu_pe_coaching"
+        action="action_pe_coaching_plans"
+        sequence="20"/>
+
+    <delete model="ir.ui.menu" id="menu_pe_legal"/>
+
+    <menuitem id="menu_pe_lms"
+        name="Formation"
+        parent="menu_people_engine_root"
+        sequence="45"
+        groups="people_engine.group_employee"/>
+
+    <menuitem id="menu_pe_lms_courses"
+        name="Catalogue cours"
+        parent="menu_pe_lms"
+        action="action_pe_courses"
+        sequence="10"
+        groups="people_engine.group_hr"/>
+
+    <menuitem id="menu_pe_lms_paths"
+        name="Parcours"
+        parent="menu_pe_lms"
+        action="action_pe_learning_paths"
+        sequence="20"/>
+
+    <menuitem id="menu_pe_lms_enrollments"
+        name="Inscriptions"
+        parent="menu_pe_lms"
+        action="action_pe_enrollments"
+        sequence="30"
+        groups="people_engine.group_manager"/>
+
+    <menuitem id="menu_pe_legal_articles"
+        name="Bibliothèque juridique"
+        parent="menu_pe_lms"
+        action="action_pe_legal_library"
+        sequence="40"
+        groups="people_engine.group_manager"/>
+
+    <menuitem id="menu_pe_legal_jurisdictions"
+        name="Juridictions"
+        parent="menu_pe_lms"
+        action="action_pe_legal_jurisdictions"
+        sequence="50"
+        groups="people_engine.group_hr"/>
+
+    <menuitem id="menu_pe_legal_updates"
+        name="Mises à jour n8n"
+        parent="menu_pe_lms"
+        action="action_pe_legal_updates"
+        sequence="60"
+        groups="people_engine.group_hr"/>
+
+    <menuitem id="menu_pe_primes"
+        name="Primes"
+        parent="menu_people_engine_root"
+        sequence="52"
+        groups="people_engine.group_hr"/>
+
+    <menuitem id="menu_pe_payroll_root"
+        name="Paie &amp; contrats"
+        parent="menu_people_engine_root"
+        sequence="53"
+        groups="people_engine.group_hr"/>
+
+    <menuitem id="menu_pe_employment_contracts"
+        name="Contrats"
+        parent="menu_pe_payroll_root"
+        action="action_pe_employment_contract"
+        sequence="10"
+        groups="people_engine.group_hr"/>
+
+    <menuitem id="menu_pe_payroll_bulletins"
+        name="Bulletins (période 25→24)"
+        parent="menu_pe_payroll_root"
+        action="action_pe_payroll_bulletin_current"
+        sequence="20"
+        groups="people_engine.group_hr"/>
+
+    <menuitem id="menu_pe_payroll_bulletins_history"
+        name="Historique bulletins"
+        parent="menu_pe_payroll_root"
+        action="action_pe_payroll_bulletin_all"
+        sequence="25"
+        groups="people_engine.group_hr"/>
+
+    <menuitem id="menu_pe_session_pauses"
+        name="Pauses agents"
+        parent="menu_pe_payroll_root"
+        action="action_pe_session_pause"
+        sequence="30"
+        groups="people_engine.group_hr"/>
+
+    <menuitem id="menu_pe_supervisor_pause"
+        name="Supervision pauses"
+        parent="menu_pe_payroll_root"
+        action="action_pe_supervisor_pause_dashboard"
+        sequence="35"
+        groups="people_engine.group_manager"/>
+
+
+    <menuitem id="menu_pe_primes_list"
+        name="Primes proposées"
+        parent="menu_pe_primes"
+        action="action_pe_primes"
+        sequence="10"/>
+
+    <menuitem id="menu_pe_prime_rules"
+        name="Règles de calcul"
+        parent="menu_pe_primes"
+        action="action_pe_prime_rules"
+        sequence="20"/>
+
+    <menuitem id="menu_pe_prime_templates"
+        name="Modèles de prime variable"
+        parent="menu_pe_primes"
+        action="action_pe_prime_template"
+        sequence="25"/>
+
+    <menuitem id="menu_pe_gamification"
+        name="Objectifs"
+        parent="menu_people_engine_root"
+        sequence="55"
+        groups="people_engine.group_employee"/>
+
+    <menuitem id="menu_pe_gamification_leaderboard"
+        name="Classements"
+        parent="menu_pe_gamification"
+        action="action_pe_gamification_dashboard"
+        sequence="10"/>
+
+    <menuitem id="menu_pe_gamification_badges"
+        name="Mes badges (équipe)"
+        parent="menu_pe_gamification"
+        action="action_pe_badge_awards"
+        sequence="20"/>
+
+    <!-- Opérations + Opérations terrain regroupés sous Objectifs -->
+    <delete model="ir.ui.menu" id="menu_pe_operations"/>
+    <delete model="ir.ui.menu" id="menu_pe_ops"/>
+
+    <menuitem id="menu_pe_profiles"
+        name="Profils employés"
+        parent="menu_pe_gamification"
+        action="action_pe_team_profiles"
+        sequence="30"
+        groups="people_engine.group_manager"/>
+
+    <menuitem id="menu_pe_objectives"
+        name="Suivi des objectifs"
+        parent="menu_pe_gamification"
+        action="action_pe_objective"
+        sequence="40"/>
+
+    <menuitem id="menu_pe_evaluations"
+        name="Évaluations en attente"
+        parent="menu_pe_gamification"
+        action="action_pe_evaluation"
+        sequence="50"/>
+
+    <menuitem id="menu_pe_departments"
+        name="Départements modèle"
+        parent="menu_pe_gamification"
+        action="action_pe_department"
+        sequence="60"
+        groups="people_engine.group_hr"/>
+
+    <menuitem id="menu_pe_presence"
+        name="Présence temps réel"
+        parent="menu_pe_gamification"
+        action="action_pe_presence_live"
+        sequence="70"
+        groups="people_engine.group_hr"/>
+
+    <menuitem id="menu_pe_payslip_live"
+        name="Paie temps réel"
+        parent="menu_pe_gamification"
+        action="action_pe_payslip_live"
+        sequence="80"
+        groups="people_engine.group_hr"/>
+
+    <menuitem id="menu_pe_agent_assignments"
+        name="Leads IA attribués"
+        parent="menu_pe_gamification"
+        action="action_pe_agent_assignment"
+        sequence="90"
+        groups="people_engine.group_manager"/>
+
+    <menuitem id="menu_pe_coaching_calls"
+        name="Appels &amp; coaching"
+        parent="menu_pe_gamification"
+        action="action_pe_coaching_call"
+        sequence="100"
+        groups="people_engine.group_manager"/>
+
+    <menuitem id="menu_pe_prime_transactions"
+        name="Journal primes variables"
+        parent="menu_pe_gamification"
+        action="action_pe_prime_transaction"
+        sequence="110"
+        groups="people_engine.group_hr"/>
+
+    <menuitem id="menu_pe_config"
+        name="Configuration"
+        parent="menu_people_engine_root"
+        sequence="90"
+        groups="people_engine.group_admin"/>
+
+    <menuitem id="menu_pe_onboarding"
+        name="Visite guidée"
+        parent="menu_pe_config"
+        action="action_pe_onboarding_wizard"
+        sequence="5"
+        groups="base.group_user"/>
+
+    <menuitem id="menu_pe_refresh_scores"
+        name="Recalculer les scores"
+        parent="menu_pe_config"
+        action="action_pe_score_refresh_wizard"
+        sequence="10"/>
+
+    <menuitem id="menu_pe_action_log"
+        name="Journal actions RH"
+        parent="menu_pe_config"
+        action="action_pe_action_log"
+        sequence="20"
+        groups="people_engine.group_hr"/>
+
+    <menuitem id="menu_pe_lifecycle_stages"
+        name="Stades cycle de vie"
+        parent="menu_pe_config"
+        action="action_pe_lifecycle_stages"
+        sequence="25"
+        groups="people_engine.group_hr"/>
+
+    <menuitem id="menu_pe_badges_config"
+        name="Badges PE"
+        parent="menu_pe_config"
+        action="action_pe_badges"
+        sequence="30"/>
+
+    <menuitem id="menu_pe_levels_config"
+        name="Niveaux PE"
+        parent="menu_pe_config"
+        action="action_pe_levels"
+        sequence="35"/>
+
+    <menuitem id="menu_pe_challenges_config"
+        name="Défis d'équipe"
+        parent="menu_pe_config"
+        action="action_pe_challenges"
+        sequence="40"
+        groups="people_engine.group_hr"/>
+
+    <menuitem id="menu_pe_rewards_config"
+        name="Récompenses"
+        parent="menu_pe_config"
+        action="action_pe_rewards"
+        sequence="45"
+        groups="people_engine.group_hr"/>
+
+    <menuitem id="menu_pe_tv_config"
+        name="Dashboard TV"
+        parent="menu_pe_config"
+        action="action_pe_tv_config"
+        sequence="55"
+        groups="people_engine.group_hr"/>
+
+    <menuitem id="menu_pe_objective_templates"
+        name="Modèles d'objectifs"
+        parent="menu_pe_config"
+        action="action_pe_objective_template"
+        sequence="42"
+        groups="people_engine.group_hr"/>
+
+    <menuitem id="menu_pe_prime_templates_config"
+        name="Modèles de prime variable"
+        parent="menu_pe_config"
+        action="action_pe_prime_template"
+        sequence="43"
+        groups="people_engine.group_hr"/>
+
+    <menuitem id="menu_pe_evaluations_all"
+        name="Toutes les évaluations"
+        parent="menu_pe_config"
+        action="action_pe_evaluation_all"
+        sequence="50"/>
+</odoo>

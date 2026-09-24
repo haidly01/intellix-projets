@@ -1,0 +1,115 @@
+{
+  "name": "Haidly — Orchestrateur (SoumissionEntrepreneurs + Odoo)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "haidly-lead",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "h1-webhook",
+      "name": "1 Webhook Lead Haidly",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 300],
+      "webhookId": "haidly-lead-doorway"
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = $input.first().json;\nconst body = item.body || item;\nfunction normalizePhone(phone) {\n  if (!phone) return '';\n  const d = String(phone).replace(/\\D/g, '');\n  if (d.length === 10) return '+1' + d;\n  if (d.length === 11 && d.startsWith('1')) return '+' + d;\n  return d ? '+1' + d : '';\n}\nconst raw = [body.project_type, body.service, body.form_name, body.message].join(' ').toLowerCase();\nlet project_type = 'multi';\nif (raw.includes('cuisine')) project_type = 'cuisine';\nelse if (raw.includes('salle') || raw.includes('bain')) project_type = 'salle_de_bain';\nelse if (raw.includes('sous')) project_type = 'sous_sol';\nelse if (raw.includes('patio') || raw.includes('terrasse')) project_type = 'patio';\nelse if (raw.includes('agrand')) project_type = 'agrandissement';\nelse if (raw.includes('extérieur') || raw.includes('exterieur') || raw.includes('toiture')) project_type = 'exterieur';\nconst nowStr = new Date().toLocaleString('en-US', { timeZone: 'America/Toronto' });\nconst toronto = new Date(nowStr);\nconst hour = toronto.getHours();\nconst day = toronto.getDay();\nconst isBusinessHours = day >= 1 && day <= 6 && hour >= 9 && hour < 19;\nreturn [{ json: {\n  ...body,\n  first_name: body.first_name || '',\n  last_name: body.last_name || '',\n  phone: normalizePhone(body.phone || body.mobile),\n  email: body.email || '',\n  lead_city: body.lead_city || body.city || '',\n  project_type: body.project_type || project_type,\n  budget_range: body.budget_range || '',\n  property_type: body.property_type || '',\n  isBusinessHours,\n  upload_url: 'https://soumissionentrepreneurs.com/'\n}}];"
+      },
+      "id": "h2-router",
+      "name": "2 Projet + Tel + Heures",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [260, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const b = $('2 Projet + Tel + Heures').first().json;\nconst token = '{{HAIDLY_WEBHOOK_TOKEN}}';\nconst res = await this.helpers.httpRequest({\n  method: 'POST',\n  url: 'https://intellixcrm.com/api/haidly/lead',\n  headers: { 'X-Haidly-Webhook-Token': token, 'Content-Type': 'application/json' },\n  body: {\n    first_name: b.first_name,\n    last_name: b.last_name,\n    phone: b.phone,\n    email: b.email,\n    city: b.lead_city,\n    project_type: b.project_type,\n    budget_range: b.budget_range,\n    property_type: b.property_type,\n    source: b.source || (b.form_id || b.page_id ? 'meta_lead_ads' : 'soumissionentrepreneurs'),\n    form_id: b.form_id || b.leadgen_form_id || '',\n    page_id: b.page_id || b.facebook_page_id || ''\n  },\n  json: true,\n});\nreturn [{ json: { ...b, ...res } }];"
+      },
+      "id": "h3-odoo",
+      "name": "3 Odoo Create Lead",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [520, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const b = $('3 Odoo Create Lead').first().json;\nconst phone = b.phone;\nif (!phone) return [{ json: b }];\nconst sid = '{{TWILIO_ACCOUNT_SID}}';\nconst auth = Buffer.from(sid + ':{{TWILIO_AUTH_TOKEN}}').toString('base64');\nconst first = b.first_name || 'Bonjour';\nconst emoji = { cuisine: '🍳', salle_de_bain: '🛁', sous_sol: '🏠', patio: '☀️' }[b.project_type] || '🏠';\nconst msg = `${first}! ${emoji} C'est Haidly de SoumissionEntrepreneurs. Envoyez vos photos ici: https://soumissionentrepreneurs.com/ — Plans 3D GRATUITS, sans frais!`;\nawait this.helpers.httpRequest({\n  method: 'POST',\n  url: `https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`,\n  headers: { Authorization: 'Basic ' + auth, 'Content-Type': 'application/x-www-form-urlencoded' },\n  body: `To=${encodeURIComponent(phone)}&From=${encodeURIComponent('+15817058118')}&Body=${encodeURIComponent(msg)}`,\n});\nreturn [{ json: { ...b, sms_sent: true } }];"
+      },
+      "id": "h3b-sms",
+      "name": "3b SMS bienvenue",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [780, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $('2 Projet + Tel + Heures').item.json.isBusinessHours }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "h4-if-hours",
+      "name": "4 Heures ouvrées?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1040, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const lead = $('3 Odoo Create Lead').first().json;\nconst prep = $('2 Projet + Tel + Heures').first().json;\nconst apiKey = '{{ELEVENLABS_API_KEY}}';\nconst agentId = lead.elevenlabs_agent_id_haidly || '';\nconst phId = lead.elevenlabs_phone_number_id || '';\nif (!agentId || !phId || !prep.phone) {\n  return [{ json: { ...lead, call_skipped: true, reason: 'missing_agent_or_phone' } }];\n}\nconst res = await this.helpers.httpRequest({\n  method: 'POST',\n  url: 'https://api.elevenlabs.io/v1/convai/twilio/outbound-call',\n  headers: { 'xi-api-key': apiKey, 'Content-Type': 'application/json' },\n  body: {\n    agent_id: agentId,\n    agent_phone_number_id: phId,\n    to_number: prep.phone,\n    telephony_call_config: { ringing_timeout_secs: 25 },\n    conversation_initiation_client_data: {\n      dynamic_variables: {\n        lead_name: prep.first_name || 'there',\n        project_type: prep.project_type,\n        city: prep.lead_city,\n        budget_range: prep.budget_range || '',\n        property_type: prep.property_type || '',\n        lead_id_odoo: String(lead.lead_id || '')\n      }\n    }\n  },\n  json: true,\n});\nreturn [{ json: { ...lead, ...res, call_started: true } }];"
+      },
+      "id": "h5-call",
+      "name": "5 Appel ElevenLabs Haidly",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1300, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "const lead = $('3 Odoo Create Lead').first().json;\nconst prep = $('2 Projet + Tel + Heures').first().json;\nif (!lead.lead_id) return [];\nconst token = '{{HAIDLY_WEBHOOK_TOKEN}}';\nawait this.helpers.httpRequest({\n  method: 'POST',\n  url: 'https://intellixcrm.com/api/haidly/lead/update',\n  headers: { 'X-Haidly-Webhook-Token': token, 'Content-Type': 'application/json' },\n  body: { lead_id: lead.lead_id, next_action: 'Appel matin programmé 9h Toronto (lead hors heures)' },\n  json: true,\n});\nreturn [{ json: {\n  pipeline: 'haidly',\n  lead_id: lead.lead_id,\n  phone: prep.phone || lead.phone,\n  first_name: prep.first_name,\n  project_type: lead.project_type,\n  city: lead.city,\n  budget_range: prep.budget_range || '',\n  property_type: prep.property_type || '',\n  agent_id: lead.elevenlabs_agent_id_haidly || lead.agent_id || '',\n  elevenlabs_phone_number_id: lead.elevenlabs_phone_number_id || ''\n}}];"
+      },
+      "id": "h6-morning-prep",
+      "name": "6 Hors heures — note Odoo",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1300, 420]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ '{{N8N_WEBHOOK_BASE}}' + '/webhook/morning-call-schedule' }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}"
+      },
+      "id": "h7-morning",
+      "name": "7 Planifier appel matin",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1560, 420]
+    }
+  ],
+  "connections": {
+    "1 Webhook Lead Haidly": { "main": [[{ "node": "2 Projet + Tel + Heures", "type": "main", "index": 0 }]] },
+    "2 Projet + Tel + Heures": { "main": [[{ "node": "3 Odoo Create Lead", "type": "main", "index": 0 }]] },
+    "3 Odoo Create Lead": { "main": [[{ "node": "3b SMS bienvenue", "type": "main", "index": 0 }]] },
+    "3b SMS bienvenue": { "main": [[{ "node": "4 Heures ouvrées?", "type": "main", "index": 0 }]] },
+    "4 Heures ouvrées?": {
+      "main": [
+        [{ "node": "5 Appel ElevenLabs Haidly", "type": "main", "index": 0 }],
+        [{ "node": "6 Hors heures — note Odoo", "type": "main", "index": 0 }]
+      ]
+    },
+    "6 Hors heures — note Odoo": { "main": [[{ "node": "7 Planifier appel matin", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "tags": [{ "name": "haidly-soumissionentrepreneurs" }]
+}

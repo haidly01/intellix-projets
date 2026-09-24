@@ -1,0 +1,104 @@
+{
+  "name": "Immo Meta — Nurture J+1 J+3 J+7 (optionnel)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "immo-nurture-trigger",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "n1-webhook",
+      "name": "Trigger Nurture",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 300],
+      "webhookId": "immo-nurture-trigger"
+    },
+    {
+      "parameters": {
+        "amount": 24,
+        "unit": "hours"
+      },
+      "id": "n2-wait-j1",
+      "name": "Wait J+1",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [260, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.twilio.com/2010-04-01/Accounts/{{ $env.TWILIO_ACCOUNT_SID }}/Messages.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "To",
+              "value": "={{ $json.phone }}"
+            },
+            {
+              "name": "From",
+              "value": "={{ $env.TWILIO_FROM_NUMBER || '+14387905970' }}"
+            },
+            {
+              "name": "Body",
+              "value": "=Bonjour {{ $json.first_name }}! Votre évaluation gratuite est toujours disponible. Répondez OUI pour qu'un conseiller vous contacte aujourd'hui."
+            }
+          ]
+        }
+      },
+      "id": "n3-sms-j1",
+      "name": "SMS J+1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [520, 300]
+    },
+    {
+      "parameters": {
+        "amount": 48,
+        "unit": "hours"
+      },
+      "id": "n4-wait-j3",
+      "name": "Wait J+3",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [780, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://intellixcrm.com/api/immo/lead/update",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={ \"lead_id\": {{ $json.lead_id }}, \"nurture_step\": 3 }"
+      },
+      "id": "n5-odoo-j3",
+      "name": "Odoo nurture_step 3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1040, 300]
+    }
+  ],
+  "connections": {
+    "Trigger Nurture": {
+      "main": [[{ "node": "Wait J+1", "type": "main", "index": 0 }]]
+    },
+    "Wait J+1": {
+      "main": [[{ "node": "SMS J+1", "type": "main", "index": 0 }]]
+    },
+    "SMS J+1": {
+      "main": [[{ "node": "Wait J+3", "type": "main", "index": 0 }]]
+    },
+    "Wait J+3": {
+      "main": [[{ "node": "Odoo nurture_step 3", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": { "executionOrder": "v1" },
+  "tags": [{ "name": "immo" }, { "name": "nurture" }]
+}

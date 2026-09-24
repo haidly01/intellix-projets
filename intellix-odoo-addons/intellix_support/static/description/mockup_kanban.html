@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IntelliX — Module Support · Maquette UI/UX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #050508; font-family: 'Inter', sans-serif; color: #f0f0fa; padding: 40px 24px; }
+
+.page-title { text-align: center; margin-bottom: 48px; }
+.page-title h1 { font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; }
+.page-title h1 span { background: linear-gradient(90deg, #6366f1, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.page-title p { font-size: 13px; color: #9898b8; }
+
+.screen-sep { height: 48px; display: flex; align-items: center; justify-content: center; gap: 16px; margin: 0 0 24px; }
+.screen-sep::before, .screen-sep::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.06); }
+.screen-sep span { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: #5a5a7a; white-space: nowrap; }
+
+.screen { max-width: 1300px; margin: 0 auto 56px; border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 32px 80px rgba(0,0,0,0.6); }
+.screen-bar { background: #0a0a14; border-bottom: 1px solid rgba(255,255,255,0.07); padding: 10px 18px; display: flex; align-items: center; gap: 12px; }
+.screen-bar-dots { display: flex; gap: 5px; }
+.screen-bar-dots span { width: 10px; height: 10px; border-radius: 50%; }
+.screen-bar-dots span:nth-child(1) { background: #ef4444; }
+.screen-bar-dots span:nth-child(2) { background: #f59e0b; }
+.screen-bar-dots span:nth-child(3) { background: #10b981; }
+.screen-bar-url { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 4px 12px; font-size: 11px; color: #5a5a7a; font-family: monospace; }
+.screen-bar-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #8b5cf6; }
+
+/* TOPNAV */
+.topnav { background: #12102a; padding: 0 20px; display: flex; align-items: center; gap: 0; height: 46px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.topnav-grid { width: 26px; height: 26px; display: grid; grid-template-columns: 1fr 1fr; gap: 3px; margin-right: 14px; cursor: pointer; padding: 4px; }
+.topnav-grid div { background: rgba(255,255,255,0.4); border-radius: 2px; }
+.topnav-section { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 700; color: #f0f0fa; margin-right: 24px; }
+.topnav-links { display: flex; align-items: center; gap: 0; }
+.topnav-link { padding: 0 16px; height: 46px; display: flex; align-items: center; font-size: 12px; color: rgba(255,255,255,0.6); cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; transition: all 0.2s; }
+.topnav-link:hover { color: #fff; }
+.topnav-link.active { color: #fff; border-bottom-color: #8b5cf6; }
+.topnav-right { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+.topnav-badge { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 100px; }
+.badge-indigo { background: #6366f1; color: #fff; }
+.badge-green { background: #10b981; color: #fff; }
+.topnav-avatar { width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, #f59e0b, #fb923c); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
+.topnav-company { font-size: 11px; color: rgba(255,255,255,0.5); }
+
+/* SUBBAR */
+.subbar { background: #0e0c22; padding: 10px 20px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+.btn-new { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: #fff; border: none; border-radius: 7px; padding: 7px 16px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+.subbar-title { font-size: 13px; font-weight: 600; color: #f0f0fa; }
+.subbar-search { flex: 1; max-width: 320px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09); border-radius: 7px; padding: 6px 12px; font-size: 12px; color: #9898b8; display: flex; align-items: center; gap: 8px; }
+.subbar-search input { background: none; border: none; outline: none; color: #f0f0fa; font-size: 12px; font-family: 'Inter', sans-serif; width: 100%; }
+.subbar-right { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+.view-btn { width: 30px; height: 30px; border-radius: 6px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.view-btn.active { background: rgba(99,102,241,0.15); border-color: rgba(99,102,241,0.3); }
+.view-btn svg { width: 13px; height: 13px; stroke: #9898b8; fill: none; }
+.view-btn.active svg { stroke: #818cf8; }
+
+/* KPI BAR */
+.kpi-bar { background: #0a0a18; padding: 12px 20px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+.kpi-item { padding: 8px 16px; text-align: center; border-right: 1px solid rgba(255,255,255,0.06); }
+.kpi-item:last-child { border-right: none; }
+.kpi-val { font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; line-height: 1; margin-bottom: 3px; }
+.kpi-lbl { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: #5a5a7a; }
+
+/* KANBAN */
+.kanban { background: #0a0a12; padding: 16px 20px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; min-height: 520px; }
+.kanban-col { background: rgba(255,255,255,0.02); border-radius: 10px; overflow: hidden; }
+.kanban-col-header { padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.06); }
+.kanban-col-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; display: flex; align-items: center; gap: 6px; }
+.kanban-count { background: rgba(255,255,255,0.08); color: #9898b8; font-size: 10px; font-weight: 700; padding: 1px 7px; border-radius: 100px; }
+.kanban-add { width: 22px; height: 22px; border-radius: 5px; background: rgba(255,255,255,0.05); border: none; color: #5a5a7a; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; }
+.kanban-cards { padding: 10px 8px; display: flex; flex-direction: column; gap: 8px; }
+
+/* TICKET CARD */
+.ticket-card { background: #0f0f1e; border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 12px; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; }
+.ticket-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; }
+.ticket-card.p-critical::before { background: #ef4444; }
+.ticket-card.p-high::before { background: #f59e0b; }
+.ticket-card.p-medium::before { background: #6366f1; }
+.ticket-card.p-low::before { background: #10b981; }
+.ticket-card:hover { border-color: rgba(139,92,246,0.3); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+.ticket-id { font-size: 9px; font-weight: 700; color: #5a5a7a; letter-spacing: 0.1em; margin-bottom: 5px; display: flex; align-items: center; justify-content: space-between; }
+.ticket-title { font-size: 12px; font-weight: 600; color: #f0f0fa; margin-bottom: 5px; line-height: 1.4; }
+.ticket-client { font-size: 11px; color: #9898b8; margin-bottom: 8px; }
+.ticket-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+.ticket-tag { font-size: 9px; font-weight: 600; padding: 2px 6px; border-radius: 4px; }
+.tag-bug { background: rgba(239,68,68,0.12); color: #f87171; }
+.tag-config { background: rgba(99,102,241,0.12); color: #818cf8; }
+.tag-onboard { background: rgba(6,182,212,0.12); color: #22d3ee; }
+.tag-billing { background: rgba(245,158,11,0.12); color: #fbbf24; }
+.tag-ai { background: rgba(139,92,246,0.12); color: #a78bfa; }
+.tag-urgent { background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.25); }
+.ticket-footer { display: flex; align-items: center; justify-content: space-between; }
+.ticket-avatar { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; color: #fff; }
+.ticket-time { font-size: 10px; color: #5a5a7a; }
+.ticket-sla { font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 4px; }
+.sla-ok { background: rgba(16,185,129,0.1); color: #34d399; }
+.sla-warn { background: rgba(245,158,11,0.1); color: #fbbf24; }
+.sla-breach { background: rgba(239,68,68,0.1); color: #f87171; }
+.ai-flag { position: absolute; top: 8px; right: 8px; width: 16px; height: 16px; background: linear-gradient(135deg, #6366f1, #8b5cf6); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 8px; }
+
+/* COL COLORS */
+.col-nouveau .kanban-col-header { border-top: 2px solid #6366f1; }
+.col-encours .kanban-col-header { border-top: 2px solid #f59e0b; }
+.col-attente .kanban-col-header { border-top: 2px solid #06b6d4; }
+.col-resolu .kanban-col-header { border-top: 2px solid #10b981; }
+.col-ferme .kanban-col-header { border-top: 2px solid #5a5a7a; }
+
+/* ═══════════════════ ÉCRAN 2 — TICKET DÉTAIL ═══════════════════ */
+.ticket-layout { display: grid; grid-template-columns: 1fr 400px; background: #0a0a12; min-height: 700px; }
+
+/* LEFT — TICKET DETAIL */
+.ticket-main { padding: 24px; border-right: 1px solid rgba(255,255,255,0.07); overflow: hidden; }
+.ticket-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; }
+.ticket-ref { font-size: 11px; font-weight: 700; color: #5a5a7a; letter-spacing: 0.1em; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+.ticket-main-title { font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 6px; }
+.ticket-pipeline { display: flex; align-items: center; gap: 0; margin-bottom: 20px; }
+.pipe-step { padding: 7px 16px; font-size: 11px; font-weight: 600; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); cursor: pointer; white-space: nowrap; }
+.pipe-step:first-child { border-radius: 7px 0 0 7px; }
+.pipe-step:last-child { border-radius: 0 7px 7px 0; }
+.pipe-step.active { background: linear-gradient(135deg, #6366f1, #8b5cf6); border-color: transparent; color: #fff; }
+.pipe-step.done { background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.2); color: #34d399; }
+.pipe-arrow { font-size: 10px; color: #5a5a7a; margin: 0 -1px; z-index: 1; }
+
+/* FORM GRID */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+.form-group { display: flex; flex-direction: column; gap: 4px; }
+.form-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #5a5a7a; }
+.form-val { background: #141424; border: 1px solid rgba(255,255,255,0.08); border-radius: 7px; padding: 8px 12px; font-size: 12px; color: #f0f0fa; }
+.form-val.placeholder { color: #5a5a7a; }
+.priority-stars { display: flex; gap: 3px; }
+.star { font-size: 14px; }
+.star.on { color: #f59e0b; }
+.star.off { color: #2a2a3a; }
+
+/* TABS */
+.tabs { display: flex; gap: 0; border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: 16px; }
+.tab { padding: 8px 18px; font-size: 12px; font-weight: 600; color: #9898b8; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; }
+.tab.active { color: #8b5cf6; border-bottom-color: #8b5cf6; }
+.tab-badge { background: rgba(99,102,241,0.15); color: #818cf8; font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 100px; margin-left: 4px; }
+
+/* DESCRIPTION */
+.desc-area { background: #141424; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 14px; min-height: 80px; font-size: 12px; color: #9898b8; margin-bottom: 20px; line-height: 1.6; }
+
+/* TIMELINE */
+.timeline { display: flex; flex-direction: column; gap: 0; }
+.timeline-item { display: flex; gap: 12px; padding-bottom: 16px; position: relative; }
+.timeline-item::before { content: ''; position: absolute; left: 15px; top: 28px; bottom: 0; width: 1px; background: rgba(255,255,255,0.06); }
+.timeline-item:last-child::before { display: none; }
+.timeline-avatar { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+.timeline-bubble { flex: 1; background: #141424; border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 10px 12px; }
+.timeline-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
+.timeline-author { font-size: 11px; font-weight: 600; }
+.timeline-time { font-size: 10px; color: #5a5a7a; }
+.timeline-text { font-size: 12px; color: #9898b8; line-height: 1.6; }
+.timeline-system { background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.04); }
+.timeline-system .timeline-text { color: #5a5a7a; font-size: 11px; }
+
+/* MSG BAR */
+.msg-bar { display: flex; align-items: center; gap: 8px; padding: 14px 0 0; border-top: 1px solid rgba(255,255,255,0.07); margin-top: 16px; }
+.msg-btn { padding: 7px 14px; border-radius: 7px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; border: none; }
+.msg-btn-primary { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: #fff; }
+.msg-btn-ghost { background: transparent; color: #9898b8; border: 1px solid rgba(255,255,255,0.1); }
+
+/* RIGHT — AI COPILOT */
+.copilot { background: #0c0b1e; border-left: 1px solid rgba(139,92,246,0.15); display: flex; flex-direction: column; }
+.copilot-header { padding: 16px 18px; border-bottom: 1px solid rgba(255,255,255,0.07); display: flex; align-items: center; gap: 10px; }
+.copilot-icon { width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, #6366f1, #8b5cf6); display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
+.copilot-title { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 700; }
+.copilot-sub { font-size: 10px; color: #9898b8; }
+.copilot-refresh { margin-left: auto; width: 28px; height: 28px; border-radius: 6px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+
+/* COPILOT TABS */
+.copilot-tabs { display: flex; border-bottom: 1px solid rgba(255,255,255,0.07); }
+.copilot-tab { flex: 1; padding: 8px; font-size: 11px; font-weight: 600; text-align: center; color: #9898b8; cursor: pointer; border-bottom: 2px solid transparent; }
+.copilot-tab.active { color: #a78bfa; border-bottom-color: #8b5cf6; }
+
+.copilot-body { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+
+/* DIAGNOSTIC CARD */
+.diag-card { border-radius: 10px; overflow: hidden; }
+.diag-card-header { padding: 10px 14px; display: flex; align-items: center; gap: 8px; }
+.diag-card-header .diag-icon { font-size: 14px; }
+.diag-card-title { font-size: 12px; font-weight: 700; }
+.diag-card-sub { font-size: 10px; margin-top: 1px; }
+.diag-card-body { padding: 10px 14px 12px; }
+.diag-card-text { font-size: 11px; line-height: 1.65; margin-bottom: 10px; }
+.diag-actions { display: flex; flex-direction: column; gap: 5px; }
+.diag-btn { border-radius: 6px; padding: 7px 12px; font-size: 11px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; border: none; width: 100%; text-align: left; display: flex; align-items: center; gap: 6px; }
+
+/* Card violet — Diagnostic résumé */
+.diag-summary { background: rgba(99,102,241,0.08); border: 1px solid rgba(99,102,241,0.2); }
+.diag-summary .diag-card-header { background: rgba(99,102,241,0.12); }
+.diag-summary .diag-card-title { color: #818cf8; }
+.diag-summary .diag-card-sub { color: rgba(129,140,248,0.7); }
+.diag-summary .diag-card-text { color: #c4c4e0; }
+.diag-summary .diag-btn-primary { background: #6366f1; color: #fff; }
+.diag-summary .diag-btn-ghost { background: rgba(255,255,255,0.04); color: #9898b8; border: 1px solid rgba(255,255,255,0.1); }
+
+/* Card indigo — Compte Odoo */
+.diag-odoo { background: rgba(139,92,246,0.07); border: 1px solid rgba(139,92,246,0.18); }
+.diag-odoo .diag-card-header { background: rgba(139,92,246,0.1); }
+.diag-odoo .diag-card-title { color: #a78bfa; }
+.diag-odoo .diag-card-sub { color: rgba(167,139,250,0.7); }
+.diag-odoo .diag-card-text { color: #c4c4e0; }
+.diag-odoo .diag-btn-primary { background: #8b5cf6; color: #fff; }
+.diag-odoo .diag-btn-ghost { background: rgba(255,255,255,0.04); color: #9898b8; border: 1px solid rgba(255,255,255,0.1); }
+
+/* Card cyan — Campagnes */
+.diag-campaigns { background: rgba(6,182,212,0.06); border: 1px solid rgba(6,182,212,0.16); }
+.diag-campaigns .diag-card-header { background: rgba(6,182,212,0.08); }
+.diag-campaigns .diag-card-title { color: #22d3ee; }
+.diag-campaigns .diag-card-sub { color: rgba(34,211,238,0.7); }
+.diag-campaigns .diag-card-text { color: #c4c4e0; }
+.diag-campaigns .diag-btn-primary { background: #06b6d4; color: #fff; }
+.diag-campaigns .diag-btn-ghost { background: rgba(255,255,255,0.04); color: #9898b8; border: 1px solid rgba(255,255,255,0.1); }
+
+/* Card orange — Crédits */
+.diag-credits { background: rgba(245,158,11,0.06); border: 1px solid rgba(245,158,11,0.15); }
+.diag-credits .diag-card-header { background: rgba(245,158,11,0.08); }
+.diag-credits .diag-card-title { color: #fbbf24; }
+.diag-credits .diag-card-sub { color: rgba(251,191,36,0.7); }
+.diag-credits .diag-card-text { color: #c4c4e0; }
+.diag-credits .diag-btn-primary { background: #f59e0b; color: #fff; }
+.diag-credits .diag-btn-ghost { background: rgba(255,255,255,0.04); color: #9898b8; border: 1px solid rgba(255,255,255,0.1); }
+
+/* COPILOT FOOTER */
+.copilot-footer { padding: 12px 16px; border-top: 1px solid rgba(255,255,255,0.07); display: flex; gap: 8px; }
+.copilot-input { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09); border-radius: 7px; padding: 7px 10px; font-size: 11px; color: #9898b8; font-family: 'Inter', sans-serif; }
+.copilot-send { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: #fff; border: none; border-radius: 7px; padding: 7px 12px; font-size: 11px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+
+/* SUGGEST REPLY */
+.suggest-replies { display: flex; flex-direction: column; gap: 6px; }
+.suggest-reply { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 9px 12px; font-size: 11px; color: #c4c4e0; line-height: 1.5; cursor: pointer; transition: all 0.2s; display: flex; align-items: flex-start; gap: 8px; }
+.suggest-reply:hover { border-color: rgba(139,92,246,0.3); background: rgba(139,92,246,0.05); }
+.suggest-reply-icon { font-size: 12px; flex-shrink: 0; margin-top: 1px; }
+.suggest-reply-use { margin-left: auto; font-size: 10px; color: #8b5cf6; font-weight: 600; white-space: nowrap; flex-shrink: 0; }
+
+/* STATUS DOTS */
+.status-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; margin-right: 4px; }
+.dot-green { background: #10b981; }
+.dot-orange { background: #f59e0b; }
+.dot-red { background: #ef4444; }
+.dot-blue { background: #6366f1; }
+.dot-gray { background: #5a5a7a; }
+</style>
+</head>
+<body>
+
+<div class="page-title">
+  <h1>Module <span>Support</span> IntelliX — Maquette UI/UX</h1>
+  <p>2 écrans · Kanban tickets + Vue ticket détaillée avec AI Copilot · Référence développement Odoo 19</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- ÉCRAN 1 — KANBAN TICKETS                       -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="screen-sep"><span>Écran 1 — Kanban Tickets Support</span></div>
+<div class="screen">
+  <div class="screen-bar">
+    <div class="screen-bar-dots"><span></span><span></span><span></span></div>
+    <div class="screen-bar-url">intellixcrm.com/odoo/support</div>
+    <div class="screen-bar-label">Support · Vue Kanban</div>
+  </div>
+
+  <!-- TOPNAV -->
+  <div class="topnav">
+    <div class="topnav-grid"><div></div><div></div><div></div><div></div></div>
+    <span class="topnav-section">Support</span>
+    <div class="topnav-links">
+      <div class="topnav-link active">Tickets</div>
+      <div class="topnav-link">Command Center</div>
+      <div class="topnav-link">SLA & Priorités</div>
+      <div class="topnav-link">Configuration</div>
+    </div>
+    <div class="topnav-right">
+      <span class="topnav-badge badge-indigo">1364</span>
+      <span class="topnav-badge badge-green">103</span>
+      <span class="topnav-company">Digital Doorway SARL</span>
+      <div class="topnav-avatar">K</div>
+    </div>
+  </div>
+
+  <!-- SUBBAR -->
+  <div class="subbar">
+    <button class="btn-new">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:12px;height:12px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Nouveau ticket
+    </button>
+    <span class="subbar-title">Tickets support</span>
+    <div class="subbar-search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#5a5a7a" stroke-width="2" style="width:13px;height:13px;flex-shrink:0"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input placeholder="Rechercher un ticket, client...">
+    </div>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span style="font-size:11px;color:#5a5a7a">Filtrer :</span>
+      <span style="background:rgba(99,102,241,0.12);color:#818cf8;border:1px solid rgba(99,102,241,0.2);border-radius:100px;font-size:10px;font-weight:600;padding:3px 10px;cursor:pointer">Mes tickets</span>
+      <span style="background:rgba(239,68,68,0.1);color:#f87171;border:1px solid rgba(239,68,68,0.2);border-radius:100px;font-size:10px;font-weight:600;padding:3px 10px;cursor:pointer">SLA breach</span>
+      <span style="background:rgba(255,255,255,0.04);color:#9898b8;border:1px solid rgba(255,255,255,0.08);border-radius:100px;font-size:10px;font-weight:600;padding:3px 10px;cursor:pointer">Onboarding</span>
+    </div>
+    <div class="subbar-right">
+      <div class="view-btn active"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+      <div class="view-btn"><svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></div>
+      <div class="view-btn"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+    </div>
+  </div>
+
+  <!-- KPI BAR -->
+  <div class="kpi-bar">
+    <div class="kpi-item">
+      <div class="kpi-val" style="color:#6366f1">12</div>
+      <div class="kpi-lbl">Total ouverts</div>
+    </div>
+    <div class="kpi-item">
+      <div class="kpi-val" style="color:#ef4444">2</div>
+      <div class="kpi-lbl">SLA breach</div>
+    </div>
+    <div class="kpi-item">
+      <div class="kpi-val" style="color:#f59e0b">4h 20m</div>
+      <div class="kpi-lbl">Temps moy. résolution</div>
+    </div>
+    <div class="kpi-item">
+      <div class="kpi-val" style="color:#10b981">94%</div>
+      <div class="kpi-lbl">Satisfaction client</div>
+    </div>
+    <div class="kpi-item">
+      <div class="kpi-val" style="color:#8b5cf6">7</div>
+      <div class="kpi-lbl">Résolus ce mois</div>
+    </div>
+  </div>
+
+  <!-- KANBAN -->
+  <div class="kanban">
+
+    <!-- COL 1 — NOUVEAU -->
+    <div class="kanban-col col-nouveau">
+      <div class="kanban-col-header">
+        <div class="kanban-col-title" style="color:#818cf8">
+          <span class="status-dot dot-blue"></span>Nouveau
+          <span class="kanban-count">3</span>
+        </div>
+        <button class="kanban-add">+</button>
+      </div>
+      <div class="kanban-cards">
+        <div class="ticket-card p-high">
+          <div class="ai-flag">🤖</div>
+          <div class="ticket-id">SUP-00001 <span class="ticket-sla sla-warn">SLA 3h</span></div>
+          <div class="ticket-title">Onboarding — Configuration initiale</div>
+          <div class="ticket-client">Digital Doorway SARL</div>
+          <div class="ticket-tags">
+            <span class="ticket-tag tag-onboard">Onboarding</span>
+            <span class="ticket-tag tag-config">Config</span>
+          </div>
+          <div class="ticket-footer">
+            <div class="ticket-avatar" style="background:linear-gradient(135deg,#f59e0b,#fb923c)">K</div>
+            <span class="ticket-time">Il y a 2h</span>
+          </div>
+        </div>
+        <div class="ticket-card p-critical">
+          <div class="ai-flag">🤖</div>
+          <div class="ticket-id">SUP-00004 <span class="ticket-sla sla-breach">SLA dépassé</span></div>
+          <div class="ticket-title">Agent IA Léa ne répond plus aux appels</div>
+          <div class="ticket-client">Jason Thomas Assurance</div>
+          <div class="ticket-tags">
+            <span class="ticket-tag tag-bug">Bug critique</span>
+            <span class="ticket-tag tag-ai">IA</span>
+            <span class="ticket-tag tag-urgent">Urgent</span>
+          </div>
+          <div class="ticket-footer">
+            <div class="ticket-avatar" style="background:#ef4444">!</div>
+            <span class="ticket-time">Il y a 5h</span>
+          </div>
+        </div>
+        <div class="ticket-card p-low">
+          <div class="ticket-id">SUP-00007 <span class="ticket-sla sla-ok">SLA OK</span></div>
+          <div class="ticket-title">Ajouter un utilisateur supplémentaire</div>
+          <div class="ticket-client">CallPro Maroc SARL</div>
+          <div class="ticket-tags">
+            <span class="ticket-tag tag-config">Config</span>
+          </div>
+          <div class="ticket-footer">
+            <div class="ticket-avatar" style="background:linear-gradient(135deg,#10b981,#06b6d4)">Z</div>
+            <span class="ticket-time">Il y a 30min</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COL 2 — EN COURS -->
+    <div class="kanban-col col-encours">
+      <div class="kanban-col-header">
+        <div class="kanban-col-title" style="color:#fbbf24">
+          <span class="status-dot dot-orange"></span>En cours
+          <span class="kanban-count">4</span>
+        </div>
+        <button class="kanban-add">+</button>
+      </div>
+      <div class="kanban-cards">
+        <div class="ticket-card p-high">
+          <div class="ai-flag">🤖</div>
+          <div class="ticket-id">SUP-00002 <span class="ticket-sla sla-warn">SLA 1h</span></div>
+          <div class="ticket-title">Campagne VICIdial bloquée — hopper vide</div>
+          <div class="ticket-client">SoumissionEntrepreneurs QC</div>
+          <div class="ticket-tags">
+            <span class="ticket-tag tag-bug">Bug</span>
+            <span class="ticket-tag tag-config">VICIdial</span>
+          </div>
+          <div class="ticket-footer">
+            <div class="ticket-avatar" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">K</div>
+            <span class="ticket-time">Il y a 4h</span>
+          </div>
+        </div>
+        <div class="ticket-card p-medium">
+          <div class="ticket-id">SUP-00003 <span class="ticket-sla sla-ok">SLA OK</span></div>
+          <div class="ticket-title">Intégration Stripe — paiement refusé</div>
+          <div class="ticket-client">Agence Doorway Inc.</div>
+          <div class="ticket-tags">
+            <span class="ticket-tag tag-billing">Facturation</span>
+          </div>
+          <div class="ticket-footer">
+            <div class="ticket-avatar" style="background:linear-gradient(135deg,#f59e0b,#fb923c)">K</div>
+            <span class="ticket-time">Il y a 1h</span>
+          </div>
+        </div>
+        <div class="ticket-card p-medium">
+          <div class="ai-flag">🤖</div>
+          <div class="ticket-id">SUP-00005 <span class="ticket-sla sla-ok">SLA OK</span></div>
+          <div class="ticket-title">Score People Engine incorrect pour agent</div>
+          <div class="ticket-client">Digital Doorway SARL</div>
+          <div class="ticket-tags">
+            <span class="ticket-tag tag-config">People Engine</span>
+            <span class="ticket-tag tag-ai">IA</span>
+          </div>
+          <div class="ticket-footer">
+            <div class="ticket-avatar" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">K</div>
+            <span class="ticket-time">Il y a 3h</span>
+          </div>
+        </div>
+        <div class="ticket-card p-low">
+          <div class="ticket-id">SUP-00006 <span class="ticket-sla sla-ok">SLA OK</span></div>
+          <div class="ticket-title">Formation superviseur — accès Academy</div>
+          <div class="ticket-client">CallPro Maroc SARL</div>
+          <div class="ticket-tags">
+            <span class="ticket-tag tag-onboard">Formation</span>
+          </div>
+          <div class="ticket-footer">
+            <div class="ticket-avatar" style="background:linear-gradient(135deg,#10b981,#06b6d4)">Z</div>
+            <span class="ticket-time">Il y a 45min</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COL 3 — EN ATTENTE -->
+    <div class="kanban-col col-attente">
+      <div class="kanban-col-header">
+        <div class="kanban-col-title" style="color:#22d3ee">
+          <span class="status-dot" style="background:#06b6d4"></span>En attente client
+          <span class="kanban-count">2</span>
+        </div>
+        <button class="kanban-add">+</button>
+      </div>
+      <div class="kanban-cards">
+        <div class="ticket-card p-medium">
+          <div class="ticket-id">SUP-00008 <span class="ticket-sla sla-ok">SLA OK</span></div>
+          <div class="ticket-title">Accès AnyDesk requis pour diagnostic</div>
+          <div class="ticket-client">Haidly Reno</div>
+          <div class="ticket-tags">
+            <span class="ticket-tag tag-config">Diagnostic</span>
+          </div>
+          <div class="ticket-footer">
+            <div class="ticket-avatar" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">K</div>
+            <span class="ticket-time">Il y a 6h</span>
+          </div>
+        </div>
+        <div class="ticket-card p-low">
+          <div class="ticket-id">SUP-00009 <span class="ticket-sla sla-ok">SLA OK</span></div>
+          <div class="ticket-title">Confirmation RIB pour activation paie</div>
+          <div class="ticket-client">Digital Doorway SARL</div>
+          <div class="ticket-tags">
+            <span class="ticket-tag tag-billing">Paie</span>
+          </div>
+          <div class="ticket-footer">
+            <div class="ticket-avatar" style="background:linear-gradient(135deg,#f59e0b,#fb923c)">K</div>
+            <span class="ticket-time">Il y a 1j</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COL 4 — RÉSOLU -->
+    <div class="kanban-col col-resolu">
+      <div class="kanban-col-header">
+        <div class="kanban-col-title" style="color:#34d399">
+          <span class="status-dot dot-green"></span>Résolu
+          <span class="kanban-count">2</span>
+        </div>
+        <button class="kanban-add">+</button>
+      </div>
+      <div class="kanban-cards">
+        <div class="ticket-card p-low" style="opacity:0.7">
+          <div class="ticket-id">SUP-00010</div>
+          <div class="ticket-title">PJSIP 86020 — NAT corrigé</div>
+          <div class="ticket-client">Digital Doorway SARL</div>
+          <div class="ticket-tags"><span class="ticket-tag tag-config">Téléphonie</span></div>
+          <div class="ticket-footer">
+            <div class="ticket-avatar" style="background:linear-gradient(135deg,#10b981,#06b6d4)">K</div>
+            <span class="ticket-time">Hier 16h</span>
+          </div>
+        </div>
+        <div class="ticket-card p-low" style="opacity:0.7">
+          <div class="ticket-id">SUP-00011</div>
+          <div class="ticket-title">Migration DNS intellixcrm.com</div>
+          <div class="ticket-client">Agence Doorway Inc.</div>
+          <div class="ticket-tags"><span class="ticket-tag tag-config">Infrastructure</span></div>
+          <div class="ticket-footer">
+            <div class="ticket-avatar" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">K</div>
+            <span class="ticket-time">Hier 11h</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COL 5 — FERMÉ -->
+    <div class="kanban-col col-ferme">
+      <div class="kanban-col-header">
+        <div class="kanban-col-title" style="color:#5a5a7a">
+          <span class="status-dot dot-gray"></span>Fermé
+          <span class="kanban-count">7</span>
+        </div>
+        <button class="kanban-add">+</button>
+      </div>
+      <div class="kanban-cards">
+        <div style="padding:20px;text-align:center;font-size:11px;color:#3a3a5a">
+          7 tickets fermés<br>ce mois
+          <div style="margin-top:8px;font-size:10px;color:#5a5a7a">Voir l'historique →</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- ÉCRAN 2 — TICKET DÉTAIL + AI COPILOT           -->
+<!-- ═══════════════════════════════════════════════ -->
+
+<div style="text-align:center;margin-top:32px;padding-bottom:24px">
+  <p style="font-size:11px;color:#5a5a7a">IntelliX CRM · Module Support · Kanban · Maquette UI/UX · Juin 2026</p>
+</div>
+
+</body>
+</html>

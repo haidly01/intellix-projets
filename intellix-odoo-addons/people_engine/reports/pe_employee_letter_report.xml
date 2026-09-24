@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="paperformat_pe_employee_letter" model="report.paperformat">
+        <field name="name">Lettre RH A4</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">40</field>
+        <field name="margin_bottom">32</field>
+        <field name="margin_left">25</field>
+        <field name="margin_right">25</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">35</field>
+        <field name="dpi">96</field>
+    </record>
+
+    <template id="report_pe_employee_letter_document">
+        <t t-call="web.external_layout">
+            <div class="page pe-letter-document">
+                <div class="oe_structure"/>
+                <div t-if="doc.letter_date" class="text-end mb-3">
+                    <span t-field="doc.letter_date" t-options="{'widget': 'date'}"/>
+                </div>
+                <div t-field="doc.content_html"/>
+            </div>
+        </t>
+    </template>
+
+    <template id="report_pe_employee_letter">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="people_engine.report_pe_employee_letter_document"/>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_report_pe_employee_letter" model="ir.actions.report">
+        <field name="name">Document RH</field>
+        <field name="model">pe.employee.document</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">people_engine.report_pe_employee_letter</field>
+        <field name="report_file">people_engine.report_pe_employee_letter</field>
+        <field name="print_report_name">'Document - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_pe_employee_document"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_pe_employee_letter"/>
+    </record>
+</odoo>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_cq_evenement_action" model="ir.actions.act_window">
+        <field name="name">Événements</field>
+        <field name="path">cq-evenements</field>
+        <field name="res_model">coins.quebec.evenement</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_cq_evenement_list" model="ir.ui.view">
+        <field name="name">coins.quebec.evenement.list</field>
+        <field name="model">coins.quebec.evenement</field>
+        <field name="arch" type="xml">
+            <list>
+                    <field name="reference"/>
+                    <field name="name"/>
+                    <field name="event_type"/>
+                    <field name="date_start"/>
+                    <field name="state"/>
+                    <field name="amount"/>
+                    <field name="currency_id"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_cq_evenement_form" model="ir.ui.view">
+        <field name="name">coins.quebec.evenement.form</field>
+        <field name="model">coins.quebec.evenement</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                    <group string="Événement">
+                        <field name="name"/>
+                        <field name="reference"/>
+                        <field name="event_type"/>
+                        <field name="state"/>
+                        <field name="active"/>
+                    </group>
+                    <group string="Quand / où">
+                        <field name="date_start"/>
+                        <field name="date_end"/>
+                        <field name="property_id"/>
+                        <field name="partner_id"/>
+                    </group>
+                    <group string="Montants CAD">
+                        <field name="currency_id"/>
+                        <field name="amount"/>
+                        <field name="amount_tax"/>
+                        <field name="notes"/>
+                    </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+</odoo>

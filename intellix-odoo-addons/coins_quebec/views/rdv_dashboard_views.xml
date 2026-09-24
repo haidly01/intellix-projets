@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_cq_rdv_kpi_form" model="ir.ui.view">
+        <field name="name">coins.quebec.rdv.kpi.form</field>
+        <field name="model">coins.quebec.rdv.kpi</field>
+        <field name="arch" type="xml">
+            <form create="0" delete="0" class="o_cq_dashboard">
+                <sheet>
+                    <div class="o_cq_banner">Coins Québec · RDV Leila / Yamina · hors créneaux Rosalie</div>
+                    <div class="o_cq_dash_title">Suivi RDV</div>
+                    <div class="o_cq_dash_source"><field name="viewer_label" nolabel="1"/></div>
+                    <group>
+                        <group>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                        </group>
+                        <group>
+                            <field name="show_team" invisible="1"/>
+                            <field name="show_leila" invisible="1"/>
+                            <field name="show_yamina" invisible="1"/>
+                            <field name="name" invisible="1"/>
+                        </group>
+                    </group>
+                    <div class="o_cq_kpis o_cq_rdv_kpis">
+                        <div class="o_cq_kpi" invisible="not show_leila">
+                            <div class="o_cq_kpi_label">Leila</div>
+                            <div class="o_cq_kpi_value"><field name="leila_total" nolabel="1"/></div>
+                            <div class="o_cq_kpi_sub">
+                                <field name="leila_validated" nolabel="1"/> validés ·
+                                <field name="leila_rejected" nolabel="1"/> rejetés ·
+                                <field name="leila_pending" nolabel="1"/> en attente
+                            </div>
+                            <div class="o_cq_kpi_sub">
+                                Taux validation <field name="leila_rate" nolabel="1" widget="float"/> %
+                            </div>
+                            <div class="o_cq_kpi_sub">
+                                <field name="leila_done" nolabel="1"/> effectués ·
+                                <field name="leila_noshow" nolabel="1"/> no-show
+                            </div>
+                        </div>
+                        <div class="o_cq_kpi" invisible="not show_yamina">
+                            <div class="o_cq_kpi_label">Yamina</div>
+                            <div class="o_cq_kpi_value"><field name="yamina_total" nolabel="1"/></div>
+                            <div class="o_cq_kpi_sub">
+                                <field name="yamina_validated" nolabel="1"/> validés ·
+                                <field name="yamina_rejected" nolabel="1"/> rejetés ·
+                                <field name="yamina_pending" nolabel="1"/> en attente
+                            </div>
+                            <div class="o_cq_kpi_sub">
+                                Taux validation <field name="yamina_rate" nolabel="1" widget="float"/> %
+                            </div>
+                            <div class="o_cq_kpi_sub">
+                                <field name="yamina_done" nolabel="1"/> effectués ·
+                                <field name="yamina_noshow" nolabel="1"/> no-show
+                            </div>
+                        </div>
+                    </div>
+                    <div class="o_cq_dash_actions">
+                        <button name="action_open_rdv_leila" type="object" string="RDV Leila" class="btn btn-primary"
+                                invisible="not show_leila"/>
+                        <button name="action_open_rdv_yamina" type="object" string="RDV Yamina" class="btn btn-secondary"
+                                invisible="not show_yamina"/>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_cq_rdv_kpi" model="ir.actions.server">
+        <field name="name">Suivi RDV Leila / Yamina</field>
+        <field name="model_id" ref="model_coins_quebec_rdv_kpi"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open()</field>
+    </record>
+
+    <menuitem id="menu_cq_rdv_kpi"
+              name="Suivi RDV"
+              parent="menu_cq_rdv_root"
+              action="action_cq_rdv_kpi"
+              sequence="3"
+              groups="group_coins_quebec_user,group_coins_quebec_manager"/>
+</odoo>

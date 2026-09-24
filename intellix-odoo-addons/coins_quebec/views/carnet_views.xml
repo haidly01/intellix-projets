@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_cq_carnet_action" model="ir.actions.act_window">
+        <field name="name">Carnets</field>
+        <field name="path">cq-carnets</field>
+        <field name="res_model">coins.quebec.carnet</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_cq_carnet_list" model="ir.ui.view">
+        <field name="name">coins.quebec.carnet.list</field>
+        <field name="model">coins.quebec.carnet</field>
+        <field name="arch" type="xml">
+            <list>
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="tier_id"/>
+                    <field name="code"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_cq_carnet_form" model="ir.ui.view">
+        <field name="name">coins.quebec.carnet.form</field>
+        <field name="model">coins.quebec.carnet</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                    <group string="Carnet">
+                        <field name="name"/>
+                        <field name="partner_id"/>
+                        <field name="tier_id"/>
+                        <field name="code"/>
+                        <field name="active"/>
+                        <field name="notes"/>
+                    </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_cq_tier_action" model="ir.actions.act_window">
+        <field name="name">Paliers</field>
+        <field name="path">cq-paliers</field>
+        <field name="res_model">coins.quebec.carnet.tier</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_cq_tier_list" model="ir.ui.view">
+        <field name="name">coins.quebec.carnet.tier.list</field>
+        <field name="model">coins.quebec.carnet.tier</field>
+        <field name="arch" type="xml">
+            <list>
+                    <field name="sequence"/>
+                    <field name="name"/>
+                    <field name="seuil_badges"/>
+                    <field name="discount_percent"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_cq_tier_form" model="ir.ui.view">
+        <field name="name">coins.quebec.carnet.tier.form</field>
+        <field name="model">coins.quebec.carnet.tier</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                    <group string="Palier">
+                        <field name="name"/>
+                        <field name="code"/>
+                        <field name="sequence"/>
+                        <field name="seuil_badges"/>
+                        <field name="seuil_parrainages_alternatif"/>
+                        <field name="discount_percent"/>
+                        <field name="active"/>
+                        <field name="description"/>
+                    </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_cq_ambassador_action" model="ir.actions.act_window">
+        <field name="name">Ambassadeurs</field>
+        <field name="path">cq-ambassadeurs</field>
+        <field name="res_model">coins.quebec.ambassador</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_cq_ambassador_list" model="ir.ui.view">
+        <field name="name">coins.quebec.ambassador.list</field>
+        <field name="model">coins.quebec.ambassador</field>
+        <field name="arch" type="xml">
+            <list>
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="code_parrainage"/>
+                    <field name="statut"/>
+                    <field name="taux_commission"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_cq_ambassador_form" model="ir.ui.view">
+        <field name="name">coins.quebec.ambassador.form</field>
+        <field name="model">coins.quebec.ambassador</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                    <group string="Ambassadeur">
+                        <field name="name"/>
+                        <field name="partner_id"/>
+                        <field name="carnet_id"/>
+                        <field name="code_parrainage"/>
+                        <field name="statut"/>
+                        <field name="active"/>
+                        <field name="taux_commission"/>
+                        <field name="currency_id"/>
+                        <field name="seuil_paiement_minimum"/>
+                    </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_cq_referral_action" model="ir.actions.act_window">
+        <field name="name">Parrainages</field>
+        <field name="path">cq-parrainages</field>
+        <field name="res_model">coins.quebec.ambassador.referral</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_cq_referral_list" model="ir.ui.view">
+        <field name="name">coins.quebec.ambassador.referral.list</field>
+        <field name="model">coins.quebec.ambassador.referral</field>
+        <field name="arch" type="xml">
+            <list>
+                    <field name="name"/>
+                    <field name="ambassador_id"/>
+                    <field name="filleul_partner_id"/>
+                    <field name="montant"/>
+                    <field name="statut_commission"/>
+                    <field name="currency_id"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_cq_referral_form" model="ir.ui.view">
+        <field name="name">coins.quebec.ambassador.referral.form</field>
+        <field name="model">coins.quebec.ambassador.referral</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                    <group string="Parrainage">
+                        <field name="name"/>
+                        <field name="ambassador_id"/>
+                        <field name="filleul_partner_id"/>
+                        <field name="reservation_id"/>
+                        <field name="currency_id"/>
+                        <field name="montant"/>
+                        <field name="statut_commission"/>
+                    </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

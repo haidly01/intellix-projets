@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_callcenter_prospect_list" model="ir.ui.view">
+        <field name="name">doorway.callcenter.prospect.list</field>
+        <field name="model">doorway.callcenter.prospect</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="company_name"/>
+                <field name="phone"/>
+                <field name="country"/>
+                <field name="city"/>
+                <field name="line_type"/>
+                <field name="whatsapp_capable" widget="boolean"/>
+                <field name="status"/>
+                <field name="contacted_j0"/>
+                <field name="reply_intent"/>
+                <field name="crm_lead_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_callcenter_prospect_form" model="ir.ui.view">
+        <field name="name">doorway.callcenter.prospect.form</field>
+        <field name="model">doorway.callcenter.prospect</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_prospect_phone_call" type="object" string="Appeler" class="btn-primary" invisible="not phone"/>
+                    <button name="action_validate_twilio" type="object" string="Valider Twilio" class="btn-secondary"/>
+                    <button name="action_send_j0" type="object" string="Envoyer J0"/>
+                    <field name="status" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="company_name"/>
+                            <field name="contact_name"/>
+                            <field name="phone"/>
+                            <field name="phone_raw"/>
+                            <field name="email"/>
+                            <field name="city"/>
+                            <field name="country"/>
+                        </group>
+                        <group>
+                            <field name="whatsapp_capable"/>
+                            <field name="twilio_valid"/>
+                            <field name="line_type"/>
+                            <field name="carrier"/>
+                            <field name="source"/>
+                            <field name="crm_lead_id"/>
+                            <field name="extraction_campaign_id"/>
+                        </group>
+                    </group>
+                    <group string="Séquence">
+                        <field name="contacted_j0"/>
+                        <field name="contacted_j0_at"/>
+                        <field name="contacted_j2"/>
+                        <field name="contacted_j2_at"/>
+                        <field name="contacted_j5"/>
+                        <field name="contacted_j5_at"/>
+                        <field name="last_reply"/>
+                        <field name="last_reply_at"/>
+                        <field name="reply_intent"/>
+                    </group>
+                    <field name="notes"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_callcenter_prospects" model="ir.actions.act_window">
+        <field name="name">Prospects Call Center MA/TN</field>
+        <field name="res_model">doorway.callcenter.prospect</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

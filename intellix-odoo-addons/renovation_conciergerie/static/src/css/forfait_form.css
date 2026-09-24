@@ -1,0 +1,85 @@
+.o_reno_helper {
+    color: #6b7280;
+    font-size: 12px;
+    margin-top: -8px;
+    margin-bottom: 16px;
+}
+.o_reno_partner_row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.o_reno_helper a,
+.o_reno_helper button {
+    padding: 0;
+    vertical-align: baseline;
+}
+.o_reno_section_head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+.o_reno_section_title {
+    font-weight: 600;
+    font-size: 1.05rem;
+}
+.o_reno_credits_btn .o_field_widget,
+.o_reno_credits_badge {
+    background: #22c55e;
+    color: #fff;
+    border-radius: 999px;
+    padding: 1px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-left: 6px;
+}
+.o_reno_credits_btn input,
+.o_reno_credits_btn .o_input {
+    background: transparent;
+    border: 0;
+    color: #fff;
+    width: auto;
+}
+.o_reno_forfait_cards {
+    display: flex;
+    gap: 12px;
+    margin: 8px 0 16px;
+}
+.o_reno_forfait_card {
+    flex: 1;
+    background: #f3f4f6;
+    border-radius: 8px;
+    padding: 12px 16px;
+    min-width: 0;
+}
+.o_reno_forfait_card .o_reno_card_label {
+    color: #6b7280;
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+.o_reno_forfait_card .o_field_widget,
+.o_reno_forfait_card .o_reno_card_value {
+    font-size: 1.35rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+.o_reno_credits_head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+.o_reno_pause_row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.o_form_view .o_reno_block {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 16px;
+    background: #fff;
+}

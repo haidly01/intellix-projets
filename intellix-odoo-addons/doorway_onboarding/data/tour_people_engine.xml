@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="tour_people_engine" model="doorway.onboarding.tour">
+        <field name="name">People Engine</field>
+        <field name="code">people_engine</field>
+        <field name="sequence">10</field>
+        <field name="quest_label">Quête People Engine</field>
+        <field name="home_action_method">home_people_engine</field>
+        <field name="badge_icon">🚀</field>
+        <field name="badge_name">Explorateur People Engine</field>
+        <field name="reward_points">50</field>
+        <field name="pe_badge_xmlid">people_engine.badge_onboarding_explorer</field>
+    </record>
+    <record id="tour_pe_step_welcome" model="doorway.onboarding.tour.step">
+        <field name="tour_id" ref="tour_people_engine"/>
+        <field name="sequence">1</field>
+        <field name="key">welcome</field>
+        <field name="title">Bienvenue dans People Engine</field>
+        <field name="body_html" type="html">
+            <p>Performance RH gamifiée : scores, coaching IA, LMS, primes et TV.</p>
+            <div class="alert alert-info border-0 pe-xp-callout" role="status">
+                <strong>+50 XP</strong> — terminez la quête pour le badge
+                <em>Explorateur People Engine</em> 🚀
+            </div>
+            <ul>
+                <li>Scores CRM, projets et appels IA</li>
+                <li>Badges, niveaux et classements</li>
+                <li>Objectifs et évaluations</li>
+            </ul>
+        </field>
+    </record>
+    <record id="tour_pe_step_dashboard" model="doorway.onboarding.tour.step">
+        <field name="tour_id" ref="tour_people_engine"/>
+        <field name="sequence">2</field>
+        <field name="key">dashboard</field>
+        <field name="title">Tableau de bord</field>
+        <field name="body_html" type="html">
+            <p>Ouvrez <strong>Mon tableau de bord</strong>, <strong>Équipe</strong> ou <strong>Vue RH</strong>.</p>
+            <ul>
+                <li>Score global et tendance</li>
+                <li>Métriques CRM / projet / IA</li>
+                <li>Objectifs du mois</li>
+            </ul>
+        </field>
+    </record>
+    <record id="tour_pe_step_gamification" model="doorway.onboarding.tour.step">
+        <field name="tour_id" ref="tour_people_engine"/>
+        <field name="sequence">3</field>
+        <field name="key">gamification</field>
+        <field name="title">Gamification</field>
+        <field name="body_html" type="html">
+            <p>Collectionnez des badges 🏆, montez de niveau et participez aux défis d'équipe.</p>
+            <ul>
+                <li>Classements mensuels</li>
+                <li>Points PE + karma Odoo</li>
+                <li>Badges auto (conversion, scores…)</li>
+            </ul>
+        </field>
+        <field name="action_xmlid">people_engine.action_pe_gamification_dashboard</field>
+        <field name="action_label">Voir les classements</field>
+    </record>
+    <record id="tour_pe_step_modules" model="doorway.onboarding.tour.step">
+        <field name="tour_id" ref="tour_people_engine"/>
+        <field name="sequence">4</field>
+        <field name="key">modules</field>
+        <field name="title">Modules clés</field>
+        <field name="body_html" type="html">
+            <ul>
+                <li><strong>Coaching IA</strong> et plans de développement</li>
+                <li><strong>LMS</strong> — parcours et certificats</li>
+                <li><strong>Primes</strong> et <strong>Knowledge Engine</strong></li>
+            </ul>
+        </field>
+    </record>
+    <record id="tour_pe_step_config" model="doorway.onboarding.tour.step">
+        <field name="tour_id" ref="tour_people_engine"/>
+        <field name="sequence">5</field>
+        <field name="key">config</field>
+        <field name="title">Configuration</field>
+        <field name="admin_only" eval="True"/>
+        <field name="body_html" type="html">
+            <p>RH / admins : menu <strong>Configuration</strong> — profils, scores, badges, TV.</p>
+        </field>
+        <field name="action_xmlid">people_engine.action_pe_employee_profile</field>
+        <field name="action_label">Profils employés</field>
+    </record>
+</odoo>

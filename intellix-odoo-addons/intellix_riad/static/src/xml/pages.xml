@@ -1,0 +1,1413 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="intellix_riad.ScreenChrome">
+        <div class="topbar">
+            <div class="property-switch">
+                <span class="dot"/>
+                <select t-on-change="onEstablishmentChange">
+                    <t t-foreach="state.data.establishments or []" t-as="est" t-key="est.id">
+                        <option t-att-value="est.id" t-att-selected="state.establishmentId === est.id" t-esc="est.name"/>
+                    </t>
+                </select>
+            </div>
+            <div class="topbar-right">
+                <t t-slot="extra"/>
+                <div class="avatar" t-esc="state.data.user and state.data.user.initial or 'R'"/>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="intellix_riad.Restaurant">
+        <div class="o_action o_riad_screen">
+            <RiadShell page="shellPage"/>
+            <div class="main">
+                <t t-call="intellix_riad.ScreenChrome"/>
+                <div class="content" t-if="state.view === 'form'">
+                    <div class="page-head">
+                        <div>
+                            <button class="link" t-on-click="backToPlanning">← Terrasse</button>
+                            <div class="eyebrow">Restaurant</div>
+                            <h1 t-if="state.form.ticket_id">Addition</h1>
+                            <h1 t-else="">Réserver une table</h1>
+                        </div>
+                    </div>
+                    <div class="riad-card book-card">
+                        <div class="kind-switch">
+                            <button t-att-class="state.form.guest_kind === 'externe' ? 'active' : ''" t-on-click="() => this.setGuestKind('externe')">Cliente extérieure</button>
+                            <button t-att-class="state.form.guest_kind === 'resident' ? 'active' : ''" t-on-click="() => this.setGuestKind('resident')">Résidente</button>
+                        </div>
+                        <div class="book-grid">
+                            <label>Table
+                                <select data-field="table_id" t-on-change="onFormChange">
+                                    <option value="">Choisir une table…</option>
+                                    <t t-foreach="tables" t-as="row" t-key="row.id">
+                                        <option t-att-value="row.id" t-att-selected="state.form.table_id == row.id" t-esc="row.name"/>
+                                    </t>
+                                </select>
+                            </label>
+                            <label>Couverts
+                                <input type="number" min="1" data-field="covers" t-att-value="state.form.covers" t-on-change="onFormChange"/>
+                            </label>
+                            <label class="book-wide" t-if="state.form.guest_kind === 'externe'">Nom de la cliente
+                                <input type="text" data-field="guest_name" t-att-value="state.form.guest_name" t-on-change="onFormChange" placeholder="Nadia B."/>
+                            </label>
+                            <label class="book-wide" t-if="state.form.guest_kind === 'resident'">Séjour
+                                <select data-field="reservation_id" t-on-change="onFormChange">
+                                    <option value="">Lier au séjour…</option>
+                                    <t t-foreach="residents" t-as="row" t-key="row.id">
+                                        <option t-att-value="row.id" t-att-selected="state.form.reservation_id == row.id" t-esc="row.name"/>
+                                    </t>
+                                </select>
+                            </label>
+                            <label>Note
+                                <input type="number" min="0" step="10" data-field="amount" t-att-value="state.form.amount" t-on-change="onFormChange" placeholder="0"/>
+                            </label>
+                            <label>Pourboire
+                                <input type="number" min="0" step="5" data-field="tip_amount" t-att-value="state.form.tip_amount" t-on-change="onFormChange" placeholder="0"/>
+                            </label>
+                            <label class="book-wide book-check" t-if="state.form.guest_kind === 'resident'">
+                                <input type="checkbox" data-field="charge_to_room" t-att-checked="state.form.charge_to_room" t-on-change="onFormChange"/>
+                                Pousser la note à la chambre
+                            </label>
+                            <label t-if="state.form.guest_kind === 'resident' and state.form.charge_to_room">Pourboire
+                                <select data-field="tip_mode" t-on-change="onFormChange">
+                                    <option value="cash" t-att-selected="state.form.tip_mode === 'cash'">Comptant — personnel</option>
+                                    <option value="room" t-att-selected="state.form.tip_mode === 'room'">En chambre avec la note</option>
+                                </select>
+                            </label>
+                        </div>
+                        <p class="muted">La note chambre distingue la résidente de la cliente extérieure. Le pourboire n'entre jamais dans le tarif de la chambre.</p>
+                        <div class="book-actions">
+                            <button class="btn-new" t-on-click="saveBooking" t-att-disabled="state.saving">
+                                <t t-if="state.form.guest_kind === 'resident' and state.form.charge_to_room">Envoyer en chambre</t>
+                                <t t-else="">Confirmer</t>
+                            </button>
+                            <button class="link" t-on-click="backToPlanning">Annuler</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="content" t-elif="state.view === 'plan'">
+                    <div class="page-head">
+                        <div>
+                            <button class="link" t-on-click="backToPlanning">← Terrasse</button>
+                            <div class="eyebrow">Restaurant</div>
+                            <h1>Configurer le plan de salle</h1>
+                        </div>
+                        <button class="btn-new" t-on-click="addPlanRow">Ajouter une table</button>
+                    </div>
+                    <div class="riad-card">
+                        <p class="muted">Nommez vos tables, indiquez les couverts et la zone. Le plan s'affiche ensuite sur la terrasse.</p>
+                        <table class="staff-table plan-table">
+                            <tr><th>Table</th><th>Couverts</th><th>Zone</th><th></th></tr>
+                            <t t-foreach="state.plan" t-as="row" t-key="row.key">
+                                <tr>
+                                    <td><input type="text" data-field="name" t-att-value="row.name" t-on-change="(ev) => this.onPlanChange(row_index, ev)" placeholder="T1"/></td>
+                                    <td><input type="number" min="1" data-field="seats" t-att-value="row.seats" t-on-change="(ev) => this.onPlanChange(row_index, ev)"/></td>
+                                    <td>
+                                        <select data-field="zone" t-on-change="(ev) => this.onPlanChange(row_index, ev)">
+                                            <t t-foreach="zones" t-as="zone" t-key="zone.id">
+                                                <option t-att-value="zone.id" t-att-selected="row.zone === zone.id" t-esc="zone.name"/>
+                                            </t>
+                                        </select>
+                                    </td>
+                                    <td><button class="link" t-on-click="() => this.removePlanRow(row_index)">Retirer</button></td>
+                                </tr>
+                            </t>
+                        </table>
+                        <div class="muted" t-if="!state.plan.length">Aucune table — cliquez sur « Ajouter une table ».</div>
+                        <div class="book-actions">
+                            <button class="btn-new" t-on-click="savePlan" t-att-disabled="state.saving">Enregistrer le plan</button>
+                            <button class="link" t-on-click="backToPlanning">Annuler</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="content" t-else="">
+                    <div class="page-head">
+                        <div>
+                            <div class="eyebrow">Restaurant</div>
+                            <h1>Terrasse — plan de salle &amp; demi-pensions</h1>
+                        </div>
+                        <div class="head-actions">
+                            <button class="link" t-on-click="editPlan">Configurer le plan</button>
+                            <button class="btn-new" t-on-click="() => this.newBooking()">Réserver une table</button>
+                        </div>
+                    </div>
+                    <t t-if="state.data.privatised">
+                        <div class="riad-card" style="margin-bottom:16px">
+                            <p>Privatisation en cours : les tables sont réservées au groupe. Pas de service externe.</p>
+                        </div>
+                    </t>
+                    <div class="grid">
+                        <div>
+                            <div class="riad-card">
+                                <div class="card-head">
+                                    <h3>Plan de salle — ce soir <t t-esc="state.data.restaurant_hours"/></h3>
+                                    <span class="mode-badge"><span class="pulse"/>
+                                        <t t-esc="state.data.mode_label"/>
+                                    </span>
+                                </div>
+                                <div class="table-grid" t-if="state.data.tables and state.data.tables.length">
+                                    <t t-foreach="state.data.tables or []" t-as="table" t-key="table.id">
+                                        <div t-att-class="'table-tile ' + (table.css or 'free')" t-on-click="() => this.newBooking(table)">
+                                            <span class="n" t-esc="table.name"/>
+                                            <t t-esc="table.label"/>
+                                        </div>
+                                    </t>
+                                </div>
+                                <div class="empty-config" t-else="">
+                                    <p>Aucun plan de salle pour cet établissement.</p>
+                                    <button class="btn-new" t-on-click="editPlan">Créer mon plan de salle</button>
+                                </div>
+                                <div class="legend">
+                                    <span><span class="sw sw-resto"/>Réservée</span>
+                                    <span><span class="sw sw-free"/>Libre</span>
+                                    <span><span class="sw sw-wellness"/>Mode bien-être (journée)</span>
+                                </div>
+                            </div>
+                            <div class="riad-card">
+                                <div class="card-head">
+                                    <h3>Bascule d'espace — horaires configurables</h3>
+                                    <button class="link" t-on-click="openSettings">Modifier →</button>
+                                </div>
+                                <div class="mode-timeline">
+                                    <div class="mode-seg wellness" t-att-style="'flex:' + (state.data.terrace and state.data.terrace.flex_wellness or 10)">
+                                        <t t-esc="state.data.terrace and state.data.terrace.wellness_label"/>
+                                    </div>
+                                    <div class="mode-seg restaurant" t-att-style="'flex:' + (state.data.terrace and state.data.terrace.flex_restaurant or 7)">
+                                        <t t-esc="state.data.terrace and state.data.terrace.restaurant_label"/>
+                                    </div>
+                                </div>
+                                <div class="mode-caption">
+                                    <t t-foreach="state.data.terrace and state.data.terrace.captions or []" t-as="cap" t-key="cap_index">
+                                        <span t-esc="cap"/>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="riad-card">
+                                <div class="card-head">
+                                    <h3>Carte restaurant <t t-if="state.data.company">— <t t-esc="state.data.company"/></t></h3>
+                                    <button class="link" t-on-click="() => this.openCatalog('restaurant')">Modifier →</button>
+                                </div>
+                                <table class="staff-table" t-if="restaurantMenu.length">
+                                    <tr>
+                                        <th>Plat</th>
+                                        <th>Catégorie</th>
+                                        <th>Prix</th>
+                                        <th>Mode</th>
+                                    </tr>
+                                    <t t-foreach="restaurantMenu" t-as="row" t-key="row.id">
+                                        <tr>
+                                            <td>
+                                                <div class="who" t-esc="row.name"/>
+                                                <div class="muted" t-if="row.included_in_half_board">Inclus demi-pension</div>
+                                            </td>
+                                            <td t-esc="row.category"/>
+                                            <td t-esc="row.price_label"/>
+                                            <td t-esc="row.space_mode_label"/>
+                                        </tr>
+                                    </t>
+                                </table>
+                                <div class="muted" t-if="!(state.data.menu || []).length">Aucune carte — créez-la depuis Personnel → Menu restaurant.</div>
+                            </div>
+                            <div class="riad-card">
+                                <div class="card-head">
+                                    <h3>Demi-pensions ce soir</h3>
+                                </div>
+                                <ul class="dp-list" t-if="state.data.half_board and state.data.half_board.length">
+                                    <t t-foreach="state.data.half_board" t-as="row" t-key="row.id">
+                                        <li>
+                                            <div>
+                                                <div class="room" t-esc="row.room"/>
+                                                <div class="cover" t-esc="row.cover"/>
+                                            </div>
+                                            <t t-esc="row.time"/>
+                                        </li>
+                                    </t>
+                                </ul>
+                                <div class="muted" t-else="">Aucune demi-pension ce soir.</div>
+                            </div>
+                            <div class="riad-card">
+                                <div class="card-head"><h3>Additions ce soir</h3></div>
+                                <ul class="dp-list" t-if="tickets.length">
+                                    <t t-foreach="tickets" t-as="row" t-key="row.id">
+                                        <li>
+                                            <div>
+                                                <div class="room" t-esc="row.who"/>
+                                                <div class="cover"><t t-esc="row.table"/> · <t t-esc="row.kind"/> · <t t-esc="row.amount"/><t t-if="row.tip"> · pourboire <t t-esc="row.tip"/> (<t t-esc="row.tip_mode"/>)</t></div>
+                                            </div>
+                                            <t t-esc="row.state_label"/>
+                                        </li>
+                                    </t>
+                                </ul>
+                                <div class="muted" t-else="">Aucune addition ce soir.</div>
+                            </div>
+                            <div class="riad-card">
+                                <div class="card-head"><h3>Revenu restaurant — ce soir</h3></div>
+                                <div class="kpi" style="border:none;padding:0;">
+                                    <div class="value" t-esc="state.data.revenue or '0€'"/>
+                                    <div class="sub" t-esc="state.data.revenue_sub or ''"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="intellix_riad.Wellness">
+        <div class="o_action o_riad_screen">
+            <RiadShell page="shellPage"/>
+            <div class="main">
+                <t t-call="intellix_riad.ScreenChrome"/>
+                <div class="content" t-if="state.view === 'form'">
+                    <div class="page-head">
+                        <div>
+                            <button class="link" t-on-click="backToPlanning">← Planning</button>
+                            <div class="eyebrow">Bien-être &amp; beauté</div>
+                            <h1>Nouvelle réservation</h1>
+                        </div>
+                        <div class="date-today" t-esc="state.data.today_label"/>
+                    </div>
+                    <div class="riad-card book-card">
+                        <div class="kind-switch">
+                            <button t-att-class="state.form.guest_kind === 'externe' ? 'active' : ''" t-on-click="() => this.setGuestKind('externe')">Nouvelle cliente</button>
+                            <button t-att-class="state.form.guest_kind === 'resident' ? 'active' : ''" t-on-click="() => this.setGuestKind('resident')">Résidente</button>
+                        </div>
+                        <div class="book-grid">
+                            <label>Prestation du menu
+                                <select data-field="offer_id" t-on-change="onFormChange">
+                                    <option value="">Choisir dans le menu des soins…</option>
+                                    <t t-foreach="state.data.menu or []" t-as="row" t-key="row.id">
+                                        <option t-att-value="row.id" t-att-selected="state.form.offer_id == row.id">
+                                            <t t-esc="row.name"/> · <t t-esc="row.price_label"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </label>
+                            <label>Soin
+                                <select data-field="type_id" t-on-change="onFormChange">
+                                    <option value="">Choisir un soin…</option>
+                                    <t t-foreach="serviceTypes" t-as="row" t-key="row.id">
+                                        <option t-att-value="row.id" t-att-selected="state.form.type_id == row.id" t-esc="row.name"/>
+                                    </t>
+                                </select>
+                            </label>
+                            <label>Prestataire
+                                <select data-field="practitioner_id" t-on-change="onFormChange">
+                                    <option value="">Choisir staff ou prestataire…</option>
+                                    <t t-foreach="practitioners" t-as="row" t-key="row.id">
+                                        <option t-att-value="row.id" t-att-selected="state.form.practitioner_id == row.id" t-esc="row.label or row.name"/>
+                                    </t>
+                                </select>
+                            </label>
+                            <label>Début
+                                <input type="datetime-local" data-field="date_start" t-att-value="state.form.date_start" t-on-change="onFormChange"/>
+                            </label>
+                            <label>Fin
+                                <input type="datetime-local" data-field="date_end" t-att-value="state.form.date_end" t-on-change="onFormChange"/>
+                            </label>
+                            <label t-if="state.form.guest_kind === 'externe'">Nom de la cliente
+                                <input type="text" data-field="guest_name" t-att-value="state.form.guest_name" t-on-change="onFormChange" placeholder="Nadia B."/>
+                            </label>
+                            <label t-if="state.form.guest_kind === 'resident'">Séjour
+                                <select data-field="reservation_id" t-on-change="onFormChange">
+                                    <option value="">Lier au séjour…</option>
+                                    <t t-foreach="residents" t-as="row" t-key="row.id">
+                                        <option t-att-value="row.id" t-att-selected="state.form.reservation_id == row.id" t-esc="row.name"/>
+                                    </t>
+                                </select>
+                            </label>
+                            <label>Montant
+                                <input type="number" min="0" step="10" data-field="amount" t-att-value="state.form.amount" t-on-change="onFormChange" placeholder="0"/>
+                            </label>
+                            <label class="book-wide">Note pour l'expérience
+                                <textarea data-field="experience_brief" t-on-change="onFormChange" placeholder="Souhaits de la cliente…"><t t-esc="state.form.experience_brief"/></textarea>
+                            </label>
+                        </div>
+                        <div class="book-actions">
+                            <button class="btn-new" t-on-click="saveSlot" t-att-disabled="state.saving">Confirmer</button>
+                            <button class="link" t-on-click="backToPlanning">Annuler</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="content" t-elif="state.view === 'practitioner'">
+                    <div class="page-head">
+                        <div>
+                            <button class="link" t-on-click="backToPlanning">← Planning</button>
+                            <div class="eyebrow">Bien-être &amp; beauté</div>
+                            <h1>Staff interne ou prestataire</h1>
+                        </div>
+                    </div>
+                    <div class="riad-card book-card">
+                        <div class="kind-switch">
+                            <button t-att-class="state.form.kind === 'staff' ? 'active' : ''" t-on-click="() => this.setPractitionerKind('staff')">Staff interne</button>
+                            <button t-att-class="state.form.kind === 'external' ? 'active' : ''" t-on-click="() => this.setPractitionerKind('external')">Prestataire</button>
+                        </div>
+                        <div class="book-grid">
+                            <label class="book-wide" t-if="state.form.kind === 'staff' and staffCandidates.length">Personne déjà en personnel
+                                <select t-on-change="onStaffPick">
+                                    <option value="">Saisir un nom, ou lier une fiche…</option>
+                                    <t t-foreach="staffCandidates" t-as="row" t-key="row.id">
+                                        <option t-att-value="row.id" t-att-selected="state.form.staff_id == row.id" t-esc="row.name"/>
+                                    </t>
+                                </select>
+                            </label>
+                            <label class="book-wide">Nom
+                                <input type="text" data-field="name" t-att-value="state.form.name" t-on-change="onFormChange" placeholder="Salma"/>
+                            </label>
+                        </div>
+                        <p class="muted" t-if="state.form.kind === 'staff'">Staff interne : employée du riad, déjà sur le planning personnel.</p>
+                        <p class="muted" t-else="">Prestataire : intervenante externe, hors paie du riad.</p>
+                        <p class="muted">Soins pratiqués</p>
+                        <div class="type-picks">
+                            <t t-foreach="serviceTypes" t-as="row" t-key="row.id">
+                                <button t-att-class="(state.form.type_ids or []).indexOf(row.id) !== -1 ? 'active' : ''" t-on-click="() => this.toggleType(row.id)" t-esc="row.name"/>
+                            </t>
+                        </div>
+                        <div class="book-actions">
+                            <button class="btn-new" t-on-click="savePractitioner" t-att-disabled="state.saving">Ajouter</button>
+                            <button class="link" t-on-click="backToPlanning">Annuler</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="content" t-else="">
+                    <div class="page-head">
+                        <div>
+                            <div class="eyebrow">Bien-être &amp; beauté</div>
+                            <h1>Planning des soins — aujourd'hui</h1>
+                        </div>
+                        <div class="head-actions">
+                            <button class="link" t-on-click="newPractitioner">Ajouter staff / prestataire</button>
+                            <button class="btn-new" t-on-click="newSlot">Nouvelle réservation</button>
+                        </div>
+                    </div>
+                    <div class="cal-filters">
+                        <button t-att-class="state.providerFilter === 'all' ? 'active' : ''" t-on-click="() => this.setProviderFilter('all')">Tous</button>
+                        <button t-att-class="state.providerFilter === 'staff' ? 'active' : ''" t-on-click="() => this.setProviderFilter('staff')">Staff interne</button>
+                        <button t-att-class="state.providerFilter === 'external' ? 'active' : ''" t-on-click="() => this.setProviderFilter('external')">Prestataires</button>
+                    </div>
+                    <div class="riad-card">
+                        <div class="sched" t-if="visibleProviders.length">
+                            <div class="hh"/>
+                            <t t-foreach="state.data.hours or []" t-as="hour" t-key="hour">
+                                <div class="hh" t-esc="hour + 'h'"/>
+                            </t>
+                            <t t-foreach="visibleProviders" t-as="prov" t-key="prov.id">
+                                <div class="provider">
+                                    <t t-esc="prov.name"/>
+                                    <small t-esc="prov.kind_label"/>
+                                </div>
+                                <t t-foreach="prov.cells" t-as="cell" t-key="cell.hour">
+                                    <div t-att-class="'cell ' + (cell.css or '')"/>
+                                </t>
+                            </t>
+                        </div>
+                        <div class="empty-config" t-else="">
+                            <p>Aucun staff ni prestataire pour ce filtre.</p>
+                            <button class="btn-new" t-on-click="newPractitioner">Ajouter staff / prestataire</button>
+                        </div>
+                        <div class="prov-legend">
+                            <t t-foreach="state.data.legend or []" t-as="item" t-key="item.css">
+                                <span><span t-att-class="'sw ' + item.css"/><t t-esc="item.name"/></span>
+                            </t>
+                        </div>
+                    </div>
+                    <div class="riad-card">
+                        <div class="card-head">
+                            <h3>Menu des soins <t t-if="state.data.company">— <t t-esc="state.data.company"/></t></h3>
+                            <button class="link" t-on-click="() => this.openCatalog('wellness')">Modifier →</button>
+                        </div>
+                        <table class="staff-table" t-if="(state.data.menu || []).length">
+                            <tr>
+                                <th>Soin</th>
+                                <th>Durée</th>
+                                <th>Prix</th>
+                            </tr>
+                            <t t-foreach="state.data.menu or []" t-as="row" t-key="row.id">
+                                <tr>
+                                    <td t-esc="row.name"/>
+                                    <td t-esc="row.duration"/>
+                                    <td t-esc="row.price_label"/>
+                                </tr>
+                            </t>
+                        </table>
+                        <div class="muted" t-if="!(state.data.menu || []).length">Aucun menu de soins — créez-le depuis Personnel → Menu des soins.</div>
+                    </div>
+                    <div class="riad-card">
+                        <div class="card-head">
+                            <h3>Réservations du jour</h3>
+                            <button class="link" t-on-click="newSlot">Nouvelle réservation →</button>
+                        </div>
+                        <ul class="wl" t-if="state.data.bookings and state.data.bookings.length">
+                            <t t-foreach="state.data.bookings" t-as="slot" t-key="slot.id">
+                                <li>
+                                    <div>
+                                        <div class="who" t-esc="slot.who"/>
+                                        <div class="what" t-esc="slot.what"/>
+                                    </div>
+                                    <span t-att-class="'tag ' + (slot.css or 'massage')" t-esc="slot.type"/>
+                                </li>
+                            </t>
+                        </ul>
+                        <div class="muted" t-else="">Aucun créneau aujourd'hui.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="intellix_riad.Events">
+        <div class="o_action o_riad_screen">
+            <RiadShell page="shellPage"/>
+            <div class="main">
+                <t t-call="intellix_riad.ScreenChrome"/>
+                <div class="content">
+                    <t t-if="state.view === 'kanban' and state.data.event">
+                        <div class="page-head">
+                            <div>
+                                <div class="eyebrow">Événements</div>
+                                <h1>Fiche événement — coordination du jour J</h1>
+                            </div>
+                            <button class="link" t-on-click="backToList">← Tous les événements</button>
+                        </div>
+                        <div class="event-header">
+                            <div>
+                                <h2 t-esc="state.data.event.name"/>
+                                <div class="sub" t-esc="state.data.event.sub"/>
+                            </div>
+                            <div class="event-summary">
+                                <t t-foreach="state.data.event.summary or []" t-as="item" t-key="item.label">
+                                    <div class="item"><b t-esc="item.value"/><t t-esc="item.label"/></div>
+                                </t>
+                            </div>
+                        </div>
+                        <div class="kanban">
+                            <t t-foreach="state.data.columns or []" t-as="col" t-key="col.key">
+                                <div t-att-class="'kanban-col ' + col.key">
+                                    <div class="kanban-col-head">
+                                        <t t-esc="col.label"/>
+                                        <span class="count" t-esc="col.cards.length"/>
+                                    </div>
+                                    <t t-foreach="col.cards" t-as="card" t-key="card.id">
+                                        <div class="kcard">
+                                            <div class="ktitle" t-esc="card.name"/>
+                                            <div class="kmeta">
+                                                <span class="kavatar" t-esc="card.initial"/>
+                                                <span t-att-class="card.late ? 'kdue late' : 'kdue'" t-esc="card.due"/>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </div>
+                            </t>
+                        </div>
+                        <div class="footnote" t-if="state.data.event.template">
+                            Modèle de checklist : « <t t-esc="state.data.event.template"/> » — appliqué à la création, puis personnalisable
+                        </div>
+                    </t>
+                    <t t-elif="state.view === 'form'">
+                        <div class="page-head">
+                            <div>
+                                <button class="link" t-on-click="backToList">← Tous les événements</button>
+                                <div class="eyebrow">Événements</div>
+                                <h1>Nouvel événement</h1>
+                            </div>
+                        </div>
+                        <div class="riad-card book-card">
+                            <div class="book-grid">
+                                <label class="book-wide">Nom
+                                    <input type="text" data-field="name" t-att-value="state.form.name" t-on-change="onFormChange" placeholder="Privatisation weekend — Groupe Dupont"/>
+                                </label>
+                                <label>Début
+                                    <input type="date" data-field="day_start" t-att-value="state.form.day_start" t-on-change="onFormChange"/>
+                                </label>
+                                <label>Fin
+                                    <input type="date" data-field="day_end" t-att-value="state.form.day_end" t-on-change="onFormChange"/>
+                                </label>
+                                <label>Personnes
+                                    <input type="number" min="1" data-field="guest_count" t-att-value="state.form.guest_count" t-on-change="onFormChange"/>
+                                </label>
+                                <label>Modèle de checklist
+                                    <select data-field="checklist_kind" t-on-change="onFormChange">
+                                        <t t-foreach="checklistKinds" t-as="row" t-key="row.id">
+                                            <option t-att-value="row.id" t-att-selected="state.form.checklist_kind === row.id" t-esc="row.name"/>
+                                        </t>
+                                    </select>
+                                </label>
+                                <label class="book-wide book-check">
+                                    <input type="checkbox" data-field="is_full_privatisation" t-att-checked="state.form.is_full_privatisation" t-on-change="onFormChange"/>
+                                    Privatisation complète du riad
+                                </label>
+                                <label class="book-wide book-check">
+                                    <input type="checkbox" data-field="include_half_board" t-att-checked="state.form.include_half_board" t-on-change="onFormChange"/>
+                                    Formule demi-pension
+                                </label>
+                            </div>
+                            <div class="book-actions">
+                                <button class="btn-new" t-on-click="saveEvent" t-att-disabled="state.saving">Créer</button>
+                                <button class="link" t-on-click="backToList">Annuler</button>
+                            </div>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <div class="page-head">
+                            <div>
+                                <div class="eyebrow">Événements</div>
+                                <h1>Tous les événements</h1>
+                            </div>
+                            <button class="btn-new" t-on-click="newEvent">Nouvel événement</button>
+                        </div>
+                        <div class="ev-tabs">
+                            <button t-att-class="state.filter === 'upcoming' ? 'ev-tab active' : 'ev-tab'" t-on-click="() => this.setFilter('upcoming')">
+                                À venir (<t t-esc="state.data.counts and state.data.counts.upcoming or 0"/>)
+                            </button>
+                            <button t-att-class="state.filter === 'current' ? 'ev-tab active' : 'ev-tab'" t-on-click="() => this.setFilter('current')">
+                                En cours (<t t-esc="state.data.counts and state.data.counts.current or 0"/>)
+                            </button>
+                            <button t-att-class="state.filter === 'past' ? 'ev-tab active' : 'ev-tab'" t-on-click="() => this.setFilter('past')">
+                                Passés (<t t-esc="state.data.counts and state.data.counts.past or 0"/>)
+                            </button>
+                        </div>
+                        <div class="ev-list">
+                            <t t-foreach="events" t-as="ev" t-key="ev.id">
+                                <div class="ev-row" t-on-click="() => this.openEvent(ev)">
+                                    <span class="date-chip" t-esc="ev.date_chip"/>
+                                    <div class="info">
+                                        <h3 t-esc="ev.title"/>
+                                        <div class="sub" t-esc="ev.sub"/>
+                                    </div>
+                                    <div class="ev-progress">
+                                        <div class="bar"><div class="fill" t-att-style="'width:' + ev.pct + '%'"/></div>
+                                        <div class="lbl" t-esc="ev.progress"/>
+                                    </div>
+                                </div>
+                            </t>
+                            <div class="muted" t-if="!events.length">Aucun événement dans cet onglet.</div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="intellix_riad.Personnel">
+        <div class="o_action o_riad_screen">
+            <RiadShell page="shellPage"/>
+            <div class="main">
+                <t t-call="intellix_riad.ScreenChrome"/>
+                <div class="content">
+                    <t t-if="state.view === 'form'">
+                        <div class="page-head">
+                            <div>
+                                <button class="link" t-on-click="backToList">← Équipe</button>
+                                <div class="eyebrow">Personnel</div>
+                                <h1>Nouvel employé</h1>
+                            </div>
+                        </div>
+                        <div class="riad-card book-card">
+                            <div class="book-grid">
+                                <label class="book-wide">Nom
+                                    <input type="text" data-field="name" t-att-value="state.form.name" t-on-change="onFormChange" placeholder="Nom complet"/>
+                                </label>
+                                <label>Poste
+                                    <select data-field="role_id" t-on-change="onFormChange">
+                                        <option value="">Choisir un rôle…</option>
+                                        <t t-foreach="staffRoles" t-as="row" t-key="row.id">
+                                            <option t-att-value="row.id" t-att-selected="state.form.role_id == row.id" t-esc="row.name"/>
+                                        </t>
+                                    </select>
+                                </label>
+                                <label>Téléphone
+                                    <input type="text" data-field="phone" t-att-value="state.form.phone" t-on-change="onFormChange"/>
+                                </label>
+                                <label>Email
+                                    <input type="text" data-field="email" t-att-value="state.form.email" t-on-change="onFormChange"/>
+                                </label>
+                                <label>Date d'embauche
+                                    <input type="date" data-field="hire_date" t-att-value="state.form.hire_date" t-on-change="onFormChange"/>
+                                </label>
+                            </div>
+                            <p class="muted">La fiche est créée uniquement sur la société de cet établissement.</p>
+                            <div class="book-actions">
+                                <button class="btn-new" t-on-click="saveEmployee" t-att-disabled="state.saving">Ajouter</button>
+                                <button class="link" t-on-click="backToList">Annuler</button>
+                            </div>
+                        </div>
+                    </t>
+                    <t t-elif="state.view === 'fiche' and state.data.staff_detail">
+                        <div class="page-head">
+                            <div>
+                                <button class="link" t-on-click="backToList">← Équipe</button>
+                                <div class="eyebrow">Fiche employé</div>
+                                <h1 t-esc="state.data.staff_detail.name"/>
+                            </div>
+                            <div class="head-actions">
+                                <div class="date-today" t-esc="state.data.staff_detail.role"/>
+                                <button class="link" t-on-click="openPunchHistory">Tous les pointages</button>
+                            </div>
+                        </div>
+                        <div class="riad-card book-card">
+                            <div class="book-grid">
+                                <label>Société<div class="who" t-esc="state.data.staff_detail.company or '—'"/></label>
+                                <label>Établissement<div class="who" t-esc="state.data.staff_detail.establishment or '—'"/></label>
+                                <label>Téléphone<div class="who" t-esc="state.data.staff_detail.phone or '—'"/></label>
+                                <label>Email<div class="who" t-esc="state.data.staff_detail.email or '—'"/></label>
+                                <label>Date d'embauche<div class="who" t-esc="state.data.staff_detail.hire_date or '—'"/></label>
+                                <label>Poste<div class="who" t-esc="state.data.staff_detail.role or '—'"/></label>
+                            </div>
+                        </div>
+                        <div class="riad-card">
+                            <p class="muted">Chaque entrée reste modifiable jusqu'à l'envoi du rapport mensuel. Les corrections sont historisées.</p>
+                            <table class="staff-table">
+                                <tr>
+                                    <th>Jour</th>
+                                    <th>Statut</th>
+                                    <th>Correction</th>
+                                    <th>Historique</th>
+                                </tr>
+                                <t t-foreach="state.data.staff_detail.days or []" t-as="day" t-key="day.date">
+                                    <tr>
+                                        <td t-esc="day.date_label"/>
+                                        <td><span t-att-class="'staff-status ' + (day.css or 'muted')" t-esc="day.status"/></td>
+                                        <td>
+                                            <t t-if="state.data.can_punch and !day.locked">
+                                                <div class="punch-row">
+                                                    <button class="punch-btn" t-on-click="() => this.punchDay(day, 'present')">Présent</button>
+                                                    <button class="punch-btn" t-on-click="() => this.startDayPunch(day, 'late')">Retard</button>
+                                                    <button class="punch-btn" t-on-click="() => this.startDayPunch(day, 'absent')">Absent</button>
+                                                </div>
+                                                <t t-if="state.punchingDate === day.date and state.punchMode === 'late'">
+                                                    <div class="punch-extra">
+                                                        <input type="time" t-att-value="state.arrival" t-on-change="onArrivalChange"/>
+                                                        <button class="punch-btn primary" t-on-click="() => this.confirmDayLate(day)">Valider</button>
+                                                    </div>
+                                                </t>
+                                                <t t-if="state.punchingDate === day.date and state.punchMode === 'absent'">
+                                                    <div class="punch-extra">
+                                                        <button class="punch-btn" t-on-click="() => this.punchDay(day, 'leave')">Congé planifié</button>
+                                                        <button class="punch-btn" t-on-click="() => this.punchDay(day, 'illness')">Maladie</button>
+                                                        <button class="punch-btn" t-on-click="() => this.punchDay(day, 'unjustified')">Non justifiée</button>
+                                                    </div>
+                                                </t>
+                                            </t>
+                                            <span class="muted" t-if="day.locked">Mois clos</span>
+                                        </td>
+                                        <td>
+                                            <t t-foreach="day.corrections or []" t-as="corr" t-key="corr.id">
+                                                <div class="corr-line">
+                                                    <t t-esc="corr.when"/> — <t t-esc="corr.who"/> :
+                                                    <t t-esc="corr.previous"/> → <t t-esc="corr.new"/>
+                                                </div>
+                                            </t>
+                                            <span class="muted" t-if="!(day.corrections or []).length">—</span>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </table>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <div class="page-head">
+                            <div>
+                                <div class="eyebrow">Personnel</div>
+                                <h1>Équipe &amp; présences</h1>
+                            </div>
+                            <div class="head-actions">
+                                <button class="link" t-on-click="openPunchHistory">Historique des pointages</button>
+                                <button class="btn-new" t-on-click="newEmployee">Nouvel employé</button>
+                            </div>
+                        </div>
+                        <div class="riad-card">
+                            <table class="staff-table">
+                                <tr>
+                                    <th>Employé</th>
+                                    <th>Société</th>
+                                    <th>Poste</th>
+                                    <th>Téléphone</th>
+                                    <th>Email</th>
+                                    <th>Embauche</th>
+                                    <th>Statut aujourd'hui</th>
+                                    <th>Jours ce mois</th>
+                                    <th>Absences ce mois</th>
+                                    <th t-if="state.data.can_punch">Pointer</th>
+                                </tr>
+                                <t t-foreach="state.data.staff or []" t-as="row" t-key="row.id">
+                                    <tr>
+                                        <td>
+                                            <div class="staff-name" t-on-click="() => this.openStaff(row)">
+                                                <span class="av" t-esc="row.initial"/>
+                                                <t t-esc="row.name"/>
+                                            </div>
+                                        </td>
+                                        <td t-esc="row.company"/>
+                                        <td class="staff-role" t-esc="row.role"/>
+                                        <td t-esc="row.phone"/>
+                                        <td t-esc="row.email"/>
+                                        <td t-esc="row.hire_date"/>
+                                        <td><span t-att-class="'staff-status ' + (row.css or 'muted')" t-esc="row.status"/></td>
+                                        <td t-esc="row.days"/>
+                                        <td t-esc="row.absences"/>
+                                        <td t-if="state.data.can_punch">
+                                            <t t-if="!row.locked">
+                                                <div class="punch-row">
+                                                    <button class="punch-btn" t-on-click="() => this.punch(row, 'present')">Présent</button>
+                                                    <button class="punch-btn" t-on-click="() => this.startPunch(row, 'late')">Retard</button>
+                                                    <button class="punch-btn" t-on-click="() => this.startPunch(row, 'absent')">Absent</button>
+                                                </div>
+                                                <t t-if="state.punchingId === row.id and state.punchMode === 'late'">
+                                                    <div class="punch-extra">
+                                                        <input type="time" t-att-value="state.arrival" t-on-change="onArrivalChange"/>
+                                                        <button class="punch-btn primary" t-on-click="() => this.confirmLate(row)">Valider</button>
+                                                    </div>
+                                                </t>
+                                                <t t-if="state.punchingId === row.id and state.punchMode === 'absent'">
+                                                    <div class="punch-extra">
+                                                        <button class="punch-btn" t-on-click="() => this.punch(row, 'leave')">Congé planifié</button>
+                                                        <button class="punch-btn" t-on-click="() => this.punch(row, 'illness')">Maladie</button>
+                                                        <button class="punch-btn" t-on-click="() => this.punch(row, 'unjustified')">Non justifiée</button>
+                                                    </div>
+                                                </t>
+                                            </t>
+                                            <span class="muted" t-if="row.locked">Mois clos</span>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </table>
+                            <div class="muted" t-if="!(state.data.staff or []).length">Aucune fiche équipe pour cet établissement.</div>
+                            <div class="riad-card" style="margin-top:16px">
+                                <div class="card-head">
+                                    <h3>Catalogues du riad <t t-if="state.data.company">— <t t-esc="state.data.company"/></t></h3>
+                                </div>
+                                <p class="muted">Menus utilisés par le Créateur d'Expérience pour proposer soins et carte. Isolés à cette société.</p>
+                                <div class="book-actions">
+                                    <button class="link" t-on-click="() => this.openCatalog('wellness')">Menu des soins</button>
+                                    <button class="link" t-on-click="() => this.openCatalog('restaurant')">Menu restaurant</button>
+                                </div>
+                                <table class="staff-table" t-if="(state.data.wellness_menu || []).length">
+                                    <tr><th>Soin</th><th>Durée</th><th>Prix</th></tr>
+                                    <t t-foreach="state.data.wellness_menu or []" t-as="row" t-key="row.id">
+                                        <tr>
+                                            <td t-esc="row.name"/>
+                                            <td t-esc="row.duration"/>
+                                            <td t-esc="row.price_label"/>
+                                        </tr>
+                                    </t>
+                                </table>
+                                <table class="staff-table" t-if="(state.data.restaurant_menu || []).length">
+                                    <tr><th>Plat</th><th>Demi-pension</th><th>Prix</th><th>Mode</th></tr>
+                                    <t t-foreach="state.data.restaurant_menu or []" t-as="row" t-key="row.id">
+                                        <tr>
+                                            <td t-esc="row.name"/>
+                                            <td>
+                                                <t t-if="row.included_in_half_board">Oui</t>
+                                                <t t-else="">—</t>
+                                            </td>
+                                            <td t-esc="row.price_label"/>
+                                            <td t-esc="row.space_mode_label"/>
+                                        </tr>
+                                    </t>
+                                </table>
+                            </div>
+                            <div class="report-cta">
+                                <div class="txt">
+                                    <b t-esc="state.data.report_title or 'Rapport de paie'"/>
+                                    <t t-esc="state.data.report_sub or ''"/>
+                                </div>
+                                <button class="report-btn" t-on-click="sendPayroll">Envoyer maintenant</button>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="intellix_riad.Settings">
+        <div class="o_action o_riad_screen">
+            <RiadShell page="shellPage"/>
+            <div class="main">
+                <t t-call="intellix_riad.ScreenChrome"/>
+                <div class="content" t-if="state.view === 'room'">
+                    <div class="page-head">
+                        <div>
+                            <button class="link" t-on-click="backToHub">← Paramètres</button>
+                            <div class="eyebrow">Paramètres</div>
+                            <h1>Nouvelle chambre</h1>
+                        </div>
+                    </div>
+                    <div class="riad-card book-card">
+                        <div class="book-grid">
+                            <label class="book-wide">Nom
+                                <input type="text" data-field="name" t-att-value="state.form.name" t-on-change="onFormChange" placeholder="Suite Rose de Paris"/>
+                            </label>
+                            <label>Emplacement
+                                <select data-field="emplacement" t-on-change="onFormChange">
+                                    <option value="etage" t-att-selected="state.form.emplacement === 'etage'">Étage</option>
+                                    <option value="rdc" t-att-selected="state.form.emplacement === 'rdc'">RDC</option>
+                                </select>
+                            </label>
+                            <label>Tarif / nuit
+                                <input type="number" min="0" data-field="price_per_night" t-att-value="state.form.price_per_night" t-on-change="onFormChange"/>
+                            </label>
+                        </div>
+                        <div class="book-actions">
+                            <button class="btn-new" t-on-click="saveRoom" t-att-disabled="state.saving">Ajouter</button>
+                            <button class="link" t-on-click="backToHub">Annuler</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="content" t-elif="state.view === 'practitioner'">
+                    <div class="page-head">
+                        <div>
+                            <button class="link" t-on-click="backToHub">← Paramètres</button>
+                            <div class="eyebrow">Paramètres</div>
+                            <h1>Staff interne ou prestataire</h1>
+                        </div>
+                    </div>
+                    <div class="riad-card book-card">
+                        <div class="kind-switch">
+                            <button t-att-class="state.form.kind === 'staff' ? 'active' : ''" t-on-click="() => this.setPractitionerKind('staff')">Staff interne</button>
+                            <button t-att-class="state.form.kind === 'external' ? 'active' : ''" t-on-click="() => this.setPractitionerKind('external')">Prestataire</button>
+                        </div>
+                        <div class="book-grid">
+                            <label class="book-wide" t-if="state.form.kind === 'staff' and staffCandidates.length">Personne déjà en personnel
+                                <select t-on-change="onStaffPick">
+                                    <option value="">Saisir un nom, ou lier une fiche…</option>
+                                    <t t-foreach="staffCandidates" t-as="row" t-key="row.id">
+                                        <option t-att-value="row.id" t-att-selected="state.form.staff_id == row.id" t-esc="row.name"/>
+                                    </t>
+                                </select>
+                            </label>
+                            <label class="book-wide">Nom
+                                <input type="text" data-field="name" t-att-value="state.form.name" t-on-change="onFormChange" placeholder="Salma"/>
+                            </label>
+                        </div>
+                        <p class="muted" t-if="state.form.kind === 'staff'">Staff interne : employée du riad.</p>
+                        <p class="muted" t-else="">Prestataire : intervenante externe, hors paie.</p>
+                        <p class="muted">Soins pratiqués</p>
+                        <div class="type-picks">
+                            <t t-foreach="state.data.service_types or []" t-as="row" t-key="row.id">
+                                <button t-att-class="(state.form.type_ids or []).indexOf(row.id) !== -1 ? 'active' : ''" t-on-click="() => this.toggleType(row.id)" t-esc="row.name"/>
+                            </t>
+                        </div>
+                        <div class="book-actions">
+                            <button class="btn-new" t-on-click="savePractitioner" t-att-disabled="state.saving">Ajouter</button>
+                            <button class="link" t-on-click="backToHub">Annuler</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="content" t-else="">
+                    <div class="page-head">
+                        <div>
+                            <div class="eyebrow">Paramètres</div>
+                            <h1>Configurer l'établissement</h1>
+                        </div>
+                    </div>
+                    <div class="riad-card" t-if="state.settings.terrace_enabled !== false">
+                        <div class="card-head"><h3>Horaires de la terrasse</h3></div>
+                        <div class="book-grid">
+                            <label>Bien-être dès
+                                <input type="time" data-field="terrace_wellness_start" t-att-value="state.settings.terrace_wellness_start" t-on-change="onSettingsChange"/>
+                            </label>
+                            <label>Bien-être jusqu'à
+                                <input type="time" data-field="terrace_wellness_end" t-att-value="state.settings.terrace_wellness_end" t-on-change="onSettingsChange"/>
+                            </label>
+                            <label>Restaurant dès
+                                <input type="time" data-field="terrace_restaurant_start" t-att-value="state.settings.terrace_restaurant_start" t-on-change="onSettingsChange"/>
+                            </label>
+                            <label>Restaurant jusqu'à
+                                <input type="time" data-field="terrace_restaurant_end" t-att-value="state.settings.terrace_restaurant_end" t-on-change="onSettingsChange"/>
+                            </label>
+                            <label>Libellé journée
+                                <input type="text" data-field="terrace_wellness_label" t-att-value="state.settings.terrace_wellness_label" t-on-change="onSettingsChange"/>
+                            </label>
+                            <label>Libellé soir
+                                <input type="text" data-field="terrace_restaurant_label" t-att-value="state.settings.terrace_restaurant_label" t-on-change="onSettingsChange"/>
+                            </label>
+                        </div>
+                        <div class="book-actions">
+                            <button class="btn-new" t-on-click="saveHours" t-att-disabled="state.saving">Enregistrer les horaires</button>
+                        </div>
+                    </div>
+                    <div class="riad-card">
+                        <div class="card-head">
+                            <h3>Plan de salle</h3>
+                            <button class="link" t-on-click="addPlanRow">Ajouter une table</button>
+                        </div>
+                        <table class="staff-table plan-table">
+                            <tr><th>Table</th><th>Couverts</th><th>Zone</th><th></th></tr>
+                            <t t-foreach="state.plan" t-as="row" t-key="row.key">
+                                <tr>
+                                    <td><input type="text" data-field="name" t-att-value="row.name" t-on-change="(ev) => this.onPlanChange(row_index, ev)" placeholder="T1"/></td>
+                                    <td><input type="number" min="1" data-field="seats" t-att-value="row.seats" t-on-change="(ev) => this.onPlanChange(row_index, ev)"/></td>
+                                    <td>
+                                        <select data-field="zone" t-on-change="(ev) => this.onPlanChange(row_index, ev)">
+                                            <t t-foreach="zones" t-as="zone" t-key="zone.id">
+                                                <option t-att-value="zone.id" t-att-selected="row.zone === zone.id" t-esc="zone.name"/>
+                                            </t>
+                                        </select>
+                                    </td>
+                                    <td><button class="link" t-on-click="() => this.removePlanRow(row_index)">Retirer</button></td>
+                                </tr>
+                            </t>
+                        </table>
+                        <div class="muted" t-if="!state.plan.length">Aucune table — créez le plan de votre terrasse.</div>
+                        <div class="book-actions">
+                            <button class="btn-new" t-on-click="savePlan" t-att-disabled="state.saving">Enregistrer le plan</button>
+                        </div>
+                    </div>
+                    <div class="grid">
+                        <div class="riad-card">
+                            <div class="card-head">
+                                <h3>Chambres</h3>
+                                <button class="link" t-on-click="newRoom">Ajouter une chambre</button>
+                            </div>
+                            <ul class="wl">
+                                <t t-foreach="state.data.rooms or []" t-as="room" t-key="room.id">
+                                    <li>
+                                        <div>
+                                            <div class="who" t-esc="room.name"/>
+                                            <div class="what"><t t-if="room.emplacement === 'rdc'">RDC</t><t t-else="">Étage</t></div>
+                                        </div>
+                                        <span class="muted" t-esc="room.price_per_night"/>
+                                    </li>
+                                </t>
+                            </ul>
+                            <div class="muted" t-if="!(state.data.rooms or []).length">Aucune chambre — ajoutez-les ici.</div>
+                        </div>
+                        <div class="riad-card">
+                            <div class="card-head">
+                                <h3>Staff &amp; prestataires bien-être</h3>
+                                <button class="link" t-on-click="newPractitioner">Ajouter</button>
+                            </div>
+                            <ul class="wl">
+                                <t t-foreach="state.data.practitioners or []" t-as="row" t-key="row.id">
+                                    <li>
+                                        <div>
+                                            <div class="who" t-esc="row.name"/>
+                                            <div class="what"><t t-esc="row.kind_label"/> · <t t-esc="row.types"/></div>
+                                        </div>
+                                    </li>
+                                </t>
+                            </ul>
+                            <div class="muted" t-if="!(state.data.practitioners or []).length">Aucun staff ni prestataire — ajoutez-les ici.</div>
+                        </div>
+                    </div>
+                    <div class="grid">
+                        <div class="riad-card">
+                            <div class="card-head">
+                                <h3>Menu des soins <t t-if="state.data.company">— <t t-esc="state.data.company"/></t></h3>
+                                <button class="link" t-on-click="() => this.openCatalog('wellness')">Modifier →</button>
+                            </div>
+                            <ul class="wl">
+                                <t t-foreach="state.data.wellness_menu or []" t-as="row" t-key="row.id">
+                                    <li>
+                                        <div>
+                                            <div class="who" t-esc="row.name"/>
+                                            <div class="what"><t t-esc="row.duration"/> · <t t-esc="row.category"/></div>
+                                        </div>
+                                        <span class="muted" t-esc="row.price_label"/>
+                                    </li>
+                                </t>
+                            </ul>
+                            <div class="muted" t-if="!(state.data.wellness_menu || []).length">Aucun soin au catalogue.</div>
+                        </div>
+                        <div class="riad-card">
+                            <div class="card-head">
+                                <h3>Menu restaurant <t t-if="state.data.company">— <t t-esc="state.data.company"/></t></h3>
+                                <button class="link" t-on-click="() => this.openCatalog('restaurant')">Modifier →</button>
+                            </div>
+                            <ul class="wl">
+                                <t t-foreach="state.data.restaurant_menu or []" t-as="row" t-key="row.id">
+                                    <li>
+                                        <div>
+                                            <div class="who" t-esc="row.name"/>
+                                            <div class="what"><t t-esc="row.category"/><t t-if="row.included_in_half_board"> · demi-pension</t> · <t t-esc="row.space_mode_label"/></div>
+                                        </div>
+                                        <span class="muted" t-esc="row.price_label"/>
+                                    </li>
+                                </t>
+                            </ul>
+                            <div class="muted" t-if="!(state.data.restaurant_menu || []).length">Aucune carte restaurant.</div>
+                        </div>
+                    </div>
+                    <div class="riad-card">
+                        <div class="card-head"><h3>Rapport de paie</h3></div>
+                        <div class="book-grid">
+                            <label>Comptable
+                                <input type="text" data-field="payroll_accountant_name" t-att-value="state.settings.payroll_accountant_name" t-on-change="onSettingsChange"/>
+                            </label>
+                            <label>Email
+                                <input type="email" data-field="payroll_accountant_email" t-att-value="state.settings.payroll_accountant_email" t-on-change="onSettingsChange"/>
+                            </label>
+                        </div>
+                        <div class="book-actions">
+                            <button class="btn-new" t-on-click="saveHours" t-att-disabled="state.saving">Enregistrer</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="intellix_riad.Inbox">
+        <div class="o_action o_riad_screen">
+            <RiadShell page="shellPage"/>
+            <div class="main">
+                <t t-call="intellix_riad.ScreenChrome"/>
+                <div class="content" t-if="state.item">
+                    <div class="page-head">
+                        <div>
+                            <button class="link" t-on-click="backToList">← Boîte de réception</button>
+                            <div class="eyebrow">Mails</div>
+                            <h1 t-esc="state.item.title"/>
+                        </div>
+                    </div>
+                    <div class="riad-card book-card">
+                        <p t-esc="state.item.snippet"/>
+                        <p class="muted" t-if="state.item.meta" t-esc="state.item.meta"/>
+                        <div class="book-actions">
+                            <button class="link" t-on-click="backToList">Retour</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="content" t-else="">
+                    <div class="page-head">
+                        <div>
+                            <div class="eyebrow">Mails</div>
+                            <h1>Boîte de réception</h1>
+                        </div>
+                    </div>
+                    <div class="riad-card">
+                        <t t-if="!(state.data.items or []).length">
+                            <div class="muted">Aucun message pour cet établissement.</div>
+                        </t>
+                        <t t-foreach="state.data.items or []" t-as="item" t-key="item_index">
+                            <div class="inbox-item" t-on-click="() => this.openItem(item)">
+                                <div t-att-class="'inbox-ico ' + (item.css or 'ico-mail')" t-esc="item.icon"/>
+                                <div class="inbox-text">
+                                    <b t-esc="item.title"/>
+                                    <span class="snippet" t-esc="item.snippet"/>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="intellix_riad.Social">
+        <div class="o_action o_riad_screen">
+            <RiadShell page="shellPage"/>
+            <div class="main">
+                <t t-call="intellix_riad.ScreenChrome"/>
+                <div class="content" t-if="state.item">
+                    <div class="page-head">
+                        <div>
+                            <button class="link" t-on-click="backToFeed">← Réseaux sociaux</button>
+                            <div class="eyebrow">Réseaux sociaux</div>
+                            <h1 t-esc="state.item.title"/>
+                        </div>
+                    </div>
+                    <div class="riad-card book-card">
+                        <p t-esc="state.item.snippet"/>
+                        <p class="muted" t-if="state.item.meta" t-esc="state.item.meta"/>
+                        <div class="book-actions">
+                            <button class="link" t-on-click="backToFeed">Retour</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="content" t-elif="state.view === 'compose'">
+                    <div class="page-head">
+                        <div>
+                            <button class="link" t-on-click="backToFeed">← Réseaux sociaux</button>
+                            <div class="eyebrow">Réseaux sociaux</div>
+                            <h1>Nouvelle publication</h1>
+                        </div>
+                    </div>
+                    <div class="riad-card book-card">
+                        <div class="kind-switch">
+                            <t t-foreach="accounts" t-as="acc" t-key="acc.platform">
+                                <button t-att-class="state.form.platform === acc.platform ? 'active' : ''" t-on-click="() => this.setPlatform(acc.platform)">
+                                    <t t-esc="acc.label"/>
+                                </button>
+                            </t>
+                        </div>
+                        <div class="book-grid">
+                            <label class="book-wide">Texte
+                                <textarea data-field="caption" t-on-change="onFormChange" placeholder="Le patio à l'heure du thé…"><t t-esc="state.form.caption"/></textarea>
+                            </label>
+                            <label class="book-wide">Hashtags
+                                <input type="text" data-field="hashtags" t-att-value="state.form.hashtags" t-on-change="onFormChange" placeholder="#RiadAnnaSweety #Marrakech"/>
+                            </label>
+                        </div>
+                        <p class="muted">La publication part sur le compte connecté de cet établissement, pas sur les pages Coins.</p>
+                        <div class="book-actions">
+                            <button class="btn-new" t-on-click="publishPost" t-att-disabled="state.saving">Publier</button>
+                            <button class="link" t-on-click="backToFeed">Annuler</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="content" t-else="">
+                    <div class="page-head">
+                        <div>
+                            <div class="eyebrow">Réseaux sociaux</div>
+                            <h1>Comptes &amp; publications</h1>
+                        </div>
+                        <div class="head-actions">
+                            <button class="btn-new" t-on-click="newPost">Publier</button>
+                        </div>
+                    </div>
+                    <div class="social-accounts">
+                        <t t-foreach="accounts" t-as="acc" t-key="acc.platform">
+                            <div class="riad-card social-account">
+                                <div class="who" t-esc="acc.label"/>
+                                <div class="what" t-esc="acc.state_label"/>
+                                <button t-if="acc.connected" class="link" t-on-click="() => this.connectAccount(acc.platform)">Reconnecter</button>
+                                <button t-else="" class="btn-new" t-on-click="() => this.connectAccount(acc.platform)">Connecter</button>
+                            </div>
+                        </t>
+                    </div>
+                    <div class="riad-card">
+                        <div class="card-head"><h3>Publications</h3></div>
+                        <ul class="wl" t-if="posts.length">
+                            <t t-foreach="posts" t-as="row" t-key="row.id">
+                                <li>
+                                    <div>
+                                        <div class="who" t-esc="row.title"/>
+                                        <div class="what"><t t-esc="row.platform_label"/> · <t t-esc="row.state_label"/></div>
+                                    </div>
+                                </li>
+                            </t>
+                        </ul>
+                        <div class="muted" t-else="">Aucune publication pour ce riad.</div>
+                    </div>
+                    <div class="riad-card">
+                        <div class="card-head"><h3>Commentaires &amp; messages</h3></div>
+                        <t t-if="!(state.data.items or []).length">
+                            <div class="muted">Aucun commentaire pour cet établissement.</div>
+                        </t>
+                        <t t-foreach="state.data.items or []" t-as="item" t-key="item_index">
+                            <div class="inbox-item" t-on-click="() => this.openItem(item)">
+                                <div t-att-class="'inbox-ico ' + (item.css or 'ico-tiktok')" t-esc="item.icon"/>
+                                <div class="inbox-text">
+                                    <b t-esc="item.title"/>
+                                    <span class="snippet" t-esc="item.snippet"/>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="intellix_riad.Channels">
+        <div class="o_action o_riad_screen">
+            <RiadShell page="shellPage"/>
+            <div class="main">
+                <t t-call="intellix_riad.ScreenChrome"/>
+                <div class="content">
+                    <div class="page-head">
+                        <div>
+                            <div class="eyebrow">Distribution</div>
+                            <h1>Canaux &amp; Channex</h1>
+                            <p class="muted">Connectez Booking, Airbnb et les autres plateformes pour cet établissement. La sync calendrier / tarifs passe par Channex.</p>
+                        </div>
+                    </div>
+
+                    <div class="riad-card">
+                        <div class="card-head">
+                            <h3>Channex — sync</h3>
+                            <span t-att-class="'fleet-status is-' + (state.data.channex and state.data.channex.status or 'disconnected')"
+                                  t-esc="state.data.channex and state.data.channex.status_label or '—'"/>
+                        </div>
+                        <p class="muted" t-esc="state.data.channex and state.data.channex.note or ''"/>
+                        <p t-if="state.data.channex and state.data.channex.mapped">
+                            UUID : <code t-esc="state.data.channex.channex_id"/>
+                        </p>
+                        <p class="muted" t-if="state.data.channex and state.data.channex.last_sync">
+                            Dernière sync : <t t-esc="state.data.channex.last_sync"/>
+                        </p>
+                        <p class="muted" t-if="state.data.channex and state.data.channex.last_error" style="color:#b42318">
+                            <t t-esc="state.data.channex.last_error"/>
+                        </p>
+                        <div class="book-actions">
+                            <button class="btn-new" t-on-click="refreshFromChannex"
+                                    t-att-disabled="state.saving || !(state.data.can_refresh)">
+                                Rafraîchir les statuts OTA depuis Channex
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="riad-card">
+                        <div class="card-head"><h3>Plateformes OTA</h3></div>
+                        <t t-foreach="state.data.platforms or []" t-as="plat" t-key="plat.code">
+                            <div class="channel-row" t-if="plat.code !== 'whatsapp'">
+                                <div>
+                                    <b t-esc="plat.label"/>
+                                    <span t-att-class="'fleet-status is-' + (plat.status === 'connected' ? 'active' : (plat.status === 'pending' ? 'error' : 'disconnected'))"
+                                          t-esc="plat.status_label"/>
+                                    <p class="muted" t-esc="plat.owner_note"/>
+                                    <p class="muted" t-esc="plat.messaging_label"/>
+                                </div>
+                                <div class="book-actions">
+                                    <a t-if="plat.guide_url" class="btn-new" t-att-href="plat.guide_url" target="_blank" rel="noopener">
+                                        Guide de connexion
+                                    </a>
+                                    <button class="link" t-if="plat.status !== 'connected'"
+                                            t-on-click="() => this.markPending(plat.code)">
+                                        Marquer « en cours »
+                                    </button>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="intellix_riad.Finance">
+        <div class="o_action o_riad_screen">
+            <RiadShell page="shellPage"/>
+            <div class="main">
+                <t t-call="intellix_riad.ScreenChrome"/>
+                <div class="content">
+                    <div class="page-head">
+                        <div>
+                            <div class="eyebrow">Analyse</div>
+                            <h1>Analyse Finance</h1>
+                            <p class="muted">OTA, direct, écarts et part Coins — cet établissement uniquement.</p>
+                        </div>
+                    </div>
+
+                    <div class="riad-card">
+                        <div class="card-head"><h3>Performance — temps de réponse</h3></div>
+                        <p style="font-family:Fraunces,serif;font-size:28px;margin:4px 0"
+                           t-esc="state.data.performance and state.data.performance.response and state.data.performance.response.display or '—'"/>
+                        <p class="muted" t-esc="state.data.performance and state.data.performance.response and state.data.performance.response.context or ''"/>
+                    </div>
+
+                    <div class="riad-card">
+                        <div class="card-head"><h3>Par plateforme OTA</h3></div>
+                        <t t-foreach="(state.data.billing and state.data.billing.ota_rows) or []" t-as="ota" t-key="ota.label">
+                            <div class="channel-row">
+                                <div>
+                                    <b t-esc="ota.label"/> · <t t-esc="ota.n"/> résa(s)
+                                    <p class="muted">
+                                        Attendu : <t t-esc="fmtMad(ota.expected)"/> ·
+                                        Reçu : <t t-esc="fmtMad(ota.received)"/>
+                                    </p>
+                                </div>
+                            </div>
+                        </t>
+                        <div class="channel-row" t-if="state.data.billing and state.data.billing.direct">
+                            <div>
+                                <b t-esc="state.data.billing.direct.label"/> · <t t-esc="state.data.billing.direct.n"/> résa(s)
+                                <p class="muted">
+                                    Attendu : <t t-esc="fmtMad(state.data.billing.direct.expected)"/> ·
+                                    Reçu : <t t-esc="fmtMad(state.data.billing.direct.received)"/>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="riad-card">
+                        <div class="card-head"><h3>Conciliation — écarts</h3></div>
+                        <t t-if="!((state.data.billing and state.data.billing.gaps) or []).length">
+                            <p class="muted">Aucun écart détecté (ou aucune réservation).</p>
+                        </t>
+                        <t t-foreach="(state.data.billing and state.data.billing.gaps) or []" t-as="g" t-key="g_index">
+                            <p class="muted">
+                                <t t-esc="g.resa"/> (<t t-esc="g.source"/>) —
+                                attendu <t t-esc="fmtMad(g.expected)"/> /
+                                reçu <t t-esc="fmtMad(g.received)"/> —
+                                écart <b t-esc="fmtMad(g.gap)"/>
+                            </p>
+                        </t>
+                    </div>
+
+                    <div class="riad-card" t-if="state.data.billing and state.data.billing.commission">
+                        <div class="card-head"><h3>Part Coins Marocain (estimation)</h3></div>
+                        <p class="muted">
+                            Direct <t t-esc="state.data.billing.commission.direct_pct"/> % →
+                            <t t-esc="fmtMad(state.data.billing.commission.coins_from_direct)"/>
+                        </p>
+                        <p class="muted">
+                            OTA <t t-esc="state.data.billing.commission.ota_pct"/> % →
+                            <t t-esc="fmtMad(state.data.billing.commission.coins_from_ota)"/>
+                        </p>
+                        <p class="muted">
+                            Forfait mensuel :
+                            <t t-esc="fmtMad(state.data.billing.commission.monthly_fee)"/>
+                        </p>
+                        <p style="font-size:18px;margin-top:8px">
+                            Total estimé Coins :
+                            <b t-esc="fmtMad(state.data.billing.commission.coins_total_est)"/>
+                        </p>
+                        <p class="muted" t-esc="state.data.billing.commission.note"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="intellix_riad.WhatsApp">
+        <div class="o_action o_riad_screen">
+            <RiadShell page="shellPage"/>
+            <div class="main">
+                <t t-call="intellix_riad.ScreenChrome"/>
+                <div class="content" t-if="state.item">
+                    <div class="page-head">
+                        <div>
+                            <button class="link" t-on-click="backToList">← WhatsApp</button>
+                            <div class="eyebrow">WhatsApp</div>
+                            <h1 t-esc="state.item.title"/>
+                        </div>
+                    </div>
+                    <div class="riad-card book-card">
+                        <p t-esc="state.item.snippet"/>
+                        <p class="muted" t-if="state.item.meta" t-esc="state.item.meta"/>
+                    </div>
+                </div>
+                <div class="content" t-else="">
+                    <div class="page-head">
+                        <div>
+                            <div class="eyebrow">Messagerie</div>
+                            <h1>WhatsApp</h1>
+                        </div>
+                    </div>
+                    <div class="riad-card">
+                        <div class="card-head">
+                            <h3>Numéro du lieu</h3>
+                            <span t-att-class="'fleet-status is-' + ((state.data.whatsapp and state.data.whatsapp.status) === 'connected' ? 'active' : 'disconnected')"
+                                  t-esc="state.data.whatsapp and state.data.whatsapp.status_label or '—'"/>
+                        </div>
+                        <p class="muted" t-esc="state.data.whatsapp and state.data.whatsapp.messaging_label or ''"/>
+                        <p class="muted" t-esc="state.data.whatsapp and state.data.whatsapp.owner_note or ''"/>
+                    </div>
+                    <div class="riad-card">
+                        <div class="card-head"><h3>Conversations</h3></div>
+                        <t t-if="!(state.data.items or []).length">
+                            <div class="muted">Aucun message WhatsApp pour cet établissement.</div>
+                        </t>
+                        <t t-foreach="state.data.items or []" t-as="item" t-key="item_index">
+                            <div class="inbox-item" t-on-click="() => this.openItem(item)">
+                                <div t-att-class="'inbox-ico ' + (item.css or 'ico-mail')" t-esc="item.icon"/>
+                                <div class="inbox-text">
+                                    <b t-esc="item.title"/>
+                                    <span class="snippet" t-esc="item.snippet"/>
+                                    <span class="meta" t-if="item.meta" t-esc="item.meta"/>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

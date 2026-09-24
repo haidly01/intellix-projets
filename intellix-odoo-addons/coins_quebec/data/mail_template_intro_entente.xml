@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+      Introduction 1 — courrier de bonjour (présentation de l'entente).
+      Envoi MANUEL depuis la fiche (bouton « Courrier de bonjour »).
+      Corps réel = data/emails/email_introduction_entente.html
+      (blocs visibilité / digitalisation / marketing selon type_partenaire).
+      À valider avant envoi au partenaire.
+    -->
+    <record id="mail_template_cq_intro_entente" model="mail.template">
+        <field name="name">Coins Québec — Introduction 1 (courrier de bonjour)</field>
+        <field name="model_id" ref="model_coins_quebec_partenariat"/>
+        <field name="subject">Coins Québec × {{ object.name or 'votre établissement' }} — présentation de l'entente de partenariat</field>
+        <field name="email_from">{{ user.email_formatted }}</field>
+        <field name="email_to">{{ object.email }}</field>
+        <field name="use_default_to" eval="False"/>
+        <field name="auto_delete" eval="False"/>
+        <field name="description">Courrier de bonjour — présentation de l'entente. Corps = data/emails/email_introduction_entente.html. Digitalisation adaptée au type (hôtel ≠ boutique). Lien vers l'entente, jamais de pièce jointe. Envoi MANUEL, à valider avant le partenaire.</field>
+        <field name="body_html" type="html"><div>Voir data/emails/email_introduction_entente.html</div></field>
+    </record>
+</odoo>

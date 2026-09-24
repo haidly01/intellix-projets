@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- 14 jours : limite les déconnexions « session expirée » sur connexions longues. -->
+    <record id="doorway_config_sessions_max_inactivity" model="ir.config_parameter">
+        <field name="key">sessions.max_inactivity_seconds</field>
+        <field name="value">1209600</field>
+    </record>
+</odoo>

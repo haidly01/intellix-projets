@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_traffic_root"
+              name="Traffic Manager"
+              sequence="60"/>
+
+    <menuitem id="menu_traffic_dashboard"
+              name="Tableau de bord"
+              parent="menu_traffic_root"
+              action="action_traffic_dashboard"
+              sequence="10"/>
+
+    <menuitem id="menu_traffic_campaigns"
+              name="Campagnes"
+              parent="menu_traffic_root"
+              action="action_traffic_campaigns"
+              sequence="20"/>
+
+    <menuitem id="menu_traffic_recommendations"
+              name="Recommandations"
+              parent="menu_traffic_root"
+              action="action_traffic_recommendations"
+              sequence="30"/>
+
+    <menuitem id="menu_traffic_creatives"
+              name="Créatifs"
+              parent="menu_traffic_root"
+              action="action_traffic_creatives_grid"
+              sequence="40"/>
+
+    <menuitem id="menu_traffic_settings"
+              name="Paramètres"
+              parent="menu_traffic_root"
+              action="action_traffic_settings"
+              sequence="50"/>
+
+    <!-- Menus avancés (accessibles via Paramètres, hors navigation principale) -->
+    <menuitem id="menu_traffic_brand"
+              name="Analyse marque"
+              parent="menu_traffic_root"
+              action="action_brand_foundation"
+              sequence="90"
+              groups="doorway_traffic_manager.group_traffic_manager"/>
+
+    <menuitem id="menu_traffic_optimization"
+              name="Optimisation (avancé)"
+              parent="menu_traffic_root"
+              action="action_campaign_optimization"
+              sequence="91"
+              groups="doorway_traffic_manager.group_traffic_manager"/>
+
+    <menuitem id="menu_traffic_reports"
+              name="Rapports"
+              parent="menu_traffic_root"
+              action="action_traffic_reports"
+              sequence="92"
+              groups="doorway_traffic_manager.group_traffic_manager"/>
+</odoo>

@@ -1,0 +1,555 @@
+/* Coins Québec backend — tokens Mon Coin.
+   Toutes les règles chrome sont sous html.o_cq_brand (posée par
+   quebec_theme.js seulement quand l'app courante est Coins Québec). */
+
+html.o_cq_brand {
+    --cq-forest: #1F2A1E;
+    --cq-spruce: #3A4F35;
+    --cq-amber: #D9A94D;
+    --cq-gold: #9C7A32;
+    --cq-paper: #F5F1E6;
+    --cq-ink: #232A20;
+    --cq-ink-soft: #5B6455;
+    --cq-line: rgba(31, 42, 30, 0.12);
+    --cq-card: #ffffff;
+    --cq-martin: #7C3AED;
+    --cq-martin-deep: #6B4C9A;
+    --o-navbar-bg: #1F2A1E;
+    --o-navbar-color: #F5F1E6;
+    --NavBar-background: #1F2A1E;
+    --NavBar-color: #F5F1E6;
+    --NavBar-entry-color: #F5F1E6;
+    --NavBar-entry-background-active: #3A4F35;
+}
+
+/* Entête seulement — pas de fond parchemin / boutons ambre sur tout Odoo. */
+
+html.o_cq_brand header.o_navbar,
+html.o_cq_brand .o_navbar,
+html.o_cq_brand .o_main_navbar,
+html.o_cq_brand .o_navbar .o_main_navbar,
+html.o_cq_brand .o_web_client > header,
+html.o_cq_brand nav.o_main_navbar {
+    background: var(--cq-forest) !important;
+    background-color: var(--cq-forest) !important;
+    background-image: none !important;
+    color: var(--cq-paper) !important;
+    border-bottom: 1px solid rgba(217, 169, 77, 0.35) !important;
+}
+
+html.o_cq_brand .o_menu_brand,
+html.o_cq_brand .o_main_navbar .o_menu_brand {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 8px;
+    color: #F5F1E6 !important;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+html.o_cq_brand .o_cq_nav_logo {
+    display: inline-flex;
+    width: 22px;
+    height: 22px;
+    flex: 0 0 22px;
+}
+
+html.o_cq_brand .o_navbar a,
+html.o_cq_brand .o_navbar button,
+html.o_cq_brand .o_navbar .o_menu_brand,
+html.o_cq_brand .o_navbar .o_menu_sections .o_nav_entry,
+html.o_cq_brand .o_main_navbar a,
+html.o_cq_brand .o_main_navbar button,
+html.o_cq_brand .o_menu_sections,
+html.o_cq_brand .o_menu_systray,
+html.o_cq_brand .o_menu_toggle {
+    color: var(--cq-paper) !important;
+}
+
+html.o_cq_brand .o_navbar .o_nav_entry.active,
+html.o_cq_brand .o_navbar .o_menu_item.active,
+html.o_cq_brand .o_menu_sections .o_nav_entry.active,
+html.o_cq_brand .o_navbar .dropdown-toggle.show {
+    background: var(--cq-spruce) !important;
+    color: var(--cq-paper) !important;
+}
+
+/* Primaires Odoo inchangées hors boutons Martin / entente (classes dédiées). */
+
+/* Assigner un RDV à Martin — mauve (pas l'ambre des autres primaires) */
+html.o_cq_brand .o_form_view header .o_cq_btn_martin,
+html.o_cq_brand .o_cq_form header .btn.o_cq_btn_martin,
+html.o_cq_brand .o_cq_form header button.o_cq_btn_martin,
+html.o_cq_brand .btn-primary.o_cq_btn_martin,
+.o_cq_form header .btn.o_cq_btn_martin {
+    background: var(--cq-martin, #7C3AED) !important;
+    background-color: #7C3AED !important;
+    border-color: #6B4C9A !important;
+    color: #ffffff !important;
+}
+
+html.o_cq_brand .o_form_view header .o_cq_btn_martin:hover,
+html.o_cq_brand .o_cq_form header .btn.o_cq_btn_martin:hover,
+html.o_cq_brand .btn-primary.o_cq_btn_martin:hover,
+.o_cq_form header .btn.o_cq_btn_martin:hover {
+    background: #6B4C9A !important;
+    background-color: #6B4C9A !important;
+    border-color: #5B3D88 !important;
+    color: #ffffff !important;
+}
+
+/* Entente — même mauve que Martin, sur fiche et wizard */
+html.o_cq_brand .o_form_view header .o_cq_btn_entente,
+html.o_cq_brand .o_cq_form header .btn.o_cq_btn_entente,
+html.o_cq_brand .btn-primary.o_cq_btn_entente,
+.o_cq_form header .btn.o_cq_btn_entente,
+.o_cq_entente_strip .o_cq_btn_entente,
+.o_cq_entente_wizard .o_cq_btn_entente,
+.o_cq_martin_wizard .btn-primary,
+.o_hiba_book_martin.o_cq_martin_wizard .btn-primary {
+    background: #7C3AED !important;
+    background-color: #7C3AED !important;
+    border-color: #6B4C9A !important;
+    color: #ffffff !important;
+    font-weight: 600;
+}
+
+html.o_cq_brand .o_form_view header .o_cq_btn_entente:hover,
+html.o_cq_brand .btn-primary.o_cq_btn_entente:hover,
+.o_cq_entente_strip .o_cq_btn_entente:hover,
+.o_cq_entente_wizard .o_cq_btn_entente:hover,
+.o_cq_martin_wizard .btn-primary:hover {
+    background: #6B4C9A !important;
+    border-color: #5B3D88 !important;
+    color: #ffffff !important;
+}
+
+.o_cq_entente_strip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 12px 0 18px;
+    padding: 14px 18px;
+    background: #f4efff;
+    border: 1px solid #7C3AED;
+    border-radius: 8px;
+}
+.o_cq_entente_strip_kicker {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #6B4C9A;
+    font-weight: 600;
+}
+.o_cq_entente_strip_status {
+    font-size: 18px;
+    color: #4c1d95;
+    font-weight: 600;
+}
+.o_cq_form .oe_stat_button.o_cq_stat_entente {
+    border-left: 3px solid #7C3AED;
+}
+
+.o_cq_entente_wizard .o_cq_entente_top,
+.o_cq_martin_wizard .o_cq_entente_top {
+    padding: 2px 0 12px;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #7C3AED;
+}
+.o_cq_entente_wizard .o_cq_entente_top .eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #6B4C9A;
+    font-weight: 600;
+}
+.o_cq_entente_wizard .o_cq_entente_top h1 {
+    font-size: 22px;
+    margin: 4px 0 6px;
+    color: #4c1d95;
+    font-family: "Iowan Old Style", Georgia, serif;
+}
+.o_cq_entente_wizard .o_cq_entente_top p {
+    color: #5B6455;
+    margin: 0;
+}
+
+.o_dialog:has(.o_cq_entente_wizard) .modal-header,
+.o_dialog:has(.o_cq_martin_wizard) .modal-header,
+.modal:has(.o_cq_entente_wizard) .modal-header,
+.modal:has(.o_cq_martin_wizard) .modal-header,
+.o_dialog:has(.o_hiba_book_martin) .modal-header {
+    background: #7C3AED !important;
+    color: #ffffff !important;
+    border-bottom: none !important;
+}
+.o_dialog:has(.o_cq_entente_wizard) .modal-title,
+.o_dialog:has(.o_cq_martin_wizard) .modal-title,
+.o_dialog:has(.o_hiba_book_martin) .modal-title,
+.o_dialog:has(.o_cq_entente_wizard) .btn-close,
+.o_dialog:has(.o_cq_martin_wizard) .btn-close {
+    color: #ffffff !important;
+    filter: invert(1);
+}
+
+/* Pastille calendrier Martin (color 10) — uniquement dans l'app Coins Québec */
+html.o_cq_brand {
+    --o-color-10: #7C3AED;
+}
+
+html.o_cq_brand .o_calendar_color_10,
+html.o_cq_brand .o_event_color_10,
+html.o_cq_brand .fc-event.o_calendar_color_10,
+html.o_cq_brand .o_colorlist_item_color_10,
+html.o_cq_brand .o_calendar_view .o_calendar_color_10,
+html.o_cq_brand .o_calendar_view .fc-event.o_calendar_color_10,
+html.o_cq_brand .o_calendar_renderer .o_calendar_color_10 {
+    --o-color: #7C3AED;
+    background-color: #7C3AED !important;
+    border-color: #6B4C9A !important;
+    color: #ffffff !important;
+}
+
+/* —— Widgets internes CQ (dashboard / banners) —— */
+
+.o_cq_dashboard .o_form_sheet_bg,
+.o_cq_dashboard .o_form_sheet {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.o_cq_banner {
+    background: #1F2A1E;
+    color: #F5F1E6;
+    font-family: Georgia, "Times New Roman", serif;
+    letter-spacing: 0.04em;
+    padding: 10px 16px;
+    margin: 0 0 16px 0;
+}
+
+html.o_cq_brand .o_cq_dash_title,
+.o_cq_dash_title {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 2.4rem;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+    color: #3A4F35;
+}
+
+.o_cq_dash_source,
+.o_cq_dash_source .o_field_widget,
+.o_cq_dash_source .o_field_widget span {
+    font-size: 13px;
+    color: #5B6455 !important;
+    margin: 0 0 16px 0;
+}
+
+.o_cq_kpi_note,
+.o_cq_kpi_note .o_field_widget,
+.o_cq_kpi_note .o_field_widget span {
+    font-size: 12px;
+    color: #5B6455 !important;
+    margin: 0 0 18px 0;
+    max-width: 52rem;
+}
+
+.o_cq_kpis {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin: 0 0 22px 0;
+    position: relative;
+}
+
+.o_cq_kpi {
+    background: #fff !important;
+    border: 1px solid #E4DCC8;
+    padding: 16px 18px;
+    color-scheme: light;
+}
+
+.o_cq_kpi,
+.o_cq_kpi .o_field_widget,
+.o_cq_kpi .o_field_widget span,
+.o_cq_kpi .o_field_widget input,
+.o_cq_kpi .o_field_monetary,
+.o_cq_kpi .o_stat_value {
+    color: #1F2A1E !important;
+}
+
+.o_cq_kpi_label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #3A4F35 !important;
+}
+
+.o_cq_kpi_value,
+.o_cq_kpi_value .o_field_widget,
+.o_cq_kpi_value .o_field_widget span,
+.o_cq_kpi_value .o_field_widget * {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 1.8rem;
+    color: #1F2A1E !important;
+    margin: 6px 0 4px;
+}
+
+.o_cq_kpi_sub,
+.o_cq_kpi_sub .o_field_widget,
+.o_cq_kpi_sub .o_field_widget span,
+.o_cq_kpi_sub .o_field_widget * {
+    font-size: 13px;
+    color: #5B6455 !important;
+}
+
+.o_cq_dash_actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+html.o_cq_brand .o_cq_dashboard .o_cq_dash_actions .btn-primary,
+.o_cq_dashboard .o_cq_dash_actions .btn-primary {
+    background: #D9A94D !important;
+    border-color: #D9A94D !important;
+    color: #1F2A1E !important;
+}
+
+html.o_cq_brand .o_cq_dashboard .o_cq_dash_actions .btn-secondary,
+.o_cq_dashboard .o_cq_dash_actions .btn-secondary {
+    background: transparent !important;
+    border: 1px solid #3A4F35 !important;
+    color: #1F2A1E !important;
+}
+
+.o_cq_form .o_cq_banner {
+    border-left: 0;
+}
+
+.o_cq_pipeline .o_cq_card {
+    padding: 10px 12px;
+}
+
+.o_cq_pipeline .o_cq_card_title {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 16px;
+    color: #1F2A1E;
+}
+
+.o_cq_pipeline .o_cq_card_meta,
+.o_cq_pipeline .o_cq_card_contact,
+.o_cq_pipeline .o_cq_card_rating {
+    font-size: 12px;
+    margin-top: 4px;
+    color: #5B6455;
+}
+
+.o_cq_pipeline .o_cq_card_stage {
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-top: 6px;
+    color: #3A4F35;
+}
+
+.o_cq_pipeline .o_cq_card_presence {
+    font-size: 11px;
+    font-weight: 600;
+    margin-top: 6px;
+    color: #3A4F35;
+}
+
+.o_cq_pipeline .o_cq_card_note {
+    font-size: 12px;
+    margin-top: 6px;
+    color: #1F2A1E;
+    line-height: 1.35;
+    max-height: 4.2em;
+    overflow: hidden;
+    white-space: pre-wrap;
+}
+
+@media (max-width: 960px) {
+    .o_cq_kpis { grid-template-columns: 1fr 1fr; }
+}
+
+/* Planifier l'événement — voyageurs CQ */
+html.o_cq_brand .o_cq_form header .o_cq_btn_planifier,
+.o_cq_form header .o_cq_btn_planifier {
+    background: transparent !important;
+    color: #1F2A1E !important;
+    border: 1.5px solid #D9A94D !important;
+    box-shadow: 0 0 0 2px rgba(217, 169, 77, 0.18);
+}
+.o_cq_section_label {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #5B6455;
+    margin: 14px 0 6px;
+}
+.o_cq_evt_wizard {
+    --cq-forest: #1F2A1E;
+    --cq-amber: #D9A94D;
+    --cq-paper: #F5F1E6;
+    --cq-ink: #232A20;
+    --cq-ink-soft: #5B6455;
+    --cq-line: rgba(31, 42, 30, 0.12);
+}
+.o_cq_evt_wizard .o_cq_evt_top {
+    padding: 4px 0 12px;
+    border-bottom: 2px solid var(--cq-amber);
+    margin-bottom: 10px;
+}
+.o_cq_evt_wizard .o_cq_evt_top .eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--cq-ink-soft);
+}
+.o_cq_evt_wizard .o_cq_evt_top h1 {
+    font-size: 22px;
+    margin: 4px 0 6px;
+    color: var(--cq-forest);
+    font-family: "Iowan Old Style", Georgia, serif;
+}
+.o_cq_evt_pills { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 14px; }
+.o_cq_evt_pill {
+    border-radius: 20px !important;
+    border: 1px solid var(--cq-line) !important;
+    background: transparent !important;
+    color: var(--cq-ink-soft) !important;
+    font-size: 12px !important;
+    padding: 4px 12px !important;
+}
+.o_cq_evt_pill.on {
+    background: var(--cq-amber) !important;
+    color: var(--cq-forest) !important;
+    border-color: var(--cq-amber) !important;
+}
+.o_cq_evt_panel h2 {
+    font-family: "Iowan Old Style", Georgia, serif;
+    font-size: 18px;
+    color: var(--cq-forest);
+}
+.o_cq_evt_panel .lead { color: var(--cq-ink-soft); font-size: 13px; }
+.o_cq_evt_styles {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin: 10px 0;
+}
+.o_cq_evt_card {
+    border: 1px solid var(--cq-line) !important;
+    background: #fff !important;
+    color: var(--cq-ink) !important;
+    text-align: left !important;
+    padding: 12px 14px !important;
+    border-radius: 5px !important;
+}
+.o_cq_evt_card.moderne { border-left: 4px solid #3A4F35 !important; }
+.o_cq_evt_card.traditionnel { border-left: 4px solid #9C7A32 !important; }
+.o_cq_evt_card.nature { border-left: 4px solid #1F2A1E !important; }
+.o_cq_evt_card.nordique { border-left: 4px solid #2e6f7e !important; }
+.o_cq_evt_vendors { margin: 8px 0 12px; }
+.o_cq_evt_vendor_block { margin: 12px 0 16px; }
+.o_cq_evt_vendor_block h3 {
+    font-family: "Iowan Old Style", Georgia, serif;
+    font-size: 16px;
+    color: var(--cq-forest);
+    margin: 0 0 4px;
+}
+.o_cq_evt_empty {
+    padding: 12px 14px;
+    background: #efe8d4;
+    border: 1.5px dashed var(--cq-line);
+    border-radius: 4px;
+    font-size: 13px;
+    color: var(--cq-ink-soft);
+    margin-bottom: 12px;
+}
+.o_cq_evt_props {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin: 10px 0 14px;
+}
+.o_cq_evt_prop {
+    border: 1px solid var(--cq-line);
+    border-radius: 3px;
+    padding: 8px 10px;
+    background: #faf7ee;
+    font-size: 13px;
+}
+.o_cq_evt_prop .n { font-weight: 600; color: var(--cq-forest); }
+.o_cq_evt_prop .meta { font-size: 11px; color: var(--cq-ink-soft); }
+.o_cq_evt_prop.test { opacity: 0.7; font-style: italic; }
+.o_cq_evt_cover {
+    padding: 16px 0 8px;
+    border-bottom: 2px solid var(--cq-amber);
+    margin-bottom: 10px;
+}
+.o_cq_evt_brand {
+    font-family: "Iowan Old Style", Georgia, serif;
+    font-size: 16px;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    color: var(--cq-forest);
+}
+.o_cq_evt_brand .tag {
+    font-family: inherit;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #9C7A32;
+}
+.o_cq_evt_cover h2 {
+    font-family: "Iowan Old Style", Georgia, serif;
+    font-size: 22px;
+    margin: 6px 0;
+    color: var(--cq-forest);
+}
+.o_cq_evt_cover .script { font-style: italic; color: #9C7A32; }
+.o_cq_evt_meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid var(--cq-line);
+}
+.o_cq_evt_meta span { display: block; font-size: 11px; text-transform: uppercase; color: var(--cq-ink-soft); }
+.o_cq_evt_meta b { font-family: "Iowan Old Style", Georgia, serif; font-weight: 500; }
+.o_cq_evt_block { padding: 12px 0; border-bottom: 1px solid var(--cq-line); }
+.o_cq_evt_block h3 { font-family: "Iowan Old Style", Georgia, serif; font-size: 16px; color: var(--cq-forest); }
+.o_cq_evt_block .row { display: flex; justify-content: space-between; gap: 12px; }
+.o_cq_evt_block em { color: #9C7A32; font-style: normal; }
+.o_cq_evt_totaux {
+    margin-top: 14px;
+    padding: 14px 16px;
+    background: #efe8d4;
+    border-radius: 4px;
+}
+.o_cq_evt_totaux h3 { font-family: "Iowan Old Style", Georgia, serif; color: var(--cq-forest); }
+.o_cq_evt_totaux .row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--cq-line);
+    font-size: 13.5px;
+}
+.o_cq_evt_totaux .row.total {
+    border-bottom: none;
+    font-family: "Iowan Old Style", Georgia, serif;
+    font-size: 16px;
+    padding-top: 10px;
+}
+.o_cq_evt_totaux i { display: block; font-size: 11px; color: #8B1E1E; }
+
+/* Suivi RDV Leila / Yamina — même chrome que le tableau de bord CQ */
+html.o_cq_brand .o_cq_rdv_kpis .o_cq_kpi {
+    min-width: 240px;
+}

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="secteur_tarif_reno" model="renovation.secteur.tarif">
+        <field name="secteur">reno</field>
+        <field name="prix_par_lead">150</field>
+        <field name="currency_id" ref="base.CAD"/>
+    </record>
+    <record id="secteur_tarif_immobilier" model="renovation.secteur.tarif">
+        <field name="secteur">immobilier</field>
+        <field name="prix_par_lead">200</field>
+        <field name="currency_id" ref="base.CAD"/>
+    </record>
+</odoo>

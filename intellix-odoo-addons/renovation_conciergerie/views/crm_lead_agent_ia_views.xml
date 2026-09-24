@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="crm_lead_view_form_doorway_agent_ia" model="ir.ui.view">
+        <field name="name">crm.lead.form.doorway.agent.ia</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="renovation_conciergerie.crm_lead_view_form_renovation"/>
+        <field name="priority">30</field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="doorway_pipeline_key" invisible="1"/>
+                <field name="doorway_agent_profile_id"
+                       string="Agent IA"
+                       invisible="type == 'lead'"
+                       options="{'no_create': True}"
+                       domain="[('status', '=', 'active'), '|', ('pipeline', '=', doorway_pipeline_key), ('pipeline', '=', 'doorway')]"/>
+                <field name="doorway_call_volet"
+                       string="Volet"
+                       invisible="type == 'lead' or not doorway_agent_profile_id"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="crm_lead_view_form_doorway_agent_ia_calls" model="ir.ui.view">
+        <field name="name">crm.lead.form.doorway.agent.ia.calls</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="priority">30</field>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_call_contact_via_agent_ia"
+                        type="object"
+                        class="btn-primary"
+                        string="Appeler (Agent IA)"
+                        icon="fa-phone"
+                        invisible="type == 'lead' or not phone"
+                        title="Lancer un appel avec l'agent IA sélectionné (ElevenLabs / Twilio)"/>
+            </xpath>
+            <xpath expr="//sheet/div[@name='button_box']" position="inside">
+                <button name="action_call_contact_via_agent_ia"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-headphones"
+                        string="Agent IA"
+                        invisible="type == 'lead'"
+                        title="Appeler avec l'agent IA sélectionné"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Appels Agent IA" invisible="type == 'lead'">
+                    <field name="doorway_call_session_ids" nolabel="1" readonly="1">
+                        <list>
+                            <field name="date_start" string="Date"/>
+                            <field name="agent_id"/>
+                            <field name="to_number"/>
+                            <field name="from_number"/>
+                            <field name="call_status"/>
+                            <field name="duration"/>
+                            <field name="twilio_call_sid"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <menuitem id="menu_jt_portal_root"
+    name="Portail"
+    parent="jason_thomas_assurance.menu_jt_root"
+    sequence="30"/>
+
+  <menuitem id="menu_jt_portal_access"
+    name="Accès clients"
+    parent="menu_jt_portal_root"
+    action="action_jt_portal_access"
+    sequence="10"/>
+
+  <menuitem id="menu_jt_portal_create_all"
+    name="Créer tous les accès"
+    parent="menu_jt_portal_root"
+    action="action_jt_portal_create_all"
+    sequence="20"/>
+
+  <menuitem id="menu_jt_portal_send_all"
+    name="Envoyer les invitations"
+    parent="menu_jt_portal_root"
+    action="action_jt_portal_send_all"
+    sequence="30"/>
+</odoo>

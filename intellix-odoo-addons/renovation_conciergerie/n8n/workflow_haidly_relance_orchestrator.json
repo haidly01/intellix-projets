@@ -1,0 +1,86 @@
+{
+  "name": "Haidly — Relances (appels + CRTC)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "haidly-relance-step",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "hr1-webhook",
+      "name": "Webhook Relance",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 300],
+      "webhookId": "haidly-relance-step"
+    },
+    {
+      "parameters": {
+        "jsCode": "const wh = $input.first().json;\nconst body = wh.body || wh;\nconst leadId = body.lead_id || body.odoo_lead_id;\nconst token = '{{HAIDLY_WEBHOOK_TOKEN}}';\nlet lead = {};\ntry {\n  lead = await this.helpers.httpRequest({\n    method: 'GET',\n    url: `https://intellixcrm.com/api/haidly/lead/${leadId}`,\n    headers: { 'X-Haidly-Webhook-Token': token },\n    json: true,\n  });\n} catch (e) {}\nreturn [{ json: { ...body, ...lead, lead_id: leadId } }];"
+      },
+      "id": "hr0-get",
+      "name": "GET lead Odoo",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $input.first().json;\nconst { total_call_attempts = 0, haidly_do_not_call, do_not_call } = body;\nif (do_not_call || haidly_do_not_call) {\n  return [{ json: { ...body, action: 'STOP_ALL_CONTACT' } }];\n}\nconst maxDay = 3;\nconst maxTotal = 10;\nif (total_call_attempts >= maxTotal || (body.haidly_total_call_attempts || 0) >= maxTotal) {\n  return [{ json: { ...body, action: 'ARCHIVE' } }];\n}\nconst nowStr = new Date().toLocaleString('en-US', { timeZone: 'America/Toronto' });\nconst h = new Date(nowStr).getHours();\nconst day = new Date(nowStr).getDay();\nif (day === 0 || h < 9 || h >= 19) {\n  return [{ json: { ...body, action: 'WAIT', reason: 'outside_hours' } }];\n}\nreturn [{ json: { ...body, action: 'PROCEED_TO_CALL' } }];"
+      },
+      "id": "hr2-crtc",
+      "name": "CRTC",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "leftValue": "={{ $json.action }}",
+              "rightValue": "PROCEED_TO_CALL",
+              "operator": { "type": "string", "operation": "equals" }
+            }
+          ]
+        }
+      },
+      "id": "hr3-if",
+      "name": "Peut appeler?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [720, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $input.first().json;\nconst rn = parseInt(body.relance_number || 1, 10);\nconst icpAgents = body.relance_agents || {};\nconst map = {\n  1: icpAgents.j1,\n  2: icpAgents.j3,\n  3: icpAgents.j7,\n  4: icpAgents.j14,\n};\nconst agentId = map[rn] || body.agent_id || '';\nconst first = (body.first_name || body.lead_name || 'there').split(' ')[0];\nreturn [{ json: {\n  ...body,\n  agent_id: agentId,\n  agent_phone_number_id: body.elevenlabs_phone_number_id || '',\n  dynamic_variables: {\n    lead_name: first,\n    project_type: body.project_type || 'multi',\n    city: body.city || '',\n    budget_range: body.budget_range || '',\n    property_type: body.property_type || '',\n    lead_id_odoo: String(body.lead_id || '')\n  }\n}}];"
+      },
+      "id": "hr4-prep",
+      "name": "Préparer appel",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [960, 220]
+    },
+    {
+      "parameters": {
+        "jsCode": "const j = $input.first().json;\nconst apiKey = '{{ELEVENLABS_API_KEY}}';\nif (!j.agent_id || !j.agent_phone_number_id || !j.phone) {\n  return [{ json: { ...j, error: 'missing_ids' } }];\n}\nconst res = await this.helpers.httpRequest({\n  method: 'POST',\n  url: 'https://api.elevenlabs.io/v1/convai/twilio/outbound-call',\n  headers: { 'xi-api-key': apiKey, 'Content-Type': 'application/json' },\n  body: {\n    agent_id: j.agent_id,\n    agent_phone_number_id: j.agent_phone_number_id,\n    to_number: j.phone,\n    telephony_call_config: { ringing_timeout_secs: 25 },\n    conversation_initiation_client_data: { dynamic_variables: j.dynamic_variables }\n  },\n  json: true,\n});\nconst token = '{{HAIDLY_WEBHOOK_TOKEN}}';\nawait this.helpers.httpRequest({\n  method: 'POST',\n  url: 'https://intellixcrm.com/api/haidly/lead/update',\n  headers: { 'X-Haidly-Webhook-Token': token, 'Content-Type': 'application/json' },\n  body: { lead_id: parseInt(j.lead_id, 10), increment_call_attempt: true, conversation_id: res.conversation_id || '' },\n  json: true,\n});\nreturn [{ json: { ...j, ...res } }];"
+      },
+      "id": "hr5-call",
+      "name": "ElevenLabs Outbound",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1200, 220]
+    }
+  ],
+  "connections": {
+    "Webhook Relance": { "main": [[{ "node": "GET lead Odoo", "type": "main", "index": 0 }]] },
+    "GET lead Odoo": { "main": [[{ "node": "CRTC", "type": "main", "index": 0 }]] },
+    "CRTC": { "main": [[{ "node": "Peut appeler?", "type": "main", "index": 0 }]] },
+    "Peut appeler?": { "main": [[{ "node": "Préparer appel", "type": "main", "index": 0 }], []] },
+    "Préparer appel": { "main": [[{ "node": "ElevenLabs Outbound", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "tags": [{ "name": "haidly" }]
+}

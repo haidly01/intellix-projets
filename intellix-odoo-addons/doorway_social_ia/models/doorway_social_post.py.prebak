@@ -1,0 +1,542 @@
+# -*- coding: utf-8 -*-
+import logging
+
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError
+
+_logger = logging.getLogger(__name__)
+
+# Instagram autorise au maximum 10 médias dans un carrousel.
+IG_MAX_MEDIA = 10
+IMAGE_MIMETYPES = ("image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif")
+VIDEO_MIMETYPES = ("video/mp4", "video/quicktime", "video/x-m4v", "video/3gpp")
+
+
+class DoorwaySocialPost(models.Model):
+    _name = "doorway.social.post"
+    _description = "Post Réseaux Sociaux IA"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _order = "scheduled_date desc, id desc"
+
+    name = fields.Char("Titre", compute="_compute_name", store=True)
+    batch_ref = fields.Char("Lot calendrier", index=True, copy=False)
+    pipeline_id = fields.Many2one(
+        "crm.team", string="Pipeline / Marque", required=True, tracking=True
+    )
+    account_ids = fields.Many2many(
+        "doorway.social.account",
+        "doorway_social_post_account_rel",
+        "post_id",
+        "account_id",
+        string="Comptes cibles",
+    )
+
+    platform = fields.Selection(
+        [
+            ("facebook", "Facebook"),
+            ("instagram", "Instagram"),
+            ("tiktok", "TikTok"),
+            ("linkedin", "LinkedIn"),
+            ("pinterest", "Pinterest"),
+            ("youtube", "YouTube"),
+            ("gmb", "Google My Business"),
+        ],
+        required=True,
+    )
+    post_format = fields.Selection(
+        [
+            ("publication", "Publication"),
+            ("reel", "Reel / Shorts"),
+            ("story", "Story"),
+            ("carrousel", "Carrousel"),
+        ],
+        required=True,
+        default="publication",
+    )
+    content_type = fields.Selection(
+        [
+            ("image", "Image (→ Canva)"),
+            ("video", "Vidéo (→ HeyGen)"),
+        ],
+        compute="_compute_content_type",
+        store=True,
+    )
+
+    hook = fields.Char("Accroche")
+    angle = fields.Char("Angle éditorial")
+    cta = fields.Char("Call to action")
+    hashtags = fields.Char("Hashtags")
+    visual_description = fields.Text("Description visuel")
+    caption = fields.Text("Caption final")
+    video_script = fields.Text("Script vidéo (HeyGen)")
+
+    canva_design_id = fields.Char("Canva Design ID")
+    canva_design_url = fields.Char("Lien Canva")
+    image_url = fields.Char("URL image finale")
+    heygen_video_id = fields.Char("HeyGen Video ID")
+    video_url = fields.Char("URL vidéo")
+    video_thumbnail = fields.Char("Thumbnail vidéo")
+    attachment_ids = fields.Many2many(
+        "ir.attachment",
+        "doorway_social_post_attachment_rel",
+        "post_id",
+        "attachment_id",
+        string="Médias (photos / vidéos)",
+        help="Créatifs uploadés (images ou vidéos). Pour Instagram : 10 images max.",
+    )
+    media_count = fields.Integer(compute="_compute_media_count", string="Nb médias")
+    first_image_url = fields.Char(
+        compute="_compute_first_image_url",
+        string="Aperçu média",
+    )
+
+    privacy = fields.Selection(
+        [
+            ("public", "Public"),
+            ("limited", "Limité"),
+        ],
+        default="public",
+        string="Confidentialité",
+        help="Public : visible de tous. Limité : audience restreinte (Facebook).",
+    )
+
+    scheduled_date = fields.Datetime("Date programmée", tracking=True)
+    published_date = fields.Datetime("Date de publication", tracking=True, readonly=True)
+    calendar_date = fields.Datetime(
+        string="Date calendrier",
+        compute="_compute_calendar_date",
+        store=True,
+        index=True,
+        help="Date affichée sur le calendrier : publication réelle ou programmation.",
+    )
+    is_future = fields.Boolean(
+        string="À venir",
+        compute="_compute_calendar_flags",
+        search="_search_is_future",
+    )
+    is_past = fields.Boolean(
+        string="Passée",
+        compute="_compute_calendar_flags",
+        search="_search_is_past",
+    )
+    best_time_ai = fields.Datetime("Heure IA suggérée", readonly=True)
+    share_to_groups = fields.Boolean("Partager dans les groupes")
+    group_ids = fields.Many2many("doorway.social.group", string="Groupes")
+
+    state = fields.Selection(
+        [
+            ("draft", "Brouillon"),
+            ("approved", "Approuvé"),
+            ("generating", "Génération en cours"),
+            ("ready", "Prêt"),
+            ("scheduled", "Programmé"),
+            ("published", "Publié"),
+            ("failed", "Échec"),
+        ],
+        default="draft",
+        tracking=True,
+    )
+
+    reach = fields.Integer(readonly=True)
+    impressions = fields.Integer(readonly=True)
+    likes = fields.Integer(readonly=True)
+    comments = fields.Integer(readonly=True)
+    shares = fields.Integer(readonly=True)
+    engagement_rate = fields.Float(readonly=True, digits=(5, 2))
+    video_views = fields.Integer(readonly=True)
+    avg_watch_time = fields.Float(readonly=True)
+
+    @api.depends("hook", "platform", "post_format")
+    def _compute_name(self):
+        for rec in self:
+            parts = [p for p in (rec.hook, rec.platform, rec.post_format) if p]
+            rec.name = " — ".join(parts) if parts else _("Nouveau post")
+
+    @api.depends("post_format")
+    def _compute_content_type(self):
+        for rec in self:
+            rec.content_type = (
+                "video" if rec.post_format in ("reel", "story") else "image"
+            )
+
+    @api.depends("attachment_ids")
+    def _compute_media_count(self):
+        for rec in self:
+            rec.media_count = len(rec.attachment_ids)
+
+    @api.depends("attachment_ids", "image_url", "video_thumbnail")
+    def _compute_first_image_url(self):
+        for rec in self:
+            url = rec.image_url or rec.video_thumbnail or ""
+            images = rec.attachment_ids.filtered(
+                lambda a: (a.mimetype or "").startswith("image/")
+            )
+            if images:
+                # URL backend (utilisateur connecté) — pas de token généré ici
+                # pour éviter toute écriture pendant un compute non stocké.
+                url = "/web/image/%s" % images[0].id
+            rec.first_image_url = url
+
+    @api.constrains("attachment_ids", "platform")
+    def _check_instagram_media_limit(self):
+        for rec in self:
+            if rec.platform != "instagram":
+                continue
+            images = rec.attachment_ids.filtered(
+                lambda a: (a.mimetype or "").startswith("image/")
+            )
+            if len(images) > IG_MAX_MEDIA:
+                raise UserError(
+                    _("Instagram accepte 10 images maximum par publication (carrousel).")
+                )
+
+    @api.depends("state", "published_date", "scheduled_date")
+    def _compute_calendar_date(self):
+        for rec in self:
+            if rec.state == "published" and rec.published_date:
+                rec.calendar_date = rec.published_date
+            else:
+                rec.calendar_date = rec.scheduled_date
+
+    @api.depends("calendar_date", "state")
+    def _compute_calendar_flags(self):
+        now = fields.Datetime.now()
+        for rec in self:
+            dt = rec.calendar_date
+            if not dt:
+                rec.is_future = rec.state not in ("published", "failed")
+                rec.is_past = rec.state in ("published", "failed")
+                continue
+            rec.is_future = dt >= now and rec.state != "published"
+            rec.is_past = rec.state == "published" or (
+                dt < now and rec.state in ("published", "failed")
+            )
+
+    @api.model
+    def _search_is_future(self, operator, value):
+        now = fields.Datetime.now()
+        if operator in ("=", "==") and value:
+            return [
+                "|",
+                ("state", "in", ("draft", "approved", "generating", "ready", "scheduled")),
+                ("calendar_date", ">=", now),
+            ]
+        if operator in ("=", "==") and not value:
+            return [("state", "=", "published")]
+        return []
+
+    @api.model
+    def _search_is_past(self, operator, value):
+        now = fields.Datetime.now()
+        if operator in ("=", "==") and value:
+            return [
+                "|",
+                ("state", "=", "published"),
+                ("calendar_date", "<", now),
+            ]
+        if operator in ("=", "==") and not value:
+            return [("calendar_date", ">=", now)]
+        return []
+
+    def action_generate_content(self):
+        for rec in self:
+            rec.state = "generating"
+            try:
+                if rec.content_type == "video":
+                    rec._generate_video_content()
+                else:
+                    rec._generate_image_content()
+            except Exception as exc:  # noqa: BLE001
+                _logger.exception("Génération post %s", rec.id)
+                rec.state = "failed"
+                rec.message_post(body=_("Échec génération : %s") % exc)
+        return True
+
+    def _generate_image_content(self):
+        self.ensure_one()
+        Claude = self.env["doorway.social.claude.service"]
+        Canva = self.env["doorway.social.canva.service"]
+        if not self.caption:
+            self.caption = Claude.generate_caption(self)
+        design = Canva.generate_design(self)
+        self.write({
+            "canva_design_id": design.get("design_id"),
+            "canva_design_url": design.get("edit_url"),
+            "image_url": design.get("export_url"),
+            "state": "ready",
+        })
+
+    def _generate_video_content(self):
+        self.ensure_one()
+        Claude = self.env["doorway.social.claude.service"]
+        HeyGen = self.env["doorway.social.heygen.service"]
+        if not self.video_script:
+            self.video_script = Claude.generate_script(self)
+        if not self.caption:
+            self.caption = Claude.generate_caption(self, short=True)
+        result = HeyGen.generate_video(self)
+        self.write({
+            "heygen_video_id": result.get("video_id"),
+            "state": "generating",
+        })
+        if result.get("video_id"):
+            self.env["doorway.heygen.job"].create({
+                "post_id": self.id,
+                "heygen_video_id": result["video_id"],
+            })
+
+    def action_approve(self):
+        self.write({"state": "approved"})
+
+    def action_schedule(self):
+        Analytics = self.env["doorway.social.analytics.service"]
+        for rec in self:
+            best = Analytics.compute_best_time(rec)
+            rec.write({
+                "best_time_ai": best,
+                "scheduled_date": best or rec.scheduled_date or fields.Datetime.now(),
+                "state": "scheduled",
+            })
+
+    def action_publish_now(self):
+        Publisher = self.env["doorway.social.publisher.service"]
+        now = fields.Datetime.now()
+        for rec in self:
+            # Dégradation gracieuse : sans compte connecté, on ne crashe pas,
+            # on conserve le post (programmé/brouillon) et on explique pourquoi.
+            if not rec._has_publishable_account():
+                rec.message_post(
+                    body=_(
+                        "Publication impossible : aucun compte %s connecté. "
+                        "Connectez un compte Meta (Réseaux sociaux → Paramètres → "
+                        "Connecter tous Meta) puis réessayez."
+                    )
+                    % (rec.platform or "réseau")
+                )
+                if rec.state != "scheduled":
+                    rec.state = "ready"
+                continue
+            try:
+                result = Publisher.publish(rec)
+            except Exception as exc:  # noqa: BLE001
+                _logger.exception("Publication post %s", rec.id)
+                rec.state = "failed"
+                rec.message_post(body=_("Échec publication : %s") % exc)
+                continue
+            # Le service peut déjà avoir positionné l'état (failed). On ne marque
+            # "published" que si la publication a réellement réussi.
+            if result is False or rec.state == "failed":
+                if rec.state != "failed":
+                    rec.state = "failed"
+                continue
+            rec.write({
+                "state": "published",
+                "published_date": now,
+            })
+        return True
+
+    def _has_publishable_account(self):
+        """Un compte connecté existe-t-il pour cette plateforme ?"""
+        self.ensure_one()
+        Account = self.env["doorway.social.account"]
+        targeted = self.account_ids.filtered(
+            lambda a: a.platform == self.platform and a.connection_state == "connected"
+        )
+        if targeted:
+            return True
+        return bool(
+            Account.search_count([
+                ("platform", "=", self.platform),
+                ("connection_state", "=", "connected"),
+            ])
+        )
+
+    @api.model
+    def _cron_publish_scheduled_posts(self):
+        due = self.search([
+            ("state", "=", "scheduled"),
+            ("scheduled_date", "!=", False),
+            ("scheduled_date", "<=", fields.Datetime.now()),
+        ])
+        for post in due:
+            try:
+                post.action_publish_now()
+            except Exception as exc:  # noqa: BLE001
+                _logger.exception("Publication auto post %s", post.id)
+                post.write({"state": "failed"})
+                post.message_post(body=_("Échec publication auto : %s") % exc)
+
+    def action_open_canva(self):
+        self.ensure_one()
+        if not self.canva_design_url:
+            raise UserError(_("Aucun design Canva — générez le contenu d'abord."))
+        return {
+            "type": "ir.actions.act_url",
+            "url": self.canva_design_url,
+            "target": "new",
+        }
+
+    def action_regenerate_caption(self):
+        Claude = self.env["doorway.social.claude.service"]
+        for rec in self:
+            rec.caption = Claude.generate_caption(rec)
+
+    # ------------------------------------------------------------------
+    # Médias : exposer les créatifs uploadés au composer / preview / publish
+    # ------------------------------------------------------------------
+    def _collect_media(self):
+        """Retourne la liste ordonnée des médias publiables.
+
+        Chaque entrée : {attachment, mimetype, is_video, public_url}.
+        Inclut les attachments uploadés puis, en repli, image_url / video_url
+        (créatifs Canva / HeyGen) pour rester compatible avec l'existant.
+        """
+        self.ensure_one()
+        media = []
+        for att in self.attachment_ids.sorted("id"):
+            mimetype = (att.mimetype or "").lower()
+            media.append({
+                "attachment": att,
+                "mimetype": mimetype,
+                "is_video": mimetype.startswith("video/"),
+                "public_url": att._doorway_public_url(),
+            })
+        if not media and self.image_url:
+            media.append({
+                "attachment": False,
+                "mimetype": "image/jpeg",
+                "is_video": False,
+                "public_url": self.image_url,
+            })
+        if not media and self.video_url:
+            media.append({
+                "attachment": False,
+                "mimetype": "video/mp4",
+                "is_video": True,
+                "public_url": self.video_url,
+            })
+        return media
+
+    @api.model
+    def get_composer_context(self):
+        """Données d'initialisation du composer OWL."""
+        teams = self.env["crm.team"].search_read(
+            [], ["id", "name"], order="name"
+        )
+        accounts = self.env["doorway.social.account"].search_read(
+            [("platform", "in", ("facebook", "instagram"))],
+            ["id", "name", "platform", "connection_state", "pipeline_id"],
+            order="platform, name",
+        )
+        best_times = self.env["doorway.social.analytics.service"].DEFAULT_TIMES
+        return {
+            "teams": teams,
+            "accounts": accounts,
+            "best_times": best_times,
+            "ig_max_media": IG_MAX_MEDIA,
+        }
+
+    @api.model
+    def create_from_composer(self, payload):
+        """Crée (ou met à jour) un post depuis le composer OWL.
+
+        payload : {
+            pipeline_id, platform, post_format, caption, hashtags, privacy,
+            account_ids: [int], scheduled_date: str|false, publish_now: bool,
+            media: [{name, mimetype, datas(base64)}],
+        }
+        Retourne {id, state, warning}.
+        """
+        payload = payload or {}
+        platform = payload.get("platform") or "facebook"
+        pipeline_id = payload.get("pipeline_id")
+        try:
+            pipeline_id = int(pipeline_id) if pipeline_id else False
+        except (TypeError, ValueError):
+            pipeline_id = False
+        if not pipeline_id:
+            team = self.env["crm.team"].search([], limit=1)
+            pipeline_id = team.id if team else False
+        if not pipeline_id:
+            raise UserError(_("Aucune marque / pipeline disponible. Créez une équipe CRM."))
+        account_ids = []
+        for aid in payload.get("account_ids") or []:
+            try:
+                account_ids.append(int(aid))
+            except (TypeError, ValueError):
+                continue
+
+        Attachment = self.env["ir.attachment"].sudo()
+        attachment_ids = []
+        for item in payload.get("media") or []:
+            datas = item.get("datas")
+            if not datas:
+                continue
+            att = Attachment.create({
+                "name": item.get("name") or _("Média réseau social"),
+                "datas": datas,
+                "mimetype": item.get("mimetype") or False,
+                "res_model": "doorway.social.post",
+            })
+            att.generate_access_token()
+            attachment_ids.append(att.id)
+
+        vals = {
+            "pipeline_id": pipeline_id,
+            "platform": platform,
+            "post_format": payload.get("post_format") or "publication",
+            "hook": (payload.get("caption") or "")[:120] or _("Publication"),
+            "caption": payload.get("caption") or "",
+            "hashtags": payload.get("hashtags") or "",
+            "privacy": payload.get("privacy") or "public",
+            "account_ids": [(6, 0, account_ids)],
+            "state": "ready",
+        }
+        if attachment_ids:
+            vals["attachment_ids"] = [(6, 0, attachment_ids)]
+
+        scheduled = payload.get("scheduled_date")
+        if scheduled:
+            vals["scheduled_date"] = scheduled
+
+        post = self.create(vals)
+        if attachment_ids:
+            self.env["ir.attachment"].sudo().browse(attachment_ids).write({
+                "res_id": post.id,
+            })
+
+        warning = ""
+        if payload.get("publish_now"):
+            if post._has_publishable_account():
+                post.action_publish_now()
+            else:
+                post.state = "scheduled" if scheduled else "ready"
+                warning = _(
+                    "Aucun compte %s connecté : la publication a été enregistrée "
+                    "comme brouillon/programmée. Connectez un compte Meta pour publier."
+                ) % platform
+        elif scheduled:
+            post.write({"state": "scheduled"})
+
+        return {"id": post.id, "state": post.state, "warning": warning}
+
+    def action_open_composer(self):
+        return {
+            "type": "ir.actions.client",
+            "tag": "social_composer_action",
+            "name": _("Créer une publication"),
+        }
+
+    def _get_avatar_id(self):
+        self.ensure_one()
+        account = self.account_ids[:1]
+        if account and account.heygen_avatar_id:
+            return account.heygen_avatar_id
+        return self.pipeline_id.heygen_avatar_id or ""
+
+    def _get_voice_id(self):
+        self.ensure_one()
+        account = self.account_ids[:1]
+        if account and account.heygen_voice_id:
+            return account.heygen_voice_id
+        return self.pipeline_id.heygen_voice_id or ""

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_doorway_crm_activity_calendar" model="ir.ui.view">
+        <field name="name">doorway.crm.activity.calendar</field>
+        <field name="model">mail.activity</field>
+        <field name="inherit_id" ref="mail.mail_activity_view_calendar"/>
+        <field name="arch" type="xml">
+            <xpath expr="//calendar" position="attributes">
+                <attribute name="string">Activités CRM</attribute>
+            </xpath>
+            <xpath expr="//field[@name='res_name']" position="after">
+                <field name="crm_team_id" filters="1"/>
+                <field name="crm_lead_id"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_doorway_crm_activity_calendar" model="ir.actions.act_window">
+        <field name="name">Calendrier des activités CRM</field>
+        <field name="res_model">mail.activity</field>
+        <field name="view_mode">calendar,list,kanban</field>
+        <field name="domain">['|', ('res_model', '=', 'crm.lead'), ('res_model', '=', 'coins.quebec.partenariat'), ('active', '=', True)]</field>
+        <field name="search_view_id" ref="mail.mail_activity_view_search"/>
+        <field name="context">{'search_default_filter_user_id_uid': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Planifiez des activités depuis les fiches opportunité.
+            </p>
+            <p>Les activités CRM apparaissent ici et sont synchronisées avec le calendrier Odoo.</p>
+        </field>
+    </record>
+</odoo>

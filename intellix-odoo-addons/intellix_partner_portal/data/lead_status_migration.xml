@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Migration des anciens statuts (flux Accepter/Refuser) vers le nouveau pipeline
+         Kanban. S'applique à chaque -u (pas de noupdate) pour couvrir les enregistrements
+         déjà en base créés avant cette phase. -->
+    <function model="intellix.partner.lead.mandate" name="write">
+        <function model="intellix.partner.lead.mandate" name="search">
+            <value eval="[('status', '=', 'new')]"/>
+        </function>
+        <value eval="{'status': 'nouveau'}"/>
+    </function>
+    <function model="intellix.partner.lead.mandate" name="write">
+        <function model="intellix.partner.lead.mandate" name="search">
+            <value eval="[('status', '=', 'accepted')]"/>
+        </function>
+        <value eval="{'status': 'relance'}"/>
+    </function>
+    <function model="intellix.partner.lead.mandate" name="write">
+        <function model="intellix.partner.lead.mandate" name="search">
+            <value eval="[('status', '=', 'converted')]"/>
+        </function>
+        <value eval="{'status': 'vendu'}"/>
+    </function>
+    <function model="intellix.partner.lead.mandate" name="write">
+        <function model="intellix.partner.lead.mandate" name="search">
+            <value eval="[('status', 'in', ['refused', 'replacement_pending'])]"/>
+        </function>
+        <value eval="{'status': 'perdu'}"/>
+    </function>
+</odoo>

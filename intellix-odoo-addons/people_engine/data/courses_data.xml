@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="course_odoo_crm_basics" model="pe.course">
+        <field name="title">Maîtriser le CRM IntelliXCRM</field>
+        <field name="category">crm</field>
+        <field name="course_type">video</field>
+        <field name="duration_hours">2.0</field>
+        <field name="difficulty">beginner</field>
+        <field name="points_on_completion">30</field>
+        <field name="description">Pipelines CRM, leads, étapes et scoring automatique.</field>
+    </record>
+    <record id="course_agents_ia_basics" model="pe.course">
+        <field name="title">Formation Agent IA de Qualification — Marché France</field>
+        <field name="category">ia_tools</field>
+        <field name="course_type">internal</field>
+        <field name="duration_hours">6.0</field>
+        <field name="difficulty">intermediate</field>
+        <field name="points_on_completion">60</field>
+        <field name="description">Formation complète pour configurer et optimiser un agent IA de qualification téléphonique sur le marché France — 6 modules interactifs.</field>
+        <field name="content_url">/people_engine/static/src/html/formation_agent_ia_qualification_fr.html</field>
+    </record>
+    <record id="course_lnt_essentials" model="pe.course">
+        <field name="title">Essentiels LNT — Droit du travail Québec</field>
+        <field name="category">legal</field>
+        <field name="course_type">document</field>
+        <field name="duration_hours">1.0</field>
+        <field name="difficulty">beginner</field>
+        <field name="points_on_completion">25</field>
+        <field name="description">Articles clés LNT pour gestionnaires.</field>
+    </record>
+    <record id="course_conversion_crm_advanced" model="pe.course">
+        <field name="title">Techniques de closing CRM avancées</field>
+        <field name="category">crm</field>
+        <field name="course_type">live</field>
+        <field name="duration_hours">3.0</field>
+        <field name="difficulty">advanced</field>
+        <field name="points_on_completion">75</field>
+    </record>
+    <record id="course_project_management" model="pe.course">
+        <field name="title">Gestion de projet IntelliX — Maîtriser les délais</field>
+        <field name="category">project</field>
+        <field name="course_type">video</field>
+        <field name="duration_hours">2.0</field>
+        <field name="difficulty">intermediate</field>
+        <field name="points_on_completion">50</field>
+    </record>
+    <record id="course_harassment_prevention" model="pe.course">
+        <field name="title">Prévention du harcèlement — LNT-81.19</field>
+        <field name="category">compliance</field>
+        <field name="course_type">document</field>
+        <field name="duration_hours">1.0</field>
+        <field name="difficulty">beginner</field>
+        <field name="points_on_completion">20</field>
+        <field name="is_mandatory" eval="True"/>
+        <field name="description">Obligations légales — obligatoire pour tous.</field>
+    </record>
+
+    <record id="course_crm_intellix" model="pe.course">
+        <field name="title">Formation CRM IntelliX — Pourquoi &amp; Comment</field>
+        <field name="category">crm</field>
+        <field name="course_type">internal</field>
+        <field name="duration_hours">5.0</field>
+        <field name="difficulty">beginner</field>
+        <field name="points_on_completion">50</field>
+        <field name="description">Formation complète sur le CRM IntelliX — pourquoi l'utiliser et comment en tirer le maximum : 7 modules interactifs.</field>
+        <field name="content_url">/people_engine/static/src/html/formation_crm_intellix_fr.html</field>
+    </record>
+</odoo>

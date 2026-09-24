@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="icp_linkedin_scraper_api_key" model="ir.config_parameter">
+        <field name="key">linkedin.scraper.api_key</field>
+        <field name="value">linsn_k7m9p2x4v8n1q6w3</field>
+    </record>
+    <record id="icp_linkedin_scraper_status" model="ir.config_parameter">
+        <field name="key">linkedin.scraper.status</field>
+        <field name="value">idle</field>
+    </record>
+    <record id="icp_linkedin_scraper_leads_found" model="ir.config_parameter">
+        <field name="key">linkedin.scraper.leads_found</field>
+        <field name="value">0</field>
+    </record>
+    <record id="icp_linkedin_karine_cookies" model="ir.config_parameter">
+        <field name="key">linkedin.karine.cookies</field>
+        <field name="value"></field>
+    </record>
+    <record id="icp_linkedin_karine_user_agent" model="ir.config_parameter">
+        <field name="key">linkedin.karine.user_agent</field>
+        <field name="value"></field>
+    </record>
+    <record id="icp_linkedin_karine_last_update" model="ir.config_parameter">
+        <field name="key">linkedin.karine.last_update</field>
+        <field name="value"></field>
+    </record>
+</odoo>

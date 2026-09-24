@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_pe_disciplinary_letter_document">
+        <t t-call="web.external_layout">
+            <div class="page pe-letter-document">
+                <div class="oe_structure"/>
+                <div t-if="doc.date_lettre" class="text-end mb-3">
+                    <span t-field="doc.date_lettre" t-options="{'widget': 'date'}"/>
+                </div>
+                <h3 t-if="doc.type_lettre"><span t-field="doc.type_lettre"/></h3>
+                <p><strong>Employé :</strong> <span t-field="doc.employee_id.name"/></p>
+                <p t-if="doc.procedure_id"><strong>Procédure :</strong> <span t-field="doc.procedure_id.name"/></p>
+                <div t-field="doc.content_html"/>
+                <p t-if="doc.impact_paie_preview" class="mt-4 text-muted">
+                    Impact paie estimé : <span t-field="doc.impact_paie_preview"/> MAD
+                </p>
+            </div>
+        </t>
+    </template>
+
+    <template id="report_pe_disciplinary_letter">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="people_engine.report_pe_disciplinary_letter_document"/>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_report_pe_disciplinary_letter" model="ir.actions.report">
+        <field name="name">Lettre disciplinaire</field>
+        <field name="model">pe.disciplinary.letter</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">people_engine.report_pe_disciplinary_letter</field>
+        <field name="report_file">people_engine.report_pe_disciplinary_letter</field>
+        <field name="print_report_name">'Lettre_%s_%s' % (object.employee_id.name, object.name)</field>
+        <field name="binding_model_id" ref="model_pe_disciplinary_letter"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_pe_employee_letter"/>
+    </record>
+</odoo>

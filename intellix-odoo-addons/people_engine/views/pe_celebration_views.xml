@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Templates -->
+    <record id="view_pe_celebration_template_tree" model="ir.ui.view">
+        <field name="name">pe.celebration.template.tree</field>
+        <field name="model">pe.celebration.template</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="occasion_type"/>
+                <field name="lang"/>
+                <field name="anniversary_years" optional="show"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pe_celebration_template_form" model="ir.ui.view">
+        <field name="name">pe.celebration.template.form</field>
+        <field name="model">pe.celebration.template</field>
+        <field name="arch" type="xml">
+            <form string="Modèle de félicitation">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Nom interne"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="occasion_type"/>
+                            <field name="lang"/>
+                            <field name="anniversary_years"
+                                   invisible="occasion_type != 'anniversary_other'"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <group string="Variables disponibles">
+                        <p colspan="2" class="text-muted">
+                            {{prenom}}, {{nom}}, {{poste}}, {{equipe}}, {{anciennete}},
+                            {{manager}}, {{date_evenement}}, {{detail}}, {{departement}}, {{societe}}
+                        </p>
+                    </group>
+                    <group string="E-mail équipe">
+                        <field name="email_subject" colspan="2"/>
+                        <field name="email_body" colspan="2" widget="html"/>
+                    </group>
+                    <group string="Notification flux d'activité">
+                        <field name="notification_message" colspan="2"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_pe_celebration_templates" model="ir.actions.act_window">
+        <field name="name">Modèles félicitations</field>
+        <field name="res_model">pe.celebration.template</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Logs -->
+    <record id="view_pe_celebration_log_tree" model="ir.ui.view">
+        <field name="name">pe.celebration.log.tree</field>
+        <field name="model">pe.celebration.log</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0">
+                <field name="sent_at"/>
+                <field name="employee_id"/>
+                <field name="occasion_type"/>
+                <field name="occasion_date"/>
+                <field name="template_id"/>
+                <field name="email_sent" widget="boolean"/>
+                <field name="notification_sent" widget="boolean"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pe_celebration_log_form" model="ir.ui.view">
+        <field name="name">pe.celebration.log.form</field>
+        <field name="model">pe.celebration.log</field>
+        <field name="arch" type="xml">
+            <form string="Félicitation envoyée" create="0" edit="0">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="employee_id"/>
+                            <field name="profile_id"/>
+                            <field name="occasion_type"/>
+                            <field name="occasion_date"/>
+                        </group>
+                        <group>
+                            <field name="template_id"/>
+                            <field name="sent_at"/>
+                            <field name="email_sent"/>
+                            <field name="notification_sent"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="detail" colspan="2"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_pe_celebration_logs" model="ir.actions.act_window">
+        <field name="name">Historique félicitations</field>
+        <field name="res_model">pe.celebration.log</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Settings -->
+    <record id="view_pe_celebration_settings_form" model="ir.ui.view">
+        <field name="name">pe.celebration.settings.form</field>
+        <field name="model">pe.celebration.settings</field>
+        <field name="arch" type="xml">
+            <form string="Paramètres félicitations">
+                <sheet>
+                    <group string="Types d'occasions actifs">
+                        <field name="enabled_birthday"/>
+                        <field name="enabled_anniversary_1y"/>
+                        <field name="enabled_anniversary_3y"/>
+                        <field name="enabled_anniversary_5y"/>
+                        <field name="enabled_anniversary_10y"/>
+                        <field name="enabled_anniversary_other"/>
+                        <field name="enabled_performance"/>
+                        <field name="enabled_promotion"/>
+                        <field name="enabled_custom"/>
+                    </group>
+                    <group string="Envoi">
+                        <field name="exclude_honoree_email"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_save" type="object" string="Enregistrer" class="btn-primary"/>
+                    <button string="Annuler" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_pe_celebration_settings" model="ir.actions.act_window">
+        <field name="name">Paramètres félicitations</field>
+        <field name="res_model">pe.celebration.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Employee fields -->
+    <record id="view_employee_form_pe_celebration" model="ir.ui.view">
+        <field name="name">hr.employee.form.pe.celebration</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='hr_settings']" position="inside">
+                <group string="Félicitations RH" groups="people_engine.group_hr">
+                    <field name="celebration_opt_out"/>
+                    <field name="last_performance_milestone"/>
+                    <field name="last_performance_detail"/>
+                    <field name="last_promotion_date"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Menus -->
+    <menuitem id="menu_pe_celebration_templates"
+        name="Modèles félicitations"
+        parent="menu_pe_config"
+        action="action_pe_celebration_templates"
+        sequence="42"
+        groups="people_engine.group_hr"/>
+
+    <menuitem id="menu_pe_celebration_logs"
+        name="Historique félicitations"
+        parent="menu_pe_config"
+        action="action_pe_celebration_logs"
+        sequence="43"
+        groups="people_engine.group_hr"/>
+
+    <menuitem id="menu_pe_celebration_settings"
+        name="Paramètres félicitations"
+        parent="menu_pe_config"
+        action="action_pe_celebration_settings"
+        sequence="44"
+        groups="people_engine.group_admin"/>
+
+    <menuitem id="menu_pe_celebration_manual"
+        name="Envoyer une félicitation"
+        parent="menu_pe_team"
+        action="action_pe_celebration_manual_wizard"
+        sequence="28"
+        groups="people_engine.group_hr"/>
+</odoo>

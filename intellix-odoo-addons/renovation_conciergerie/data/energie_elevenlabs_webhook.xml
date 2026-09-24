@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <function model="renovation.energie.webhook" name="_ensure_energie_elevenlabs_postcall_webhook"/>
+    <function model="renovation.energie.webhook" name="assign_energie_postcall_webhook_to_agents"/>
+</odoo>

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="coins_marocain.overview_dashboard">
+        <div class="o_coins_overview_dashboard o_coins_dashboard">
+            <div class="o_coins_dash_header">
+                <div>
+                    <h1>Tableau de bord Coins Marocain</h1>
+                    <p class="o_coins_dash_sub" t-if="state.data">
+                        Vue d'ensemble — <t t-esc="state.data.month_label"/>
+                    </p>
+                </div>
+                <div class="o_coins_dash_total" t-if="state.data">
+                    <span>Marge totale du mois</span>
+                    <b t-esc="formatMoney(state.data.total_margin_month, state.data.currency_symbol)"/>
+                </div>
+            </div>
+
+            <div t-if="state.loading" class="o_coins_dash_status">Chargement…</div>
+            <div t-elif="state.error" class="o_coins_dash_status o_coins_dash_error">
+                Impossible de charger le tableau de bord : <t t-esc="state.error"/>
+            </div>
+
+            <t t-elif="state.data">
+                <div class="o_coins_crm_metrics" t-if="state.data.pipeline_voyageurs or state.data.pipeline_partenariats">
+                    <section class="o_coins_dash_card" t-if="state.data.pipeline_voyageurs">
+                        <h2>Pipeline voyageurs</h2>
+                        <div class="o_coins_kpi_row">
+                            <div class="o_coins_kpi">
+                                <span>Nouveaux leads</span>
+                                <b t-esc="state.data.pipeline_voyageurs.nouveaux"/>
+                            </div>
+                            <div class="o_coins_kpi">
+                                <span>Transferts à chaud</span>
+                                <b class="o_coins_metric_red" t-esc="state.data.pipeline_voyageurs.chauds"/>
+                            </div>
+                            <div class="o_coins_kpi">
+                                <span>Réservés ce mois</span>
+                                <b t-esc="state.data.pipeline_voyageurs.reserves"/>
+                            </div>
+                            <div class="o_coins_kpi" t-on-click="openVoyageursSansCoord" style="cursor: pointer;">
+                                <span>Sans coordonnées</span>
+                                <b t-esc="state.data.pipeline_voyageurs.sans_coordonnees"/>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="o_coins_dash_card" t-if="state.data.pipeline_partenariats">
+                        <h2>Pipeline partenariats</h2>
+                        <div class="o_coins_kpi_row">
+                            <div class="o_coins_kpi">
+                                <span>En prospection</span>
+                                <b t-esc="state.data.pipeline_partenariats.prospection"/>
+                            </div>
+                            <div class="o_coins_kpi">
+                                <span>En négociation</span>
+                                <b t-esc="state.data.pipeline_partenariats.negociation"/>
+                            </div>
+                            <div class="o_coins_kpi">
+                                <span>Établissements actifs</span>
+                                <b class="o_coins_metric_green" t-esc="state.data.pipeline_partenariats.actifs"/>
+                            </div>
+                            <div class="o_coins_kpi">
+                                <span>Marge partenaires</span>
+                                <b t-esc="formatMoney(state.data.pipeline_partenariats.marge, state.data.currency_symbol)"/>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <div class="o_coins_dash_grid">
+                    <section class="o_coins_dash_card">
+                        <h2>Biens &amp; réservations</h2>
+                        <div class="o_coins_kpi_row">
+                            <div class="o_coins_kpi">
+                                <span>Biens actifs</span>
+                                <b t-esc="state.data.biens.active"/>
+                            </div>
+                            <div class="o_coins_kpi">
+                                <span>Piscine / Hammam</span>
+                                <b t-esc="state.data.biens.pool_hammam"/>
+                            </div>
+                            <div class="o_coins_kpi">
+                                <span>Réservations du mois</span>
+                                <b t-esc="state.data.biens.reservations_month"/>
+                            </div>
+                            <div class="o_coins_kpi">
+                                <span>Confirmées</span>
+                                <b t-esc="state.data.biens.reservations_confirmed"/>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="o_coins_dash_card">
+                        <h2>Chauffeurs</h2>
+                        <div class="o_coins_kpi_row">
+                            <div class="o_coins_kpi">
+                                <span>Actifs</span>
+                                <b t-esc="state.data.chauffeurs.active"/>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="o_coins_dash_card">
+                        <h2>Détente</h2>
+                        <div class="o_coins_kpi_row">
+                            <div class="o_coins_kpi">
+                                <span>Marge du mois</span>
+                                <b t-esc="formatMoney(state.data.detente.margin_month, state.data.currency_symbol)"/>
+                            </div>
+                            <div class="o_coins_kpi">
+                                <span>Confirmées</span>
+                                <b t-esc="state.data.detente.confirmed"/>
+                            </div>
+                            <div class="o_coins_kpi">
+                                <span>Réalisées</span>
+                                <b t-esc="state.data.detente.realized"/>
+                            </div>
+                            <div class="o_coins_kpi">
+                                <span>Partenaires prioritaires</span>
+                                <b t-esc="state.data.detente.partners_prioritaire"/>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="o_coins_dash_card">
+                        <h2>Activités</h2>
+                        <div class="o_coins_kpi_row">
+                            <div class="o_coins_kpi">
+                                <span>Catalogue</span>
+                                <b t-esc="state.data.activites.catalog"/>
+                            </div>
+                            <div class="o_coins_kpi">
+                                <span>Privatif</span>
+                                <b t-esc="state.data.activites.privatif"/>
+                            </div>
+                            <div class="o_coins_kpi">
+                                <span>Réf. Viator</span>
+                                <b t-esc="state.data.activites.viator_ref"/>
+                            </div>
+                            <div class="o_coins_kpi">
+                                <span>Réservations du mois</span>
+                                <b t-esc="state.data.activites.bookings_month"/>
+                            </div>
+                            <div class="o_coins_kpi">
+                                <span>Marge du mois</span>
+                                <b t-esc="formatMoney(state.data.activites.margin_month, state.data.currency_symbol)"/>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </t>
+        </div>
+    </t>
+</templates>

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="intellix_riad.Fleet">
+        <div class="o_action o_riad_screen o_riad_fleet">
+            <RiadShell page="'fleet'"/>
+            <div class="main">
+                <div class="topbar">
+                    <div class="property-switch">
+                        <span class="dot"/>
+                        <span class="fleet-top-label">Distribution OTA · Channex</span>
+                    </div>
+                    <div class="topbar-right">
+                        <div class="avatar" t-esc="state.data.user and state.data.user.initial or 'R'"/>
+                    </div>
+                </div>
+                <div class="content">
+                    <div class="page-head">
+                        <div>
+                            <div class="eyebrow">Intellix Channex</div>
+                            <h1>Établissements Channex</h1>
+                        </div>
+                        <div class="date-today" t-esc="state.data.today_label"/>
+                    </div>
+
+                    <t t-if="state.data.alert_count">
+                        <div class="fleet-alert" role="alert">
+                            <strong t-esc="state.data.alert_count"/>
+                            établissement(s) en erreur de sync ou sans sync depuis
+                            <t t-esc="state.data.stale_hours"/> h — à traiter en premier.
+                        </div>
+                    </t>
+
+                    <div class="fleet-toolbar">
+                        <div class="fleet-periods">
+                            <button t-att-class="state.period === 'today' ? 'is-on' : ''" t-on-click="() => this.setPeriod('today')">Aujourd'hui</button>
+                            <button t-att-class="state.period === '7d' ? 'is-on' : ''" t-on-click="() => this.setPeriod('7d')">7 jours</button>
+                            <button t-att-class="state.period === '30d' ? 'is-on' : ''" t-on-click="() => this.setPeriod('30d')">30 jours</button>
+                        </div>
+                        <div class="fleet-filters">
+                            <label>Statut
+                                <select t-model="state.statusFilter">
+                                    <option value="all">Tous</option>
+                                    <option value="active">Actif</option>
+                                    <option value="error">Erreur de sync</option>
+                                    <option value="disconnected">Déconnecté</option>
+                                </select>
+                            </label>
+                            <label>Ville
+                                <select t-model="state.cityFilter">
+                                    <option value="all">Toutes</option>
+                                    <t t-foreach="state.data.cities or []" t-as="city" t-key="city">
+                                        <option t-att-value="city" t-esc="city"/>
+                                    </t>
+                                </select>
+                            </label>
+                            <label>Type
+                                <select t-model="state.typeFilter">
+                                    <option value="all">Tous</option>
+                                    <t t-foreach="state.data.types or []" t-as="typ" t-key="typ">
+                                        <option t-att-value="typ" t-esc="typ"/>
+                                    </t>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+
+                    <p class="fleet-meta">
+                        <t t-if="state.data.channex_live_ok">
+                            Channex : <t t-esc="state.data.channex_live_count"/> propriété(s) visible(s) sur l'API.
+                        </t>
+                        <t t-else="">
+                            Liste locale — ping Channex indisponible pour cette session.
+                        </t>
+                        Occupation = ce soir (même calcul que le tableau de bord). Revenu et résas = période choisie.
+                    </p>
+
+                    <div class="fleet-table-wrap">
+                        <t t-if="state.loading">
+                            <p class="fleet-empty">Chargement…</p>
+                        </t>
+                        <t t-elif="!rows.length">
+                            <p class="fleet-empty">Aucun établissement pour ces filtres.</p>
+                        </t>
+                        <table t-else="" class="fleet-table">
+                            <thead>
+                                <tr>
+                                    <th t-on-click="() => this.setSort('name')">Établissement<t t-esc="sortMark('name')"/></th>
+                                    <th t-on-click="() => this.setSort('status')">Connexion Channex<t t-esc="sortMark('status')"/></th>
+                                    <th t-on-click="() => this.setSort('city')">Ville<t t-esc="sortMark('city')"/></th>
+                                    <th t-on-click="() => this.setSort('type_label')">Type<t t-esc="sortMark('type_label')"/></th>
+                                    <th class="num" t-on-click="() => this.setSort('occupancy_pct')">Occupation<t t-esc="sortMark('occupancy_pct')"/></th>
+                                    <th class="num" t-on-click="() => this.setSort('revenue')">Revenu<t t-esc="sortMark('revenue')"/></th>
+                                    <th t-on-click="() => this.setSort('bookings_channex')">Résas Channex / site<t t-esc="sortMark('bookings_channex')"/></th>
+                                    <th t-on-click="() => this.setSort('last_sync')">Dernière sync<t t-esc="sortMark('last_sync')"/></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="rows" t-as="row" t-key="row.property_id">
+                                    <tr t-att-class="rowClass(row)" t-on-click="() => this.openDashboard(row)">
+                                        <td>
+                                            <strong t-esc="row.name"/>
+                                            <t t-if="row.critical">
+                                                <span class="fleet-flag">Alerte</span>
+                                            </t>
+                                        </td>
+                                        <td>
+                                            <span t-att-class="'fleet-status is-' + row.status" t-esc="row.status_label"/>
+                                        </td>
+                                        <td t-esc="row.city"/>
+                                        <td t-esc="row.type_label"/>
+                                        <td class="num">
+                                            <strong t-esc="row.occupancy_label"/>
+                                            <span class="muted" t-esc="row.occupancy_sub"/>
+                                        </td>
+                                        <td class="num" t-esc="row.revenue_label"/>
+                                        <td>
+                                            <t t-esc="row.bookings_label"/>
+                                            <t t-if="row.bookings_other">
+                                                <span class="muted"> · <t t-esc="row.bookings_other"/> autre(s)</span>
+                                            </t>
+                                        </td>
+                                        <td t-esc="row.last_sync_label"/>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

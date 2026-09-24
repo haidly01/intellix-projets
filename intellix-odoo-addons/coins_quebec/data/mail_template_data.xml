@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+      Suivi post-rencontre Coins Québec — envoi MANUEL uniquement
+      (bouton « Envoyer suivi rencontre » sur coins.quebec.partenariat).
+      Vidéo = lien cliquable placeholder, jamais une pièce jointe.
+      CTA fiche = https://coinsquebec.com/commercants
+      type_partenaire : hebergement→hôtel, spa→spa, resto→restaurant,
+      activite→divertissement, evenement/autre→hôtel (défaut).
+    -->
+    <record id="mail_template_cq_suite_rencontre" model="mail.template">
+        <field name="name">Coins Québec — Suite à notre rencontre (hôtel)</field>
+        <field name="model_id" ref="model_coins_quebec_partenariat"/>
+        <field name="subject">Suite à notre rencontre — {{ object.name or 'votre établissement' }} sur Coins Québec</field>
+        <field name="email_from">{{ user.email_formatted }}</field>
+        <field name="email_to">{{ object.email }}</field>
+        <field name="use_default_to" eval="False"/>
+        <field name="auto_delete" eval="False"/>
+        <field name="description">Envoi MANUEL depuis la fiche partenariat CQ (bouton Envoyer suivi rencontre). Corps = data/emails/email_hotel.html (Karine Barmaki). CTA = agenda Martin. Vidéo = {{VIDEO_URL_HOTEL}} tant que l'URL finale n'est pas fournie.</field>
+        <field name="body_html" type="html">
+<div style="margin:0;background:#EDE7D6;font-family:Jost,Segoe UI,Helvetica,Arial,sans-serif;color:#232A20;">
+  <div style="max-width:600px;margin:0 auto;background:#F5F1E6;">
+    <div style="background:#1F2A1E;line-height:0;text-align:center;">
+      <img src="https://coinsquebec.com/assets/cq-email-header.png" width="600" alt="Coins Québec" style="display:block;width:100%;max-width:600px;height:auto;border:0;"/>
+    </div>
+    <div style="padding:42px 44px;">
+      <t t-set="cq_contact" t-value="((object.contact_name or '').strip().split() or [''])[0]"/>
+      <t t-set="cq_etab" t-value="object.name or 'votre établissement'"/>
+      <h1 style="font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:27px;color:#1F2A1E;margin:0 0 18px;line-height:1.3;">Suite à notre rencontre</h1>
+      <p style="font-size:14.5px;line-height:1.75;color:#4C5645;margin:0 0 16px;">
+        Bonjour <t t-if="cq_contact"><t t-out="cq_contact"/></t><t t-else="">,</t><t t-if="cq_contact">,</t>
+      </p>
+      <p style="font-size:14.5px;line-height:1.75;color:#4C5645;margin:0 0 16px;">
+        Merci pour votre temps aujourd'hui — c'était un plaisir de découvrir
+        <strong><t t-out="cq_etab"/></strong>.
+      </p>
+      <p style="font-size:14.5px;line-height:1.75;color:#4C5645;margin:0 0 8px;">
+        Comme discuté, voici un aperçu rapide de comment Coins Québec fonctionne concrètement :
+      </p>
+      <p style="text-align:center;margin:24px 0 8px;">
+        <a href="https://coinsquebec.com/assets/video/prospection-hotel.html"
+           style="display:block;text-decoration:none;">
+          <img src="https://coinsquebec.com/assets/video/prospection-hotel.jpg"
+               alt="Voir la vidéo de démonstration" width="512"
+               style="display:block;width:100%;max-width:512px;height:auto;border-radius:8px;border:0;margin:0 auto;"/>
+        </a>
+      </p>
+      <p style="text-align:center;font-size:11px;color:#9C7A32;margin:0 0 24px;letter-spacing:.04em;">Lien cliquable — pas de pièce jointe</p>
+      <div style="background:#EDE7D6;border:1px solid #D9A94D;border-radius:8px;padding:22px 24px;margin:8px 0 22px;">
+        <div style="font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;color:#9C7A32;margin-bottom:14px;font-weight:600;">Ce qu'on propose</div>
+        <div style="margin-bottom:16px;">
+          <div style="font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:16.5px;color:#1F2A1E;">Visibilité</div>
+          <div style="font-size:13px;color:#4C5645;line-height:1.6;margin-top:4px;">Votre établissement sur la carte Coins Québec, filmé et présenté par des créateurs locaux, commission de <strong>15 %</strong> seulement sur ce qui est généré.</div>
+        </div>
+        <div style="margin-bottom:16px;">
+          <div style="font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:16.5px;color:#1F2A1E;">Digitalisation</div>
+          <div style="font-size:13px;color:#4C5645;line-height:1.6;margin-top:4px;">Réservations, personnel/présence employé, pricing dynamique selon les périodes — <strong>10 % des réservations ou 199 $ CAD/mois</strong>.</div>
+        </div>
+        <div>
+          <div style="font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:16.5px;color:#1F2A1E;">Marketing</div>
+          <div style="font-size:13px;color:#4C5645;line-height:1.6;margin-top:4px;">Site internet, gestion réseaux sociaux et shooting mensuel avec Agence Doorway, si vous voulez pousser plus loin.</div>
+        </div>
+      </div>
+      <p style="font-size:14.5px;line-height:1.75;color:#4C5645;margin:0 0 22px;">
+        Aucun engagement à l'inscription — c'est gratuit, la commission ne s'applique que sur ce qu'on vous apporte réellement.
+      </p>
+      <div style="background:#1F2A1E;border-radius:10px;padding:26px 22px;text-align:center;margin:8px 0 8px;">
+        <p style="font-size:13px;line-height:1.65;color:#F5F1E6;margin:0 0 16px;">2 minutes : nom, contact, région. Vous complétez le reste (vidéo, photos, prix) quand vous voulez.</p>
+        <a href="https://coinsquebec.com/commercants"
+           style="display:inline-block;background:#D9A94D;color:#1F2A1E;font-weight:600;font-size:13.5px;padding:12px 28px;border-radius:24px;text-decoration:none;letter-spacing:.04em;">OUVRIR MA FICHE →</a>
+      </div>
+      <div style="margin-top:34px;font-size:14px;color:#4C5645;line-height:1.7;">
+        Je reste disponible si vous avez des questions. Au plaisir de démarrer avec vous.<br/><br/>
+        <span style="font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:17px;color:#1F2A1E;"><t t-out="user.name or (object.user_id.name if object.user_id else '') or 'Karine Barmaki'"/></span><br/>
+        Coins Québec
+      </div>
+    </div>
+    <div style="padding:20px 40px 30px;text-align:center;font-size:10.5px;color:#A8A084;letter-spacing:.05em;">COINS QUÉBEC — LE QUÉBEC, RÉGION PAR RÉGION</div>
+  </div>
+</div>
+        </field>
+    </record>
+
+    <record id="mail_template_cq_suite_rencontre_spa" model="mail.template">
+        <field name="name">Coins Québec — Suivi rencontre (spa)</field>
+        <field name="model_id" ref="model_coins_quebec_partenariat"/>
+        <field name="subject">Suite à notre rencontre — {{ object.name or 'votre établissement' }} sur Coins Québec</field>
+        <field name="email_from">{{ user.email_formatted }}</field>
+        <field name="email_to">{{ object.email }}</field>
+        <field name="use_default_to" eval="False"/>
+        <field name="auto_delete" eval="False"/>
+        <field name="description">Envoi MANUEL depuis la fiche partenariat CQ (bouton Envoyer suivi rencontre). Corps = data/emails/email_spa.html (Karine Barmaki). CTA = agenda Martin. Vidéo = {{VIDEO_URL_SPA}} tant que l'URL finale n'est pas fournie.</field>
+        <field name="body_html" type="html">
+<div style="margin:0;background:#EDE7D6;font-family:Jost,Segoe UI,Helvetica,Arial,sans-serif;color:#232A20;">
+  <div style="max-width:600px;margin:0 auto;background:#F5F1E6;">
+    <div style="background:#1F2A1E;line-height:0;text-align:center;">
+      <img src="https://coinsquebec.com/assets/cq-email-header.png" width="600" alt="Coins Québec" style="display:block;width:100%;max-width:600px;height:auto;border:0;"/>
+    </div>
+    <div style="padding:42px 44px;">
+      <t t-set="cq_contact" t-value="((object.contact_name or '').strip().split() or [''])[0]"/>
+      <t t-set="cq_etab" t-value="object.name or 'votre établissement'"/>
+      <h1 style="font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:27px;color:#1F2A1E;margin:0 0 18px;line-height:1.3;">Suite à notre rencontre</h1>
+      <p style="font-size:14.5px;line-height:1.75;color:#4C5645;margin:0 0 16px;">
+        Bonjour <t t-if="cq_contact"><t t-out="cq_contact"/></t><t t-else="">,</t><t t-if="cq_contact">,</t>
+      </p>
+      <p style="font-size:14.5px;line-height:1.75;color:#4C5645;margin:0 0 16px;">
+        Merci pour votre temps aujourd'hui — c'était un plaisir de découvrir
+        <strong><t t-out="cq_etab"/></strong>.
+      </p>
+      <p style="font-size:14.5px;line-height:1.75;color:#4C5645;margin:0 0 8px;">
+        Comme discuté, voici un aperçu rapide de comment Coins Québec fonctionne concrètement :
+      </p>
+      <p style="text-align:center;margin:24px 0 8px;">
+        <a href="https://coinsquebec.com/assets/video/prospection-spa.html"
+           style="display:block;text-decoration:none;">
+          <img src="https://coinsquebec.com/assets/video/prospection-spa.jpg"
+               alt="Voir la vidéo de démonstration" width="512"
+               style="display:block;width:100%;max-width:512px;height:auto;border-radius:8px;border:0;margin:0 auto;"/>
+        </a>
+      </p>
+      <p style="text-align:center;font-size:11px;color:#9C7A32;margin:0 0 24px;letter-spacing:.04em;">Lien cliquable — pas de pièce jointe</p>
+      <div style="background:#EDE7D6;border:1px solid #D9A94D;border-radius:8px;padding:22px 24px;margin:8px 0 22px;">
+        <div style="font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;color:#9C7A32;margin-bottom:14px;font-weight:600;">Ce qu'on propose</div>
+        <div style="margin-bottom:16px;">
+          <div style="font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:16.5px;color:#1F2A1E;">Visibilité</div>
+          <div style="font-size:13px;color:#4C5645;line-height:1.6;margin-top:4px;">Votre établissement sur la carte Coins Québec, filmé et présenté par des créateurs locaux, commission de <strong>15 %</strong> seulement sur ce qui est généré.</div>
+        </div>
+        <div style="margin-bottom:16px;">
+          <div style="font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:16.5px;color:#1F2A1E;">Digitalisation</div>
+          <div style="font-size:13px;color:#4C5645;line-height:1.6;margin-top:4px;">Réservations en ligne, cross-selling de soins, présence employé — <strong>10 % des réservations ou 199 $ CAD/mois</strong>.</div>
+        </div>
+        <div>
+          <div style="font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:16.5px;color:#1F2A1E;">Marketing</div>
+          <div style="font-size:13px;color:#4C5645;line-height:1.6;margin-top:4px;">Site internet, gestion réseaux sociaux et shooting mensuel avec Agence Doorway, si vous voulez pousser plus loin.</div>
+        </div>
+      </div>
+      <p style="font-size:14.5px;line-height:1.75;color:#4C5645;margin:0 0 22px;">
+        Aucun engagement à l'inscription — c'est gratuit, la commission ne s'applique que sur ce qu'on vous apporte réellement.
+      </p>
+      <div style="background:#1F2A1E;border-radius:10px;padding:26px 22px;text-align:center;margin:8px 0 8px;">
+        <p style="font-size:13px;line-height:1.65;color:#F5F1E6;margin:0 0 16px;">2 minutes : nom, contact, région. Vous complétez le reste (vidéo, photos, prix) quand vous voulez.</p>
+        <a href="https://coinsquebec.com/commercants"
+           style="display:inline-block;background:#D9A94D;color:#1F2A1E;font-weight:600;font-size:13.5px;padding:12px 28px;border-radius:24px;text-decoration:none;letter-spacing:.04em;">OUVRIR MA FICHE →</a>
+      </div>
+      <div style="margin-top:34px;font-size:14px;color:#4C5645;line-height:1.7;">
+        Je reste disponible si vous avez des questions. Au plaisir de démarrer avec vous.<br/><br/>
+        <span style="font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:17px;color:#1F2A1E;"><t t-out="user.name or (object.user_id.name if object.user_id else '') or 'Karine Barmaki'"/></span><br/>
+        Coins Québec
+      </div>
+    </div>
+    <div style="padding:20px 40px 30px;text-align:center;font-size:10.5px;color:#A8A084;letter-spacing:.05em;">COINS QUÉBEC — LE QUÉBEC, RÉGION PAR RÉGION</div>
+  </div>
+</div>
+        </field>
+    </record>
+
+    <record id="mail_template_cq_suite_rencontre_restaurant" model="mail.template">
+        <field name="name">Coins Québec — Suivi rencontre (restaurant)</field>
+        <field name="model_id" ref="model_coins_quebec_partenariat"/>
+        <field name="subject">Suite à notre rencontre — {{ object.name or 'votre établissement' }} sur Coins Québec</field>
+        <field name="email_from">{{ user.email_formatted }}</field>
+        <field name="email_to">{{ object.email }}</field>
+        <field name="use_default_to" eval="False"/>
+        <field name="auto_delete" eval="False"/>
+        <field name="description">Envoi MANUEL depuis la fiche partenariat CQ (bouton Envoyer suivi rencontre). Corps = data/emails/email_restaurant.html (Karine Barmaki). CTA = agenda Martin. Vidéo = {{VIDEO_URL_RESTAURANT}} tant que l'URL finale n'est pas fournie.</field>
+        <field name="body_html" type="html">
+<div style="margin:0;background:#EDE7D6;font-family:Jost,Segoe UI,Helvetica,Arial,sans-serif;color:#232A20;">
+  <div style="max-width:600px;margin:0 auto;background:#F5F1E6;">
+    <div style="background:#1F2A1E;line-height:0;text-align:center;">
+      <img src="https://coinsquebec.com/assets/cq-email-header.png" width="600" alt="Coins Québec" style="display:block;width:100%;max-width:600px;height:auto;border:0;"/>
+    </div>
+    <div style="padding:42px 44px;">
+      <t t-set="cq_contact" t-value="((object.contact_name or '').strip().split() or [''])[0]"/>
+      <t t-set="cq_etab" t-value="object.name or 'votre établissement'"/>
+      <h1 style="font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:27px;color:#1F2A1E;margin:0 0 18px;line-height:1.3;">Suite à notre rencontre</h1>
+      <p style="font-size:14.5px;line-height:1.75;color:#4C5645;margin:0 0 16px;">
+        Bonjour <t t-if="cq_contact"><t t-out="cq_contact"/></t><t t-else="">,</t><t t-if="cq_contact">,</t>
+      </p>
+      <p style="font-size:14.5px;line-height:1.75;color:#4C5645;margin:0 0 16px;">
+        Merci pour votre temps aujourd'hui — c'était un plaisir de découvrir
+        <strong><t t-out="cq_etab"/></strong>.
+      </p>
+      <p style="font-size:14.5px;line-height:1.75;color:#4C5645;margin:0 0 8px;">
+        Comme discuté, voici un aperçu rapide de comment Coins Québec fonctionne concrètement :
+      </p>
+      <p style="text-align:center;margin:24px 0 8px;">
+        <a href="https://coinsquebec.com/assets/video/prospection-restaurant.html"
+           style="display:block;text-decoration:none;">
+          <img src="https://coinsquebec.com/assets/video/prospection-restaurant.jpg"
+               alt="Voir la vidéo de démonstration" width="512"
+               style="display:block;width:100%;max-width:512px;height:auto;border-radius:8px;border:0;margin:0 auto;"/>
+        </a>
+      </p>
+      <p style="text-align:center;font-size:11px;color:#9C7A32;margin:0 0 24px;letter-spacing:.04em;">Lien cliquable — pas de pièce jointe</p>
+      <div style="background:#EDE7D6;border:1px solid #D9A94D;border-radius:8px;padding:22px 24px;margin:8px 0 22px;">
+        <div style="font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;color:#9C7A32;margin-bottom:14px;font-weight:600;">Ce qu'on propose</div>
+        <div style="margin-bottom:16px;">
+          <div style="font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:16.5px;color:#1F2A1E;">Visibilité</div>
+          <div style="font-size:13px;color:#4C5645;line-height:1.6;margin-top:4px;">Votre établissement sur la carte Coins Québec, filmé et présenté par des créateurs locaux, commission de <strong>10 %</strong> seulement sur ce qui est généré.</div>
+        </div>
+        <div style="margin-bottom:16px;">
+          <div style="font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:16.5px;color:#1F2A1E;">Digitalisation</div>
+          <div style="font-size:13px;color:#4C5645;line-height:1.6;margin-top:4px;">Gestion réservations, personnel/présence, pricing dynamique selon les périodes — <strong>10 % des réservations ou 199 $ CAD/mois</strong>.</div>
+        </div>
+        <div>
+          <div style="font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:16.5px;color:#1F2A1E;">Marketing</div>
+          <div style="font-size:13px;color:#4C5645;line-height:1.6;margin-top:4px;">Site internet, gestion réseaux sociaux et shooting mensuel avec Agence Doorway, si vous voulez pousser plus loin.</div>
+        </div>
+      </div>
+      <p style="font-size:14.5px;line-height:1.75;color:#4C5645;margin:0 0 22px;">
+        Aucun engagement à l'inscription — c'est gratuit, la commission ne s'applique que sur ce qu'on vous apporte réellement.
+      </p>
+      <div style="background:#1F2A1E;border-radius:10px;padding:26px 22px;text-align:center;margin:8px 0 8px;">
+        <p style="font-size:13px;line-height:1.65;color:#F5F1E6;margin:0 0 16px;">2 minutes : nom, contact, région. Vous complétez le reste (vidéo, photos, prix) quand vous voulez.</p>
+        <a href="https://coinsquebec.com/commercants"
+           style="display:inline-block;background:#D9A94D;color:#1F2A1E;font-weight:600;font-size:13.5px;padding:12px 28px;border-radius:24px;text-decoration:none;letter-spacing:.04em;">OUVRIR MA FICHE →</a>
+      </div>
+      <div style="margin-top:34px;font-size:14px;color:#4C5645;line-height:1.7;">
+        Je reste disponible si vous avez des questions. Au plaisir de démarrer avec vous.<br/><br/>
+        <span style="font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:17px;color:#1F2A1E;"><t t-out="user.name or (object.user_id.name if object.user_id else '') or 'Karine Barmaki'"/></span><br/>
+        Coins Québec
+      </div>
+    </div>
+    <div style="padding:20px 40px 30px;text-align:center;font-size:10.5px;color:#A8A084;letter-spacing:.05em;">COINS QUÉBEC — LE QUÉBEC, RÉGION PAR RÉGION</div>
+  </div>
+</div>
+        </field>
+    </record>
+
+    <record id="mail_template_cq_suite_rencontre_divertissement" model="mail.template">
+        <field name="name">Coins Québec — Suivi rencontre (divertissement)</field>
+        <field name="model_id" ref="model_coins_quebec_partenariat"/>
+        <field name="subject">Suite à notre rencontre — {{ object.name or 'votre établissement' }} sur Coins Québec</field>
+        <field name="email_from">{{ user.email_formatted }}</field>
+        <field name="email_to">{{ object.email }}</field>
+        <field name="use_default_to" eval="False"/>
+        <field name="auto_delete" eval="False"/>
+        <field name="description">Envoi MANUEL depuis la fiche partenariat CQ (bouton Envoyer suivi rencontre). Corps = data/emails/email_divertissement.html (Karine Barmaki). CTA = agenda Martin. Vidéo = {{VIDEO_URL_DIVERTISSEMENT}} tant que l'URL finale n'est pas fournie.</field>
+        <field name="body_html" type="html">
+<div style="margin:0;background:#EDE7D6;font-family:Jost,Segoe UI,Helvetica,Arial,sans-serif;color:#232A20;">
+  <div style="max-width:600px;margin:0 auto;background:#F5F1E6;">
+    <div style="background:#1F2A1E;line-height:0;text-align:center;">
+      <img src="https://coinsquebec.com/assets/cq-email-header.png" width="600" alt="Coins Québec" style="display:block;width:100%;max-width:600px;height:auto;border:0;"/>
+    </div>
+    <div style="padding:42px 44px;">
+      <t t-set="cq_contact" t-value="((object.contact_name or '').strip().split() or [''])[0]"/>
+      <t t-set="cq_etab" t-value="object.name or 'votre établissement'"/>
+      <h1 style="font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:27px;color:#1F2A1E;margin:0 0 18px;line-height:1.3;">Suite à notre rencontre</h1>
+      <p style="font-size:14.5px;line-height:1.75;color:#4C5645;margin:0 0 16px;">
+        Bonjour <t t-if="cq_contact"><t t-out="cq_contact"/></t><t t-else="">,</t><t t-if="cq_contact">,</t>
+      </p>
+      <p style="font-size:14.5px;line-height:1.75;color:#4C5645;margin:0 0 16px;">
+        Merci pour votre temps aujourd'hui — c'était un plaisir de découvrir
+        <strong><t t-out="cq_etab"/></strong>.
+      </p>
+      <p style="font-size:14.5px;line-height:1.75;color:#4C5645;margin:0 0 8px;">
+        Comme discuté, voici un aperçu rapide de comment Coins Québec fonctionne concrètement :
+      </p>
+      <p style="text-align:center;margin:24px 0 8px;">
+        <a href="https://coinsquebec.com/assets/video/prospection-divertissement.html"
+           style="display:block;text-decoration:none;">
+          <img src="https://coinsquebec.com/assets/video/prospection-divertissement.jpg"
+               alt="Voir la vidéo de démonstration" width="512"
+               style="display:block;width:100%;max-width:512px;height:auto;border-radius:8px;border:0;margin:0 auto;"/>
+        </a>
+      </p>
+      <p style="text-align:center;font-size:11px;color:#9C7A32;margin:0 0 24px;letter-spacing:.04em;">Lien cliquable — pas de pièce jointe</p>
+      <div style="background:#EDE7D6;border:1px solid #D9A94D;border-radius:8px;padding:22px 24px;margin:8px 0 22px;">
+        <div style="font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;color:#9C7A32;margin-bottom:14px;font-weight:600;">Ce qu'on propose</div>
+        <div style="margin-bottom:16px;">
+          <div style="font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:16.5px;color:#1F2A1E;">Visibilité</div>
+          <div style="font-size:13px;color:#4C5645;line-height:1.6;margin-top:4px;">Votre établissement sur la carte Coins Québec, filmé et présenté par des créateurs locaux, commission de <strong>10 %</strong> seulement sur ce qui est généré.</div>
+        </div>
+        <div style="margin-bottom:16px;">
+          <div style="font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:16.5px;color:#1F2A1E;">Digitalisation</div>
+          <div style="font-size:13px;color:#4C5645;line-height:1.6;margin-top:4px;">Calendrier de disponibilités, réservations directes, connexion à votre site existant — <strong>10 % des réservations ou 199 $ CAD/mois</strong>.</div>
+        </div>
+        <div>
+          <div style="font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:16.5px;color:#1F2A1E;">Marketing</div>
+          <div style="font-size:13px;color:#4C5645;line-height:1.6;margin-top:4px;">Site internet, gestion réseaux sociaux et shooting mensuel avec Agence Doorway, si vous voulez pousser plus loin.</div>
+        </div>
+      </div>
+      <p style="font-size:14.5px;line-height:1.75;color:#4C5645;margin:0 0 22px;">
+        Aucun engagement à l'inscription — c'est gratuit, la commission ne s'applique que sur ce qu'on vous apporte réellement.
+      </p>
+      <div style="background:#1F2A1E;border-radius:10px;padding:26px 22px;text-align:center;margin:8px 0 8px;">
+        <p style="font-size:13px;line-height:1.65;color:#F5F1E6;margin:0 0 16px;">2 minutes : nom, contact, région. Vous complétez le reste (vidéo, photos, prix) quand vous voulez.</p>
+        <a href="https://coinsquebec.com/commercants"
+           style="display:inline-block;background:#D9A94D;color:#1F2A1E;font-weight:600;font-size:13.5px;padding:12px 28px;border-radius:24px;text-decoration:none;letter-spacing:.04em;">OUVRIR MA FICHE →</a>
+      </div>
+      <div style="margin-top:34px;font-size:14px;color:#4C5645;line-height:1.7;">
+        Je reste disponible si vous avez des questions. Au plaisir de démarrer avec vous.<br/><br/>
+        <span style="font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:17px;color:#1F2A1E;"><t t-out="user.name or (object.user_id.name if object.user_id else '') or 'Karine Barmaki'"/></span><br/>
+        Coins Québec
+      </div>
+    </div>
+    <div style="padding:20px 40px 30px;text-align:center;font-size:10.5px;color:#A8A084;letter-spacing:.05em;">COINS QUÉBEC — LE QUÉBEC, RÉGION PAR RÉGION</div>
+  </div>
+</div>
+        </field>
+    </record>
+
+    <!--
+      Prospection CQ — template DISTINCT du Marocain (ne pas modifier Zakaria).
+      Structure technique calquée (salut / vidéo / offre / CTA / signature).
+      Contenu = BROUILLON DE TEST seulement. Karine Barmaki fournira le texte final.
+    -->
+    <record id="mail_template_cq_prospection" model="mail.template">
+        <field name="name">Coins Québec — Prospection restaurant</field>
+        <field name="model_id" ref="model_coins_quebec_partenariat"/>
+        <field name="subject">Coins Québec — visibilité vidéo pour {{ object.name or 'votre établissement' }}</field>
+        <field name="email_from">{{ user.email_formatted }}</field>
+        <field name="email_to">{{ object.email }}</field>
+        <field name="use_default_to" eval="False"/>
+        <field name="auto_delete" eval="False"/>
+        <field name="description">Texte validé Karine Barmaki (29 août 2026). Corps = data/emails/email_{restaurant,hotel,spa,divertissement}.html selon type_partenaire. Vignette https coinsquebec.com/assets/video/. CTA Martin + UTM. Envoi MANUEL (bouton Envoyer courriel prospection). Canal recommandé : Brevo (SPF).</field>
+        <field name="body_html" type="html">
+<div style="margin:0;background:#EDE7D6;font-family:Jost,Segoe UI,Helvetica,Arial,sans-serif;color:#232A20;">
+  <div style="max-width:600px;margin:0 auto;background:#F5F1E6;">
+    <div style="background:#8B1E1E;padding:10px 20px;text-align:center;color:#F5F1E6;font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;">
+      BROUILLON À VALIDER — texte provisoire de test — ne pas envoyer aux partenaires
+    </div>
+    <div style="background:#1F2A1E;line-height:0;text-align:center;">
+      <img src="https://coinsquebec.com/assets/cq-email-header.png" width="600" alt="Coins Québec" style="display:block;width:100%;max-width:600px;height:auto;border:0;"/>
+    </div>
+    <div style="padding:42px 44px;">
+      <t t-set="cq_contact" t-value="((object.contact_name or '').strip().split() or [''])[0]"/>
+      <t t-set="cq_etab" t-value="object.name or 'votre établissement'"/>
+      <h1 style="font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:27px;color:#1F2A1E;margin:0 0 18px;line-height:1.3;">[BROUILLON] Votre établissement sur Coins Québec</h1>
+      <p style="font-size:14.5px;line-height:1.75;color:#4C5645;margin:0 0 16px;">
+        Bonjour <t t-if="cq_contact"><t t-out="cq_contact"/></t><t t-else="">,</t><t t-if="cq_contact">,</t>
+      </p>
+      <p style="font-size:13px;line-height:1.7;color:#8B1E1E;margin:0 0 16px;font-style:italic;">
+        Placeholder — Karine Barmaki remplacera ce paragraphe par le texte d'appel validé.
+        Angle prévu : présentation de <strong><t t-out="cq_etab"/></strong> via une courte vidéo style Google Maps.
+      </p>
+      <p style="text-align:center;margin:24px 0 8px;">
+        <a href="https://coinsquebec.com/assets/video/PLACEHOLDER-prospection.html"
+           style="background:#1F2A1E;color:#D9A94D;padding:12px 22px;text-decoration:none;border-radius:8px;font-weight:600;display:inline-block;letter-spacing:.02em;">
+          [BROUILLON] Voir la vidéo (Google Maps)
+        </a>
+      </p>
+      <p style="text-align:center;font-size:11px;color:#9C7A32;margin:0 0 24px;letter-spacing:.04em;">Lien placeholder — pas de pièce jointe — URL finale à fournir</p>
+      <div style="background:#EDE7D6;border:1px dashed #8B1E1E;border-radius:8px;padding:22px 24px;margin:8px 0 22px;">
+        <div style="font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;color:#8B1E1E;margin-bottom:14px;font-weight:600;">Points du script d'appel (provisoires)</div>
+        <div style="margin-bottom:16px;">
+          <div style="font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:16.5px;color:#1F2A1E;">Vidéo Google Maps</div>
+          <div style="font-size:13px;color:#4C5645;line-height:1.6;margin-top:4px;">[BROUILLON] Courte vidéo de l'établissement, angle carte / visibilité locale. Texte exact à valider.</div>
+        </div>
+        <div style="margin-bottom:16px;">
+          <div style="font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:16.5px;color:#1F2A1E;">Conciergerie</div>
+          <div style="font-size:13px;color:#4C5645;line-height:1.6;margin-top:4px;">[BROUILLON] Distribution : 200+ plateformes / 1300 marketplaces. Chiffres et formulation à confirmer par Karine Barmaki.</div>
+        </div>
+        <div>
+          <div style="font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:16.5px;color:#1F2A1E;">Groupes et événements</div>
+          <div style="font-size:13px;color:#4C5645;line-height:1.6;margin-top:4px;">[BROUILLON] Visibilité auprès des groupes et événements Coins Québec. Détail à rédiger.</div>
+        </div>
+      </div>
+      <div style="background:#1F2A1E;border-radius:10px;padding:26px 22px;text-align:center;margin:8px 0 8px;">
+        <p style="font-size:13px;line-height:1.65;color:#F5F1E6;margin:0 0 16px;">[BROUILLON] CTA provisoire — URL et libellé à valider.</p>
+        <a href="https://coinsquebec.com/commercants"
+           style="display:inline-block;background:#D9A94D;color:#1F2A1E;font-weight:600;font-size:13.5px;padding:12px 28px;border-radius:24px;text-decoration:none;letter-spacing:.04em;">OUVRIR MA FICHE →</a>
+      </div>
+      <div style="margin-top:34px;font-size:14px;color:#4C5645;line-height:1.7;">
+        [BROUILLON] Phrase de clôture à fournir.<br/><br/>
+        <span style="font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:17px;color:#1F2A1E;"><t t-out="user.name or (object.user_id.name if object.user_id else '') or 'Karine Barmaki'"/></span><br/>
+        Coins Québec
+      </div>
+    </div>
+    <div style="padding:20px 40px 30px;text-align:center;font-size:10.5px;color:#A8A084;letter-spacing:.05em;">BROUILLON — COINS QUÉBEC — NE PAS ENVOYER TEL QUEL</div>
+  </div>
+</div>
+        </field>
+    </record>
+
+    <record id="mail_template_cq_prospection_hotel" model="mail.template">
+        <field name="name">Coins Québec — Prospection hôtel / hébergement</field>
+        <field name="model_id" ref="model_coins_quebec_partenariat"/>
+        <field name="subject">Coins Québec — visibilité vidéo pour {{ object.name or 'votre établissement' }}</field>
+        <field name="email_from">{{ user.email_formatted }}</field>
+        <field name="email_to">{{ object.email }}</field>
+        <field name="use_default_to" eval="False"/>
+        <field name="auto_delete" eval="False"/>
+        <field name="description">Texte validé Karine Barmaki. Variante hôtel. Corps = data/emails/email_hotel.html. CTA Martin utm_content=hotel. Brevo.</field>
+        <field name="body_html" type="html"><div>Voir data/emails/email_hotel.html</div></field>
+    </record>
+    <record id="mail_template_cq_prospection_spa" model="mail.template">
+        <field name="name">Coins Québec — Prospection spa / bien-être</field>
+        <field name="model_id" ref="model_coins_quebec_partenariat"/>
+        <field name="subject">Coins Québec — visibilité vidéo pour {{ object.name or 'votre établissement' }}</field>
+        <field name="email_from">{{ user.email_formatted }}</field>
+        <field name="email_to">{{ object.email }}</field>
+        <field name="use_default_to" eval="False"/>
+        <field name="auto_delete" eval="False"/>
+        <field name="description">Texte validé Karine Barmaki. Variante spa. Corps = data/emails/email_spa.html. CTA Martin utm_content=spa. Brevo.</field>
+        <field name="body_html" type="html"><div>Voir data/emails/email_spa.html</div></field>
+    </record>
+    <record id="mail_template_cq_prospection_divertissement" model="mail.template">
+        <field name="name">Coins Québec — Prospection activité / divertissement</field>
+        <field name="model_id" ref="model_coins_quebec_partenariat"/>
+        <field name="subject">Coins Québec — visibilité vidéo pour {{ object.name or 'votre établissement' }}</field>
+        <field name="email_from">{{ user.email_formatted }}</field>
+        <field name="email_to">{{ object.email }}</field>
+        <field name="use_default_to" eval="False"/>
+        <field name="auto_delete" eval="False"/>
+        <field name="description">Texte validé Karine Barmaki. Variante activité. Corps = data/emails/email_divertissement.html. CTA Martin utm_content=divertissement. Brevo.</field>
+        <field name="body_html" type="html"><div>Voir data/emails/email_divertissement.html</div></field>
+    </record>
+</odoo>

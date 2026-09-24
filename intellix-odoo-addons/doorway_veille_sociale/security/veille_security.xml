@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="group_veille_settings" model="res.groups">
+        <field name="name">Veille sociale — Configuration</field>
+        <field name="comment">Accès aux connexions (Meta, Reddit, Google) et paramètres veille.</field>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+</odoo>

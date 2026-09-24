@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="doorway_crm_lead_lost_view_form" model="ir.ui.view">
+        <field name="name">crm.lead.lost.form.doorway</field>
+        <field name="model">crm.lead.lost</field>
+        <field name="inherit_id" ref="crm.crm_lead_lost_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="attributes">
+                <attribute name="class">o_doorway_lost_wizard</attribute>
+            </xpath>
+            <xpath expr="//field[@name='lost_reason_id']" position="attributes">
+                <attribute name="string">Motif de perte</attribute>
+                <attribute name="placeholder">Choisir un motif…</attribute>
+            </xpath>
+            <xpath expr="//label[@for='lost_feedback']" position="attributes">
+                <attribute name="string">Note de clôture</attribute>
+            </xpath>
+            <xpath expr="//field[@name='lost_feedback']" position="attributes">
+                <attribute name="placeholder">Précisez le contexte (optionnel)…</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_lost_reason_apply']" position="attributes">
+                <attribute name="string">Marquer comme perdu</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

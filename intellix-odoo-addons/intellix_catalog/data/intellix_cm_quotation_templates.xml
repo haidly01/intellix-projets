@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="quotation_template_starter_intellix" model="sale.order.template">
+        <field name="name">Starter Intellix</field>
+        <field name="ix_template_code">starter_intellix</field>
+        <field name="ix_tax_mode">with_tax</field>
+        <field name="sequence">10</field>
+        <field name="number_of_days">15</field>
+        <field name="company_id" eval="False"/>
+        <field name="note" type="html">
+            <p>Abonnement Intellix — CRM, compta, vente, réseaux sociaux.</p>
+            <p>Générer en Digital Doorway (dh) ou Agence Doorway ($CAD) selon le client.</p>
+        </field>
+    </record>
+    <record id="quotation_line_starter_base" model="sale.order.template.line">
+        <field name="sale_order_template_id" ref="quotation_template_starter_intellix"/>
+        <field name="sequence">10</field>
+        <field name="product_id" model="product.product" search="[('default_code', '=', 'INTELLIX_BASE')]"/>
+        <field name="product_uom_qty">1</field>
+    </record>
+
+    <record id="quotation_template_croissance_ia" model="sale.order.template">
+        <field name="name">Croissance IA</field>
+        <field name="ix_template_code">croissance_ia</field>
+        <field name="ix_tax_mode">with_tax</field>
+        <field name="sequence">20</field>
+        <field name="number_of_days">15</field>
+        <field name="company_id" eval="False"/>
+        <field name="note" type="html">
+            <p>Intellix + Agent IA. Conception neuf par défaut — remplacer par reprise métier si le partenaire reprend un agent Coins Marocain. Bundle M par défaut — ajuster S/L.</p>
+        </field>
+    </record>
+    <record id="quotation_line_croissance_base" model="sale.order.template.line">
+        <field name="sale_order_template_id" ref="quotation_template_croissance_ia"/>
+        <field name="sequence">10</field>
+        <field name="product_id" model="product.product" search="[('default_code', '=', 'INTELLIX_BASE')]"/>
+        <field name="product_uom_qty">1</field>
+    </record>
+    <record id="quotation_line_croissance_abo" model="sale.order.template.line">
+        <field name="sale_order_template_id" ref="quotation_template_croissance_ia"/>
+        <field name="sequence">20</field>
+        <field name="product_id" model="product.product" search="[('default_code', '=', 'AGENT_IA_ABO')]"/>
+        <field name="product_uom_qty">1</field>
+    </record>
+    <record id="quotation_line_croissance_conception" model="sale.order.template.line">
+        <field name="sale_order_template_id" ref="quotation_template_croissance_ia"/>
+        <field name="sequence">30</field>
+        <field name="product_id" model="product.product" search="[('default_code', '=', 'AGENT_IA_CONCEPTION_NEUF')]"/>
+        <field name="product_uom_qty">1</field>
+    </record>
+    <record id="quotation_line_croissance_bundle" model="sale.order.template.line">
+        <field name="sale_order_template_id" ref="quotation_template_croissance_ia"/>
+        <field name="sequence">40</field>
+        <field name="product_id" model="product.product" search="[('default_code', '=', 'AGENT_IA_BUNDLE_M')]"/>
+        <field name="product_uom_qty">1</field>
+    </record>
+
+    <record id="quotation_template_presence_digitale" model="sale.order.template">
+        <field name="name">Présence Digitale Complète</field>
+        <field name="ix_template_code">presence_digitale</field>
+        <field name="ix_tax_mode">with_tax</field>
+        <field name="sequence">30</field>
+        <field name="number_of_days">15</field>
+        <field name="company_id" eval="False"/>
+        <field name="note" type="html">
+            <p>Pack complet. Ajuster conception (neuf/reprise), bundle S/M/L, site Simple/Standard/Premium et SEO Essentiel/Croissance/Intensif avant envoi.</p>
+        </field>
+    </record>
+    <record id="quotation_line_presence_base" model="sale.order.template.line">
+        <field name="sale_order_template_id" ref="quotation_template_presence_digitale"/>
+        <field name="sequence">10</field>
+        <field name="product_id" model="product.product" search="[('default_code', '=', 'INTELLIX_BASE')]"/>
+        <field name="product_uom_qty">1</field>
+    </record>
+    <record id="quotation_line_presence_abo" model="sale.order.template.line">
+        <field name="sale_order_template_id" ref="quotation_template_presence_digitale"/>
+        <field name="sequence">20</field>
+        <field name="product_id" model="product.product" search="[('default_code', '=', 'AGENT_IA_ABO')]"/>
+        <field name="product_uom_qty">1</field>
+    </record>
+    <record id="quotation_line_presence_conception" model="sale.order.template.line">
+        <field name="sale_order_template_id" ref="quotation_template_presence_digitale"/>
+        <field name="sequence">30</field>
+        <field name="product_id" model="product.product" search="[('default_code', '=', 'AGENT_IA_CONCEPTION_NEUF')]"/>
+        <field name="product_uom_qty">1</field>
+    </record>
+    <record id="quotation_line_presence_bundle" model="sale.order.template.line">
+        <field name="sale_order_template_id" ref="quotation_template_presence_digitale"/>
+        <field name="sequence">40</field>
+        <field name="product_id" model="product.product" search="[('default_code', '=', 'AGENT_IA_BUNDLE_M')]"/>
+        <field name="product_uom_qty">1</field>
+    </record>
+    <record id="quotation_line_presence_site" model="sale.order.template.line">
+        <field name="sale_order_template_id" ref="quotation_template_presence_digitale"/>
+        <field name="sequence">50</field>
+        <field name="product_id" model="product.product" search="[('default_code', '=', 'SITE_WEB_STANDARD')]"/>
+        <field name="product_uom_qty">1</field>
+    </record>
+    <record id="quotation_line_presence_maint" model="sale.order.template.line">
+        <field name="sale_order_template_id" ref="quotation_template_presence_digitale"/>
+        <field name="sequence">60</field>
+        <field name="product_id" model="product.product" search="[('default_code', '=', 'MAINTENANCE_SITE')]"/>
+        <field name="product_uom_qty">1</field>
+    </record>
+    <record id="quotation_line_presence_seo" model="sale.order.template.line">
+        <field name="sale_order_template_id" ref="quotation_template_presence_digitale"/>
+        <field name="sequence">70</field>
+        <field name="product_id" model="product.product" search="[('default_code', '=', 'SEO_ESSENTIEL')]"/>
+        <field name="product_uom_qty">1</field>
+    </record>
+</odoo>

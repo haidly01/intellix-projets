@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_users_form_portal_manager" model="ir.ui.view">
+        <field name="name">res.users.form.intellix.portal.manager</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='login']" position="after">
+                <field name="is_portal_manager"
+                       help="Gestionnaire de l'espace partenaire : accès facturation, profil de l'organisation, invitation/retrait des membres."/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

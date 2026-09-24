@@ -1,0 +1,60 @@
+{
+  "name": "sofia-es-demo — 01 Outbound VICIdial",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "sofia-es-demo/outbound",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "name": "Webhook Outbound",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        300
+      ],
+      "webhookId": "sofia-es-demo-outbound"
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = $input.first().json;\nconst body = item.body || item;\nfunction norm(p) {\n  if (!p) return '';\n  const s = String(p).trim();\n  const d = s.replace(/\\D/g, '');\n  if (d.startsWith('34') && d.length > 9) return '+' + d;\n  if (d.length === 9) return '+34' + d;\n  if (s.startsWith('+')) return '+' + d;\n  return '+' + d;\n}\nconst phone = norm(body.telephone || body.phone || body.phone_number);\nif (!phone) throw new Error('telephone requis');\nconst odooUrl = ($env.ODOO_URL || 'https://intellixcrm.com').replace(/\\/$/, '');\nconst tenantKey = $env.DOORWAY_DEMO_TENANT_API_KEY || $env.DOORWAY_TENANT_API_KEY;\nconst res = await this.helpers.httpRequest({\n  method: 'POST',\n  url: odooUrl + '/doorway/api/sofia-es/dial',\n  body: {\n    jsonrpc: '2.0',\n    method: 'call',\n    params: {\n      tenant_api_key: tenantKey,\n      telephone: phone,\n      nombre: body.nombre || body.name || '',\n      partner_id: body.partner_id || body.lead_id || '',\n      campaign: $env.VICIDIAL_DEMO_CAMPAIGN || 'ABD_DEMO',\n    },\n    id: Date.now(),\n  },\n  json: true,\n  timeout: 30000,\n});\nconst result = res.result || res;\nreturn [{\n  json: {\n    telephone: phone,\n    campaign: $env.VICIDIAL_DEMO_CAMPAIGN || 'ABD_DEMO',\n    agent_id: $env.DEMO_AGENT_ID || 'sofia-es-demo-abdallah',\n    provider: 'vicidial',\n    trunk: 'TrustSIP',\n    demo: true,\n    ok: !!(result.ok || result.success),\n    ...result,\n  },\n}];"
+      },
+      "name": "Dial VICIdial TrustSIP",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Outbound": {
+      "main": [
+        [
+          {
+            "node": "Dial VICIdial TrustSIP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [
+    {
+      "name": "sofia-es-demo"
+    },
+    {
+      "name": "demo-abdallah"
+    },
+    {
+      "name": "vicidial"
+    }
+  ]
+}

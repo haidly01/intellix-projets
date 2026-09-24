@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="agent_energie_pro" model="doorway.agent.profile">
+        <field name="name">Énergie Pro · J+0 Qualification</field>
+        <field name="energie_agent_role">j0_qualification</field>
+        <field name="provider">elevenlabs</field>
+        <field name="external_agent_id">ELEVENLABS_AGENT_ID_ENERGIE</field>
+        <field name="pipeline">renovation</field>
+        <field name="agent_type">outbound</field>
+        <field name="language">fr</field>
+        <field name="default_volet">qualification</field>
+        <field name="timezone">America/Toronto</field>
+        <field name="transfer_phone">+14389929200</field>
+        <field name="status">active</field>
+        <field name="allow_human_transfer" eval="True"/>
+        <field name="allow_send_sms" eval="True"/>
+        <field name="system_prompt">Alex — expert énergie Doorway (thermopompe, isolation, portes &amp; fenêtres). Qualification 2-3 min, subventions 2026, transfert humain si hot.</field>
+    </record>
+
+    <record id="agent_energie_pro_phone" model="doorway.agent.phone.number">
+        <field name="agent_id" ref="agent_energie_pro"/>
+        <field name="name">Énergie Pro SIP</field>
+        <field name="phone_number">+15818900456</field>
+        <field name="sip_trunk_name">Énergie Pro-5818900456</field>
+        <field name="twilio_sip_trunk_sid">TK36b2a72091465e309606d218a3af145d</field>
+        <field name="usage">outbound</field>
+        <field name="is_primary" eval="True"/>
+    </record>
+
+    <record id="agent_energie_volet_qualification" model="doorway.agent.volet">
+        <field name="agent_id" ref="agent_energie_pro"/>
+        <field name="sequence">10</field>
+        <field name="code">qualification</field>
+        <field name="prompt_hint">Qualification énergie — site source icithermopompe / isolationqc / portesetfenetresqc.</field>
+    </record>
+</odoo>

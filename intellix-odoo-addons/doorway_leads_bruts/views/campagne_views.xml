@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_campagne_tree" model="ir.ui.view">
+        <field name="name">doorway.campagne.extraction.tree</field>
+        <field name="model">doorway.campagne.extraction</field>
+        <field name="arch" type="xml">
+            <list default_order="create_date desc">
+                <field name="name"/>
+                <field name="result_summary" string="Données extraites"/>
+                <field name="leads_count" string="Leads" sum="Total leads"/>
+                <field name="volume_cible" string="Objectif" sum="Total objectif" optional="show"/>
+                <field name="leads_skipped_dup" string="Doublons" sum="Total doublons" optional="show"/>
+                <field name="mot_cle" optional="show"/>
+                <field name="zone_geographique" optional="show"/>
+                <field name="ville_region" optional="show"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'done'"
+                       decoration-warning="state == 'running'"
+                       decoration-danger="state == 'error'"
+                       decoration-muted="state in ('cancelled', 'draft')"/>
+                <field name="progress_pct" widget="progressbar" optional="hide"/>
+                <field name="cout_credits_estime"/>
+                <field name="user_id" optional="show"/>
+                <field name="date_start" optional="hide"/>
+                <field name="date_end" optional="show"/>
+                <field name="create_date" string="Créée le"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_campagne_form" model="ir.ui.view">
+        <field name="name">doorway.campagne.extraction.form</field>
+        <field name="model">doorway.campagne.extraction</field>
+        <field name="arch" type="xml">
+            <form class="o_leads_campagne_form">
+                <header>
+                    <button name="action_lancer_extraction" string="Lancer" type="object"
+                            invisible="state != 'draft'" class="btn-primary"/>
+                    <button name="action_export_csv" string="Export CSV" type="object"
+                            invisible="leads_count == 0"/>
+                    <button name="action_import_all_crm" string="Importer tout au CRM" type="object"
+                            invisible="leads_count == 0"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,running,done,error"/>
+                </header>
+                <sheet readonly="state in ('done', 'error', 'cancelled')">
+                    <div class="oe_button_box" name="button_box">
+                        <button type="action" class="oe_stat_button" icon="fa-database"
+                                name="%(doorway_leads_bruts.action_leads_bruts_campagne)d">
+                            <field name="leads_count" widget="statinfo" string="Leads extraits"/>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-bullseye">
+                            <field name="volume_cible" widget="statinfo" string="Objectif"/>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-copy"
+                                invisible="leads_skipped_dup == 0">
+                            <field name="leads_skipped_dup" widget="statinfo" string="Doublons ignorés"/>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-cloud-download"
+                                invisible="leads_scraped_raw == 0">
+                            <field name="leads_scraped_raw" widget="statinfo" string="Bruts scrapés"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                        <h3 class="o_leads_result_summary">
+                            <field name="result_summary" readonly="1" nolabel="1"/>
+                        </h3>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="mot_cle"/>
+                            <field name="zone_geographique"/>
+                            <field name="ville_region"/>
+                            <field name="rayon_km"/>
+                            <field name="volume_possible" readonly="1"/>
+                            <field name="volume_cible"/>
+                        </group>
+                        <group string="Résultats extraction">
+                            <field name="progress_pct" widget="progressbar"/>
+                            <field name="leads_count" readonly="1"/>
+                            <field name="leads_skipped_dup" readonly="1"/>
+                            <field name="leads_scraped_raw" readonly="1"/>
+                            <field name="cout_credits_estime"/>
+                            <field name="cout_credits_reel"/>
+                            <field name="prix_unitaire_affiche"/>
+                            <field name="marge_pct" groups="doorway_leads_bruts.group_admin_commercial"/>
+                            <field name="cout_reel_interne" groups="doorway_leads_bruts.group_admin_commercial"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Sources">
+                            <field name="sources_selectionnees" widget="many2many_tags"/>
+                        </page>
+                        <page string="Leads extraits">
+                            <field name="leads_bruts_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="phone"/>
+                                    <field name="email"/>
+                                    <field name="city"/>
+                                    <field name="source_id"/>
+                                    <field name="has_phone"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Erreur" invisible="not error_message">
+                            <field name="error_message"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_campagne_search" model="ir.ui.view">
+        <field name="name">doorway.campagne.extraction.search</field>
+        <field name="model">doorway.campagne.extraction</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="mot_cle"/>
+                <field name="ville_region"/>
+                <field name="zone_geographique"/>
+                <field name="user_id"/>
+                <filter string="Extractions passées" name="past"
+                        domain="[('state', 'in', ('done', 'error', 'cancelled'))]"/>
+                <separator/>
+                <filter string="Centres d'appels" name="sector_callcenter"
+                        domain="['|', '|', ('mot_cle', 'ilike', 'appel'), ('mot_cle', 'ilike', 'call center'), ('name', 'ilike', 'appel')]"/>
+                <filter string="Panneaux solaires" name="sector_solar"
+                        domain="['|', '|', ('mot_cle', 'ilike', 'solaire'), ('mot_cle', 'ilike', 'panneau'), ('mot_cle', 'ilike', 'photovolt')]"/>
+                <separator/>
+                <filter string="Terminées" name="done" domain="[('state', '=', 'done')]"/>
+                <filter string="Erreurs" name="error" domain="[('state', '=', 'error')]"/>
+                <filter string="Annulées" name="cancelled" domain="[('state', '=', 'cancelled')]"/>
+                <separator/>
+                <filter string="Brouillons" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="En cours" name="running" domain="[('state', '=', 'running')]"/>
+                <separator/>
+                <filter string="Créée ce mois" name="create_date_month" date="create_date" default_period="month"/>
+                <filter string="Créée cette année" name="create_date_year" date="create_date" default_period="year"/>
+                <group>
+                    <filter string="État" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Zone" name="group_zone" context="{'group_by': 'zone_geographique'}"/>
+                    <filter string="Mois" name="group_month" context="{'group_by': 'create_date:month'}"/>
+                    <filter string="Responsable" name="group_user" context="{'group_by': 'user_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_campagne_kanban" model="ir.ui.view">
+        <field name="name">doorway.campagne.extraction.kanban</field>
+        <field name="model">doorway.campagne.extraction</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_small_column">
+                <field name="name"/>
+                <field name="leads_count"/>
+                <field name="volume_cible"/>
+                <field name="result_summary"/>
+                <field name="state"/>
+                <field name="mot_cle"/>
+                <field name="ville_region"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click">
+                            <strong><field name="name"/></strong>
+                            <div class="o_leads_kanban_stats">
+                                <span class="badge text-bg-primary">
+                                    <field name="leads_count"/> leads
+                                </span>
+                                <span class="text-muted" t-if="record.volume_cible.raw_value">
+                                    / <field name="volume_cible"/> obj.
+                                </span>
+                            </div>
+                            <div class="text-muted small"><field name="result_summary"/></div>
+                            <div><field name="mot_cle"/> — <field name="ville_region"/></div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_campagne_graph" model="ir.ui.view">
+        <field name="name">doorway.campagne.extraction.graph</field>
+        <field name="model">doorway.campagne.extraction</field>
+        <field name="arch" type="xml">
+            <graph type="bar" stacked="False">
+                <field name="create_date" interval="month"/>
+                <field name="leads_count" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_campagne_pivot" model="ir.ui.view">
+        <field name="name">doorway.campagne.extraction.pivot</field>
+        <field name="model">doorway.campagne.extraction</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="zone_geographique" type="row"/>
+                <field name="mot_cle" type="row"/>
+                <field name="leads_count" type="measure"/>
+                <field name="leads_skipped_dup" type="measure"/>
+                <field name="volume_cible" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_campagne_history" model="ir.actions.act_window">
+        <field name="name">Historique extractions</field>
+        <field name="res_model">doorway.campagne.extraction</field>
+        <field name="view_mode">list,kanban,graph,pivot,form</field>
+        <field name="domain">[('state', 'in', ('done', 'error', 'cancelled'))]</field>
+        <field name="search_view_id" ref="view_campagne_search"/>
+        <field name="context">{'search_default_past': 1, 'search_default_group_month': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucune extraction passée
+            </p>
+            <p>
+                Les extractions <strong>terminées</strong>, en <strong>erreur</strong> ou
+                <strong>annulées</strong> sont conservées ici.
+                Lancez une <strong>Nouvelle extraction</strong> pour enrichir l'historique.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_import_crm_leads" model="ir.actions.server">
+        <field name="name">Synchroniser depuis le CRM</field>
+        <field name="model_id" ref="model_doorway_campagne_extraction"/>
+        <field name="state">code</field>
+        <field name="code">action = model.import_from_crm_doorway(limit=500)</field>
+    </record>
+
+    <record id="action_campagne_running" model="ir.actions.act_window">
+        <field name="name">Extractions en cours</field>
+        <field name="res_model">doorway.campagne.extraction</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[('state', 'in', ('draft', 'running'))]</field>
+        <field name="search_view_id" ref="view_campagne_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucune extraction en cours
+            </p>
+            <p>
+                Brouillons et extractions actives apparaissent ici.
+                L'historique des extractions passées est dans le menu dédié.
+            </p>
+        </field>
+    </record>
+</odoo>

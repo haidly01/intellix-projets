@@ -1,0 +1,234 @@
+/*
+ * Agents IA — lisibilité thème sombre Intellix (texte clair sur fond bleu marine).
+ * Corrige le noir hérité d'Odoo/Bootstrap sur strong, labels, titres, etc.
+ */
+
+.ix-agent-wizard.o_intellix_client_action,
+.doorway-agents-dashboard.o_intellix_client_action,
+.ix-performance-dashboard.o_intellix_client_action,
+.ix-web-call.o_intellix_client_action {
+    --ix-agents-text: var(--ix-text, #f1f5f9);
+    --ix-agents-muted: var(--ix-text-muted, #94a3b8);
+    --ix-agents-surface: var(--ix-surface, #1a1a2e);
+    --ix-agents-border: var(--ix-border, #334155);
+    color: var(--ix-agents-text) !important;
+    background-color: var(--ix-bg, #0a0a1a) !important;
+}
+
+/* —— Wizard agent —— */
+.ix-agent-wizard.o_intellix_client_action .ix-wiz-panel,
+.ix-agent-wizard.o_intellix_client_action .ix-wiz-modal,
+.ix-agent-wizard.o_intellix_client_action .ix-wiz-voice-card,
+.ix-agent-wizard.o_intellix_client_action .ix-wiz-number-card,
+.ix-agent-wizard.o_intellix_client_action .ix-wiz-action-item,
+.ix-agent-wizard.o_intellix_client_action .ix-wiz-template-card,
+.ix-agent-wizard.o_intellix_client_action .ix-wiz-clone-panel,
+.ix-agent-wizard.o_intellix_client_action .ix-wiz-test-block {
+    color: var(--ix-agents-text) !important;
+}
+
+.ix-agent-wizard.o_intellix_client_action h2,
+.ix-agent-wizard.o_intellix_client_action h3,
+.ix-agent-wizard.o_intellix_client_action h4,
+.ix-agent-wizard.o_intellix_client_action p,
+.ix-agent-wizard.o_intellix_client_action label,
+.ix-agent-wizard.o_intellix_client_action legend,
+.ix-agent-wizard.o_intellix_client_action strong,
+.ix-agent-wizard.o_intellix_client_action .ix-wiz-hint,
+.ix-agent-wizard.o_intellix_client_action .ix-wiz-hint strong,
+.ix-agent-wizard.o_intellix_client_action .ix-wiz-summary-row strong,
+.ix-agent-wizard.o_intellix_client_action .ix-wiz-telephony-tab,
+.ix-agent-wizard.o_intellix_client_action .ix-wiz-phone-current,
+.ix-agent-wizard.o_intellix_client_action .ix-wiz-voice-card h3,
+.ix-agent-wizard.o_intellix_client_action .ix-wiz-voice-card p,
+.ix-agent-wizard.o_intellix_client_action .ix-wiz-number-card strong,
+.ix-agent-wizard.o_intellix_client_action .ix-wiz-sliders label,
+.ix-agent-wizard.o_intellix_client_action .ix-wiz-radio-group label,
+.ix-agent-wizard.o_intellix_client_action .ix-wiz-gender-group label,
+.ix-agent-wizard.o_intellix_client_action .ix-wiz-modal-reply {
+    color: var(--ix-agents-text) !important;
+}
+
+.ix-agent-wizard.o_intellix_client_action .ix-wiz-hint,
+.ix-agent-wizard.o_intellix_client_action .ix-wiz-field span,
+.ix-agent-wizard.o_intellix_client_action .ix-wiz-summary-row span,
+.ix-agent-wizard.o_intellix_client_action .ix-wiz-tokens,
+.ix-agent-wizard.o_intellix_client_action legend,
+.ix-agent-wizard.o_intellix_client_action .ix-wiz-voice-grid-title {
+    color: var(--ix-agents-muted) !important;
+}
+
+.ix-agent-wizard.o_intellix_client_action .ix-wiz-field input,
+.ix-agent-wizard.o_intellix_client_action .ix-wiz-field select,
+.ix-agent-wizard.o_intellix_client_action .ix-wiz-field textarea,
+.ix-agent-wizard.o_intellix_client_action .ix-wiz-prompt-editor textarea,
+.ix-agent-wizard.o_intellix_client_action select option {
+    color: var(--ix-agents-text) !important;
+    background-color: var(--ix-surface-elevated, #12121f) !important;
+    border: 1px solid var(--ix-agents-border) !important;
+    -webkit-text-fill-color: var(--ix-agents-text);
+}
+
+.ix-agent-wizard.o_intellix_client_action .ix-wiz-field input[type="file"] {
+    color: var(--ix-agents-muted) !important;
+    padding: 0.55rem 0.75rem;
+    border-radius: 8px;
+}
+
+.ix-agent-wizard.o_intellix_client_action .ix-wiz-field input[type="file"]::file-selector-button {
+    color: var(--ix-agents-text) !important;
+    background-color: var(--ix-surface-hover, #1e293b) !important;
+    border: 1px solid var(--ix-agents-border) !important;
+    border-radius: 6px;
+    padding: 0.4rem 0.85rem;
+    margin-right: 0.75rem;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.ix-agent-wizard.o_intellix_client_action .ix-wiz-field input[type="file"]::file-selector-button:hover {
+    background-color: rgba(99, 102, 241, 0.22) !important;
+    border-color: var(--ix-primary, #6366f1) !important;
+}
+
+.ix-agent-wizard.o_intellix_client_action .ix-wiz-clone-panel {
+    background: rgba(29, 158, 117, 0.1) !important;
+    border-color: rgba(29, 158, 117, 0.55) !important;
+}
+
+.ix-agent-wizard.o_intellix_client_action .ix-wiz-btn--secondary {
+    color: #ffffff !important;
+}
+
+.ix-agent-wizard.o_intellix_client_action .ix-wiz-number-card {
+    background: var(--ix-agents-surface) !important;
+    border-color: var(--ix-agents-border) !important;
+}
+
+.ix-agent-wizard.o_intellix_client_action .ix-wiz-telephony-tab:has(input:checked) {
+    color: var(--ix-agents-text) !important;
+}
+
+/* —— Dashboard agents —— */
+.doorway-agents-dashboard.o_intellix_client_action h1,
+.doorway-agents-dashboard.o_intellix_client_action h2,
+.doorway-agents-dashboard.o_intellix_client_action h3,
+.doorway-agents-dashboard.o_intellix_client_action p,
+.doorway-agents-dashboard.o_intellix_client_action strong,
+.doorway-agents-dashboard.o_intellix_client_action .ix-dash-agent-card__name,
+.doorway-agents-dashboard.o_intellix_client_action .ix-dash-stats__title,
+.doorway-agents-dashboard.o_intellix_client_action .ix-dash-stat-row__head strong {
+    color: var(--ix-agents-text) !important;
+}
+
+.doorway-agents-dashboard.o_intellix_client_action .ix-dash-hero__subtitle,
+.doorway-agents-dashboard.o_intellix_client_action .ix-dash-agent-card__role,
+.doorway-agents-dashboard.o_intellix_client_action .ix-dash-agent-card__meta,
+.doorway-agents-dashboard.o_intellix_client_action .ix-dash-stats__subtitle,
+.doorway-agents-dashboard.o_intellix_client_action .ix-dash-stat-row__head,
+.doorway-agents-dashboard.o_intellix_client_action .ix-dash-footer,
+.doorway-agents-dashboard.o_intellix_client_action .ix-dash-loading,
+.doorway-agents-dashboard.o_intellix_client_action .ix-dash-empty {
+    color: var(--ix-agents-muted) !important;
+}
+
+.doorway-agents-dashboard.o_intellix_client_action .ix-dash-select,
+.doorway-agents-dashboard.o_intellix_client_action .ix-dash-select option {
+    color: var(--ix-agents-text) !important;
+    background-color: var(--ix-agents-surface) !important;
+}
+
+/* —— Performance IA —— */
+.ix-performance-dashboard.o_intellix_client_action h1,
+.ix-performance-dashboard.o_intellix_client_action h2,
+.ix-performance-dashboard.o_intellix_client_action h3,
+.ix-performance-dashboard.o_intellix_client_action h4,
+.ix-performance-dashboard.o_intellix_client_action p,
+.ix-performance-dashboard.o_intellix_client_action strong,
+.ix-performance-dashboard.o_intellix_client_action .ix-perf-card h3,
+.ix-performance-dashboard.o_intellix_client_action .ix-perf-call__row,
+.ix-performance-dashboard.o_intellix_client_action .ix-perf-transcript,
+.ix-performance-dashboard.o_intellix_client_action .ix-perf-weakness h4 {
+    color: var(--ix-agents-text) !important;
+}
+
+.ix-performance-dashboard.o_intellix_client_action .ix-perf-header p,
+.ix-performance-dashboard.o_intellix_client_action .ix-perf-card__calls,
+.ix-performance-dashboard.o_intellix_client_action .ix-perf-muted,
+.ix-performance-dashboard.o_intellix_client_action .ix-perf-weakness blockquote {
+    color: var(--ix-agents-muted) !important;
+}
+
+.ix-performance-dashboard.o_intellix_client_action select,
+.ix-performance-dashboard.o_intellix_client_action select option {
+    color: var(--ix-agents-text) !important;
+    background-color: var(--ix-agents-surface) !important;
+}
+
+/* —— Appel web test —— */
+.ix-web-call.o_intellix_client_action h1,
+.ix-web-call.o_intellix_client_action h2,
+.ix-web-call.o_intellix_client_action h3,
+.ix-web-call.o_intellix_client_action p,
+.ix-web-call.o_intellix_client_action label,
+.ix-web-call.o_intellix_client_action strong,
+.ix-web-call.o_intellix_client_action .ix-web-call__hero p {
+    color: var(--ix-agents-text) !important;
+}
+
+/* —— Vues formulaire / liste Odoo (backend) —— */
+.o_form_view[data-model^="doorway."] .o_form_label,
+.o_form_view[data-model^="doorway."] .o_field_widget,
+.o_form_view[data-model^="doorway."] .o_field_widget input,
+.o_form_view[data-model^="doorway."] .o_field_widget select,
+.o_form_view[data-model^="doorway."] .o_field_widget textarea,
+.o_form_view[data-model^="doorway."] .oe_title h1,
+.o_form_view[data-model^="doorway."] .o_form_uri,
+.o_form_view[data-model^="doorway."] .o_field_many2one a,
+.o_form_view.o_doorway_test_call_wizard .o_form_label,
+.o_form_view.o_doorway_test_call_wizard .o_field_widget {
+    color: var(--ix-text, #e8eaed) !important;
+}
+
+.o_form_view[data-model^="doorway."] .text-muted,
+.o_form_view.o_doorway_test_call_wizard .text-muted {
+    color: var(--ix-text-muted, #94a3b8) !important;
+}
+
+.o_form_view[data-model^="doorway."] .alert-info {
+    background: rgba(99, 102, 241, 0.15) !important;
+    border-color: rgba(99, 102, 241, 0.35) !important;
+    color: var(--ix-text, #e8eaed) !important;
+}
+
+.o_list_view[data-model^="doorway."] .o_list_table {
+    --table-color: var(--ix-text, #e8eaed);
+}
+
+.o_list_view[data-model^="doorway."] thead th {
+    color: var(--ix-text-muted, #c5cad3) !important;
+}
+
+.o_list_view[data-model^="doorway."] tbody td,
+.o_list_view[data-model^="doorway."] tbody th,
+.o_list_view[data-model^="doorway."] .o_group_header,
+.o_list_view[data-model^="doorway."] .o_group_header .o_group_name {
+    color: var(--ix-text, #e8eaed) !important;
+}
+
+.o_list_view[data-model^="doorway."] a.o_form_uri,
+.o_list_view[data-model^="doorway."] .o_field_many2one a {
+    color: var(--ix-primary-light, #a5b4fc) !important;
+}
+
+/* Configuration Agents IA */
+.o_base_settings [name="doorway_agents_dashboard"] .o_form_label,
+.o_base_settings [name="doorway_agents_dashboard"] label,
+.o_base_settings [name="doorway_agents_dashboard"] .text-muted,
+.o_base_settings [name="doorway_agents_dashboard"] .o_field_widget {
+    color: var(--ix-text, #e8eaed) !important;
+}
+
+.o_base_settings [name="doorway_agents_dashboard"] .text-muted {
+    color: var(--ix-text-muted, #94a3b8) !important;
+}

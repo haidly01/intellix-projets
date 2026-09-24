@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vue par défaut : pipelines Doorway hors marques dédiées (Coins / Driven / GC / ITEX / RénoFacile). -->
+    <record id="doorway_action_pipeline_all" model="ir.actions.act_window">
+        <field name="name">Tous les pipelines</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">kanban,list,graph,pivot,form,calendar,activity</field>
+        <field name="domain">[('team_id.is_agence_doorway_pipeline', '=', True), ('type', 'in', ('lead', 'opportunity')), ('team_id', 'not in', [6, 9, 105, 108, 109, 110, 94, 111, 112]), '|', ('coins_fiche_type', '=', False), ('coins_fiche_type', '!=', 'voyageur')]</field>
+        <field name="context">{
+            'default_type': 'opportunity',
+            'show_user_team_stages': 0,
+        }</field>
+        <field name="search_view_id" ref="crm.view_crm_case_opportunities_filter"/>
+    </record>
+
+    <!-- Actions pipeline (sans filtre « Mes opportunités ») -->
+    <record id="doorway_action_pipeline_renovation" model="ir.actions.act_window">
+        <field name="name">Rénovation</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">kanban,list,graph,pivot,form,calendar,activity</field>
+        <field name="domain" eval="[('type', '=', 'opportunity'), ('team_id', '=', ref('renovation_conciergerie.crm_team_renovation'))]"/>
+        <field name="context" eval="{
+            'default_type': 'opportunity',
+            'default_team_id': ref('renovation_conciergerie.crm_team_renovation'),
+            'search_default_team_id': [ref('renovation_conciergerie.crm_team_renovation')],
+            'show_user_team_stages': 0,
+            'renovation_active_pipeline_team_id': ref('renovation_conciergerie.crm_team_renovation'),
+        }"/>
+    </record>
+    <record id="doorway_action_pipeline_immobilier" model="ir.actions.act_window">
+        <field name="name">Immobilier</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">kanban,list,graph,pivot,form,calendar,activity</field>
+        <field name="domain" eval="[('type', '=', 'opportunity'), ('team_id', '=', ref('renovation_conciergerie.crm_team_immobilier'))]"/>
+        <field name="context" eval="{
+            'default_type': 'opportunity',
+            'default_team_id': ref('renovation_conciergerie.crm_team_immobilier'),
+            'search_default_team_id': [ref('renovation_conciergerie.crm_team_immobilier')],
+            'show_user_team_stages': 0,
+            'renovation_active_pipeline_team_id': ref('renovation_conciergerie.crm_team_immobilier'),
+        }"/>
+    </record>
+    <record id="doorway_action_pipeline_marketing" model="ir.actions.act_window">
+        <field name="name">Marketing</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">kanban,list,graph,pivot,form,calendar,activity</field>
+        <field name="domain" eval="[('team_id', '=', ref('renovation_conciergerie.crm_team_marketing')), ('type', 'in', ('lead', 'opportunity'))]"/>
+        <field name="context" eval="{
+            'default_type': 'lead',
+            'default_team_id': ref('renovation_conciergerie.crm_team_marketing'),
+            'search_default_team_id': [ref('renovation_conciergerie.crm_team_marketing')],
+            'show_user_team_stages': 0,
+            'renovation_active_pipeline_team_id': ref('renovation_conciergerie.crm_team_marketing'),
+        }"/>
+    </record>
+    <record id="doorway_action_pipeline_marketing_open" model="ir.actions.server">
+        <field name="name">Marketing</field>
+        <field name="model_id" ref="crm.model_crm_team"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_doorway_pipeline_marketing()</field>
+    </record>
+    <record id="doorway_action_pipeline_driven" model="ir.actions.act_window">
+        <field name="name">Driven</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">kanban,list,graph,pivot,form,calendar,activity</field>
+        <field name="domain" eval="[('type', '=', 'opportunity'), ('team_id', '=', ref('renovation_conciergerie.crm_team_driven'))]"/>
+        <field name="context" eval="{
+            'default_type': 'opportunity',
+            'default_team_id': ref('renovation_conciergerie.crm_team_driven'),
+            'search_default_team_id': [ref('renovation_conciergerie.crm_team_driven')],
+            'show_user_team_stages': 0,
+            'renovation_active_pipeline_team_id': ref('renovation_conciergerie.crm_team_driven'),
+        }"/>
+    </record>
+    <record id="doorway_action_pipeline_doorway_clients" model="ir.actions.act_window">
+        <field name="name">Doorway Clients</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">kanban,list,graph,pivot,form,calendar,activity</field>
+        <field name="domain" eval="[('type', '=', 'opportunity'), ('team_id', '=', ref('renovation_conciergerie.crm_team_doorway_b2b'))]"/>
+        <field name="context" eval="{
+            'default_type': 'opportunity',
+            'default_team_id': ref('renovation_conciergerie.crm_team_doorway_b2b'),
+            'search_default_team_id': [ref('renovation_conciergerie.crm_team_doorway_b2b')],
+            'show_user_team_stages': 0,
+            'renovation_active_pipeline_team_id': ref('renovation_conciergerie.crm_team_doorway_b2b'),
+        }"/>
+    </record>
+    <record id="doorway_action_martin_lea_positifs" model="ir.actions.act_window">
+        <field name="name">Mes leads Léa (positifs)</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">list,kanban,form,calendar,activity</field>
+        <field name="domain">[('type', '=', 'opportunity'), ('user_id', '=', uid), ('name', 'ilike', 'Léa —')]</field>
+        <field name="context">{
+            'search_default_lea_leads': 1,
+            'search_default_today_lea': 1,
+            'search_default_assigned_to_me': 1,
+            'default_type': 'opportunity',
+        }</field>
+    </record>
+
+    <record id="doorway_action_pipeline_assurance" model="ir.actions.act_window">
+        <field name="name">Assurance</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">kanban,list,graph,pivot,form,calendar,activity</field>
+        <field name="domain" eval="[('type', '=', 'opportunity'), ('team_id', '=', ref('renovation_conciergerie.crm_team_assurance'))]"/>
+        <field name="context" eval="{
+            'default_type': 'opportunity',
+            'default_team_id': ref('renovation_conciergerie.crm_team_assurance'),
+            'search_default_team_id': [ref('renovation_conciergerie.crm_team_assurance')],
+            'show_user_team_stages': 0,
+            'renovation_active_pipeline_team_id': ref('renovation_conciergerie.crm_team_assurance'),
+        }"/>
+    </record>
+
+    <menuitem id="menu_doorway_pipelines_root"
+              name="Pipelines Doorway"
+              parent="crm.crm_menu_sales"
+              action="action_renovation_pipelines_home"
+              sequence="2"
+              groups="sales_team.group_sale_salesman,renovation_conciergerie.group_doorway_pipeline_assigned"/>
+
+    <menuitem id="menu_doorway_pipeline_renovation"
+              name="Rénovation"
+              parent="menu_doorway_pipelines_root"
+              action="doorway_action_pipeline_renovation"
+              groups="renovation_conciergerie.group_pipeline_tab_renovation"
+              sequence="10"/>
+    <menuitem id="menu_doorway_pipeline_immobilier"
+              name="Immobilier"
+              parent="menu_doorway_pipelines_root"
+              action="doorway_action_pipeline_immobilier"
+              groups="renovation_conciergerie.group_pipeline_tab_immobilier"
+              sequence="20"/>
+    <menuitem id="menu_doorway_martin_lea_positifs"
+              name="Mes leads Léa (positifs)"
+              parent="menu_doorway_pipelines_root"
+              action="doorway_action_martin_lea_positifs"
+              groups="sales_team.group_sale_salesman"
+              sequence="15"/>
+    <menuitem id="menu_doorway_pipeline_marketing"
+              name="Marketing"
+              parent="menu_doorway_pipelines_root"
+              action="doorway_action_pipeline_marketing_open"
+              groups="renovation_conciergerie.group_pipeline_tab_marketing"
+              sequence="30"/>
+    <menuitem id="menu_doorway_pipeline_driven"
+              name="Driven"
+              parent="menu_doorway_pipelines_root"
+              action="doorway_action_pipeline_driven"
+              groups="renovation_conciergerie.group_pipeline_tab_driven"
+              sequence="40"/>
+    <menuitem id="menu_doorway_pipeline_doorway_clients"
+              name="Doorway Clients"
+              parent="menu_doorway_pipelines_root"
+              action="doorway_action_pipeline_doorway_clients"
+              groups="renovation_conciergerie.group_pipeline_tab_doorway_b2b"
+              sequence="50"/>
+    <menuitem id="menu_doorway_pipeline_assurance"
+              name="Assurance"
+              parent="menu_doorway_pipelines_root"
+              action="doorway_action_pipeline_assurance"
+              groups="renovation_conciergerie.group_pipeline_tab_assurance"
+              sequence="60"/>
+
+    <menuitem id="menu_doorway_pipelines_onboarding"
+              name="Visite guidée"
+              parent="menu_doorway_pipelines_root"
+              action="action_renovation_onboarding_tour"
+              sequence="99"
+              groups="sales_team.group_sale_salesman"/>
+
+    <!-- Ouverture app CRM → kanban Tous les pipelines (pas le scanner carte de visite) -->
+    <record id="crm.crm_menu_root" model="ir.ui.menu">
+        <field name="action" ref="doorway_action_pipeline_all"/>
+    </record>
+
+    <!-- Pipeline CRM par défaut : tous les pipelines Doorway (filtre par équipe via recherche) -->
+    <record id="crm.crm_lead_action_pipeline" model="ir.actions.act_window">
+        <field name="name">Pipeline</field>
+        <field name="domain">[('team_id.is_agence_doorway_pipeline', '=', True), ('type', 'in', ('lead', 'opportunity')), ('team_id', 'not in', [6, 9, 105, 108, 109, 110, 94, 111, 112]), '|', ('coins_fiche_type', '=', False), ('coins_fiche_type', '!=', 'voyageur')]</field>
+        <field name="context">{
+            'default_type': 'opportunity',
+            'show_user_team_stages': 0,
+        }</field>
+    </record>
+
+    <!-- Pistes CRM : hors équipe 6 RénoFacile (comme les autres marques hors CRM général). -->
+    <record id="crm.crm_lead_all_leads" model="ir.actions.act_window">
+        <field name="domain">['|', ('type', '=', 'lead'), ('type', '=', False), ('team_id', '!=', 6)]</field>
+    </record>
+</odoo>

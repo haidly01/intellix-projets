@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="mail_activity_voy_envoyer_accuse" model="mail.activity.type">
+        <field name="name">Envoyer accusé</field>
+        <field name="icon">fa-envelope-o</field>
+        <field name="res_model">crm.lead</field>
+        <field name="delay_count">0</field>
+        <field name="summary">Envoyer accusé — brouillon à valider</field>
+    </record>
+    <record id="mail_activity_voy_relance" model="mail.activity.type">
+        <field name="name">Relance voyageur</field>
+        <field name="icon">fa-clock-o</field>
+        <field name="res_model">crm.lead</field>
+        <field name="delay_count">4</field>
+        <field name="delay_unit">days</field>
+        <field name="summary">Relance voyageur CM</field>
+    </record>
+</odoo>

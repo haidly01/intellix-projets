@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_crm_lead_form_coins_evenement" model="ir.ui.view">
+        <field name="name">crm.lead.form.coins.evenement</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <field name="coins_is_event_lead" invisible="1"/>
+                <button name="action_suggest_prestataires"
+                        type="object"
+                        string="Suggérer prestataires"
+                        class="btn-secondary"
+                        invisible="not coins_is_event_lead"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Brief événement" name="coins_brief_evenement" invisible="not coins_is_event_lead">
+                    <group string="Informations de base">
+                        <group>
+                            <field name="coins_type_evenement"/>
+                            <field name="coins_date_souhaitee"/>
+                            <field name="coins_date_flexible"/>
+                            <field name="coins_nombre_personnes"/>
+                        </group>
+                        <group>
+                            <field name="coins_provenance_invites"/>
+                            <field name="coins_provenance_invites_detail"/>
+                            <field name="coins_budget_par_personne"/>
+                            <field name="coins_budget_total"/>
+                        </group>
+                    </group>
+                    <group string="Lieu et hébergement">
+                        <group>
+                            <field name="coins_avec_hebergement"/>
+                            <field name="coins_nombre_nuits" invisible="not coins_avec_hebergement"/>
+                            <field name="coins_type_lieu"/>
+                        </group>
+                        <group>
+                            <field name="coins_piscine_requise"/>
+                            <field name="coins_chambres_separees"/>
+                            <field name="coins_acces_pmr"/>
+                        </group>
+                    </group>
+                    <group string="Restauration">
+                        <group>
+                            <field name="coins_type_repas"/>
+                            <field name="coins_nombre_repas"/>
+                            <field name="coins_alcool_servi"/>
+                            <field name="coins_gateau_requis"/>
+                        </group>
+                        <group>
+                            <field name="coins_restrictions_alimentaires" colspan="2" nolabel="0"/>
+                        </group>
+                    </group>
+                </page>
+
+                <page string="Ambiance &amp; activités" name="coins_ambiance_activites" invisible="not coins_is_event_lead">
+                    <group string="Ambiance et décoration">
+                        <group>
+                            <field name="coins_theme_couleurs"/>
+                            <field name="coins_decoration_florale"/>
+                            <field name="coins_eclairage_special"/>
+                        </group>
+                        <group>
+                            <field name="coins_musique"/>
+                            <field name="coins_photo_video"/>
+                        </group>
+                    </group>
+                    <group string="Activités">
+                        <group>
+                            <field name="coins_activite_ids" widget="many2many_tags"/>
+                            <field name="coins_activites_enfants"/>
+                            <field name="coins_transport_requis"/>
+                        </group>
+                    </group>
+                </page>
+
+                <page string="Spécifique type" name="coins_specifique_type" invisible="not coins_is_event_lead">
+                    <group string="Mariage" invisible="coins_type_evenement != 'mariage'">
+                        <field name="coins_ceremonie_lieu"/>
+                        <field name="coins_nombre_jours_celebration"/>
+                        <field name="coins_wedding_planner_deja"/>
+                    </group>
+                    <group string="Anniversaire" invisible="coins_type_evenement != 'anniversaire'">
+                        <field name="coins_surprise"/>
+                        <field name="coins_etape_marquante"/>
+                    </group>
+                    <group string="Séminaire" invisible="coins_type_evenement != 'seminaire'">
+                        <field name="coins_objectif_seminaire"/>
+                        <field name="coins_materiel_technique"/>
+                        <field name="coins_salle_reunion_formelle"/>
+                        <field name="coins_facturation_entreprise"/>
+                    </group>
+                    <group string="Amis / famille"
+                           invisible="coins_type_evenement != 'groupe_amis' and coins_type_evenement != 'reunion_famille'">
+                        <field name="coins_occasion_precise"/>
+                        <field name="coins_niveau_organisation"/>
+                    </group>
+                    <div class="text-muted" invisible="coins_type_evenement">
+                        Sélectionnez un type d’événement dans l’onglet Brief pour afficher les champs spécifiques.
+                    </div>
+                </page>
+
+                <page string="Clôture" name="coins_cloture" invisible="not coins_is_event_lead">
+                    <group>
+                        <group>
+                            <field name="coins_date_limite_proposition"/>
+                            <field name="coins_moyen_recontact"/>
+                        </group>
+                        <group>
+                            <field name="coins_autres_prestataires_en_discussion"/>
+                            <field name="coins_sheet_row_key" readonly="1"/>
+                            <field name="coins_sheet_source_url" widget="url" readonly="1"/>
+                        </group>
+                    </group>
+                </page>
+
+                <page string="Prestataires" name="coins_prestataires" invisible="not coins_is_event_lead">
+                    <group>
+                        <div class="oe_button_box" colspan="2">
+                            <button name="action_suggest_prestataires"
+                                    type="object"
+                                    string="Suggérer prestataires"
+                                    class="btn-primary"/>
+                            <button name="action_assign_suggested_prestataires"
+                                    type="object"
+                                    string="Retenir toutes les suggestions"
+                                    class="btn-secondary"
+                                    invisible="not coins_prestataire_suggestion_ids"/>
+                        </div>
+                    </group>
+                    <group string="Suggestions" col="1">
+                        <field name="coins_prestataire_suggestion_ids" nolabel="1" colspan="2">
+                            <list>
+                                <field name="name"/>
+                                <field name="category"/>
+                                <field name="zone_couverture"/>
+                                <field name="disponibilite"/>
+                                <field name="specialite_tag_ids" widget="many2many_tags"/>
+                            </list>
+                        </field>
+                    </group>
+                    <group string="Prestataires retenus" col="1">
+                        <field name="coins_prestataire_ids" nolabel="1" colspan="2">
+                            <list>
+                                <field name="name"/>
+                                <field name="category"/>
+                                <field name="zone_couverture"/>
+                                <field name="disponibilite"/>
+                                <field name="specialite_tag_ids" widget="many2many_tags"/>
+                            </list>
+                        </field>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

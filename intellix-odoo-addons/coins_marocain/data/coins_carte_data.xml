@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Clé Google Maps browser : définie en prod via
+         ir.config_parameter key=coins_marocain.google_maps_browser_key
+         (évite conflit unique à l’upgrade XML). -->
+</odoo>

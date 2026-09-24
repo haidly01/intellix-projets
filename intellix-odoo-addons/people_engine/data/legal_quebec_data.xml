@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="jurisdiction_qc" model="pe.legal.jurisdiction">
+        <field name="name">Québec</field>
+        <field name="code">QC</field>
+        <field name="country">CA</field>
+        <field name="province_state">Québec</field>
+        <field name="main_law">Loi sur les normes du travail (LNT) — RLRQ c N-1.1</field>
+    </record>
+
+    <record id="legal_qc_lnt_82" model="pe.legal.article">
+        <field name="jurisdiction_id" ref="jurisdiction_qc"/>
+        <field name="code">LNT-82</field>
+        <field name="title">Délai de congé — mise à pied</field>
+        <field name="content">L'employeur qui met fin au contrat de travail d'un salarié doit lui donner un délai-congé raisonnable ou lui verser une indemnité compensatrice correspondante. Durée minimale : 1 semaine (3 mois à 1 an) → 2 semaines (1 an à 5 ans) → 4 semaines (5 ans à 10 ans) → 6 semaines (10 ans à 15 ans) → 8 semaines (15 ans et plus).</field>
+        <field name="plain_language">Avant de mettre fin à l'emploi, donnez un préavis ou payez l'indemnité équivalente. Un employé de 2 ans → minimum 2 semaines de préavis.</field>
+        <field name="employer_obligations">Donner le préavis requis OU payer l'indemnité compensatrice équivalente.</field>
+        <field name="employee_rights">Recevoir le préavis ou l'indemnité. Contester devant la CNESST si insuffisant.</field>
+        <field name="penalties">Plainte à la CNESST. Indemnité manquante plus frais administratifs.</field>
+        <field name="category">notice</field>
+        <field name="is_current" eval="True"/>
+        <field name="applicable_action_ids" eval="[(4, ref('action_type_termination'))]"/>
+        <field name="source_url">https://www.legisquebec.gouv.qc.ca/fr/document/lc/N-1.1</field>
+    </record>
+
+    <record id="legal_qc_lnt_124" model="pe.legal.article">
+        <field name="jurisdiction_id" ref="jurisdiction_qc"/>
+        <field name="code">LNT-124</field>
+        <field name="title">Protection congédiement sans cause juste — 2 ans d'ancienneté</field>
+        <field name="content">Le salarié avec deux ans de service continu peut soumettre une plainte s'il croit avoir été congédié sans cause juste et suffisante (CNESST).</field>
+        <field name="plain_language">Employé 2+ ans : l'employeur doit démontrer une cause juste et suffisante documentée.</field>
+        <field name="employer_obligations">Cause juste documentée. Gradation des sanctions. Conserver les dossiers disciplinaires.</field>
+        <field name="employee_rights">Plainte dans les 45 jours. Audience au TAT. Réintégration ou indemnisation possibles.</field>
+        <field name="penalties">Réintégration et/ou indemnisation des salaires perdus.</field>
+        <field name="category">dismissal</field>
+        <field name="is_current" eval="True"/>
+        <field name="applicable_action_ids" eval="[(4, ref('action_type_termination'))]"/>
+    </record>
+
+    <record id="legal_qc_lsst_51" model="pe.legal.article">
+        <field name="jurisdiction_id" ref="jurisdiction_qc"/>
+        <field name="code">LSST-51</field>
+        <field name="title">Obligations générales SST de l'employeur</field>
+        <field name="content">L'employeur doit protéger la santé, la sécurité et l'intégrité physique du travailleur.</field>
+        <field name="plain_language">Responsabilité légale pour la santé et sécurité, charge de travail, ergonomie.</field>
+        <field name="category">health_safety</field>
+        <field name="is_current" eval="True"/>
+    </record>
+
+    <record id="legal_qc_lnt_81_19" model="pe.legal.article">
+        <field name="jurisdiction_id" ref="jurisdiction_qc"/>
+        <field name="code">LNT-81.19</field>
+        <field name="title">Milieu de travail exempt de harcèlement psychologique</field>
+        <field name="content">Tout salarié a droit à un milieu exempt de harcèlement psychologique. L'employeur doit prévenir et faire cesser toute conduite portée à sa connaissance.</field>
+        <field name="plain_language">Obligation de prévenir et arrêter le harcèlement dès qu'il est signalé.</field>
+        <field name="category">harassment</field>
+        <field name="is_current" eval="True"/>
+        <field name="applicable_action_ids" eval="[(4, ref('action_type_formal_warn')), (4, ref('action_type_warning'))]"/>
+    </record>
+</odoo>

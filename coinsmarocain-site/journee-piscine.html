@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/favicon.ico?v=cm126" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32.png?v=cm126">
+<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png?v=cm126">
+<title>Journée Piscine & Bien-être — Coins Marocain, Marrakech</title>
+<meta name="description" content="Journée piscine privée à Marrakech : accès piscine, repas complet et bien-être. Dès 50€ / pers. Créneaux mercredi, vendredi et samedi. Réservez via WhatsApp.">
+<link rel="canonical" href="https://coinsmarocain.com/journee-piscine">
+<meta property="og:title" content="Journée Piscine & Bien-être — Coins Marocain">
+<meta property="og:description" content="Un lieu privé et jamais bondé pour votre journée piscine à Marrakech. Dès 50€ / pers.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://coinsmarocain.com/journee-piscine">
+<meta property="og:image" content="https://coinsmarocain.com/assets/img/journee-piscine/feature.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="image" href="/assets/img/journee-piscine/hero-poster.webp" type="image/webp" fetchpriority="high">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,500&family=Jost:wght@400;600&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,500&family=Jost:wght@400;600&display=swap" rel="stylesheet"></noscript>
+<style>
+  :root{
+    --cream:#faf6ee;
+    --cream-2:#f2ead9;
+    --charcoal:#262220;
+    --charcoal-soft:#57504a;
+    --gold-1:#b5732f;
+    --gold-2:#e6b876;
+    --gold-3:#8a4f22;
+    --white:#fffdfa;
+    --shadow: 0 20px 46px -20px rgba(38,34,32,0.35);
+    --ease: cubic-bezier(0.16,1,0.3,1);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Jost', sans-serif;
+    background:var(--cream);
+    color:var(--charcoal);
+    line-height:1.6;
+    padding-bottom:76px;
+  }
+  h1,h2,h3,.serif{font-family:'Playfair Display', serif;}
+  img{max-width:100%; display:block;}
+  a{text-decoration:none; color:inherit;}
+  .wrap{max-width:1080px; margin:0 auto; padding:0 28px;}
+  .wrap-narrow{max-width:720px; margin:0 auto;}
+  .hero .wrap{max-width:720px;}
+  section{position:relative;}
+
+  .reveal{opacity:0; transform:translateY(20px); transition:opacity .7s var(--ease), transform .7s var(--ease);}
+  .reveal.in{opacity:1; transform:translateY(0);}
+  @media (prefers-reduced-motion: reduce){ .reveal{opacity:1; transform:none;} }
+
+  .topstrip{
+    background:var(--charcoal); color:var(--cream-2); text-align:center;
+    font-size:12.5px; letter-spacing:.05em; padding:9px 14px; font-weight:500;
+    position:relative; z-index:2;
+  }
+  .topstrip b{color:var(--gold-2);}
+
+  /* HERO — full-bleed video */
+  .hero{
+    position:relative;
+    min-height:min(92vh, 720px);
+    display:flex; align-items:center; justify-content:center;
+    text-align:center;
+    color:var(--white);
+    overflow:hidden;
+    padding:48px 0 56px;
+  }
+  .hero-media{
+    position:absolute; inset:0; z-index:0;
+  }
+  .hero-media video,
+  .hero-media img.poster{
+    position:absolute; inset:0;
+    width:100%; height:100%; object-fit:cover;
+  }
+  .hero-media::after{
+    content:'';
+    position:absolute; inset:0;
+    background:
+      linear-gradient(180deg, rgba(38,34,32,0.55) 0%, rgba(38,34,32,0.35) 40%, rgba(38,34,32,0.72) 100%),
+      radial-gradient(circle at 20% 10%, rgba(230,184,118,0.22), transparent 50%);
+  }
+  .hero .wrap{position:relative; z-index:1; width:100%;}
+
+  .logo-row{
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom:22px;
+  }
+  .logo-row img{height:48px; width:auto; filter:drop-shadow(0 2px 12px rgba(0,0,0,0.35));}
+
+  .price-badge{
+    display:inline-flex; flex-direction:column; align-items:center; gap:2px;
+    background:linear-gradient(135deg,var(--gold-1),var(--gold-3));
+    color:var(--white); border-radius:100px; padding:10px 26px; margin-bottom:22px;
+    box-shadow:0 14px 30px -12px rgba(138,79,34,0.55);
+    opacity:0; animation:pop .7s var(--ease) .1s forwards;
+  }
+  .price-badge .from{font-size:11px; letter-spacing:.14em; text-transform:uppercase; opacity:.85;}
+  .price-badge .num{font-family:'Playfair Display',serif; font-size:26px; font-weight:700; line-height:1;}
+  @keyframes pop{from{opacity:0; transform:scale(.9) translateY(6px);} to{opacity:1; transform:scale(1) translateY(0);}}
+
+  .hero h1{
+    font-size:clamp(30px,8vw,42px); font-weight:600; line-height:1.14; letter-spacing:-0.01em;
+    margin-bottom:16px; opacity:0; animation:fadeUp .8s var(--ease) .2s forwards;
+    text-shadow:0 2px 24px rgba(0,0,0,0.35);
+  }
+  .hero h1 em{font-style:italic; color:var(--gold-2);}
+  .hero p.lead{
+    font-size:16.5px; color:rgba(255,253,250,0.88); max-width:460px; margin:0 auto 26px;
+    opacity:0; animation:fadeUp .8s var(--ease) .35s forwards;
+  }
+  @keyframes fadeUp{from{opacity:0; transform:translateY(16px);} to{opacity:1; transform:translateY(0);}}
+
+  .hero-cta{opacity:0; animation:fadeUp .8s var(--ease) .5s forwards;}
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:9px;
+    background:linear-gradient(135deg,var(--gold-1),var(--gold-3)); color:var(--white);
+    padding:16px 30px; border-radius:100px; font-weight:600; font-size:16px;
+    box-shadow:0 14px 28px -10px rgba(138,79,34,0.55);
+    border:none; cursor:pointer; width:100%; max-width:340px;
+    transition:transform .3s var(--ease), box-shadow .3s var(--ease);
+  }
+  .btn:active{transform:scale(.97);}
+  .btn svg{flex-shrink:0;}
+  .microcopy{font-size:12.5px; color:var(--charcoal-soft); margin-top:10px;}
+  .hero .microcopy{color:rgba(255,253,250,0.72);}
+  .day-chips{display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-bottom:6px;}
+  .day-chips span{
+    background:rgba(255,253,250,0.12); border:1.5px solid rgba(230,184,118,0.65); color:var(--gold-2);
+    font-weight:600; font-size:13px; padding:8px 16px; border-radius:100px;
+    backdrop-filter:blur(6px);
+  }
+
+  .offer{padding:48px 0 36px;}
+  .offer-grid{
+    display:grid; gap:18px;
+  }
+  .includes-card{
+    background:var(--white); border:1px solid rgba(181,115,47,0.16); border-radius:20px;
+    padding:28px 26px; box-shadow:var(--shadow); height:100%;
+  }
+  .includes-title{
+    font-size:12.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold-1);
+    font-weight:600; margin-bottom:16px;
+  }
+  .include-row{
+    display:flex; align-items:flex-start; gap:14px; padding:14px 0;
+    border-bottom:1px solid var(--cream-2);
+  }
+  .include-row:last-child{border-bottom:none; padding-bottom:2px;}
+  .include-icon{
+    width:42px; height:42px; border-radius:12px; background:var(--cream-2); color:var(--gold-1);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .include-row b{display:block; font-size:16px; margin-bottom:3px;}
+  .include-row span{font-size:14.5px; color:var(--charcoal-soft); line-height:1.45;}
+
+  .price-table{
+    background:var(--charcoal); color:var(--cream); border-radius:20px; padding:28px 26px;
+    box-shadow:var(--shadow); height:100%; display:flex; flex-direction:column;
+  }
+  .price-table h3{color:var(--gold-2); font-size:22px; margin-bottom:18px;}
+  .price-line{
+    display:flex; justify-content:space-between; align-items:baseline; font-size:16px;
+    padding:12px 0; border-bottom:1px dashed rgba(250,246,238,0.15);
+  }
+  .price-line:last-of-type{border-bottom:none;}
+  .price-line span:first-child{color:rgba(250,246,238,0.82);}
+  .price-line span:last-child{font-family:'Playfair Display',serif; font-weight:600; color:var(--white); font-size:18px;}
+  .price-total{
+    margin-top:auto; padding-top:18px; border-top:1px solid rgba(250,246,238,0.18);
+    display:flex; justify-content:space-between; align-items:center; gap:12px;
+  }
+  .price-total span:first-child{font-size:15px; color:var(--gold-2); font-weight:500;}
+  .price-total span:last-child{font-family:'Playfair Display',serif; font-size:28px; font-weight:700; color:var(--white);}
+  .price-note{font-size:13.5px; color:rgba(250,246,238,0.72); margin-top:16px; line-height:1.5;}
+
+  .how{padding:20px 0 48px;}
+  .section-tag{
+    display:block; text-align:center; font-size:12.5px; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--gold-1); font-weight:600; margin-bottom:10px;
+  }
+  .how h2{font-size:clamp(24px,3vw,32px); text-align:center; margin-bottom:32px; font-weight:600;}
+  .steps{display:grid; gap:18px;}
+  .step{
+    display:flex; gap:16px; align-items:flex-start;
+    background:var(--white); border:1px solid rgba(181,115,47,0.12);
+    border-radius:16px; padding:20px 18px;
+  }
+  .step-num{
+    width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,var(--gold-2),var(--gold-1));
+    color:var(--white); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:15px;
+    flex-shrink:0; font-family:'Playfair Display',serif;
+  }
+  .step b{display:block; font-size:16.5px; margin-bottom:4px;}
+  .step span{font-size:14.5px; color:var(--charcoal-soft); line-height:1.45;}
+
+  .mood{padding:8px 0 48px;}
+  .mood-grid{display:grid; grid-template-columns:1.35fr 1fr; grid-template-rows:1fr 1fr; gap:14px; min-height:340px;}
+  .mood-block{
+    border-radius:18px; display:flex; align-items:flex-end; padding:20px;
+    color:var(--white); font-family:'Playfair Display',serif; font-size:17px; font-weight:600;
+    overflow:hidden; position:relative;
+    background-size:cover; background-position:center;
+    min-height:160px;
+  }
+  .mood-block::after{content:''; position:absolute; inset:0; background:linear-gradient(0deg, rgba(38,34,32,0.62), transparent 58%);}
+  .mood-block span{position:relative; z-index:1;}
+  .mood-1{grid-row:1/3; min-height:340px;
+    background-image:image-set(
+      url('/assets/img/journee-piscine/pool.webp?v=3') type('image/webp'),
+      url('/assets/img/journee-piscine/pool.jpg?v=3') type('image/jpeg')
+    );
+    background-position:center 60%;}
+  .mood-2{
+    background-image:image-set(
+      url('/assets/img/journee-piscine/tajine-kefta.webp?v=3') type('image/webp'),
+      url('/assets/img/journee-piscine/tajine-kefta.jpg?v=3') type('image/jpeg')
+    );
+    background-position:center;}
+  .mood-3{
+    background-image:image-set(
+      url('/assets/img/journee-piscine/massage.webp') type('image/webp'),
+      url('/assets/img/journee-piscine/massage.jpg') type('image/jpeg')
+    );}
+
+  .gallery{padding:0 0 52px;}
+  .gallery h2{text-align:center; font-size:clamp(22px,3vw,30px); margin-bottom:22px; font-weight:600;}
+  .gallery-grid{
+    display:grid; grid-template-columns:repeat(4, 1fr); gap:12px;
+  }
+  .gallery-grid figure{
+    margin:0; border-radius:16px; overflow:hidden; aspect-ratio:1;
+    background:var(--cream-2);
+  }
+  .gallery-grid figure.wide{grid-column:span 2; aspect-ratio:16/10;}
+  .gallery-grid img{width:100%; height:100%; object-fit:cover;}
+
+  .faq{padding:8px 0 52px;}
+  .faq h2{text-align:center; font-size:clamp(22px,3vw,30px); margin-bottom:22px; font-weight:600;}
+  .faq-list{display:grid; gap:0; max-width:860px; margin:0 auto;}
+  .faq-item{border-bottom:1px solid rgba(181,115,47,0.2); padding:18px 0;}
+  .faq-item summary{
+    list-style:none; cursor:pointer; font-size:16.5px; font-weight:600;
+    display:flex; justify-content:space-between; align-items:center; gap:12px;
+  }
+  .faq-item summary::-webkit-details-marker{display:none;}
+  .faq-item summary::after{content:'+'; font-size:22px; color:var(--gold-1); transition:transform .3s var(--ease); flex-shrink:0;}
+  .faq-item[open] summary::after{transform:rotate(45deg);}
+  .faq-item p{font-size:15px; color:var(--charcoal-soft); margin-top:12px; padding-right:28px; line-height:1.55; max-width:62ch;}
+
+  .final-cta{padding:16px 0 56px; text-align:center;}
+  .final-cta h2{font-size:clamp(24px,3vw,34px); margin-bottom:12px; font-weight:600;}
+  .final-cta p{font-size:16px; color:var(--charcoal-soft); margin-bottom:26px;}
+
+  @media (min-width:900px){
+    .offer-grid{grid-template-columns:1.15fr 0.85fr; gap:22px; align-items:stretch;}
+    .steps{grid-template-columns:repeat(3,1fr); gap:18px;}
+    .step{flex-direction:column; min-height:100%;}
+    .mood-grid{min-height:420px; gap:16px;}
+    .mood-1{min-height:420px;}
+    .mood-block{font-size:19px; padding:24px;}
+  }
+  @media (max-width:699px){
+    .wrap{padding:0 18px;}
+    .mood-grid{grid-template-columns:1fr 1fr; height:auto; min-height:0;}
+    .mood-1{grid-column:1/-1; grid-row:auto; min-height:220px;}
+    .gallery-grid{grid-template-columns:1fr 1fr;}
+    .gallery-grid figure.wide{grid-column:1/-1;}
+  }
+
+  .sticky-bar{
+    position:fixed; bottom:0; left:0; right:0; z-index:50;
+    background:var(--white); border-top:1px solid rgba(181,115,47,0.18);
+    padding:11px 16px; display:flex; align-items:center; justify-content:space-between; gap:12px;
+    box-shadow:0 -10px 30px -14px rgba(38,34,32,0.25);
+  }
+  .sticky-bar .price{font-family:'Playfair Display',serif; font-weight:700; font-size:17px;}
+  .sticky-bar .price small{display:block; font-size:10.5px; font-weight:400; color:var(--charcoal-soft); font-family:'Jost',sans-serif;}
+  .sticky-bar .btn{padding:12px 20px; font-size:14.5px; width:auto;}
+
+  footer{text-align:center; padding:30px 22px 10px; font-size:12px; color:var(--charcoal-soft);}
+  footer a{color:var(--gold-1); font-weight:500;}
+</style>
+</head>
+<body data-planner-interests="piscine,bien_etre">
+
+<div class="topstrip">Offre valable pendant votre séjour à Marrakech — places <b>limitées chaque jour</b></div>
+
+<section class="hero">
+  <div class="hero-media" aria-hidden="true">
+    <picture>
+      <source srcset="/assets/img/journee-piscine/hero-poster.webp" type="image/webp">
+      <img class="poster" src="/assets/img/journee-piscine/hero-poster.jpg" alt="" width="720" height="405" fetchpriority="high" decoding="async">
+    </picture>
+    <video
+      id="heroVideo"
+      autoplay muted loop playsinline
+      poster="/assets/img/journee-piscine/hero-poster.jpg"
+      preload="none">
+      <source data-src="/assets/video/dar-sacada-lite.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="wrap">
+    <div class="logo-row">
+      <a href="/"><img src="/assets/img/logo-emblem-white.png?v=cm99" alt="Coins Marocain" width="188" height="48"></a>
+    </div>
+
+    <div class="price-badge">
+      <span class="from">Dès</span>
+      <span class="num">50€ / pers.</span>
+    </div>
+
+    <h1>Un lieu magnifique, <em>privé et jamais bondé</em>, pour votre journée piscine</h1>
+    <p class="lead">Piscine, repas complet et bien-être dans un cadre confidentiel — réservez votre créneau du mercredi, vendredi ou samedi pendant votre séjour à Marrakech.</p>
+
+    <div class="day-chips">
+      <span>Mercredi</span><span>Vendredi</span><span>Samedi</span>
+    </div>
+    <div class="microcopy" style="margin-bottom:22px;">Réservation 48h à l'avance — nombre de places volontairement limité</div>
+
+    <div class="hero-cta">
+      <a class="btn" href="https://wa.me/212660159177?text=Bonjour%2C%20je%20suis%20int%C3%A9ress%C3%A9(e)%20par%20la%20journ%C3%A9e%20piscine%20%2B%20repas%20%C3%A0%20Marrakech" target="_blank" rel="noopener">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.15l-.3-.18-3.1.82.83-3-.2-.32A8.2 8.2 0 1 1 12 20.2zm4.5-6.15c-.24-.12-1.44-.7-1.66-.79-.22-.08-.38-.12-.55.12-.16.24-.63.79-.77.95-.14.16-.28.18-.52.06-.24-.12-1-.37-1.9-1.17-.7-.63-1.18-1.4-1.32-1.64-.14-.24-.02-.37.1-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.55-1.32-.75-1.8-.2-.48-.4-.42-.55-.42h-.47c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.7 2.6 4.12 3.64.58.25 1.03.4 1.38.51.58.18 1.11.16 1.53.1.47-.07 1.44-.59 1.64-1.16.2-.57.2-1.06.14-1.16-.06-.1-.22-.16-.46-.28z"/></svg>
+        Réserver via WhatsApp
+      </a>
+      <div class="microcopy">Réponse en quelques minutes avec Yasmine, votre conciergerie</div>
+    </div>
+  </div>
+</section>
+
+<section class="offer reveal">
+  <div class="wrap">
+    <div class="offer-grid">
+      <div class="includes-card">
+        <div class="includes-title">Ce qui est inclus</div>
+
+        <div class="include-row">
+          <div class="include-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 17s1.5-2 4-2 4 2 4 2 1.5-2 4-2 4 2 4 2 1.5-2 4-2M4 12V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v6"/></svg></div>
+          <div><b>Accès piscine privé</b><span>Un lieu magnifique, jamais bondé — réservé à un nombre limité de personnes</span></div>
+        </div>
+
+        <div class="include-row">
+          <div class="include-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 3.5 3 6 7 13 4-7 7-9.5 7-13a7 7 0 0 0-7-7zM8 21h8"/></svg></div>
+          <div><b>Repas complet</b><span>Cuisine marocaine servie en terrasse</span></div>
+        </div>
+
+        <div class="include-row">
+          <div class="include-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+          <div><b>Massage & activités en option</b><span>Ajoutez un soin ou une sortie quad à votre journée</span></div>
+        </div>
+      </div>
+
+      <div class="price-table">
+        <h3>Le détail, sans surprise</h3>
+        <div class="price-line"><span>Accès piscine</span><span>300 DH</span></div>
+        <div class="price-line"><span>Repas complet</span><span>250 DH</span></div>
+        <div class="price-total"><span>À partir de</span><span>550 DH / ~50€</span></div>
+        <div class="price-note">Massage et quad disponibles en supplément · Réservation 48h à l'avance · Créneaux mercredi, vendredi et samedi</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="how reveal">
+  <div class="wrap">
+    <span class="section-tag">Simple & rapide</span>
+    <h2>Comment ça marche</h2>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div><b>Vous écrivez à Yasmine</b><span>Choisissez mercredi, vendredi ou samedi, et le nombre de personnes</span></div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div><b>On confirme votre créneau</b><span>48h avant, pour garantir un lieu privé et jamais bondé</span></div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div><b>Vous profitez de votre journée</b><span>Transport possible en supplément si besoin</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="mood reveal">
+  <div class="wrap">
+    <div class="mood-grid">
+      <div class="mood-block mood-1"><span>Piscine & transats</span></div>
+      <div class="mood-block mood-2"><span>Repas en terrasse</span></div>
+      <div class="mood-block mood-3"><span>Massage & bien-être</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="gallery reveal">
+  <div class="wrap">
+    <span class="section-tag">L'ambiance</span>
+    <h2>Dar Sacada & alentours</h2>
+    <div class="gallery-grid">
+      <figure class="wide">
+        <picture>
+          <source srcset="/assets/img/journee-piscine/feature.webp" type="image/webp">
+          <img src="/assets/img/journee-piscine/feature.jpg" alt="Jardin et piscine Dar Sacada" width="1280" height="720" loading="lazy">
+        </picture>
+      </figure>
+      <figure class="wide">
+        <picture>
+          <source srcset="/assets/img/journee-piscine/jardin.webp" type="image/webp">
+          <img src="/assets/img/journee-piscine/jardin.jpg" alt="Terrasse et végétation Dar Sacada" width="1280" height="720" loading="lazy">
+        </picture>
+      </figure>
+      <figure>
+        <picture>
+          <source srcset="/assets/img/journee-piscine/pool.webp" type="image/webp">
+          <img src="/assets/img/journee-piscine/pool.jpg" alt="Piscine et transats" width="1241" height="828" loading="lazy">
+        </picture>
+      </figure>
+      <figure>
+        <picture>
+          <source srcset="/assets/img/journee-piscine/tajine-kefta.webp" type="image/webp">
+          <img src="/assets/img/journee-piscine/tajine-kefta.jpg" alt="Tajine de kefta servi à table" width="490" height="420" loading="lazy" decoding="async">
+        </picture>
+      </figure>
+      <figure>
+        <picture>
+          <source srcset="/assets/img/journee-piscine/entrance.webp" type="image/webp">
+          <img src="/assets/img/journee-piscine/entrance.jpg" alt="Entrée du riad" width="800" height="532" loading="lazy" decoding="async">
+        </picture>
+      </figure>
+      <figure>
+        <picture>
+          <source srcset="/assets/img/journee-piscine/quad.webp" type="image/webp">
+          <img src="/assets/img/journee-piscine/quad.jpg" alt="Sortie quad dans le désert" width="700" height="703" loading="lazy" decoding="async">
+        </picture>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section class="faq reveal">
+  <div class="wrap">
+    <span class="section-tag">Questions fréquentes</span>
+    <h2>Avant de réserver</h2>
+    <div class="faq-list">
+      <details class="faq-item" open>
+        <summary>Quels jours puis-je réserver ?</summary>
+        <p>Les créneaux sont ouverts le mercredi, le vendredi et le samedi uniquement — un nombre volontairement limité de personnes par jour pour garder le lieu privé et jamais bondé.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Dois-je réserver longtemps à l'avance ?</summary>
+        <p>Un délai de 48h nous permet de vous garantir votre créneau et votre repas. Contactez-nous dès aujourd'hui pour une place dans les prochains jours.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Le transport est-il inclus ?</summary>
+        <p>Non, mais un chauffeur privé peut être ajouté à votre réservation — demandez à Yasmine.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Puis-je ajouter un massage ou une sortie quad ?</summary>
+        <p>Oui, ces options se combinent facilement à votre journée piscine — le tarif vous est communiqué avec la confirmation.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="final-cta reveal">
+  <div class="wrap">
+    <h2>Votre journée piscine vous attend</h2>
+    <p>Écrivez à Yasmine maintenant pour réserver votre créneau.</p>
+    <a class="btn" href="https://wa.me/212660159177?text=Bonjour%2C%20je%20suis%20int%C3%A9ress%C3%A9(e)%20par%20la%20journ%C3%A9e%20piscine%20%2B%20repas%20%C3%A0%20Marrakech" target="_blank" rel="noopener">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.15l-.3-.18-3.1.82.83-3-.2-.32A8.2 8.2 0 1 1 12 20.2zm4.5-6.15c-.24-.12-1.44-.7-1.66-.79-.22-.08-.38-.12-.55.12-.16.24-.63.79-.77.95-.14.16-.28.18-.52.06-.24-.12-1-.37-1.9-1.17-.7-.63-1.18-1.4-1.32-1.64-.14-.24-.02-.37.1-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.55-1.32-.75-1.8-.2-.48-.4-.42-.55-.42h-.47c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.7 2.6 4.12 3.64.58.25 1.03.4 1.38.51.58.18 1.11.16 1.53.1.47-.07 1.44-.59 1.64-1.16.2-.57.2-1.06.14-1.16-.06-.1-.22-.16-.46-.28z"/></svg>
+      Réserver via WhatsApp
+    </a>
+  </div>
+</section>
+
+<footer>
+  <a href="/">Coins Marocain</a> — Marrakech, Maroc
+</footer>
+
+<div class="sticky-bar">
+  <div class="price">Dès 50€<small>par personne</small></div>
+  <a class="btn" href="https://wa.me/212660159177?text=Bonjour%2C%20je%20suis%20int%C3%A9ress%C3%A9(e)%20par%20la%20journ%C3%A9e%20piscine%20%2B%20repas%20%C3%A0%20Marrakech" target="_blank" rel="noopener">Réserver</a>
+</div>
+
+<script>
+  (function () {
+    var v = document.getElementById('heroVideo');
+    var p = document.querySelector('.hero-media img.poster');
+    if (!v) return;
+
+    function hidePoster() { if (p) p.style.display = 'none'; }
+
+    // Mobile / save-data / slow network: keep poster only (no 13MB download)
+    var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    var saveData = conn && conn.saveData;
+    var slow = conn && /2g|slow-2g|3g/i.test(conn.effectiveType || '');
+    var mobile = window.matchMedia('(max-width: 900px)').matches;
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (mobile || saveData || slow || reduceMotion) {
+      v.remove();
+      return;
+    }
+
+    function loadVideo() {
+      var src = v.querySelector('source[data-src]');
+      if (!src) return;
+      // Lite clip on desktop (~0.6MB) instead of full 13MB
+      src.src = '/assets/video/dar-sacada-lite.mp4';
+      src.removeAttribute('data-src');
+      v.load();
+      var play = v.play();
+      if (play && play.catch) play.catch(function () {});
+    }
+    v.addEventListener('playing', hidePoster);
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(loadVideo, { timeout: 2500 });
+    } else {
+      setTimeout(loadVideo, 1200);
+    }
+  })();
+
+  // Reveal only when near viewport (cheap)
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    var revealEls = document.querySelectorAll('.reveal');
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.08, rootMargin: '40px 0px' });
+    revealEls.forEach(function (el) { io.observe(el); });
+  } else {
+    document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('in'); });
+  }
+</script>
+
+  <script src="/assets/cookies.js?v=cm148" defer></script>
+</body>
+</html>

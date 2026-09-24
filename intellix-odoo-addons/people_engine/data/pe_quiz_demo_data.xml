@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="quiz_renovation_demo" model="pe.quiz">
+        <field name="name">Certification Rénovation &amp; Immobilier</field>
+        <field name="category">product</field>
+        <field name="state">active</field>
+        <field name="passing_score">80</field>
+        <field name="max_attempts">3</field>
+        <field name="time_limit">0</field>
+        <field name="randomize_questions" eval="True"/>
+        <field name="show_correct_answers" eval="True"/>
+        <field name="croissance_points">5</field>
+        <field name="description">Certification obligatoire avant de démarrer la qualification des leads rénovation et immobilier.</field>
+    </record>
+
+    <record id="quiz_q1_demo" model="pe.quiz.question">
+        <field name="quiz_id" ref="quiz_renovation_demo"/>
+        <field name="sequence">10</field>
+        <field name="question_type">single</field>
+        <field name="category_tag">regles</field>
+        <field name="question_text">À partir de quel délai de travaux pouvez-vous transférer un lead à un entrepreneur ?</field>
+        <field name="explanation">La règle des 6 mois est absolue : si les travaux sont prévus dans plus de 6 mois, noter le besoin et planifier un rappel automatique.</field>
+    </record>
+    <record id="quiz_q1_a1" model="pe.quiz.answer">
+        <field name="question_id" ref="quiz_q1_demo"/>
+        <field name="sequence">10</field>
+        <field name="answer_text">Moins de 3 mois</field>
+        <field name="is_correct" eval="False"/>
+    </record>
+    <record id="quiz_q1_a2" model="pe.quiz.answer">
+        <field name="question_id" ref="quiz_q1_demo"/>
+        <field name="sequence">20</field>
+        <field name="answer_text">Moins de 6 mois</field>
+        <field name="is_correct" eval="True"/>
+    </record>
+    <record id="quiz_q1_a3" model="pe.quiz.answer">
+        <field name="question_id" ref="quiz_q1_demo"/>
+        <field name="sequence">30</field>
+        <field name="answer_text">Moins de 12 mois</field>
+        <field name="is_correct" eval="False"/>
+    </record>
+    <record id="quiz_q1_a4" model="pe.quiz.answer">
+        <field name="question_id" ref="quiz_q1_demo"/>
+        <field name="sequence">40</field>
+        <field name="answer_text">Il n'y a pas de limite de délai</field>
+        <field name="is_correct" eval="False"/>
+    </record>
+
+    <record id="quiz_q2_demo" model="pe.quiz.question">
+        <field name="quiz_id" ref="quiz_renovation_demo"/>
+        <field name="sequence">20</field>
+        <field name="question_type">single</field>
+        <field name="category_tag">immo</field>
+        <field name="question_text">Un propriétaire souhaite vendre dans 18 mois. Quelle est la bonne approche ?</field>
+        <field name="explanation">Pour une vente à moyen terme, qualifier le projet immobilier et proposer un suivi — pas de transfert entrepreneur rénovation immédiat.</field>
+    </record>
+    <record id="quiz_q2_a1" model="pe.quiz.answer">
+        <field name="question_id" ref="quiz_q2_demo"/>
+        <field name="sequence">10</field>
+        <field name="answer_text">Transférer immédiatement à un agent immobilier partenaire</field>
+        <field name="is_correct" eval="True"/>
+    </record>
+    <record id="quiz_q2_a2" model="pe.quiz.answer">
+        <field name="question_id" ref="quiz_q2_demo"/>
+        <field name="sequence">20</field>
+        <field name="answer_text">Refuser le lead — délai trop long</field>
+        <field name="is_correct" eval="False"/>
+    </record>
+    <record id="quiz_q2_a3" model="pe.quiz.answer">
+        <field name="question_id" ref="quiz_q2_demo"/>
+        <field name="sequence">30</field>
+        <field name="answer_text">Proposer une soumission rénovation d'urgence</field>
+        <field name="is_correct" eval="False"/>
+    </record>
+
+    <record id="quiz_q3_demo" model="pe.quiz.question">
+        <field name="quiz_id" ref="quiz_renovation_demo"/>
+        <field name="sequence">30</field>
+        <field name="question_type">true_false</field>
+        <field name="category_tag">eco</field>
+        <field name="question_text">Les subventions écoénergie (Rénoclimat, etc.) peuvent être mentionnées dès la qualification initiale.</field>
+        <field name="explanation">Oui — les subventions sont un levier de valeur dès l'ouverture pour engager le propriétaire.</field>
+    </record>
+    <record id="quiz_q3_a1" model="pe.quiz.answer">
+        <field name="question_id" ref="quiz_q3_demo"/>
+        <field name="sequence">10</field>
+        <field name="answer_text">Vrai</field>
+        <field name="is_correct" eval="True"/>
+    </record>
+    <record id="quiz_q3_a2" model="pe.quiz.answer">
+        <field name="question_id" ref="quiz_q3_demo"/>
+        <field name="sequence">20</field>
+        <field name="answer_text">Faux</field>
+        <field name="is_correct" eval="False"/>
+    </record>
+
+    <record id="quiz_q4_demo" model="pe.quiz.question">
+        <field name="quiz_id" ref="quiz_renovation_demo"/>
+        <field name="sequence">40</field>
+        <field name="question_type">single</field>
+        <field name="category_tag">fiche</field>
+        <field name="question_text">Quels éléments sont obligatoires sur la fiche propriété avant transfert ?</field>
+        <field name="explanation">Adresse complète, type de travaux, échéancier et budget estimatif sont le minimum pour un transfert qualifié.</field>
+    </record>
+    <record id="quiz_q4_a1" model="pe.quiz.answer">
+        <field name="question_id" ref="quiz_q4_demo"/>
+        <field name="sequence">10</field>
+        <field name="answer_text">Nom et numéro de téléphone seulement</field>
+        <field name="is_correct" eval="False"/>
+    </record>
+    <record id="quiz_q4_a2" model="pe.quiz.answer">
+        <field name="question_id" ref="quiz_q4_demo"/>
+        <field name="sequence">20</field>
+        <field name="answer_text">Adresse, travaux, échéancier et budget</field>
+        <field name="is_correct" eval="True"/>
+    </record>
+    <record id="quiz_q4_a3" model="pe.quiz.answer">
+        <field name="question_id" ref="quiz_q4_demo"/>
+        <field name="sequence">30</field>
+        <field name="answer_text">Courriel et consentement marketing</field>
+        <field name="is_correct" eval="False"/>
+    </record>
+</odoo>

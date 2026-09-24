@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="filter_defi_zakaria_casablanca" model="ir.filters">
+        <field name="name">Défi Zakaria — Casablanca</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="domain" eval="[
+            ('team_id', '=', ref('renovation_conciergerie.crm_team_marketing')),
+            ('tag_ids', 'in', [ref('doorway_callcenter_prospecting.tag_defi_zakaria')]),
+            ('tag_ids', 'in', [ref('doorway_callcenter_prospecting.tag_casablanca')]),
+        ]"/>
+        <field name="context">{'group_by': 'stage_id'}</field>
+        <field name="is_default" eval="False"/>
+    </record>
+
+    <record id="action_defi_zakaria_casablanca" model="ir.actions.act_window">
+        <field name="name">Défi Zakaria — Casablanca</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain" eval="[
+            ('team_id', '=', ref('renovation_conciergerie.crm_team_marketing')),
+            ('tag_ids', 'in', [ref('doorway_callcenter_prospecting.tag_defi_zakaria')]),
+            ('tag_ids', 'in', [ref('doorway_callcenter_prospecting.tag_casablanca')]),
+        ]"/>
+        <field name="context">{
+            'default_team_id': ref('renovation_conciergerie.crm_team_marketing'),
+        }</field>
+    </record>
+
+    <menuitem id="menu_defi_zakaria_casablanca"
+              name="Défi Zakaria — Casa"
+              parent="doorway_leads_bruts.menu_leads_bruts_leads"
+              action="action_defi_zakaria_casablanca"
+              sequence="5"/>
+</odoo>

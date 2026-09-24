@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="doorway_crm.BusinessCardScanSystray">
+        <div class="o_doorway_card_scan_systray">
+            <button type="button"
+                    class="o_doorway_card_scan_fab"
+                    t-att-title="title"
+                    t-att-aria-label="title"
+                    t-on-click="onClick">
+                <i class="fa fa-camera"/>
+            </button>
+        </div>
+    </t>
+</templates>

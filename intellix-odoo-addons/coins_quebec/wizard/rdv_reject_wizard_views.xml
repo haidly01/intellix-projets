@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_cq_rdv_reject_wizard_form" model="ir.ui.view">
+        <field name="name">coins.quebec.rdv.reject.wizard.form</field>
+        <field name="model">coins.quebec.rdv.reject.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Rejeter le RDV">
+                <sheet>
+                    <p>Le RDV restera visible pour l'agente, avec le motif ci-dessous.</p>
+                    <field name="rdv_id" invisible="1"/>
+                    <field name="reject_note" placeholder="Pourquoi ce RDV est rejeté ?"/>
+                </sheet>
+                <footer>
+                    <button name="action_reject" type="object" string="Rejeter" class="btn-primary"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

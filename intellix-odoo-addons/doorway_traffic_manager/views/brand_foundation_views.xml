@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_brand_foundation_kanban" model="ir.ui.view">
+        <field name="name">doorway.brand.foundation.kanban</field>
+        <field name="model">doorway.brand.foundation</field>
+        <field name="arch" type="xml">
+            <kanban class="o_doorway_traffic_portfolios" default_group_by="pipeline_id">
+                <field name="brand_name"/>
+                <field name="pipeline_id"/>
+                <field name="state"/>
+                <field name="monthly_budget_eur"/>
+                <field name="target_cpa_eur"/>
+                <field name="primary_objective"/>
+                <field name="suggested_kpis"/>
+                <field name="brand_strategy"/>
+                <field name="campaign_count"/>
+                <field name="meta_page_id"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click doorway_traffic_portfolio_card">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <strong class="fs-5"><field name="brand_name"/></strong>
+                                <field name="state" widget="badge"
+                                       decoration-success="state == 'validated'"/>
+                            </div>
+                            <div class="text-muted small mt-1">
+                                <field name="pipeline_id"/>
+                                <span t-if="record.meta_page_id.raw_value" class="ms-1">
+                                    · Meta <field name="meta_page_id"/>
+                                </span>
+                            </div>
+                            <div class="mt-2 small">
+                                <span>Budget <field name="monthly_budget_eur"/> €/mois</span>
+                                <span class="ms-2">CPA cible <field name="target_cpa_eur"/> €</span>
+                            </div>
+                            <div class="mt-2 small text-muted" t-if="record.suggested_kpis.raw_value">
+                                <field name="suggested_kpis"/>
+                            </div>
+                            <div class="mt-2 small" t-if="record.brand_strategy.raw_value">
+                                <em><field name="brand_strategy"/></em>
+                            </div>
+                            <div class="mt-2">
+                                <span class="badge text-bg-secondary">
+                                    <field name="campaign_count"/> campagne(s)
+                                </span>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_brand_foundation_search" model="ir.ui.view">
+        <field name="name">doorway.brand.foundation.search</field>
+        <field name="model">doorway.brand.foundation</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="brand_name"/>
+                <field name="pipeline_id"/>
+                <field name="meta_page_id"/>
+                <filter name="filter_validated" string="Validés"
+                        domain="[('state', '=', 'validated')]"/>
+                <filter name="filter_draft" string="En cours"
+                        domain="[('state', '!=', 'validated')]"/>
+                <group>
+                    <filter name="group_pipeline" string="Pipeline"
+                            context="{'group_by': 'pipeline_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_brand_foundation_list" model="ir.ui.view">
+        <field name="name">doorway.brand.foundation.list</field>
+        <field name="model">doorway.brand.foundation</field>
+        <field name="arch" type="xml">
+            <list>
+                <header>
+                    <button name="action_import_known_portfolios" type="object"
+                            string="Importer portefeuilles connus" class="btn-primary"
+                            display="always"/>
+                    <button name="action_bootstrap_campaigns" type="object"
+                            string="Créer campagnes portefeuilles" class="btn-secondary"
+                            display="always"/>
+                    <button name="action_fix_meta_and_optimize" type="object"
+                            string="Corriger liens Meta + optimiser" class="btn-primary"
+                            display="always"/>
+                </header>
+                <field name="brand_name"/>
+                <field name="meta_page_id" optional="show"/>
+                <field name="pipeline_id"/>
+                <field name="completion_pct" widget="progressbar"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'validated'"
+                       decoration-warning="state == 'analyzing'"
+                       decoration-muted="state == 'draft'"/>
+                <field name="monthly_budget_eur"/>
+                <field name="primary_objective"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_brand_foundation_form" model="ir.ui.view">
+        <field name="name">doorway.brand.foundation.form</field>
+        <field name="model">doorway.brand.foundation</field>
+        <field name="arch" type="xml">
+            <form string="Analyse de marque">
+                <header>
+                    <button name="action_analyze" type="object" string="Analyser avec l'IA"
+                            class="btn-primary"
+                            invisible="state == 'validated' or completion_pct &lt; 80"/>
+                    <button name="action_validate" type="object" string="Valider la fondation"
+                            class="btn-primary" invisible="state != 'analyzing'"/>
+                    <button name="action_reset_draft" type="object" string="Reprendre le questionnaire"
+                            invisible="state == 'draft'"/>
+                    <button name="action_resolve_meta_ad_account" type="object"
+                            string="Résoudre compte Meta Ads" class="btn-secondary"
+                            invisible="not meta_page_id"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,analyzing,validated"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" icon="fa-bullhorn"
+                                type="object" name="action_view_campaigns">
+                            <field name="campaign_count" widget="statinfo" string="Campagnes"/>
+                        </button>
+                    </div>
+                    <div class="alert alert-info mb-3" role="alert"
+                         invisible="completion_pct &gt;= 80">
+                        Complétez au moins 80 % du questionnaire pour lancer l'analyse IA.
+                    </div>
+                    <group>
+                        <group>
+                            <field name="pipeline_id"/>
+                            <field name="brand_name"/>
+                            <field name="completion_pct" widget="progressbar"/>
+                            <field name="allow_auto_pause"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Identité" name="identity">
+                            <group>
+                                <field name="brand_description"/>
+                                <field name="founding_year"/>
+                                <field name="geographic_zone"/>
+                                <field name="language_ids" widget="many2many_tags"/>
+                            </group>
+                        </page>
+                        <page string="Cible" name="target">
+                            <group>
+                                <field name="target_b2c"/>
+                                <field name="target_b2b"/>
+                                <field name="target_age_min"/>
+                                <field name="target_age_max"/>
+                                <field name="target_gender"/>
+                                <field name="target_income"/>
+                            </group>
+                            <group>
+                                <field name="target_pain_points"/>
+                                <field name="target_desires"/>
+                                <field name="target_persona"/>
+                            </group>
+                        </page>
+                        <page string="Positionnement" name="positioning">
+                            <group>
+                                <field name="price_positioning"/>
+                                <field name="main_value_prop"/>
+                                <field name="competitors"/>
+                                <field name="competitive_advantage"/>
+                                <field name="what_to_avoid"/>
+                            </group>
+                        </page>
+                        <page string="Ton" name="tone">
+                            <group>
+                                <field name="brand_tone_ids" widget="many2many_tags"/>
+                                <field name="communication_style"/>
+                                <field name="existing_tagline"/>
+                                <field name="brand_taboos"/>
+                                <field name="brand_vocabulary"/>
+                            </group>
+                        </page>
+                        <page string="Objectifs" name="objectives">
+                            <group>
+                                <field name="primary_objective"/>
+                                <field name="monthly_budget_eur"/>
+                                <field name="target_cpa_eur"/>
+                                <field name="target_roas"/>
+                                <field name="timeline_months"/>
+                            </group>
+                        </page>
+                        <page string="Canaux" name="channels">
+                            <group>
+                                <field name="active_channel_ids" widget="many2many_tags"/>
+                                <field name="website_url"/>
+                                <field name="ga4_property_id"/>
+                                <field name="meta_page_id"/>
+                                <field name="meta_account_id"
+                                       placeholder="act_XXXXX (pas l'ID page)"/>
+                                <field name="google_account_id"/>
+                                <field name="tiktok_account_id"/>
+                            </group>
+                            <group>
+                                <field name="best_performing_content"/>
+                                <field name="worst_performing_content"/>
+                            </group>
+                        </page>
+                        <page string="Résultats IA" name="ai_results"
+                              invisible="not differentiator and not brand_strategy">
+                            <group>
+                                <field name="differentiator" readonly="1"/>
+                                <field name="brand_strategy" readonly="1"/>
+                                <field name="tracking_method" readonly="1"/>
+                                <field name="brand_voice_guide" readonly="1"/>
+                                <field name="suggested_kpis" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_brand_foundation" model="ir.actions.act_window">
+        <field name="name">Analyse marque</field>
+        <field name="res_model">doorway.brand.foundation</field>
+        <field name="view_mode">kanban,list,form</field>
+    </record>
+
+</odoo>

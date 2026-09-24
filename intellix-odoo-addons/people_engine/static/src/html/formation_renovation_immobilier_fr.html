@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Formation Rénovation & Immobilier — Qualification Lead IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0a0f0a;--bg2:#0d140d;--card:#141e14;--card2:#192019;--card3:#0e150e;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+  --green:#4ade80;--green2:#22c55e;--green3:#16a34a;
+  --lime:#a3e635;--teal:#2dd4bf;
+  --amber:#fbbf24;--orange:#fb923c;
+  --blue:#60a5fa;--indigo:#818cf8;
+  --red:#f87171;--pink:#f472b6;
+  --text:#f0fff0;--text2:#94a894;--text3:#4a6b4a;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;}
+
+/* HERO */
+.hero{background:linear-gradient(160deg,#0a0f0a 0%,#0d180d 50%,#0a120a 100%);padding:3.5rem 2rem 0;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-100px;right:-100px;width:500px;height:500px;background:radial-gradient(circle,rgba(74,222,128,0.07) 0%,transparent 70%);pointer-events:none;}
+.hero::after{content:'';position:absolute;bottom:-80px;left:-80px;width:400px;height:400px;background:radial-gradient(circle,rgba(251,191,36,0.05) 0%,transparent 70%);pointer-events:none;}
+.hero-inner{max-width:1160px;margin:0 auto;position:relative;}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.25);border-radius:100px;padding:5px 16px;font-size:11px;font-weight:600;color:var(--green);letter-spacing:.05em;text-transform:uppercase;margin-bottom:1.2rem;}
+.eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(26px,4.5vw,50px);font-weight:700;line-height:1.1;letter-spacing:-.02em;margin-bottom:1rem;}
+.gt{background:linear-gradient(120deg,#fff 0%,var(--green) 40%,var(--lime) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-sub{font-size:15px;color:var(--text2);max-width:640px;line-height:1.7;margin-bottom:2rem;}
+.hero-cats{display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:2.5rem;}
+.hcat{display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:10px;font-size:13px;font-weight:600;border:1px solid;}
+.hcat-eco{background:rgba(45,212,191,0.1);color:var(--teal);border-color:rgba(45,212,191,0.25);}
+.hcat-int{background:rgba(251,191,36,0.1);color:var(--amber);border-color:rgba(251,191,36,0.25);}
+.hcat-ext{background:rgba(251,146,60,0.1);color:var(--orange);border-color:rgba(251,146,60,0.25);}
+.hcat-immo{background:rgba(96,165,250,0.1);color:var(--blue);border-color:rgba(96,165,250,0.25);}
+.hstats{display:flex;gap:0;flex-wrap:wrap;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--card);}
+.hs{flex:1;min-width:140px;padding:1.2rem 1.5rem;border-right:1px solid var(--border);}
+.hs:last-child{border-right:none;}
+.hsv{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:var(--green);display:block;margin-bottom:2px;}
+.hsl{font-size:11px;color:var(--text3);}
+
+/* NAV */
+.nav-outer{position:sticky;top:0;z-index:200;background:rgba(10,15,10,0.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+.nav-inner{max-width:1160px;margin:0 auto;padding:0 2rem;display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;}
+.nav-inner::-webkit-scrollbar{display:none;}
+.nb{background:none;border:none;cursor:pointer;color:var(--text3);font-family:'Inter',sans-serif;font-size:12.5px;font-weight:500;padding:12px 14px;white-space:nowrap;border-bottom:2px solid transparent;transition:all .2s;display:flex;align-items:center;gap:6px;}
+.nb:hover{color:var(--text2);}
+.nb.on{color:var(--green);border-bottom-color:var(--green2);}
+.nbt{background:rgba(74,222,128,0.13);color:var(--green);border-radius:4px;padding:1px 6px;font-size:10px;font-weight:700;}
+.nb.on .nbt{background:rgba(74,222,128,0.25);}
+
+/* MAIN */
+.main{max-width:1160px;margin:0 auto;padding:2.5rem 2rem 4rem;}
+.mod{display:none;}
+.mod.on{display:block;}
+
+/* MODULE HDR */
+.mhdr{display:flex;align-items:flex-start;gap:1.2rem;padding-bottom:2rem;margin-bottom:2.5rem;border-bottom:1px solid var(--border);}
+.micon{width:52px;height:52px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.mhdr h2{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;margin-bottom:5px;}
+.mhdr p{color:var(--text2);font-size:13.5px;line-height:1.65;max-width:660px;}
+
+/* STITLE */
+.stitle{font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;margin:2.5rem 0 1.2rem;padding-bottom:9px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px;}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.5rem;margin-bottom:1.5rem;}
+.card:hover{border-color:var(--border2);}
+.card h3{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:600;margin-bottom:.9rem;display:flex;align-items:center;gap:8px;}
+.card p{color:var(--text2);font-size:13.5px;line-height:1.7;margin-bottom:.75rem;}
+.card p:last-child{margin-bottom:0;}
+.card h4{font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.08em;margin:1.1rem 0 .5rem;}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.5rem;}
+.g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.25rem;}
+.g4{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;}
+
+/* FEAT */
+.feat{background:var(--card2);border:1px solid var(--border);border-radius:13px;padding:1.3rem;transition:border-color .2s,transform .2s;}
+.feat:hover{transform:translateY(-2px);}
+.feat-icon{font-size:22px;margin-bottom:10px;}
+.feat h4{font-size:13.5px;font-weight:600;margin-bottom:6px;color:var(--text);}
+.feat p{font-size:12.5px;color:var(--text2);line-height:1.6;}
+
+/* SCRIPT */
+.script-wrap{background:var(--card3);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:1.5rem;}
+.script-hdr{background:var(--card2);padding:.85rem 1.3rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;}
+.script-hdr-title{font-family:'Space Grotesk',sans-serif;font-size:13.5px;font-weight:600;display:flex;align-items:center;gap:7px;}
+.script-body{padding:1.4rem;}
+.line{display:flex;gap:1rem;margin-bottom:1.4rem;align-items:flex-start;}
+.line:last-child{margin-bottom:0;}
+.spk{flex-shrink:0;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:3px 9px;border-radius:5px;margin-top:2px;min-width:64px;text-align:center;}
+.sp-a{background:rgba(74,222,128,0.13);color:var(--green);border:1px solid rgba(74,222,128,0.22);}
+.sp-p{background:rgba(251,191,36,0.1);color:var(--amber);border:1px solid rgba(251,191,36,0.2);}
+.sp-n{background:rgba(45,212,191,0.1);color:var(--teal);border:1px solid rgba(45,212,191,0.2);}
+.sp-w{background:rgba(248,113,113,0.1);color:var(--red);border:1px solid rgba(248,113,113,0.2);}
+.speech{font-size:13.5px;line-height:1.75;color:var(--text);font-style:italic;}
+.speech strong{font-style:normal;font-weight:700;color:#fff;}
+.speech .v{color:var(--green);font-style:normal;font-weight:600;}
+.note-t{font-size:12px;color:rgba(45,212,191,0.85);line-height:1.65;}
+.warn-t{font-size:12px;color:rgba(248,113,113,0.85);line-height:1.65;}
+.timing{font-size:10px;color:var(--text3);margin-top:3px;}
+
+/* QUESTION BLOCK */
+.qblock{background:var(--card2);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:1rem;}
+.qblock-hdr{padding:.8rem 1.2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+.qblock-num{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);}
+.qblock-body{padding:1rem 1.2rem;}
+.qblock-q{font-size:14px;font-weight:600;color:var(--text);margin-bottom:.7rem;font-style:italic;}
+.qblock-q::before{content:'" ';color:var(--green);}
+.qblock-q::after{content:' "';color:var(--green);}
+.qblock-why{font-size:12px;color:var(--text2);line-height:1.65;border-top:1px solid var(--border);padding-top:.7rem;margin-top:.7rem;}
+.qblock-why::before{content:"→ ";color:var(--green);}
+.qblock-action{font-size:11px;font-weight:600;color:var(--green);background:rgba(74,222,128,0.08);border-radius:6px;padding:4px 10px;display:inline-block;margin-top:6px;}
+
+/* FORK */
+.fork{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0 1.5rem;}
+.fb{border-radius:11px;overflow:hidden;}
+.fb-hdr{padding:.65rem 1rem;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;display:flex;align-items:center;gap:5px;}
+.fb-body{padding:.9rem 1.1rem;background:var(--card);border:1px solid var(--border);border-top:none;border-radius:0 0 11px 11px;font-size:12.5px;color:var(--text2);line-height:1.65;font-style:italic;}
+.fb-g .fb-hdr{background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);border-bottom:none;border-radius:11px 11px 0 0;color:var(--green);}
+.fb-a .fb-hdr{background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-bottom:none;border-radius:11px 11px 0 0;color:var(--amber);}
+.fb-r .fb-hdr{background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-bottom:none;border-radius:11px 11px 0 0;color:var(--red);}
+.fb-b .fb-hdr{background:rgba(96,165,250,0.08);border:1px solid rgba(96,165,250,0.2);border-bottom:none;border-radius:11px 11px 0 0;color:var(--blue);}
+
+/* TAGS */
+.tag{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:100px;font-size:11px;font-weight:600;margin:2px;}
+.tg{background:rgba(74,222,128,0.1);color:var(--green);border:1px solid rgba(74,222,128,0.2);}
+.ta{background:rgba(251,191,36,0.1);color:var(--amber);border:1px solid rgba(251,191,36,0.2);}
+.tr{background:rgba(248,113,113,0.1);color:var(--red);border:1px solid rgba(248,113,113,0.2);}
+.tc{background:rgba(45,212,191,0.1);color:var(--teal);border:1px solid rgba(45,212,191,0.2);}
+.tb{background:rgba(96,165,250,0.1);color:var(--blue);border:1px solid rgba(96,165,250,0.2);}
+.to{background:rgba(251,146,60,0.1);color:var(--orange);border:1px solid rgba(251,146,60,0.2);}
+.tv{background:rgba(129,140,248,0.1);color:var(--indigo);border:1px solid rgba(129,140,248,0.2);}
+
+/* CALLOUTS */
+.hl{background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.18);border-left:3px solid var(--green2);border-radius:10px;padding:1.1rem 1.3rem;margin:.9rem 0;}
+.hl-t{font-weight:600;font-size:12px;color:var(--green);margin-bottom:5px;}
+.hl p{font-size:13px;color:var(--text2);line-height:1.7;}
+.warn{background:rgba(251,191,36,0.05);border:1px solid rgba(251,191,36,0.18);border-left:3px solid var(--amber);border-radius:10px;padding:1.1rem 1.3rem;margin:.9rem 0;}
+.warn-title{font-weight:600;font-size:12px;color:var(--amber);margin-bottom:5px;}
+.warn p{font-size:13px;color:rgba(251,191,36,0.75);line-height:1.7;}
+.alert{background:rgba(248,113,113,0.05);border:1px solid rgba(248,113,113,0.18);border-left:3px solid var(--red);border-radius:10px;padding:1.1rem 1.3rem;margin:.9rem 0;}
+.alert-t{font-weight:600;font-size:12px;color:var(--red);margin-bottom:5px;}
+.alert p{font-size:13px;color:rgba(248,113,113,0.75);line-height:1.7;}
+
+/* CHECKLIST */
+.cl{list-style:none;}
+.cl li{display:flex;align-items:flex-start;gap:9px;padding:7px 0;font-size:13px;color:var(--text2);border-bottom:1px solid rgba(255,255,255,0.04);line-height:1.55;}
+.cl li:last-child{border-bottom:none;}
+.ck{color:var(--green);font-size:14px;flex-shrink:0;margin-top:1px;}
+.cx{color:var(--red);font-size:14px;flex-shrink:0;margin-top:1px;}
+
+/* TABLES */
+.dt{width:100%;border-collapse:collapse;font-size:12.5px;}
+.dt th{text-align:left;padding:8px 12px;font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);border-bottom:1px solid var(--border);font-weight:600;}
+.dt td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top;line-height:1.5;}
+.dt tr:last-child td{border-bottom:none;}
+.dt tr:hover td{background:rgba(255,255,255,0.015);}
+
+/* METRICS */
+.mrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(115px,1fr));gap:.9rem;margin:1.2rem 0;}
+.mc{background:var(--card2);border:1px solid var(--border);border-radius:11px;padding:1rem;text-align:center;}
+.mv{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;display:block;margin-bottom:3px;}
+.ml{font-size:10.5px;color:var(--text3);line-height:1.4;}
+
+/* FICHE */
+.fiche{background:var(--card3);border:1px solid rgba(74,222,128,0.2);border-radius:14px;padding:1.5rem;margin:1rem 0;}
+.fiche-title{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;color:var(--green);margin-bottom:1.2rem;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border);padding-bottom:.8rem;}
+.frow{display:grid;grid-template-columns:180px 1fr;gap:.5rem;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);align-items:center;}
+.frow:last-child{border-bottom:none;}
+.frow-label{font-size:12px;font-weight:600;color:var(--text3);}
+.frow-val{font-size:13px;color:var(--text2);}
+.frow-input{background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.15);border-radius:6px;padding:5px 10px;font-size:13px;color:var(--green);font-style:italic;}
+
+/* ENTREPRENEUR CARD */
+.entre-card{background:var(--card2);border:1px solid var(--border);border-radius:13px;padding:1.3rem;transition:border-color .2s;}
+.entre-card:hover{border-color:var(--border2);}
+.entre-icon{font-size:26px;margin-bottom:8px;}
+.entre-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px;}
+.entre-type{font-size:11px;color:var(--text3);margin-bottom:10px;}
+.entre-triggers{display:flex;flex-wrap:wrap;gap:4px;}
+
+/* STEPS */
+.steps{counter-reset:s;}
+.step{display:flex;gap:1.1rem;margin-bottom:1.4rem;position:relative;}
+.step:not(:last-child)::before{content:'';position:absolute;left:16px;top:34px;bottom:-20px;width:2px;background:var(--border);}
+.snum{width:33px;height:33px;border-radius:50%;flex-shrink:0;background:rgba(74,222,128,0.12);border:1px solid rgba(74,222,128,0.28);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--green);counter-increment:s;}
+.snum::after{content:counter(s);}
+.sc h4{font-size:13.5px;font-weight:600;margin-bottom:4px;}
+.sc p{font-size:12.5px;color:var(--text2);line-height:1.65;}
+
+/* SECTION COLORS */
+.sec-eco{border-left:3px solid var(--teal);}
+.sec-int{border-left:3px solid var(--amber);}
+.sec-ext{border-left:3px solid var(--orange);}
+.sec-immo{border-left:3px solid var(--blue);}
+
+/* DIVIDER */
+.divider{height:1px;background:var(--border);margin:2rem 0;}
+
+/* FOOTER */
+.pfooter{max-width:1160px;margin:0 auto;padding:2rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--text3);}
+
+@media(max-width:720px){
+  .fork,.g2,.g3,.g4{grid-template-columns:1fr;}
+  .main{padding:1.5rem 1rem;}
+  .hero{padding:2rem 1rem 0;}
+  .nav-inner{padding:0 1rem;}
+  .frow{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow"><span class="eyebrow-dot"></span>IntelliX Academy · Formation Terrain</div>
+    <h1><span class="gt">Rénovation, Écoénergie<br>& Immobilier</span></h1>
+    <p class="hero-sub">Formation complète pour qualifier les leads, remplir la fiche propriété, créer les besoins, assigner les entrepreneurs et céduler les rendez-vous gratuits. Tout ce qu'il faut pour fermer un dossier de A à Z.</p>
+    <div class="hero-cats">
+      <div class="hcat hcat-eco">🌿 Écoénergie & Isolation</div>
+      <div class="hcat hcat-int">🏠 Rénovation Intérieure</div>
+      <div class="hcat hcat-ext">🔨 Rénovation Extérieure</div>
+      <div class="hcat hcat-immo">🏡 Immobilier</div>
+    </div>
+    <div class="hstats">
+      <div class="hs"><span class="hsv">9 modules</span><span class="hsl">de formation complète</span></div>
+      <div class="hs"><span class="hsv">4 catégories</span><span class="hsl">de travaux couvertes</span></div>
+      <div class="hs"><span class="hsv">Fiche unifiée</span><span class="hsl">7 champs obligatoires</span></div>
+      <div class="hs"><span class="hsv">RDV gratuit</span><span class="hsl">avec entrepreneur assigné</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav-outer">
+  <div class="nav-inner">
+    <button class="nb on" onclick="sw(0)"><span class="nbt">01</span> Vue d'ensemble</button>
+    <button class="nb" onclick="sw(1)"><span class="nbt">02</span> Fiche Propriété</button>
+    <button class="nb" onclick="sw(2)"><span class="nbt">03</span> 🌿 Écoénergie</button>
+    <button class="nb" onclick="sw(3)"><span class="nbt">04</span> 🏠 Réno Intérieure</button>
+    <button class="nb" onclick="sw(4)"><span class="nbt">05</span> 🔨 Réno Extérieure</button>
+    <button class="nb" onclick="sw(5)"><span class="nbt">06</span> 🏡 Immobilier</button>
+    <button class="nb" onclick="sw(6)"><span class="nbt">07</span> Besoins & Entrepreneurs</button>
+    <button class="nb" onclick="sw(7)"><span class="nbt">08</span> Transfert & RDV</button>
+    <button class="nb" onclick="sw(8)"><span class="nbt">09</span> Objections</button>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="main">
+
+<!-- ══════════════════════════════════════════════
+     MODULE 01 — VUE D'ENSEMBLE
+══════════════════════════════════════════════ -->
+<div class="mod on" id="m0">
+  <div class="mhdr">
+    <div class="micon" style="background:rgba(74,222,128,0.12);">🗺️</div>
+    <div>
+      <h2>Vue d'ensemble — Comprendre le processus</h2>
+      <p>Avant de qualifier, vous devez comprendre le flux complet : de l'appel IA jusqu'au rendez-vous signé avec l'entrepreneur. Chaque question que vous posez a une raison précise — apprendre le "pourquoi" rend le "comment" naturel.</p>
+    </div>
+  </div>
+
+  <div class="stitle">🔄 Le flux complet en 6 étapes</div>
+  <div class="card">
+    <div class="steps">
+      <div class="step">
+        <div class="snum"></div>
+        <div class="sc">
+          <h4>L'agent IA qualifie le contact (Léa / Alex)</h4>
+          <p>Premier contact automatisé : identification du propriétaire, validation de l'intérêt, collecte des infos de base. Si intérêt confirmé → transfert vers agent humain ou saisie directe dans la fiche.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="snum"></div>
+        <div class="sc">
+          <h4>Remplir la fiche propriété complète</h4>
+          <p>7 champs obligatoires : adresse complète, nom complet, âge de la maison, type de chauffage, bilan de propriété, et données de contact. Cette fiche est le passeport du dossier — sans elle, rien ne peut avancer.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="snum"></div>
+        <div class="sc">
+          <h4>Identifier les besoins par catégorie</h4>
+          <p>Explorer les 4 catégories selon les critères d'éligibilité : écoénergie, rénovation intérieure, rénovation extérieure, immobilier. Chaque besoin identifié devient un "devis" assigné à un entrepreneur spécifique.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="snum"></div>
+        <div class="sc">
+          <h4>Créer les besoins dans le CRM</h4>
+          <p>Pour chaque besoin : description des travaux, délai (OBLIGATOIRE : moins de 6 mois pour transfert), budget approximatif. Un besoin = un devis = un entrepreneur = un RDV.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="snum"></div>
+        <div class="sc">
+          <h4>Assigner aux entrepreneurs</h4>
+          <p>Chaque catégorie de travaux correspond à un entrepreneur partenaire. L'assignation se fait dans le CRM IntelliX — l'entrepreneur reçoit la fiche + le besoin + la disponibilité du propriétaire.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="snum"></div>
+        <div class="sc">
+          <h4>Céduler le rendez-vous gratuit</h4>
+          <p>Proposer 2–3 créneaux au propriétaire. L'entrepreneur confirme. Le RDV est dans le CRM avec rappel automatique SMS J-1. Le RDV est toujours gratuit et sans engagement pour le propriétaire.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stitle">⚡ La règle des 6 mois — Comprendre pourquoi c'est crucial</div>
+  <div class="card">
+    <h3>📅 Règle de transfert : travaux dans moins de 6 mois uniquement</h3>
+    <div class="fork">
+      <div class="fb fb-g">
+        <div class="fb-hdr">✅ Moins de 6 mois → TRANSFÉRER</div>
+        <div class="fb-body">Le prospect est en phase de décision active. Il a un projet concret, un délai réel. L'entrepreneur qui reçoit ce lead a une forte probabilité de signer. <strong style="color:var(--green)">Créer le besoin, assigner l'entrepreneur, céduler le RDV.</strong></div>
+      </div>
+      <div class="fb fb-a">
+        <div class="fb-hdr">⏳ Plus de 6 mois → NURTURING</div>
+        <div class="fb-body">Le prospect n'est pas encore prêt. Enregistrer le besoin dans le CRM avec la date cible. Planifier un rappel automatique 2 mois avant le délai estimé. <strong style="color:var(--amber)">Ne pas envoyer l'entrepreneur — ça brûle le lead.</strong></div>
+      </div>
+    </div>
+    <div class="warn">
+      <div class="warn-title">⚠️ Pourquoi cette règle existe</div>
+      <p>Un entrepreneur qui va voir un client qui ne veut pas commencer avant 8 mois perd du temps et de l'argent. Il va se décourager de la plateforme. La qualité des leads que vous envoyez protège votre réputation et votre réseau d'entrepreneurs partenaires.</p>
+    </div>
+  </div>
+
+  <div class="stitle">🗂️ Les 4 catégories et leurs critères d'éligibilité rapide</div>
+  <div class="g2">
+    <div class="card sec-eco">
+      <h3>🌿 Écoénergie & Isolation</h3>
+      <ul class="cl">
+        <li><span class="ck">✓</span>Isolation : maison de plus de <strong>10 ans</strong> + trappe de grenier accessible</li>
+        <li><span class="ck">✓</span>Fenêtres : plus de <strong>15 ans</strong> → évaluation automatiquement recommandée</li>
+        <li><span class="ck">✓</span>Thermopompe / échangeur d'air / VRC</li>
+        <li><span class="ck">✓</span>Subventions disponibles : Rénoclimat, LogisVert, Chauffez Vert, jusqu'à 15 000$</li>
+        <li><span class="cx">✗</span>Maison neuve (&lt;5 ans) rarement éligible</li>
+      </ul>
+    </div>
+    <div class="card sec-int">
+      <h3>🏠 Rénovation Intérieure</h3>
+      <ul class="cl">
+        <li><span class="ck">✓</span>Cuisine, salle de bain, planchers, plomberie, électricité</li>
+        <li><span class="ck">✓</span>Sous-sol, escaliers, portes intérieures</li>
+        <li><span class="ck">✓</span>Aucun critère d'âge — le besoin suffit</li>
+        <li><span class="ck">✓</span>Peut combiner avec financement Driven</li>
+        <li><span class="cx">✗</span>Locataires exclus (propriétaire uniquement)</li>
+      </ul>
+    </div>
+    <div class="card sec-ext">
+      <h3>🔨 Rénovation Extérieure</h3>
+      <ul class="cl">
+        <li><span class="ck">✓</span>Toiture : évaluation si plus de <strong>15 ans</strong> ou dommages visibles</li>
+        <li><span class="ck">✓</span>Revêtement, fondations, terrasse, piscine</li>
+        <li><span class="ck">✓</span>Entrée asphaltée, aménagement paysager</li>
+        <li><span class="ck">✓</span>Garage, clôture, balcon, pergola</li>
+        <li><span class="cx">✗</span>Travaux &lt;500$ non assignés à entrepreneur</li>
+      </ul>
+    </div>
+    <div class="card sec-immo">
+      <h3>🏡 Immobilier</h3>
+      <ul class="cl">
+        <li><span class="ck">✓</span>Propriétaire — pas sous contrat avec un autre courtier</li>
+        <li><span class="ck">✓</span>Intéressé par une évaluation marchande gratuite</li>
+        <li><span class="ck">✓</span>Prêt à vendre en moins de 6 mois si bonne offre ET nouvelle propriété trouvée</li>
+        <li><span class="cx">✗</span>Déjà avec un courtier → ne pas insister, archiver</li>
+        <li><span class="cx">✗</span>Pas prêt avant 1 an → nurturing, rappel dans 6 mois</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     MODULE 02 — FICHE PROPRIÉTÉ
+══════════════════════════════════════════════ -->
+<div class="mod" id="m1">
+  <div class="mhdr">
+    <div class="micon" style="background:rgba(74,222,128,0.12);">📋</div>
+    <div>
+      <h2>La Fiche Propriété — Le passeport du dossier</h2>
+      <p>7 champs obligatoires à remplir avant de créer le moindre besoin. Une fiche incomplète = un dossier bloqué = un entrepreneur qui ne peut pas intervenir. Prendre le temps de bien remplir ici économise 3 appels de suivi.</p>
+    </div>
+  </div>
+
+  <div class="stitle">📄 La fiche complète — Champ par champ</div>
+  <div class="fiche">
+    <div class="fiche-title">📋 Fiche Propriété IntelliX — À remplir en appel</div>
+
+    <div class="frow">
+      <div class="frow-label">👤 Nom complet</div>
+      <div class="frow-val"><span class="frow-input">Prénom + Nom de famille complet</span> — <span style="font-size:11px;color:var(--text3)">Pour le dossier et la correspondance avec l'entrepreneur</span></div>
+    </div>
+    <div class="frow">
+      <div class="frow-label">📞 Téléphone</div>
+      <div class="frow-val"><span class="frow-input">Numéro cell de préférence</span> — <span style="font-size:11px;color:var(--text3)">Confirmer le meilleur numéro pour le rappel de l'entrepreneur</span></div>
+    </div>
+    <div class="frow">
+      <div class="frow-label">📧 Courriel</div>
+      <div class="frow-val"><span class="frow-input">Adresse courriel</span> — <span style="font-size:11px;color:var(--text3)">Pour l'envoi de la confirmation de RDV et des devis</span></div>
+    </div>
+    <div class="frow">
+      <div class="frow-label">🏠 Adresse complète</div>
+      <div class="frow-val"><span class="frow-input">Numéro civique + rue + ville + province + code postal</span> — <span style="font-size:11px;color:var(--text3)">L'entrepreneur doit pouvoir s'y rendre sans appeler</span></div>
+    </div>
+    <div class="frow">
+      <div class="frow-label">📅 Âge de la maison</div>
+      <div class="frow-val"><span class="frow-input">Année de construction ou "environ X ans"</span> — <span style="font-size:11px;color:var(--text3)">Détermine l'éligibilité isolation, fenêtres, toiture, subventions</span></div>
+    </div>
+    <div class="frow">
+      <div class="frow-label">🔥 Type de chauffage</div>
+      <div class="frow-val"><span class="frow-input">Électrique / Mazout / Gaz naturel / Thermopompe / Autre</span> — <span style="font-size:11px;color:var(--text3)">Crucial pour les subventions écoénergie et le choix du produit</span></div>
+    </div>
+    <div class="frow">
+      <div class="frow-label">📊 Bilan de propriété</div>
+      <div class="frow-val"><span class="frow-input">Proprio occupant / Locatif / Chalet / Commercial / Autre</span> — <span style="font-size:11px;color:var(--text3)">Détermine les programmes d'aide accessibles et le type d'entrepreneur</span></div>
+    </div>
+  </div>
+
+  <div class="stitle">🎙️ Comment poser ces questions en appel</div>
+  <div class="script-wrap">
+    <div class="script-hdr">
+      <div class="script-hdr-title">📋 Script de collecte de la fiche — Naturel et fluide</div>
+      <span class="tag tg">À faire après la qualification initiale</span>
+    </div>
+    <div class="script-body">
+      <div class="line">
+        <div class="spk sp-a">Agent</div>
+        <div class="line-content">
+          <div class="speech">"Parfait <strong>{{prénom}}</strong> ! Pour préparer votre dossier et vous trouver les bons entrepreneurs dans votre secteur, j'ai besoin de quelques informations sur votre propriété — ça prend <strong>deux minutes</strong>. Vous êtes prêt ?"</div>
+        </div>
+      </div>
+      <div class="line">
+        <div class="spk sp-a">Agent</div>
+        <div class="line-content">
+          <div class="speech">"Quelle est l'<strong>adresse complète</strong> de la propriété — numéro, rue, ville ?"</div>
+          <div class="timing">Attendre la réponse complète — répéter pour confirmer</div>
+        </div>
+      </div>
+      <div class="line">
+        <div class="spk sp-a">Agent</div>
+        <div class="line-content">
+          <div class="speech">"Et la maison, elle a été construite environ <strong>quelle année</strong> — ou vous savez à peu près combien d'années elle a ?"</div>
+        </div>
+      </div>
+      <div class="line">
+        <div class="spk sp-n">Note</div>
+        <div class="line-content">
+          <div class="note-t">Si le prospect ne sait pas l'année exacte → "Pas de problème, une approximation suffit — elle a plus ou moins 20 ans ?" Cette question est critique pour l'éligibilité écoénergie et la toiture.</div>
+        </div>
+      </div>
+      <div class="line">
+        <div class="spk sp-a">Agent</div>
+        <div class="line-content">
+          <div class="speech">"Votre chauffage principal c'est quoi — <strong>électrique, mazout, gaz naturel ou thermopompe</strong> ?"</div>
+        </div>
+      </div>
+      <div class="line">
+        <div class="spk sp-n">Note</div>
+        <div class="line-content">
+          <div class="note-t">Mazout ou gaz naturel → FLAG "écoénergie prioritaire" — ces propriétés ont les meilleures subventions de conversion. Électrique → thermopompe et isolation toujours pertinents.</div>
+        </div>
+      </div>
+      <div class="line">
+        <div class="spk sp-a">Agent</div>
+        <div class="line-content">
+          <div class="speech">"Et la propriété — c'est votre <strong>résidence principale</strong>, un locatif ou un chalet ?"</div>
+        </div>
+      </div>
+      <div class="line">
+        <div class="spk sp-n">Note</div>
+        <div class="line-content">
+          <div class="note-t">Résidence principale = toutes les subventions accessibles. Locatif = programmes limités mais réno possible. Chalet = pas de subventions gouvernementales en général mais réno et immobilier possibles.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hl">
+    <div class="hl-t">💡 Astuce — Poser les questions dans le bon ordre</div>
+    <p>Toujours commencer par l'adresse → l'âge → le chauffage → le bilan. Cet ordre est logique pour le propriétaire (il parle de sa maison de façon concrète) et vous permet d'identifier les éligibilités au fur et à mesure. Ne jamais sauter à "quel type de travaux" avant d'avoir l'âge et le chauffage.</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     MODULE 03 — ÉCOÉNERGIE
+══════════════════════════════════════════════ -->
+<div class="mod" id="m2">
+  <div class="mhdr">
+    <div class="micon" style="background:rgba(45,212,191,0.12);">🌿</div>
+    <div>
+      <h2>Écoénergie & Isolation — Le module subventions</h2>
+      <p>L'écoénergie est souvent le meilleur angle d'approche : les subventions disponibles (jusqu'à 15 000$) rendent le projet autofinancé pour beaucoup de propriétaires. Maîtriser ce module vous différencie immédiatement.</p>
+    </div>
+  </div>
+
+  <div class="stitle">✅ Critères d'éligibilité — Grille de qualification</div>
+  <div class="card">
+    <table class="dt">
+      <thead><tr><th>Type de travaux</th><th>Critère d'éligibilité</th><th>Question à poser</th><th>Action si éligible</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Isolation grenier</strong></td>
+          <td><span class="tag tc">Maison &gt;10 ans</span> + trappe de grenier accessible</td>
+          <td>"Avez-vous accès à votre grenier par une trappe ?"</td>
+          <td>Créer besoin "Isolation grenier" → entrepreneur isolation</td>
+        </tr>
+        <tr>
+          <td><strong>Isolation murs / sous-sol</strong></td>
+          <td><span class="tag tc">Maison &gt;15 ans</span></td>
+          <td>"Vos murs extérieurs ont déjà été isolés ?"</td>
+          <td>Évaluation isolation complète + subventions Rénoclimat</td>
+        </tr>
+        <tr>
+          <td><strong>Fenêtres & portes</strong></td>
+          <td><span class="tag tc">Fenêtres &gt;15 ans</span></td>
+          <td>"Vos fenêtres ont plus ou moins de 15 ans ?"</td>
+          <td>Évaluation automatiquement recommandée — entrepreneur fenêtres</td>
+        </tr>
+        <tr>
+          <td><strong>Thermopompe</strong></td>
+          <td>Chauffage mazout, gaz ou électrique sans thermopompe</td>
+          <td>"Vous avez une thermopompe en ce moment ?"</td>
+          <td>Subventions LogisVert + Chauffez Vert jusqu'à 5 000$</td>
+        </tr>
+        <tr>
+          <td><strong>Chauffe-eau thermodynamique</strong></td>
+          <td>Chauffe-eau &gt;10 ans ou chauffage mazout</td>
+          <td>"Votre chauffe-eau, ça fait combien d'années ?"</td>
+          <td>Aide Rénoclimat disponible — entrepreneur spécialisé</td>
+        </tr>
+        <tr>
+          <td><strong>VRC / Échangeur d'air</strong></td>
+          <td>Maison hermétique récente ou moisissures mentionnées</td>
+          <td>"Avez-vous de la condensation sur vos fenêtres en hiver ?"</td>
+          <td>Évaluation qualité de l'air — souvent combiné isolation</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="stitle">🎙️ Script qualification écoénergie complet</div>
+  <div class="script-wrap">
+    <div class="script-hdr">
+      <div class="script-hdr-title">🌿 Questions écoénergie — Ordre optimisé</div>
+    </div>
+    <div class="script-body">
+
+      <div class="line">
+        <div class="spk sp-a">Agent</div>
+        <div class="line-content">
+          <div class="speech">"Avec une maison de <strong>{{âge}} ans</strong>, il y a souvent des <strong>aides gouvernementales</strong> disponibles que beaucoup de propriétaires ne connaissent pas — on va vérifier ça ensemble. Vous avez accès à votre <strong>grenier par une trappe</strong> ?"</div>
+        </div>
+      </div>
+
+      <div class="line">
+        <div class="spk sp-n">Note</div>
+        <div class="line-content">
+          <div class="note-t">Si maison &gt;10 ans ET trappe accessible → l'isolation grenier est presque toujours recommandée. C'est le travail avec le meilleur retour sur investissement (économies de chauffage visibles dès le premier hiver).</div>
+        </div>
+      </div>
+
+      <div class="line">
+        <div class="spk sp-a">Agent</div>
+        <div class="line-content">
+          <div class="speech">"Et vos <strong>fenêtres</strong> — elles ont été changées récemment ou elles sont <strong>d'origine</strong> ?"</div>
+        </div>
+      </div>
+
+      <div class="line">
+        <div class="spk sp-n">Note</div>
+        <div class="line-content">
+          <div class="note-t">Si fenêtres originales ou "jamais changées" → plus de 15 ans automatiquement si maison &gt;15 ans. FLAG : évaluation recommandée. Même si le propriétaire ne veut pas changer maintenant, nommer le besoin.</div>
+        </div>
+      </div>
+
+      <div class="line">
+        <div class="spk sp-a">Agent</div>
+        <div class="line-content">
+          <div class="speech">"Votre chauffage c'est <strong>électrique</strong> — est-ce que vous avez une <strong>thermopompe</strong> ou juste des plinthes électriques ?"</div>
+        </div>
+      </div>
+
+      <div class="fork">
+        <div class="fb fb-g">
+          <div class="fb-hdr">✅ Pas de thermopompe</div>
+          <div class="fb-body">"Bonne nouvelle — il y a des <strong>subventions jusqu'à 5 000$</strong> pour l'installation. On peut vous faire évaluer ça gratuitement. Je note un besoin thermopompe."</div>
+        </div>
+        <div class="fb fb-a">
+          <div class="fb-hdr">⚡ A déjà une thermopompe</div>
+          <div class="fb-body">"Parfait ! Elle date de quand à peu près ? Si &gt;12 ans, une mise à niveau peut être subventionnée." → Vérifier l'âge de l'équipement.</div>
+        </div>
+      </div>
+
+      <div class="line">
+        <div class="spk sp-a">Agent</div>
+        <div class="line-content">
+          <div class="speech">"En hiver, vous voyez de la <strong>condensation sur vos fenêtres</strong> ou il y a des pièces qui sont <strong>plus froides</strong> que les autres ?"</div>
+        </div>
+      </div>
+
+      <div class="line">
+        <div class="spk sp-n">Note</div>
+        <div class="line-content">
+          <div class="note-t">Condensation = problème de VRC ou d'isolation. Pièces froides = isolation insuffisante ou ponts thermiques. Ces symptômes concrets motivent le propriétaire bien plus que des chiffres abstraits.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="stitle">💰 Subventions disponibles — À mentionner en appel</div>
+  <div class="g2">
+    <div class="card">
+      <h3>🏛️ Programmes gouvernementaux QC</h3>
+      <table class="dt">
+        <thead><tr><th>Programme</th><th>Montant max</th><th>Pour quoi</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Rénoclimat</strong></td><td style="color:var(--green)">Jusqu'à 10 000$</td><td>Isolation, fenêtres, portes, thermopompe</td></tr>
+          <tr><td><strong>LogisVert</strong></td><td style="color:var(--green)">Jusqu'à 5 000$</td><td>Thermopompe air-air ou géothermique</td></tr>
+          <tr><td><strong>Chauffez Vert</strong></td><td style="color:var(--green)">Jusqu'à 5 000$</td><td>Remplacement mazout/gaz par thermopompe</td></tr>
+          <tr><td><strong>CAMT</strong></td><td style="color:var(--green)">Variable</td><td>Municipalités participantes — vérifier</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <h3>💬 Phrases clés à utiliser</h3>
+      <ul class="cl">
+        <li><span class="ck">→</span>"Une maison de {{âge}} ans, c'est le profil qui se qualifie le mieux pour les subventions."</li>
+        <li><span class="ck">→</span>"L'évaluation est complètement gratuite — l'entrepreneur vient chez vous, il ne vous coûte rien."</li>
+        <li><span class="ck">→</span>"Les subventions changent chaque année — mieux vaut vérifier maintenant pendant qu'elles sont disponibles."</li>
+        <li><span class="ck">→</span>"Beaucoup de propriétaires récupèrent la moitié du coût des travaux via les aides."</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     MODULE 04 — RÉNOVATION INTÉRIEURE
+══════════════════════════════════════════════ -->
+<div class="mod" id="m3">
+  <div class="mhdr">
+    <div class="micon" style="background:rgba(251,191,36,0.12);">🏠</div>
+    <div>
+      <h2>Rénovation Intérieure — Tous les espaces</h2>
+      <p>La rénovation intérieure couvre tout ce qui est à l'intérieur des murs. Pas de critère d'âge minimum — si le besoin existe, on le note. Cuisine, salle de bain, planchers, plomberie, électricité, sous-sol.</p>
+    </div>
+  </div>
+
+  <div class="stitle">🔍 Questions d'exploration — Intérieur</div>
+
+  <div class="qblock">
+    <div class="qblock-hdr">
+      <span class="qblock-num">Question Cuisine</span>
+      <span class="tag ta">Rénovation majeure la plus fréquente</span>
+    </div>
+    <div class="qblock-body">
+      <div class="qblock-q">Votre cuisine — elle est d'origine ou elle a été refaite ?"</div>
+      <div class="qblock-why">La cuisine est souvent le premier projet de rénovation. Si d'origine avec une maison &gt;20 ans → électroménagers, comptoirs, armoires probablement désuets. Mentionner que les comptoirs de quartz et armoires sur mesure sont très populaires.</div>
+      <span class="qblock-action">→ Besoin CRM : "Rénovation cuisine" — Entrepreneur : cuisiniste ou entrepreneur général</span>
+    </div>
+  </div>
+
+  <div class="qblock">
+    <div class="qblock-hdr">
+      <span class="qblock-num">Question Salle de bain</span>
+      <span class="tag ta">Retour sur investissement élevé</span>
+    </div>
+    <div class="qblock-body">
+      <div class="qblock-q">Et vos salles de bain — vous êtes satisfait de leur état ou c'est quelque chose que vous voulez améliorer ?"</div>
+      <div class="qblock-why">Une salle de bain rénovée augmente la valeur de revente de 3 à 5%. Toujours pertinent si le volet immobilier est aussi en jeu. Demander le nombre de salles de bain si plusieurs.</div>
+      <span class="qblock-action">→ Besoin CRM : "Rénovation salle de bain" — Entrepreneur : plombier ou entrepreneur réno</span>
+    </div>
+  </div>
+
+  <div class="qblock">
+    <div class="qblock-hdr">
+      <span class="qblock-num">Question Planchers</span>
+      <span class="tag ta">Souvent combiné avec autres travaux</span>
+    </div>
+    <div class="qblock-body">
+      <div class="qblock-q">Vos planchers — c'est quoi le type et est-ce qu'il y a des zones abîmées ou désuètes ?"</div>
+      <div class="qblock-why">Planchers en mauvais état = point de négociation à la vente (si volet immobilier). À coupler avec la rénovation cuisine/salle de bain pour optimiser les déplacements de l'entrepreneur.</div>
+      <span class="qblock-action">→ Besoin CRM : "Remplacement planchers" — Entrepreneur : poseur de planchers</span>
+    </div>
+  </div>
+
+  <div class="qblock">
+    <div class="qblock-hdr">
+      <span class="qblock-num">Question Sous-sol</span>
+      <span class="tag ta">Potentiel de valeur ajoutée élevé</span>
+    </div>
+    <div class="qblock-body">
+      <div class="qblock-q">Votre sous-sol — il est fini, partiellement fini ou non fini ?"</div>
+      <div class="qblock-why">Un sous-sol non fini représente souvent 30 à 50% de la superficie habitable inexploitée. L'argument de valeur est fort. Si non fini → fort potentiel. Si semi-fini → modernisation possible. Vérifier aussi humidité et infiltrations d'eau.</div>
+      <span class="qblock-action">→ Besoin CRM : "Finition sous-sol" — Entrepreneur : entrepreneur général</span>
+    </div>
+  </div>
+
+  <div class="qblock">
+    <div class="qblock-hdr">
+      <span class="qblock-num">Questions Plomberie & Électricité</span>
+      <span class="tag tr">Travaux de sécurité — urgence potentielle</span>
+    </div>
+    <div class="qblock-body">
+      <div class="qblock-q">Est-ce que vous avez des problèmes de pression d'eau, de tuyaux qui font du bruit, ou votre panneau électrique — vous savez quel ampérage il a ?"</div>
+      <div class="qblock-why">Maison &gt;40 ans → panneau électrique potentiellement en aluminium (dangereux) ou sous-dimensionné (100A vs 200A recommandés aujourd'hui). Plomberie galvanisée ou en plomb possible. Ce sont des besoins de sécurité qui créent de l'urgence naturelle.</div>
+      <span class="qblock-action">→ Besoin CRM : "Mise à niveau électrique" ou "Réfection plomberie" — Entrepreneur spécialisé</span>
+    </div>
+  </div>
+
+  <div class="stitle">📊 Pour chaque besoin intérieur — Les 3 questions obligatoires</div>
+  <div class="card">
+    <h3>⚙️ À poser pour CHAQUE besoin identifié</h3>
+    <div class="g3">
+      <div class="feat" style="border-color:rgba(251,191,36,0.2)">
+        <div class="feat-icon">📅</div>
+        <h4>1. Pour quand les travaux ?</h4>
+        <p>— "Vous pensez commencer ces travaux dans <strong>quel délai</strong> — dans les 3 mois, 6 mois, ou c'est plus à long terme ?"</p>
+        <p style="margin-top:6px;font-size:11px;color:var(--amber)">Si &lt;6 mois → transférer. Si &gt;6 mois → planifier rappel automatique.</p>
+      </div>
+      <div class="feat" style="border-color:rgba(74,222,128,0.2)">
+        <div class="feat-icon">💰</div>
+        <h4>2. Budget approximatif ?</h4>
+        <p>— "Vous vous êtes fixé un budget pour ces travaux — moins de 10 000$, entre 10 et 30 000$, ou plus ?"</p>
+        <p style="margin-top:6px;font-size:11px;color:var(--green)">Permet d'envoyer le bon entrepreneur (spécialisé vs général selon l'envergure).</p>
+      </div>
+      <div class="feat" style="border-color:rgba(45,212,191,0.2)">
+        <div class="feat-icon">📝</div>
+        <h4>3. Description des travaux</h4>
+        <p>— "En 2–3 phrases, pouvez-vous me décrire exactement ce que vous voulez faire ?"</p>
+        <p style="margin-top:6px;font-size:11px;color:var(--teal)">Cette description va directement dans la fiche de l'entrepreneur — plus c'est précis, meilleur est le devis.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     MODULE 05 — RÉNOVATION EXTÉRIEURE
+══════════════════════════════════════════════ -->
+<div class="mod" id="m4">
+  <div class="mhdr">
+    <div class="micon" style="background:rgba(251,146,60,0.12);">🔨</div>
+    <div>
+      <h2>Rénovation Extérieure — De la toiture au terrain</h2>
+      <p>L'extérieur est souvent ce que les propriétaires remettent à plus tard — la pluie, la neige, les cycles de gel/dégel dégradent pourtant tout plus vite que l'intérieur. La toiture à 15 ans et les fondations sont vos meilleurs points d'entrée.</p>
+    </div>
+  </div>
+
+  <div class="stitle">🏠 Toiture — Le projet le plus urgent</div>
+  <div class="card sec-ext">
+    <h3>🔨 Toiture — Critères d'évaluation automatique</h3>
+    <div class="g2">
+      <div>
+        <div class="warn">
+          <div class="warn-title">⚡ Évaluation recommandée automatiquement si :</div>
+          <p>• Toiture de <strong>plus de 15 ans</strong> (durée de vie moyenne des bardeaux d'asphalte : 20–25 ans)<br>
+          • Le propriétaire mentionne des <strong>fuites</strong>, de l'<strong>humidité</strong> au plafond ou des <strong>bardeaux manquants</strong><br>
+          • Maison achetée il y a &gt;5 ans et toiture jamais changée<br>
+          • Végétation (mousse) visible sur la toiture</p>
+        </div>
+        <div class="qblock" style="margin-top:1rem">
+          <div class="qblock-body">
+            <div class="qblock-q">Votre toiture — elle date de quand à peu près ? Vous avez eu des problèmes de fuites ou d'humidité au plafond ?"</div>
+            <div class="qblock-why">Ne pas attendre que le propriétaire mentionne la toiture. Si maison &gt;15 ans → poser la question systématiquement. Un propriétaire sur deux ignore l'état réel de sa toiture.</div>
+            <span class="qblock-action">→ Besoin CRM : "Évaluation / remplacement toiture" — Couvreur partenaire</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <h4>Questions de qualification toiture</h4>
+        <ul class="cl">
+          <li><span class="ck">→</span>"La toiture, c'est bardeaux d'asphalte, métal ou autre ?"</li>
+          <li><span class="ck">→</span>"Depuis que vous avez la maison, vous avez fait des réparations sur la toiture ?"</li>
+          <li><span class="ck">→</span>"Est-ce que vous voyez des zones où les bardeaux semblent gondolés ou manquants ?"</li>
+          <li><span class="ck">→</span>"Vous avez une lucarne ou une cheminée ? (zones vulnérables)"</li>
+          <li><span class="ck">→</span>"Des taches d'humidité au plafond lors des fortes pluies ?"</li>
+        </ul>
+        <div class="hl" style="margin-top:1rem">
+          <div class="hl-t">💡 Argument clé toiture</div>
+          <p>"Une toiture qu'on ne remplace pas à temps finit par endommager la structure et l'isolation — ce qui coûte 3 à 4× plus cher à réparer. L'évaluation gratuite vous donne au moins une idée de votre situation."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stitle">🏘️ Autres travaux extérieurs</div>
+  <div class="g2">
+    <div>
+      <div class="qblock">
+        <div class="qblock-hdr"><span class="qblock-num">Revêtement extérieur</span></div>
+        <div class="qblock-body">
+          <div class="qblock-q">Le revêtement de votre maison — brique, vinyle, bois — il est en bon état ou vous avez des zones à réparer ?"</div>
+          <span class="qblock-action">→ Entrepreneur : poseur de revêtement</span>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-hdr"><span class="qblock-num">Fondations & drainage</span></div>
+        <div class="qblock-body">
+          <div class="qblock-q">Avez-vous de l'infiltration d'eau au sous-sol lors des pluies ou au printemps ?"</div>
+          <div class="qblock-why">Infiltration d'eau = urgence potentielle. Créer le besoin même si le propriétaire dit "c'est juste un peu". Les problèmes de fondations s'aggravent rapidement.</div>
+          <span class="qblock-action">→ Entrepreneur : spécialiste fondations / drainage</span>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-hdr"><span class="qblock-num">Portes & fenêtres extérieures</span></div>
+        <div class="qblock-body">
+          <div class="qblock-q">Vos portes extérieures — vous sentez des courants d'air autour en hiver ? Et la porte de garage, elle fonctionne bien ?"</div>
+          <span class="qblock-action">→ Entrepreneur : portes & fenêtres (souvent même entrepreneur que écoénergie)</span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="qblock">
+        <div class="qblock-hdr"><span class="qblock-num">Entrée & aménagement</span></div>
+        <div class="qblock-body">
+          <div class="qblock-q">Votre entrée asphaltée — elle est craquelée ou en bon état ? Et est-ce que vous avez une terrasse ou un balcon ?"</div>
+          <span class="qblock-action">→ Entrepreneur : asphaltage / maçonnerie / terrasse</span>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-hdr"><span class="qblock-num">Piscine & aménagement paysager</span></div>
+        <div class="qblock-body">
+          <div class="qblock-q">Est-ce que vous avez une piscine ? Si oui — elle est creusée ou hors-terre, et elle est en bon état ?"</div>
+          <span class="qblock-action">→ Entrepreneur : pisciniste / paysagiste selon le besoin</span>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-hdr"><span class="qblock-num">Clôture & garage</span></div>
+        <div class="qblock-body">
+          <div class="qblock-q">Avez-vous un garage — simple ou double ? Il est isolé ? Et une clôture autour de la propriété ?"</div>
+          <span class="qblock-action">→ Entrepreneur : garage / clôture selon spécialité</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     MODULE 06 — IMMOBILIER
+══════════════════════════════════════════════ -->
+<div class="mod" id="m5">
+  <div class="mhdr">
+    <div class="micon" style="background:rgba(96,165,250,0.12);">🏡</div>
+    <div>
+      <h2>Immobilier — Évaluation marchande & Vente</h2>
+      <p>Le volet immobilier est le plus délicat — il faut progresser dans le bon ordre et respecter les règles absolues. Un propriétaire mal qualifié envoyé à un courtier = perte de crédibilité pour tout le réseau.</p>
+    </div>
+  </div>
+
+  <div class="stitle">🔑 Les 4 conditions pour qualifier un lead immobilier</div>
+  <div class="card">
+    <div class="g4">
+      <div class="mc" style="border-color:rgba(96,165,250,0.25)">
+        <span class="mv" style="color:var(--blue)">1️⃣</span>
+        <span class="ml">Propriétaire occupant<br>(pas locataire)</span>
+      </div>
+      <div class="mc" style="border-color:rgba(74,222,128,0.25)">
+        <span class="mv" style="color:var(--green)">2️⃣</span>
+        <span class="ml">Pas sous contrat avec un autre courtier</span>
+      </div>
+      <div class="mc" style="border-color:rgba(251,191,36,0.25)">
+        <span class="mv" style="color:var(--amber)">3️⃣</span>
+        <span class="ml">Intéressé par une évaluation marchande gratuite</span>
+      </div>
+      <div class="mc" style="border-color:rgba(248,113,113,0.25)">
+        <span class="mv" style="color:var(--red)">4️⃣</span>
+        <span class="ml">Prêt à vendre si &lt;6 mois ET nouvelle propriété trouvée</span>
+      </div>
+    </div>
+    <div class="alert" style="margin-top:1rem">
+      <div class="alert-t">🚫 Règle absolue — Ne jamais contourner</div>
+      <p>Si le propriétaire est <strong>déjà sous contrat avec un courtier</strong> → arrêter immédiatement la qualification immobilière. Dire : "Je comprends — dans ce cas on ne peut pas vous aider de ce côté là. Est-ce qu'il y a d'autres projets de rénovation dont on pourrait parler ?" Jamais tenter de débaucher un client d'un autre courtier.</p>
+    </div>
+  </div>
+
+  <div class="stitle">🎙️ Script immobilier — Dans l'ordre obligatoire</div>
+  <div class="script-wrap">
+    <div class="script-hdr">
+      <div class="script-hdr-title">🏡 Qualification immobilière — 5 étapes</div>
+      <span class="tag tb">Respecter l'ordre — chaque étape filtre la suivante</span>
+    </div>
+    <div class="script-body">
+
+      <div class="line">
+        <div class="spk sp-a">Agent</div>
+        <div class="line-content">
+          <div class="speech">"Avez-vous déjà pensé à <strong>faire évaluer votre propriété</strong> — juste pour savoir ce qu'elle vaudrait sur le marché aujourd'hui ?"</div>
+          <div class="timing">Question d'ouverture — neutre et sans pression</div>
+        </div>
+      </div>
+
+      <div class="fork">
+        <div class="fb fb-g">
+          <div class="fb-hdr">✅ "Oui, ça m'intéresse" ou curiosité</div>
+          <div class="fb-body">→ Continuer à l'étape suivante — vérifier courtier</div>
+        </div>
+        <div class="fb fb-a">
+          <div class="fb-hdr">😐 "Non, pas vraiment"</div>
+          <div class="fb-body">→ "Pas de problème — c'est gratuit et sans obligation, juste une information. Vous sauriez ce que vaut votre maison aujourd'hui. Même juste pour savoir ?" Si toujours non → respecter et passer à la rénovation.</div>
+        </div>
+      </div>
+
+      <div class="line">
+        <div class="spk sp-a">Agent</div>
+        <div class="line-content">
+          <div class="speech">"Avant d'aller plus loin — est-ce que vous avez déjà <strong>un courtier immobilier</strong> avec qui vous travaillez en ce moment ?"</div>
+        </div>
+      </div>
+
+      <div class="line">
+        <div class="spk sp-w">Alerte</div>
+        <div class="line-content">
+          <div class="warn-t">Si le prospect dit "oui j'ai un courtier" → STOP. Répondre : "Parfait, dans ce cas vous êtes entre bonnes mains de ce côté-là ! On continue avec les rénovations ?" Ne jamais demander si le courtier est "bon" ou essayer de créer le doute.</div>
+        </div>
+      </div>
+
+      <div class="line">
+        <div class="spk sp-a">Agent</div>
+        <div class="line-content">
+          <div class="speech">"Est-ce que vous <strong>envisageriez de vendre</strong> votre propriété dans les prochains mois — si bien sûr vous trouviez autre chose qui vous convient ?"</div>
+        </div>
+      </div>
+
+      <div class="line">
+        <div class="spk sp-n">Note</div>
+        <div class="line-content">
+          <div class="note-t">La formulation "si vous trouviez autre chose qui vous convient" est intentionnelle. Elle reconnaît la réalité du marché : la plupart des propriétaires ne veulent pas vendre sans avoir trouvé où aller. Cette question filtre les curieux des vrais vendeurs potentiels.</div>
+        </div>
+      </div>
+
+      <div class="line">
+        <div class="spk sp-a">Agent</div>
+        <div class="line-content">
+          <div class="speech">"Et si l'évaluation vous donnait un prix qui vous satisfait — est-ce que vous seriez prêt à mettre sur le marché <strong>dans les 6 prochains mois</strong> ?"</div>
+        </div>
+      </div>
+
+      <div class="fork">
+        <div class="fb fb-g">
+          <div class="fb-hdr">✅ "Oui, dans les 6 mois"</div>
+          <div class="fb-body">Lead immobilier qualifié. Créer besoin "Évaluation marchande" → assigner courtier partenaire. <strong style="color:var(--green)">Transfert autorisé.</strong></div>
+        </div>
+        <div class="fb fb-a">
+          <div class="fb-hdr">⏳ "Plutôt dans 1–2 ans"</div>
+          <div class="fb-body">Nurturing immobilier. Note dans le CRM : "Intéressé vente dans 1-2 ans". Rappel automatique dans 6 mois. Proposer l'évaluation quand même — "pour vous situer maintenant".</div>
+        </div>
+      </div>
+
+      <div class="line">
+        <div class="spk sp-a">Agent</div>
+        <div class="line-content">
+          <div class="speech">"Parfait — notre courtier partenaire peut faire une <strong>évaluation marchande gratuite</strong> chez vous. C'est sans engagement, ça prend environ une heure et ça vous donne une image claire de la valeur de votre propriété aujourd'hui. Je lui transmets votre dossier ?"</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     MODULE 07 — BESOINS & ENTREPRENEURS
+══════════════════════════════════════════════ -->
+<div class="mod" id="m6">
+  <div class="mhdr">
+    <div class="micon" style="background:rgba(163,230,53,0.1);">🔧</div>
+    <div>
+      <h2>Créer les Besoins & Assigner les Entrepreneurs</h2>
+      <p>Un besoin bien créé dans le CRM, c'est un entrepreneur qui arrive préparé et un propriétaire qui se sent pris en charge. Un besoin mal créé, c'est un rendez-vous raté et une relation qui commence mal.</p>
+    </div>
+  </div>
+
+  <div class="stitle">📝 Comment créer un besoin dans IntelliX</div>
+  <div class="card">
+    <h3>⚙️ Les 5 champs d'un besoin complet</h3>
+    <div class="fiche">
+      <div class="fiche-title">🔧 Fiche Besoin — À remplir pour chaque travail identifié</div>
+      <div class="frow">
+        <div class="frow-label">📋 Type de besoin</div>
+        <div class="frow-val"><span class="frow-input">Catégorie + sous-catégorie</span> — Ex: "Écoénergie / Isolation grenier" ou "Extérieur / Toiture"</div>
+      </div>
+      <div class="frow">
+        <div class="frow-label">📝 Description des travaux</div>
+        <div class="frow-val"><span class="frow-input">2–5 phrases précises</span> — Ce que le propriétaire veut faire, l'état actuel, les contraintes connues</div>
+      </div>
+      <div class="frow">
+        <div class="frow-label">📅 Délai prévu</div>
+        <div class="frow-val"><span class="frow-input">Dans X semaines / mois</span> — <span style="font-size:11px;color:var(--red)">OBLIGATOIRE — si &gt;6 mois → NE PAS transférer</span></div>
+      </div>
+      <div class="frow">
+        <div class="frow-label">💰 Budget approximatif</div>
+        <div class="frow-val"><span class="frow-input">Tranche : &lt;5k / 5–15k / 15–50k / &gt;50k</span> — Permet de router vers le bon entrepreneur</div>
+      </div>
+      <div class="frow">
+        <div class="frow-label">👷 Entrepreneur assigné</div>
+        <div class="frow-val"><span class="frow-input">Nom + spécialité + secteur géographique</span> — Vérifier disponibilité avant d'assigner</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stitle">👷 Tableau de routage — Quel entrepreneur pour quel besoin</div>
+  <div class="card">
+    <table class="dt">
+      <thead><tr><th>Catégorie</th><th>Type de besoin</th><th>Spécialiste requis</th><th>Critère de routing</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="tag tc">Écoénergie</span></td>
+          <td>Isolation grenier / murs</td>
+          <td>Entrepreneur isolation certifié Rénoclimat</td>
+          <td>Région + maison &gt;10 ans</td>
+        </tr>
+        <tr>
+          <td><span class="tag tc">Écoénergie</span></td>
+          <td>Thermopompe</td>
+          <td>Installateur CRAC certifié</td>
+          <td>Type chauffage actuel</td>
+        </tr>
+        <tr>
+          <td><span class="tag tc">Écoénergie</span></td>
+          <td>Fenêtres & portes</td>
+          <td>Fabricant/poseur fenêtres certifié</td>
+          <td>Fenêtres &gt;15 ans ou courants d'air</td>
+        </tr>
+        <tr>
+          <td><span class="tag ta">Intérieur</span></td>
+          <td>Cuisine / Salle de bain</td>
+          <td>Entrepreneur général ou spécialisé</td>
+          <td>Budget (spécialisé si &gt;25k)</td>
+        </tr>
+        <tr>
+          <td><span class="tag ta">Intérieur</span></td>
+          <td>Électricité</td>
+          <td>Maître électricien licencié RBQ</td>
+          <td>Obligatoire pour tout travail électrique</td>
+        </tr>
+        <tr>
+          <td><span class="tag ta">Intérieur</span></td>
+          <td>Plomberie</td>
+          <td>Plombier licencié</td>
+          <td>Obligatoire pour tout travail plomberie</td>
+        </tr>
+        <tr>
+          <td><span class="tag to">Extérieur</span></td>
+          <td>Toiture</td>
+          <td>Couvreur licencié RBQ</td>
+          <td>Toiture &gt;15 ans ou dommages visibles</td>
+        </tr>
+        <tr>
+          <td><span class="tag to">Extérieur</span></td>
+          <td>Fondations / drainage</td>
+          <td>Spécialiste fondations</td>
+          <td>Infiltration eau ou fissures</td>
+        </tr>
+        <tr>
+          <td><span class="tag to">Extérieur</span></td>
+          <td>Entrée asphaltée</td>
+          <td>Entrepreneur asphaltage</td>
+          <td>Saison printemps-automne seulement</td>
+        </tr>
+        <tr>
+          <td><span class="tag tb">Immobilier</span></td>
+          <td>Évaluation marchande</td>
+          <td>Courtier immobilier partenaire</td>
+          <td>Pas sous contrat, intéressé &lt;6 mois</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="stitle">✉️ Ce que l'entrepreneur reçoit</div>
+  <div class="card">
+    <h3>📨 Contenu de la fiche transmise à l'entrepreneur</h3>
+    <div class="hl">
+      <div class="hl-t">📋 Fiche complète transmise automatiquement par IntelliX</div>
+      <p>
+      <strong style="color:var(--text)">Propriétaire :</strong> Nom complet + téléphone + courriel<br>
+      <strong style="color:var(--text)">Adresse :</strong> Adresse complète de la propriété<br>
+      <strong style="color:var(--text)">Propriété :</strong> Âge, type de chauffage, bilan<br>
+      <strong style="color:var(--text)">Besoin :</strong> Description complète des travaux<br>
+      <strong style="color:var(--text)">Délai :</strong> Quand le propriétaire veut commencer<br>
+      <strong style="color:var(--text)">Budget :</strong> Tranche approximative<br>
+      <strong style="color:var(--text)">Disponibilités :</strong> 2–3 créneaux proposés pour le RDV
+      </p>
+    </div>
+    <div class="warn">
+      <div class="warn-title">⚠️ Ne jamais envoyer une fiche incomplète</div>
+      <p>Un entrepreneur qui reçoit une fiche sans adresse, sans description des travaux ou sans délai va appeler pour avoir l'info — et ça nuit à votre crédibilité. Vérifier les 5 champs du besoin avant d'assigner.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     MODULE 08 — TRANSFERT & RDV
+══════════════════════════════════════════════ -->
+<div class="mod" id="m7">
+  <div class="mhdr">
+    <div class="micon" style="background:rgba(163,230,53,0.1);">📅</div>
+    <div>
+      <h2>Céduler le RDV — La clôture parfaite</h2>
+      <p>Le rendez-vous est l'objectif final de chaque appel. Il est toujours gratuit, toujours sans engagement, toujours avec un entrepreneur qualifié. Voici comment le proposer et le confirmer de façon à minimiser les no-shows.</p>
+    </div>
+  </div>
+
+  <div class="stitle">🎙️ Script de clôture — Proposer le RDV</div>
+  <div class="script-wrap">
+    <div class="script-hdr">
+      <div class="script-hdr-title">📅 Céduler le rendez-vous gratuit</div>
+    </div>
+    <div class="script-body">
+
+      <div class="line">
+        <div class="spk sp-a">Agent</div>
+        <div class="line-content">
+          <div class="speech">"Parfait <strong>{{prénom}}</strong> — j'ai noté [liste des besoins identifiés]. Ce que je vous propose : on vous envoie <strong>[X] entrepreneur(s) spécialisé(s)</strong> directement chez vous pour faire une <strong>évaluation gratuite</strong>. C'est sans engagement — vous recevez le devis, vous décidez si vous allez de l'avant ou non. Ça vous convient ?"</div>
+        </div>
+      </div>
+
+      <div class="line">
+        <div class="spk sp-a">Agent</div>
+        <div class="line-content">
+          <div class="speech">"Pour céduler ça — vous êtes plutôt disponible <strong>en semaine ou la fin de semaine</strong> ?"</div>
+          <div class="timing">Question large → restreindre ensuite</div>
+        </div>
+      </div>
+
+      <div class="line">
+        <div class="spk sp-a">Agent</div>
+        <div class="line-content">
+          <div class="speech">"Et <strong>matin, après-midi ou soirée</strong> vous convient mieux ?"</div>
+        </div>
+      </div>
+
+      <div class="line">
+        <div class="spk sp-n">Note</div>
+        <div class="line-content">
+          <div class="note-t">Toujours proposer des créneaux larges d'abord, puis resserrer. Ne jamais proposer une heure précise en premier — ça augmente les chances de refus. "Mardi ou mercredi après-midi ?" est mieux que "mardi à 14h, ça vous va ?"</div>
+        </div>
+      </div>
+
+      <div class="line">
+        <div class="spk sp-a">Agent</div>
+        <div class="line-content">
+          <div class="speech">"Je vous confirme ça par <strong>SMS dans les prochaines minutes</strong> avec le nom de l'entrepreneur et l'heure. Vous recevrez aussi un rappel <strong>la veille</strong>. Le numéro de cell que je vous ai c'est bien le <strong>{{téléphone}}</strong> ?"</div>
+        </div>
+      </div>
+
+      <div class="line">
+        <div class="spk sp-n">Note</div>
+        <div class="line-content">
+          <div class="note-t">Confirmer le numéro avant de raccrocher. Le SMS de confirmation est envoyé automatiquement via Twilio dans les 5 minutes. Le rappel J-1 est planifié dans n8n. Ces deux automatisations réduisent les no-shows de 40%.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="stitle">📊 Règles pour minimiser les no-shows</div>
+  <div class="g2">
+    <div class="card">
+      <h3>✅ Bonnes pratiques RDV</h3>
+      <ul class="cl">
+        <li><span class="ck">✓</span>Toujours confirmer le numéro de cell avant de raccrocher</li>
+        <li><span class="ck">✓</span>Envoyer le SMS de confirmation dans les 5 minutes</li>
+        <li><span class="ck">✓</span>Rappel automatique SMS la veille à 10h</li>
+        <li><span class="ck">✓</span>Inclure le nom et numéro de l'entrepreneur dans le SMS</li>
+        <li><span class="ck">✓</span>Si 2 besoins ou plus → proposer de combiner les RDV le même jour si possible</li>
+        <li><span class="ck">✓</span>Confirmer l'adresse exacte une dernière fois</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>🚫 Ce qu'il ne faut jamais faire</h3>
+      <ul class="cl">
+        <li><span class="cx">✗</span>Proposer un RDV sans avoir d'abord vérifié la disponibilité de l'entrepreneur</li>
+        <li><span class="cx">✗</span>Envoyer plusieurs entrepreneurs le même jour sans prévenir le propriétaire</li>
+        <li><span class="cx">✗</span>Créer un besoin sans délai — le délai est obligatoire</li>
+        <li><span class="cx">✗</span>Assigner un entrepreneur hors de sa zone géographique</li>
+        <li><span class="cx">✗</span>Promettre un prix avant l'évaluation de l'entrepreneur</li>
+        <li><span class="cx">✗</span>Oublier de noter les disponibilités du propriétaire dans le CRM</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     MODULE 09 — OBJECTIONS
+══════════════════════════════════════════════ -->
+<div class="mod" id="m8">
+  <div class="mhdr">
+    <div class="micon" style="background:rgba(251,191,36,0.1);">💬</div>
+    <div>
+      <h2>Gestion des Objections — Rénovation & Immobilier</h2>
+      <p>Les objections en rénovation sont différentes de celles en financement. Elles sont souvent liées à la confiance envers les entrepreneurs, au budget, ou au manque d'urgence perçue. Voici comment y répondre.</p>
+    </div>
+  </div>
+
+  <div class="stitle">💬 Les objections les plus fréquentes</div>
+  <div class="g2">
+
+    <div class="card">
+      <div style="background:rgba(251,191,36,0.07);border-radius:9px;padding:.9rem;margin-bottom:1rem;">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--amber);margin-bottom:5px;">Objection</div>
+        <div style="font-size:13px;color:var(--amber);font-style:italic;">"J'ai déjà eu des mauvaises expériences avec des entrepreneurs."</div>
+      </div>
+      <div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:5px;">RÉPONSE AGENT</div>
+      <p>"Je vous comprends complètement — c'est malheureusement fréquent. C'est exactement pour ça que notre plateforme travaille uniquement avec des <strong>entrepreneurs vérifiés, licenciés RBQ et évalués</strong> par les propriétaires après chaque projet. Vous pouvez voir les évaluations avant de décider. Et l'estimation reste gratuite — vous ne payez rien si vous décidez de ne pas aller de l'avant."</p>
+    </div>
+
+    <div class="card">
+      <div style="background:rgba(251,191,36,0.07);border-radius:9px;padding:.9rem;margin-bottom:1rem;">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--amber);margin-bottom:5px;">Objection</div>
+        <div style="font-size:13px;color:var(--amber);font-style:italic;">"C'est pas le bon moment, on est serré financièrement."</div>
+      </div>
+      <div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:5px;">RÉPONSE AGENT</div>
+      <p>"Je comprends. Justement — c'est souvent dans ces moments qu'on peut accéder aux <strong>meilleures subventions</strong>. Pour l'isolation et la thermopompe par exemple, les aides gouvernementales couvrent une grande partie du coût. Et pour les travaux plus importants, on peut vous mettre en contact avec notre partenaire financement Driven. L'évaluation gratuite vous dit exactement ce que ça coûterait — sans engagement."</p>
+    </div>
+
+    <div class="card">
+      <div style="background:rgba(251,191,36,0.07);border-radius:9px;padding:.9rem;margin-bottom:1rem;">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--amber);margin-bottom:5px;">Objection</div>
+        <div style="font-size:13px;color:var(--amber);font-style:italic;">"J'ai déjà quelqu'un pour faire ces travaux."</div>
+      </div>
+      <div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:5px;">RÉPONSE AGENT</div>
+      <p>"Très bien ! Est-ce qu'il vous a déjà donné un <strong>devis formel</strong> ? L'avantage d'avoir une deuxième évaluation gratuite, c'est que ça vous donne un point de comparaison. Beaucoup de propriétaires réalisent qu'ils peuvent obtenir de meilleures conditions — ou ça confirme que leur entrepreneur est le meilleur choix. C'est gagnant dans les deux cas."</p>
+    </div>
+
+    <div class="card">
+      <div style="background:rgba(251,191,36,0.07);border-radius:9px;padding:.9rem;margin-bottom:1rem;">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--amber);margin-bottom:5px;">Objection</div>
+        <div style="font-size:13px;color:var(--amber);font-style:italic;">"Je veux pas que des inconnus viennent chez moi."</div>
+      </div>
+      <div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:5px;">RÉPONSE AGENT</div>
+      <p>"C'est tout à fait légitime. Nos entrepreneurs sont tous <strong>identifiés, vérifiés</strong> — vous recevrez son nom complet, sa photo et son numéro de licence avant le rendez-vous. Vous pouvez aussi choisir d'avoir quelqu'un avec vous. Et si vous changez d'avis avant le RDV, un simple message et on annule — sans aucun frais ni pression."</p>
+    </div>
+
+    <div class="card">
+      <div style="background:rgba(96,165,250,0.07);border-radius:9px;padding:.9rem;margin-bottom:1rem;">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--blue);margin-bottom:5px;">Objection Immobilier</div>
+        <div style="font-size:13px;color:var(--blue);font-style:italic;">"Je veux pas vendre si j'ai pas trouvé où aller."</div>
+      </div>
+      <div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:5px;">RÉPONSE AGENT</div>
+      <p>"C'est exactement la bonne approche ! Notre courtier peut vous <strong>accompagner des deux côtés</strong> — il peut évaluer ce que vaut votre maison maintenant ET vous aider à trouver votre prochaine propriété. Beaucoup de gens font les deux en même temps pour être prêts quand l'opportunité se présente. L'évaluation vous donne juste l'information — vous décidez quand et si vous vendez."</p>
+    </div>
+
+    <div class="card">
+      <div style="background:rgba(96,165,250,0.07);border-radius:9px;padding:.9rem;margin-bottom:1rem;">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--blue);margin-bottom:5px;">Objection Immobilier</div>
+        <div style="font-size:13px;color:var(--blue);font-style:italic;">"J'ai déjà un courtier."</div>
+      </div>
+      <div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:5px;">RÉPONSE AGENT</div>
+      <p>"Parfait — vous êtes bien accompagné ! On ne touche pas à ça. Par contre, est-ce qu'il y a des <strong>travaux de rénovation</strong> qu'on pourrait vous aider à préparer avant la mise en marché ? Une maison bien préparée se vend toujours mieux et plus vite."</p>
+    </div>
+
+  </div>
+
+  <div class="stitle">📜 Les 10 règles d'or du qualificateur rénovation</div>
+  <div class="card">
+    <div class="g2">
+      <ul class="cl">
+        <li><span class="ck">1.</span><div><strong>Toujours remplir la fiche propriété avant de créer un besoin</strong> — sans âge de la maison et type de chauffage, on ne peut pas qualifier correctement.</div></li>
+        <li><span class="ck">2.</span><div><strong>Poser la question de l'âge de la maison tôt</strong> — c'est le filtre principal pour l'écoénergie, les fenêtres et la toiture.</div></li>
+        <li><span class="ck">3.</span><div><strong>Ne jamais transférer si les travaux sont dans plus de 6 mois</strong> — noter, planifier le rappel, respecter le délai.</div></li>
+        <li><span class="ck">4.</span><div><strong>Le RDV est toujours gratuit et sans engagement</strong> — répéter cette phrase à chaque fois que le propriétaire hésite.</div></li>
+        <li><span class="ck">5.</span><div><strong>Un besoin = un devis = un entrepreneur</strong> — ne jamais envoyer plusieurs besoins différents au même entrepreneur sans vérifier qu'il peut tous les traiter.</div></li>
+      </ul>
+      <ul class="cl">
+        <li><span class="ck">6.</span><div><strong>Pour l'immobilier : vérifier le courtier en premier</strong> — avant toute autre question. Si déjà sous contrat, pivot rénovation.</div></li>
+        <li><span class="ck">7.</span><div><strong>Mentionner les subventions tôt</strong> — dès que la maison a plus de 10 ans, parler des aides disponibles. C'est le meilleur déclencheur d'intérêt.</div></li>
+        <li><span class="ck">8.</span><div><strong>Décrire les travaux précisément dans le CRM</strong> — l'entrepreneur se prépare mieux, le devis est plus précis, la conversion est plus haute.</div></li>
+        <li><span class="ck">9.</span><div><strong>Toujours confirmer par SMS</strong> — la confirmation écrite réduit les no-shows de 40%. Ne jamais s'en passer.</div></li>
+        <li><span class="ck">10.</span><div><strong>Si pas de besoin identifié, noter quand même</strong> — "Aucun besoin pour l'instant" est une information utile. Planifier un rappel dans 6 mois — les situations changent.</div></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<div class="pfooter">
+  <span>IntelliX CRM · Formation Rénovation & Immobilier · SoumissionEntrepreneurs.com · Agence Doorway Inc. · 2025</span>
+  <span>intellixcrm.com</span>
+</div>
+
+<script>
+function sw(i){
+  document.querySelectorAll('.mod').forEach((m,j)=>m.classList.toggle('on',j===i));
+  document.querySelectorAll('.nb').forEach((b,j)=>b.classList.toggle('on',j===i));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
+</user_query>

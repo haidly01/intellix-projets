@@ -1,0 +1,15 @@
+---
+description: Doorway Odoo + VICIdial + agents IA (intellixcrm VPS)
+globs: doorway_agents_dashboard/**,doorway_vicidial_campaigns/**,doorway_agents_ia/**
+alwaysApply: false
+---
+
+# Doorway — développement addons
+
+Voir `/odoo/custom/addons/NOTES_CURSOR.md` et `/root/.cursor/rules/doorway-intellixcrm.mdc`.
+
+- Partie A (`doorway_agents_dashboard`) avant Partie B ; B dépend de A.
+- Un modèle = un fichier + import dans `models/__init__.py`.
+- Tester les services avant les vues ; assets OWL dans le manifest.
+- MySQL `asterisk` : SELECT/INSERT pour l’user `vicidial`.
+- Webhooks ElevenLabs/Retell après déploiement HTTPS.

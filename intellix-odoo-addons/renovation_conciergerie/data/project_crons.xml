@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="cron_project_overdue_alert" model="ir.cron">
+        <field name="name">Projet : alertes tâches en retard</field>
+        <field name="model_id" ref="project.model_project_task"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_alert_overdue_tasks()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <record id="cron_doorway_announce_challenges" model="ir.cron">
+        <field name="name">Gamification : annonces de fin de défi</field>
+        <field name="model_id" ref="gamification.model_gamification_challenge"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_doorway_announce_challenges()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

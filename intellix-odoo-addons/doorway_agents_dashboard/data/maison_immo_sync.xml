@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Exécuté à chaque upgrade : rôles, noms, doublons, leads test -->
+    <function model="doorway.agent.profile" name="_post_init_maison_recherchee"/>
+    <function model="doorway.agent.profile" name="sync_immo_j0_prompt_to_odoo"/>
+    <function model="doorway.agent.profile" name="sync_all_active_prompts_to_elevenlabs"/>
+</odoo>

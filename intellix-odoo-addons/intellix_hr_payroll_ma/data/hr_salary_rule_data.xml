@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Règles salariales indicatives — taux à ajuster via configuration annuelle -->
+    <record id="rule_basic" model="hr.salary.rule.ma">
+        <field name="name">Salaire de base</field>
+        <field name="code">BASIC</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="category">gain</field>
+        <field name="computation_type">fixed</field>
+        <field name="sequence">1</field>
+        <field name="note">Montant = salaire brut saisi sur le bulletin.</field>
+    </record>
+    <record id="rule_cnss_emp" model="hr.salary.rule.ma">
+        <field name="name">CNSS — part salariale</field>
+        <field name="code">CNSS_EMP</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="category">retenue_salariale</field>
+        <field name="computation_type">percentage</field>
+        <field name="base_type">cnss_capped</field>
+        <field name="rate">4.48</field>
+        <field name="ceiling">6000</field>
+        <field name="sequence">10</field>
+    </record>
+    <record id="rule_cnss_pat" model="hr.salary.rule.ma">
+        <field name="name">CNSS — part patronale</field>
+        <field name="code">CNSS_PAT</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="category">charge_patronale</field>
+        <field name="computation_type">percentage</field>
+        <field name="base_type">cnss_capped</field>
+        <field name="rate">8.98</field>
+        <field name="employer_rate">8.98</field>
+        <field name="ceiling">6000</field>
+        <field name="sequence">11</field>
+    </record>
+    <record id="rule_amo_emp" model="hr.salary.rule.ma">
+        <field name="name">AMO — part salariale</field>
+        <field name="code">AMO_EMP</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="category">retenue_salariale</field>
+        <field name="computation_type">percentage</field>
+        <field name="base_type">gross</field>
+        <field name="rate">2.26</field>
+        <field name="sequence">20</field>
+    </record>
+    <record id="rule_amo_pat" model="hr.salary.rule.ma">
+        <field name="name">AMO — part patronale</field>
+        <field name="code">AMO_PAT</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="category">charge_patronale</field>
+        <field name="computation_type">percentage</field>
+        <field name="base_type">gross</field>
+        <field name="rate">2.26</field>
+        <field name="employer_rate">2.26</field>
+        <field name="sequence">21</field>
+    </record>
+    <record id="rule_cimr_emp" model="hr.salary.rule.ma">
+        <field name="name">CIMR — part salariale</field>
+        <field name="code">CIMR_EMP</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="category">retenue_salariale</field>
+        <field name="computation_type">percentage</field>
+        <field name="base_type">gross_if_cimr</field>
+        <field name="rate">0</field>
+        <field name="sequence">30</field>
+        <field name="note">Taux lu depuis le dossier employé (x_cimr_rate).</field>
+    </record>
+    <record id="rule_cimr_pat" model="hr.salary.rule.ma">
+        <field name="name">CIMR — part patronale</field>
+        <field name="code">CIMR_PAT</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="category">charge_patronale</field>
+        <field name="computation_type">percentage</field>
+        <field name="base_type">gross_if_cimr</field>
+        <field name="rate">0</field>
+        <field name="sequence">31</field>
+        <field name="note">Taux lu depuis x_cimr_employer_rate ou x_cimr_rate.</field>
+    </record>
+    <record id="rule_ir" model="hr.salary.rule.ma">
+        <field name="name">Impôt sur le revenu (IR)</field>
+        <field name="code">IR</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="category">retenue_salariale</field>
+        <field name="computation_type">ir_ma</field>
+        <field name="sequence">40</field>
+    </record>
+
+    <record id="structure_non_cadre" model="hr.payroll.structure.ma">
+        <field name="name">Maroc — Non-cadre</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="rule_ids" eval="[(6, 0, [
+            ref('rule_basic'),
+            ref('rule_cnss_emp'),
+            ref('rule_cnss_pat'),
+            ref('rule_amo_emp'),
+            ref('rule_amo_pat'),
+            ref('rule_cimr_emp'),
+            ref('rule_cimr_pat'),
+            ref('rule_ir'),
+        ])]"/>
+        <field name="note">Structure standard non-cadre Digital Doorway — taux indicatifs.</field>
+    </record>
+    <record id="structure_cadre" model="hr.payroll.structure.ma">
+        <field name="name">Maroc — Cadre</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="rule_ids" eval="[(6, 0, [
+            ref('rule_basic'),
+            ref('rule_cnss_emp'),
+            ref('rule_cnss_pat'),
+            ref('rule_amo_emp'),
+            ref('rule_amo_pat'),
+            ref('rule_cimr_emp'),
+            ref('rule_cimr_pat'),
+            ref('rule_ir'),
+        ])]"/>
+        <field name="note">Structure cadre — ajuster taux CIMR via dossier employé.</field>
+    </record>
+</odoo>

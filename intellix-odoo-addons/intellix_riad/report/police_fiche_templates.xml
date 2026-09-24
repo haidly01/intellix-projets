@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="paperformat_police_fiche" model="report.paperformat">
+        <field name="name">Fiche de police voyageur</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">15</field>
+        <field name="margin_bottom">15</field>
+        <field name="margin_left">15</field>
+        <field name="margin_right">15</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+    </record>
+
+    <record id="action_report_police_fiche" model="ir.actions.report">
+        <field name="name">Fiche de police</field>
+        <field name="model">intellix.riad.police.fiche</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">intellix_riad.report_police_fiche</field>
+        <field name="report_file">intellix_riad.report_police_fiche</field>
+        <field name="print_report_name">'Fiche_police_%s' % (object.name or object.id)</field>
+        <field name="paperformat_id" ref="paperformat_police_fiche"/>
+        <field name="binding_model_id" ref="model_intellix_riad_police_fiche"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_police_fiche">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.basic_layout">
+                    <div class="page" style="font-family:Georgia,serif;color:#241A12;">
+                        <div style="border:2px solid #0E4632;padding:18px 22px 24px;">
+                            <div style="text-align:center;margin-bottom:14px;">
+                                <div style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#B8935A;">Royaume du Maroc</div>
+                                <div style="font-size:20px;color:#0E4632;margin-top:4px;">Bulletin individuel de voyageur</div>
+                                <div style="font-size:12px;color:#9C9280;">Fiche de police — établissement d'hébergement touristique</div>
+                            </div>
+                            <table style="width:100%;border-collapse:collapse;font-size:13px;">
+                                <tr>
+                                    <td style="width:50%;padding:7px 8px;border:1px solid #E4D9C4;"><b>Nom</b><br/><t t-esc="doc.lastname or '—'"/></td>
+                                    <td style="width:50%;padding:7px 8px;border:1px solid #E4D9C4;"><b>Prénom</b><br/><t t-esc="doc.firstname or '—'"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:7px 8px;border:1px solid #E4D9C4;"><b>Date de naissance</b><br/><t t-esc="doc.birth_date or '—'"/></td>
+                                    <td style="padding:7px 8px;border:1px solid #E4D9C4;"><b>Lieu de naissance</b><br/><t t-esc="doc.birth_place or '—'"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:7px 8px;border:1px solid #E4D9C4;"><b>Nationalité</b><br/><t t-esc="doc.nationality_id.name or '—'"/></td>
+                                    <td style="padding:7px 8px;border:1px solid #E4D9C4;"><b>N° de passeport</b><br/><t t-esc="doc.passport_number or '—'"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:7px 8px;border:1px solid #E4D9C4;"><b>Date d'entrée au Maroc</b><br/><t t-esc="doc.entry_date or '—'"/></td>
+                                    <td style="padding:7px 8px;border:1px solid #E4D9C4;"><b>Durée de séjour prévue</b><br/>
+                                        <t t-esc="doc.stay_nights or 0"/> nuit(s)
+                                        <t t-if="doc.check_in"> — <t t-esc="doc.check_in"/> → <t t-esc="doc.check_out"/></t>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="padding:7px 8px;border:1px solid #E4D9C4;"><b>Adresse de l'établissement</b><br/><t t-esc="doc.establishment_address or doc.establishment_id.name or '—'"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:7px 8px;border:1px solid #E4D9C4;"><b>Téléphone mobile</b><br/><t t-esc="doc.phone or '—'"/></td>
+                                    <td style="padding:7px 8px;border:1px solid #E4D9C4;"><b>Adresse électronique</b><br/><t t-esc="doc.email or '—'"/></td>
+                                </tr>
+                            </table>
+                            <div style="margin-top:16px;font-size:11px;color:#6B6256;">
+                                Réf. <t t-esc="doc.name"/> · Réservation <t t-esc="doc.reservation_id.name"/>
+                                · À transmettre dans les 24 h suivant l'arrivée · Conservation 2 ans
+                            </div>
+                            <t t-if="doc.passport_image">
+                                <div style="margin-top:14px;">
+                                    <div style="font-size:11px;color:#9C9280;margin-bottom:6px;">Copie du passeport</div>
+                                    <img t-att-src="image_data_uri(doc.passport_image)" style="max-width:280px;max-height:180px;border:1px solid #E4D9C4;"/>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

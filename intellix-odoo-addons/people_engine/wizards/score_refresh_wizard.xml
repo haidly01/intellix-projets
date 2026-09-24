@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pe_score_refresh_wizard" model="ir.ui.view">
+        <field name="name">pe.score.refresh.wizard.form</field>
+        <field name="model">pe.score.refresh.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Recalcul des scores">
+                <group>
+                    <field name="profile_ids" widget="many2many_tags"/>
+                    <field name="period_days"/>
+                    <field name="manual_quality_score"/>
+                </group>
+                <footer>
+                    <button name="action_refresh" type="object" string="Recalculer" class="btn-primary"/>
+                    <button string="Annuler" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_pe_score_refresh_wizard" model="ir.actions.act_window">
+        <field name="name">Recalculer les scores</field>
+        <field name="res_model">pe.score.refresh.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_doorway_tour_user,doorway.tour.user,model_doorway_onboarding_tour,base.group_user,1,0,0,0
+access_doorway_tour_step_user,doorway.tour.step.user,model_doorway_onboarding_tour_step,base.group_user,1,0,0,0
+access_doorway_wizard_user,doorway.wizard.user,model_doorway_onboarding_wizard,base.group_user,1,1,1,1
+access_doorway_tour_admin,doorway.tour.admin,model_doorway_onboarding_tour,base.group_system,1,1,1,1
+access_doorway_tour_step_admin,doorway.tour.step.admin,model_doorway_onboarding_tour_step,base.group_system,1,1,1,1

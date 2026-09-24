@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="mail_template_voy_accuse_mariage" model="mail.template">
+        <field name="name">Voyageurs CM — Accusé fiançailles / mariage</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="subject">Votre projet mariage / fiançailles à Marrakech — Coins Marocain</field>
+        <field name="email_from">Zakaria &lt;zakaria@coinsmarocain.com&gt;</field>
+        <field name="email_to">{{ object.email_from }}</field>
+        <field name="use_default_to" eval="False"/>
+        <field name="auto_delete" eval="False"/>
+        <field name="description">Premier contact mariage/fiançailles. Brouillon à valider — ne pas envoyer en masse.</field>
+        <field name="body_html" type="html">
+<div style="font-family:Jost,Segoe UI,Helvetica,sans-serif;font-size:15px;line-height:22px;color:#262220;max-width:600px;">
+  <p>Bonjour <strong><t t-out="object.contact_name or 'bonjour'"/></strong>,</p>
+  <p>Merci pour votre demande. Je suis Zakaria, de Coins Marocain — nous accompagnons les couples pour un mariage ou des fiançailles à Marrakech, avec un interlocuteur unique.</p>
+  <p>J'ai bien noté votre projet
+    <t t-if="object.coins_date_souhaitee">autour du <strong><t t-out="object.coins_date_souhaitee"/></strong></t>
+    <t t-if="object.coins_nombre_personnes">, pour environ <strong><t t-out="object.coins_nombre_personnes"/></strong> personnes</t>.
+  </p>
+  <p>Je vous propose un court échange (WhatsApp ou appel) pour préciser le lieu, l'hébergement et le rythme des jours. Rien n'est réservé sans votre accord.</p>
+  <p>À très vite,<br/>
+    <strong>Zakaria</strong><br/>
+    Coins Marocain — Digital Doorway SARL<br/>
+    <a href="tel:+212660159177" style="color:#b5732f;">+212 660 159 177</a>
+    ·
+    <a href="mailto:zakaria@coinsmarocain.com" style="color:#b5732f;">zakaria@coinsmarocain.com</a>
+  </p>
+</div>
+        </field>
+    </record>
+
+    <record id="mail_template_voy_accuse_anniversaire" model="mail.template">
+        <field name="name">Voyageurs CM — Accusé anniversaire</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="subject">Votre anniversaire à Marrakech — Coins Marocain</field>
+        <field name="email_from">Zakaria &lt;zakaria@coinsmarocain.com&gt;</field>
+        <field name="email_to">{{ object.email_from }}</field>
+        <field name="use_default_to" eval="False"/>
+        <field name="auto_delete" eval="False"/>
+        <field name="description">Premier contact anniversaire. Brouillon à valider.</field>
+        <field name="body_html" type="html">
+<div style="font-family:Jost,Segoe UI,Helvetica,sans-serif;font-size:15px;line-height:22px;color:#262220;max-width:600px;">
+  <p>Bonjour <strong><t t-out="object.contact_name or 'bonjour'"/></strong>,</p>
+  <p>Merci pour votre message. Je suis Zakaria, de Coins Marocain — on organise des anniversaires à Marrakech (villa, riad, resto, activités) sans vous faire courir les prestataires.</p>
+  <p>Dites-moi simplement l'ambiance souhaitée et le nombre d'invités : je vous envoie 2 ou 3 pistes concrètes.</p>
+  <p>À très vite,<br/>
+    <strong>Zakaria</strong><br/>
+    Coins Marocain — Digital Doorway SARL<br/>
+    <a href="tel:+212660159177" style="color:#b5732f;">+212 660 159 177</a>
+    ·
+    <a href="mailto:zakaria@coinsmarocain.com" style="color:#b5732f;">zakaria@coinsmarocain.com</a>
+  </p>
+</div>
+        </field>
+    </record>
+
+    <record id="mail_template_voy_accuse_festif" model="mail.template">
+        <field name="name">Voyageurs CM — Accusé moment festif</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="subject">Votre séjour entre amis / famille à Marrakech — Coins Marocain</field>
+        <field name="email_from">Zakaria &lt;zakaria@coinsmarocain.com&gt;</field>
+        <field name="email_to">{{ object.email_from }}</field>
+        <field name="use_default_to" eval="False"/>
+        <field name="auto_delete" eval="False"/>
+        <field name="description">Premier contact moment festif. Brouillon à valider.</field>
+        <field name="body_html" type="html">
+<div style="font-family:Jost,Segoe UI,Helvetica,sans-serif;font-size:15px;line-height:22px;color:#262220;max-width:600px;">
+  <p>Bonjour <strong><t t-out="object.contact_name or 'bonjour'"/></strong>,</p>
+  <p>Merci pour votre demande. Je suis Zakaria, de Coins Marocain — on compose des séjours entre amis ou en famille à Marrakech : logements, restos, excursions, le tout coordonné.</p>
+  <p>Je reviens vers vous avec des options adaptées à votre groupe. Un message WhatsApp suffit si c'est plus simple.</p>
+  <p>À très vite,<br/>
+    <strong>Zakaria</strong><br/>
+    Coins Marocain — Digital Doorway SARL<br/>
+    <a href="tel:+212660159177" style="color:#b5732f;">+212 660 159 177</a>
+    ·
+    <a href="mailto:zakaria@coinsmarocain.com" style="color:#b5732f;">zakaria@coinsmarocain.com</a>
+  </p>
+</div>
+        </field>
+    </record>
+
+    <record id="mail_template_voy_relance_mariage" model="mail.template">
+        <field name="name">Voyageurs CM — Relance fiançailles / mariage</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="subject">On avance sur votre mariage / fiançailles ?</field>
+        <field name="email_from">Zakaria &lt;zakaria@coinsmarocain.com&gt;</field>
+        <field name="email_to">{{ object.email_from }}</field>
+        <field name="use_default_to" eval="False"/>
+        <field name="auto_delete" eval="False"/>
+        <field name="description">Relance 3–5 j ouvrables, ton mariage. Brouillon à valider.</field>
+        <field name="body_html" type="html">
+<div style="font-family:Jost,Segoe UI,Helvetica,sans-serif;font-size:15px;line-height:22px;color:#262220;max-width:600px;">
+  <p>Bonjour <strong><t t-out="object.contact_name or 'bonjour'"/></strong>,</p>
+  <p>Je me permets un court suivi : les plus beaux lieux se bloquent vite, surtout autour des dates de mariage.</p>
+  <p>Si vous le souhaitez, on fixe 15 minutes cette semaine pour cadrer le projet. Sinon, dites-moi simplement si le timing a changé.</p>
+  <p>Bien à vous,<br/>
+    <strong>Zakaria</strong><br/>
+    Coins Marocain<br/>
+    <a href="tel:+212660159177" style="color:#b5732f;">+212 660 159 177</a>
+  </p>
+</div>
+        </field>
+    </record>
+
+    <record id="mail_template_voy_relance_anniversaire" model="mail.template">
+        <field name="name">Voyageurs CM — Relance anniversaire</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="subject">Votre anniversaire à Marrakech — on en parle ?</field>
+        <field name="email_from">Zakaria &lt;zakaria@coinsmarocain.com&gt;</field>
+        <field name="email_to">{{ object.email_from }}</field>
+        <field name="use_default_to" eval="False"/>
+        <field name="auto_delete" eval="False"/>
+        <field name="description">Relance 3–5 j ouvrables, ton anniversaire. Brouillon à valider.</field>
+        <field name="body_html" type="html">
+<div style="font-family:Jost,Segoe UI,Helvetica,sans-serif;font-size:15px;line-height:22px;color:#262220;max-width:600px;">
+  <p>Bonjour <strong><t t-out="object.contact_name or 'bonjour'"/></strong>,</p>
+  <p>Petit rappel amical : je peux vous envoyer 2 idées d'anniversaire (lieu + resto + activité) dès que vous me confirmez la date et le nombre de personnes.</p>
+  <p>Répondez à cet e-mail ou sur WhatsApp, comme vous préférez.</p>
+  <p>Zakaria — Coins Marocain<br/>
+    <a href="tel:+212660159177" style="color:#b5732f;">+212 660 159 177</a>
+  </p>
+</div>
+        </field>
+    </record>
+
+    <record id="mail_template_voy_relance_festif" model="mail.template">
+        <field name="name">Voyageurs CM — Relance moment festif</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="subject">Votre séjour à Marrakech — je reste dispo</field>
+        <field name="email_from">Zakaria &lt;zakaria@coinsmarocain.com&gt;</field>
+        <field name="email_to">{{ object.email_from }}</field>
+        <field name="use_default_to" eval="False"/>
+        <field name="auto_delete" eval="False"/>
+        <field name="description">Relance 3–5 j ouvrables, ton festif. Brouillon à valider.</field>
+        <field name="body_html" type="html">
+<div style="font-family:Jost,Segoe UI,Helvetica,sans-serif;font-size:15px;line-height:22px;color:#262220;max-width:600px;">
+  <p>Bonjour <strong><t t-out="object.contact_name or 'bonjour'"/></strong>,</p>
+  <p>Je reviens vers vous au cas où le projet entre amis ou en famille est toujours d'actualité. Je peux caler logements et activités dès que vous avez une fenêtre de dates.</p>
+  <p>Pas de pression — un oui, un non ou un « plus tard » me suffit.</p>
+  <p>Zakaria — Coins Marocain<br/>
+    <a href="tel:+212660159177" style="color:#b5732f;">+212 660 159 177</a>
+  </p>
+</div>
+        </field>
+    </record>
+</odoo>

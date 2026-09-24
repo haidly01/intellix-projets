@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="icp_coins_channex_enabled" model="ir.config_parameter">
+        <field name="key">coins.channex.enabled</field>
+        <field name="value">False</field>
+    </record>
+    <record id="icp_coins_channex_base_url" model="ir.config_parameter">
+        <field name="key">coins.channex.base_url</field>
+        <field name="value">https://app.channex.io/api/v1</field>
+    </record>
+    <record id="icp_coins_channex_staging_url" model="ir.config_parameter">
+        <field name="key">coins.channex.staging_url</field>
+        <field name="value">https://staging.channex.io/api/v1</field>
+    </record>
+    <record id="icp_coins_channex_environment" model="ir.config_parameter">
+        <field name="key">coins.channex.environment</field>
+        <field name="value">production</field>
+    </record>
+</odoo>

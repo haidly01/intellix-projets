@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_tenant_list_admin" model="ir.ui.view">
+        <field name="name">doorway.tenant.list.admin</field>
+        <field name="model">doorway.tenant</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="status == 'suspended'"
+                  decoration-muted="status == 'cancelled'">
+                <field name="name"/>
+                <field name="company_id"/>
+                <field name="user_count"/>
+                <field name="credit_balance"/>
+                <field name="current_month_consumption"/>
+                <field name="monthly_fee"/>
+                <field name="status"/>
+                <field name="stripe_customer_id" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_tenant_form_admin" model="ir.ui.view">
+        <field name="name">doorway.tenant.form.admin</field>
+        <field name="model">doorway.tenant</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="status" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="company_id"/>
+                        <field name="email_admin"/>
+                        <field name="phone"/>
+                        <field name="credit_balance"/>
+                        <field name="stripe_customer_id"/>
+                        <field name="api_key"/>
+                        <field name="subscription_id"/>
+                        <field name="payment_failure_count"/>
+                    </group>
+                    <field name="transaction_ids">
+                        <list>
+                            <field name="date"/>
+                            <field name="transaction_type"/>
+                            <field name="service"/>
+                            <field name="amount"/>
+                            <field name="charged_amount"/>
+                            <field name="margin"/>
+                            <field name="stripe_payment_id"/>
+                        </list>
+                    </field>
+                    <field name="alert_ids">
+                        <list>
+                            <field name="alert_type"/>
+                            <field name="severity"/>
+                            <field name="message"/>
+                            <field name="is_read"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_credit_alert_list" model="ir.ui.view">
+        <field name="name">doorway.credit.alert.list</field>
+        <field name="model">doorway.credit.alert</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="severity == 'critical'">
+                <field name="tenant_id"/>
+                <field name="alert_type"/>
+                <field name="message"/>
+                <field name="create_date"/>
+                <field name="is_read"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_admin_tenants" model="ir.actions.act_window">
+        <field name="name">Tenants SaaS</field>
+        <field name="res_model">doorway.tenant</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_admin_alerts" model="ir.actions.act_window">
+        <field name="name">Alertes crédits</field>
+        <field name="res_model">doorway.credit.alert</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('is_read', '=', False)]</field>
+    </record>
+</odoo>

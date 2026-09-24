@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="template_master_intro" model="doorway.message.template">
+        <field name="name">Introduction partenaire — maître</field>
+        <field name="canal">master</field>
+        <field name="corps"><![CDATA[
+<p>Bonjour,</p>
+<p>Nous souhaitons vous présenter une opportunité de partenariat avec IntelliX.</p>
+<p>Seriez-vous disponible pour un court échange cette semaine ?</p>
+        ]]></field>
+    </record>
+    <record id="template_email_standard" model="doorway.message.template">
+        <field name="name">Email standard prospection</field>
+        <field name="canal">email</field>
+        <field name="sujet">Opportunité de partenariat IntelliX</field>
+        <field name="corps"><![CDATA[
+<h2>Partenariat IntelliX</h2>
+<p>Bonjour,</p>
+<p>Nous accompagnons des entreprises comme la vôtre avec des solutions IA et téléphonie.</p>
+<p><a href="https://intellixcrm.com">En savoir plus</a></p>
+        ]]></field>
+    </record>
+</odoo>

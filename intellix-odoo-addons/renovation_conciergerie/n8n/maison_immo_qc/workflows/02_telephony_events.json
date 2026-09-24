@@ -1,0 +1,60 @@
+{
+  "name": "maison-immo-qc — 02 Telephony Events",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "maison-immo-qc/event",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        300
+      ],
+      "webhookId": "maison-immo-qc-event"
+    },
+    {
+      "parameters": {
+        "jsCode": "const b = $input.first().json.body || $input.first().json;\nconst ev = {\n  event_type: b.event_type || 'recording_ready',\n  call_sid: b.call_sid || b.CallSid || b.uniqueid || '',\n  from: b.from || b.From || '',\n  to: b.to || b.To || '',\n  recording_url: b.recording_url || b.RecordingUrl || b.recording_path || '',\n  amd_result: (b.amd_result || b.AnsweredBy || 'unknown').toLowerCase(),\n  duration_sec: parseInt(b.duration_sec || b.CallDuration || b.duration || 0, 10) || 0,\n  provider: b.provider || 'vicidial',\n  partner_id: b.partner_id || b.lead_id || '',\n  prenom: b.prenom || b.nombre || b.first_name || '',\n  raw: b,\n};\n\nconst base = ($env.N8N_WEBHOOK_URL || '').replace(/\\/$/, '');\nconst engine = await this.helpers.httpRequest({\n  method: 'POST',\n  url: base + '/maison-immo-qc/conversation',\n  body: ev,\n  json: true,\n});\nconst out = engine && engine.action ? engine : (Array.isArray(engine) ? engine[0] : { normalized: ev, engine });\n\nif (ev.event_type === 'call_ended' || out.action === 'hangup') {\n  const odooUrl = ($env.ODOO_URL || 'https://intellixcrm.com').replace(/\\/$/, '');\n  const cp = out.crm_payload || {};\n  try {\n    await this.helpers.httpRequest({\n      method: 'POST',\n      url: odooUrl + '/doorway/api/maison-immo-qc/call-ended',\n      body: {\n        jsonrpc: '2.0',\n        method: 'call',\n        params: { tenant_api_key: $env.DOORWAY_TENANT_API_KEY, ...cp },\n        id: Date.now(),\n      },\n      json: true,\n      timeout: 15000,\n    });\n  } catch (e) {\n    out.odoo_error = (e.message || String(e)).slice(0, 200);\n  }\n  if (cp.crm_action === 'tag_lead_qualifie') {\n    try {\n      await this.helpers.httpRequest({\n        method: 'POST',\n        url: base + '/maison-immo-qc/qualified',\n        body: cp,\n        json: true,\n      });\n    } catch (_e) { /* qualified wf */ }\n  } else if (cp.crm_action) {\n    try {\n      await this.helpers.httpRequest({\n        method: 'POST',\n        url: base + '/maison-immo-qc/non-qualified',\n        body: cp,\n        json: true,\n      });\n    } catch (_e) { /* non-qualified wf */ }\n  }\n}\nreturn [{ json: out }];"
+      },
+      "name": "Telephony Events",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Telephony Events",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [
+    {
+      "name": "maison-immo-qc"
+    },
+    {
+      "name": "sophie"
+    }
+  ],
+  "id": "o2sE2mImQcEvnt01",
+  "active": true,
+  "versionId": "1"
+}

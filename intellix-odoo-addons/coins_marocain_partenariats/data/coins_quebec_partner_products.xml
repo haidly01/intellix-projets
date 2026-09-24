@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="product_category_coins_quebec_partenaires" model="product.category">
+        <field name="name">Coins Québec — Partenaires</field>
+    </record>
+
+    <record id="product_cq_visibilite" model="product.template">
+        <field name="name">[CQ_VISIBILITE] Visibilité Coins Québec</field>
+        <field name="default_code">CQ_VISIBILITE</field>
+        <field name="type">service</field>
+        <field name="list_price">0.0</field>
+        <field name="ix_price_mad">0.0</field>
+        <field name="ix_price_cad">0.0</field>
+        <field name="ix_billing_type">quote_only</field>
+        <field name="ix_quote_only" eval="True"/>
+        <field name="coins_commission_pct">15.0</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="company_id" eval="False"/>
+        <field name="categ_id" ref="product_category_coins_quebec_partenaires"/>
+        <field name="description_sale">Mise en avant sur Coins Québec. Commission 15 % calculée sur les réservations réelles — aucun montant facturé à la signature du devis.</field>
+    </record>
+
+    <record id="product_cq_digital_comm" model="product.template">
+        <field name="name">[CQ_DIGITAL_COMM] Digitalisation — 10% des réservations</field>
+        <field name="default_code">CQ_DIGITAL_COMM</field>
+        <field name="type">service</field>
+        <field name="list_price">0.0</field>
+        <field name="ix_price_mad">0.0</field>
+        <field name="ix_price_cad">0.0</field>
+        <field name="ix_billing_type">quote_only</field>
+        <field name="ix_quote_only" eval="True"/>
+        <field name="coins_commission_pct">10.0</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="company_id" eval="False"/>
+        <field name="categ_id" ref="product_category_coins_quebec_partenaires"/>
+        <field name="description_sale">Digitalisation. Commission 10 % sur les réservations réelles — pas de forfait à la création du devis. Mutuellement exclusif avec le forfait 199 $ CAD/mois.</field>
+    </record>
+
+    <record id="product_cq_digital_fixe" model="product.template">
+        <field name="name">[CQ_DIGITAL_FIXE] Digitalisation — 199 $ CAD/mois</field>
+        <field name="default_code">CQ_DIGITAL_FIXE</field>
+        <field name="type">service</field>
+        <field name="list_price">199.0</field>
+        <field name="ix_price_mad">0.0</field>
+        <field name="ix_price_cad">199.0</field>
+        <field name="ix_billing_type">monthly</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="company_id" eval="False"/>
+        <field name="categ_id" ref="product_category_coins_quebec_partenaires"/>
+        <field name="description_sale">Alternative au 10 % : forfait mensuel 199 $ CAD. Ne pas cumuler avec [CQ_DIGITAL_COMM]. Taxes TPS/TVQ applicables.</field>
+    </record>
+
+    <record id="product_cq_site_creation" model="product.template">
+        <field name="name">[CQ_SITE_CREATION] Création site internet</field>
+        <field name="default_code">CQ_SITE_CREATION</field>
+        <field name="type">service</field>
+        <field name="list_price">1500.0</field>
+        <field name="ix_price_mad">0.0</field>
+        <field name="ix_price_cad">1500.0</field>
+        <field name="ix_billing_type">one_time</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="company_id" eval="False"/>
+        <field name="categ_id" ref="product_category_coins_quebec_partenaires"/>
+        <field name="description_sale">Création du site — 1 500 $ CAD, paiement unique. Taxes TPS/TVQ applicables.</field>
+    </record>
+
+    <record id="product_cq_site_hebergement" model="product.template">
+        <field name="name">[CQ_SITE_HEBERGEMENT] Hébergement + nom de domaine</field>
+        <field name="default_code">CQ_SITE_HEBERGEMENT</field>
+        <field name="type">service</field>
+        <field name="list_price">350.0</field>
+        <field name="ix_price_mad">0.0</field>
+        <field name="ix_price_cad">350.0</field>
+        <field name="ix_billing_type">one_time</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="company_id" eval="False"/>
+        <field name="categ_id" ref="product_category_coins_quebec_partenaires"/>
+        <field name="description_sale">Hébergement, nom de domaine et mises à jour — 350 $ CAD / an. Taxes TPS/TVQ applicables.</field>
+    </record>
+
+    <record id="product_cq_social_shooting" model="product.template">
+        <field name="name">[CQ_SOCIAL_SHOOTING] Gestion réseaux sociaux + shooting mensuel</field>
+        <field name="default_code">CQ_SOCIAL_SHOOTING</field>
+        <field name="type">service</field>
+        <field name="list_price">1500.0</field>
+        <field name="ix_price_mad">0.0</field>
+        <field name="ix_price_cad">1500.0</field>
+        <field name="ix_billing_type">monthly</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="company_id" eval="False"/>
+        <field name="categ_id" ref="product_category_coins_quebec_partenaires"/>
+        <field name="description_sale">Gestion des réseaux + shooting mensuel — 1 500 $ CAD / mois. Taxes TPS/TVQ applicables.</field>
+    </record>
+
+    <record id="product_cq_shooting_seul" model="product.template">
+        <field name="name">[CQ_SHOOTING_SEUL] Shooting seul</field>
+        <field name="default_code">CQ_SHOOTING_SEUL</field>
+        <field name="type">service</field>
+        <field name="list_price">1000.0</field>
+        <field name="ix_price_mad">0.0</field>
+        <field name="ix_price_cad">1000.0</field>
+        <field name="ix_billing_type">one_time</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="company_id" eval="False"/>
+        <field name="categ_id" ref="product_category_coins_quebec_partenaires"/>
+        <field name="description_sale">Shooting photo/vidéo ponctuel — 1 000 $ CAD. Taxes TPS/TVQ applicables.</field>
+    </record>
+</odoo>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="mail_template_invitation" model="mail.template">
+    <field name="name">JT Portal — Invitation client</field>
+    <field name="model_id" ref="jt_client_portal.model_jt_portal_access"/>
+    <field name="subject">Votre espace personnel Jason Thomas Assurance</field>
+    <field name="email_from">jason@jasonthomasassurance.ca</field>
+    <field name="email_to">{{ object.email }}</field>
+    <field name="body_html" type="html">
+<div style="font-family:Georgia,serif;max-width:600px;margin:0 auto;background:#f4f0e8;">
+  <div style="background:#0d1e40;padding:24px;text-align:center;border-bottom:3px solid #c8a84b;">
+    <h1 style="color:#c8a84b;font-size:24px;letter-spacing:4px;margin:0;">JASON THOMAS</h1>
+    <p style="color:#f4f0e8;letter-spacing:6px;font-size:13px;margin:4px 0 0;">ASSURANCE</p>
+  </div>
+  <div style="padding:32px 24px;">
+    <p style="font-size:18px;color:#0d1e40;">Bonjour <strong><t t-out="object.client_id.first_name"/></strong>,</p>
+    <p style="color:#444;line-height:1.7;margin:16px 0;">
+      J'ai le plaisir de vous inviter à accéder à votre espace personnel sécurisé,
+      où vous pouvez consulter l'ensemble de vos couvertures d'assurance,
+      télécharger vos relevés annuels et me contacter directement.
+    </p>
+    <div style="text-align:center;margin:32px 0;">
+      <a t-att-href="object.portal_url"
+         style="background:#0d1e40;color:#c8a84b;padding:14px 32px;text-decoration:none;border-radius:4px;font-size:16px;font-weight:bold;letter-spacing:2px;border:1px solid #c8a84b;">
+        ACCÉDER À MON ESPACE
+      </a>
+    </div>
+    <p style="color:#888;font-size:13px;line-height:1.6;">
+      Ce lien est personnel et sécurisé. Ne le partagez pas.<br/>
+      En cas de problème, contactez-moi directement.
+    </p>
+  </div>
+  <div style="background:#0d1e40;padding:16px;text-align:center;">
+    <p style="color:#c8a84b;font-size:12px;margin:0;">
+      Jason Thomas Assurance · Nouveau-Brunswick · jason@jasonthomasassurance.ca
+    </p>
+  </div>
+</div>
+    </field>
+  </record>
+</odoo>

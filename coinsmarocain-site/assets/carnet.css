@@ -1,0 +1,258 @@
+/* Carnet du Voyageur */
+.carnet-hero {
+  padding: 120px 0 56px;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 0%, rgba(230, 184, 118, 0.22), transparent 55%),
+    linear-gradient(180deg, #faf6ee 0%, #f3ebe0 100%);
+  text-align: center;
+  color: #262220;
+}
+.carnet-hero .eyebrow {
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  color: #8a4f22;
+  margin: 0 0 10px;
+}
+.carnet-hero h1 {
+  font-family: Cardo, Georgia, serif;
+  font-size: clamp(1.9rem, 4vw, 2.85rem);
+  margin: 0 0 14px;
+  max-width: 16ch;
+  margin-inline: auto;
+  line-height: 1.15;
+}
+.carnet-hero .lead {
+  max-width: 36rem;
+  margin: 0 auto 24px;
+  color: rgba(38, 34, 32, 0.72);
+  line-height: 1.55;
+  font-size: 1.05rem;
+}
+.carnet-hero .hero-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 28px;
+}
+.carnet-hero .btn,
+.carnet-cta-band .btn {
+  display: inline-block;
+  padding: 12px 20px;
+  border-radius: 999px;
+  background: #262220;
+  color: #faf6ee;
+  text-decoration: none;
+  font-weight: 600;
+  border: 1px solid #262220;
+  cursor: pointer;
+  font: inherit;
+}
+.carnet-hero .btn-ghost,
+.carnet-cta-band .btn-outline {
+  background: transparent;
+  color: #262220;
+  border-color: rgba(138, 79, 34, 0.4);
+}
+.carnet-badges-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 8px;
+}
+.carnet-badge-chip {
+  min-width: 72px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid rgba(181, 115, 47, 0.35);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #8a4f22;
+  box-shadow: 0 6px 16px rgba(38, 34, 32, 0.05);
+}
+.carnet-badge-chip img { display: none; }
+
+.carnet-portal { min-height: 0; }
+
+.carnet-tiers,
+.carnet-social {
+  padding: 56px 0;
+  background: #faf6ee;
+}
+.carnet-tiers .section-head,
+.carnet-social .section-head {
+  text-align: center;
+  margin-bottom: 32px;
+}
+.carnet-tiers .section-head .eyebrow,
+.carnet-social .section-head .eyebrow {
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  color: #8a4f22;
+  margin: 0 0 8px;
+}
+.carnet-tiers .section-head h2,
+.carnet-social .section-head h2 {
+  font-family: Cardo, Georgia, serif;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  margin: 0 0 10px;
+  color: #262220;
+}
+.carnet-tiers .section-head p {
+  max-width: 34rem;
+  margin: 0 auto;
+  color: rgba(38, 34, 32, 0.68);
+}
+
+.tier-timeline {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+.tier-card {
+  display: flex;
+  gap: 16px;
+  padding: 22px 20px;
+  background: #fff;
+  border: 1px solid rgba(224, 212, 191, 0.85);
+  border-radius: 14px;
+  box-shadow: 0 8px 22px rgba(38, 34, 32, 0.04);
+}
+.tier-card.feat {
+  border-color: rgba(181, 115, 47, 0.45);
+  background: linear-gradient(160deg, #fffefb, #f8efe3);
+}
+.tier-num {
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #262220;
+  color: #faf6ee;
+  font-weight: 700;
+  font-size: 1rem;
+}
+.tier-card h3 {
+  margin: 0 0 4px;
+  font-family: Cardo, Georgia, serif;
+  font-size: 1.35rem;
+  color: #262220;
+}
+.tier-card .seuil {
+  margin: 0 0 10px;
+  font-size: 0.88rem;
+  color: #8a4f22;
+  font-weight: 600;
+}
+.tier-card ul {
+  margin: 0;
+  padding-left: 1.1em;
+  color: rgba(38, 34, 32, 0.72);
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+.carnet-quotes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.carnet-quote {
+  margin: 0;
+  padding: 22px 20px;
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid rgba(224, 212, 191, 0.85);
+}
+.carnet-quote p {
+  margin: 0 0 14px;
+  color: #262220;
+  line-height: 1.55;
+  font-size: 1rem;
+}
+.carnet-quote cite {
+  font-style: normal;
+  font-size: 0.88rem;
+  color: #8a4f22;
+  font-weight: 600;
+}
+
+.carnet-cta-band {
+  padding: 56px 0;
+  background: linear-gradient(135deg, #2c2620, #3a2f23);
+  color: #faf6ee;
+  text-align: center;
+}
+.carnet-cta-band h2 {
+  font-family: Cardo, Georgia, serif;
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+  margin: 0 0 10px;
+}
+.carnet-cta-band > .wrap > p {
+  margin: 0 auto 22px;
+  max-width: 32rem;
+  color: rgba(250, 246, 238, 0.78);
+}
+.carnet-cta-band .cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+.carnet-cta-band .btn-outline {
+  background: transparent;
+  color: #faf6ee;
+  border-color: rgba(230, 184, 118, 0.55);
+}
+.carnet-lookup {
+  display: none;
+  max-width: 420px;
+  margin: 18px auto 0;
+  text-align: left;
+  gap: 10px;
+  flex-direction: column;
+}
+.carnet-lookup.is-open { display: flex; }
+.carnet-lookup input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font: inherit;
+}
+.carnet-lookup input::placeholder { color: rgba(255, 255, 255, 0.55); }
+.carnet-lookup .msg {
+  min-height: 1.2em;
+  font-size: 0.9rem;
+  margin: 4px 0 0;
+  color: rgba(250, 246, 238, 0.85);
+}
+.carnet-lookup .msg.ok { color: #e6b876; }
+.carnet-lookup .msg.err { color: #ffb4a8; }
+
+.carnet-ambass-link {
+  padding: 28px 22px 48px;
+  text-align: center;
+  color: rgba(38, 34, 32, 0.7);
+  background: #faf6ee;
+}
+.carnet-ambass-link a { color: #8a4f22; font-weight: 600; }
+
+@media (max-width: 900px) {
+  .carnet-quotes { grid-template-columns: 1fr; }
+  .tier-timeline { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .carnet-hero { padding: 100px 0 40px; }
+}

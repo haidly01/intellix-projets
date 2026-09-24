@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tableau de bord équipe — js_class people_engine_team_dashboard (pe_team_list_controller.js) -->
+    <record id="view_pe_employee_profile_team_dashboard_enhanced" model="ir.ui.view">
+        <field name="name">pe.employee.profile.team.list.dashboard</field>
+        <field name="model">pe.employee.profile</field>
+        <field name="inherit_id" ref="people_engine.view_pe_employee_profile_team_list"/>
+        <field name="arch" type="xml">
+            <list position="attributes">
+                <attribute name="class">pe-team-list-table ix-team-dashboard-root</attribute>
+            </list>
+        </field>
+    </record>
+</odoo>

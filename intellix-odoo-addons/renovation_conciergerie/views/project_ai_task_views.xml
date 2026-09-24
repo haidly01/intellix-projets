@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_project_ai_task_wizard_form" model="ir.ui.view">
+        <field name="name">project.ai.task.wizard.form</field>
+        <field name="model">project.ai.task.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Générer des tâches (IA)">
+                <field name="state" invisible="1"/>
+                <div invisible="state != 'input'">
+                    <div class="alert alert-info" role="status">
+                        L'IA proposera une liste de tâches à partir de votre brief.
+                        Vous pourrez les <b>relire et ajuster</b> avant création. Rien n'est
+                        créé automatiquement. Chaque appel est tracé dans le Journal IA.
+                    </div>
+                    <group>
+                        <field name="project_id" readonly="1"/>
+                        <field name="extra_instructions"/>
+                    </group>
+                    <group>
+                        <field name="source_text" nolabel="1"
+                               placeholder="Collez ici le brief, l'e-mail, le compte-rendu ou le document à transformer en tâches…"/>
+                    </group>
+                </div>
+                <div invisible="state != 'review'">
+                    <div class="alert alert-success" role="status">
+                        Relisez, ajustez et décochez les tâches à exclure, puis cliquez
+                        sur <b>Créer les tâches</b>.
+                    </div>
+                    <field name="line_ids">
+                        <list editable="bottom">
+                            <field name="selected" widget="boolean_toggle"/>
+                            <field name="name"/>
+                            <field name="user_id"/>
+                            <field name="deadline"/>
+                            <field name="priority"/>
+                            <field name="description"/>
+                        </list>
+                    </field>
+                </div>
+                <footer>
+                    <button name="action_generate" type="object" string="Générer avec l'IA"
+                            class="btn-primary" invisible="state != 'input'"/>
+                    <button name="action_create_tasks" type="object" string="Créer les tâches"
+                            class="btn-primary" invisible="state != 'review'"/>
+                    <button name="action_generate" type="object" string="Régénérer"
+                            class="btn-secondary" invisible="state != 'review'"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="project_project_form_ai_button" model="ir.ui.view">
+        <field name="name">project.project.form.ai.button</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_open_ai_task_wizard" type="object"
+                        string="Générer des tâches (IA)" class="btn-secondary"
+                        groups="project.group_project_manager"/>
+                <button name="action_ai_analyze_project" type="object"
+                        string="Analyse IA du projet" class="btn-secondary"
+                        invisible="not id"
+                        groups="project.group_project_manager"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Analyse IA" name="ai_analysis">
+                    <group>
+                        <field name="ai_email_to_tasks"/>
+                        <div class="text-muted" colspan="2">
+                            Si activé, tout e-mail reçu sur l'alias de ce projet est
+                            analysé par l'IA, qui crée automatiquement des sous-tâches.
+                            Nécessite l'IA activée et un alias e-mail configuré.
+                        </div>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="ai_health" widget="badge"
+                                   decoration-success="ai_health == 'on_track'"
+                                   decoration-warning="ai_health == 'at_risk'"
+                                   decoration-danger="ai_health == 'critical'"/>
+                            <field name="ai_predicted_end_date"/>
+                            <field name="ai_analysis_date"/>
+                        </group>
+                        <group>
+                            <field name="ai_open_count"/>
+                            <field name="ai_overdue_count"/>
+                            <field name="ai_completion_rate"/>
+                        </group>
+                    </group>
+                    <field name="ai_analysis_html" nolabel="1" readonly="1"/>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="project_task_form_ai_assistant" model="ir.ui.view">
+        <field name="name">project.task.form.ai.assistant</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_ai_summarize" type="object"
+                        string="Résumer (IA)" class="btn-secondary"
+                        invisible="not id"/>
+                <button name="action_ai_next_steps" type="object"
+                        string="Prochaines étapes (IA)" class="btn-secondary"
+                        invisible="not id"/>
+                <button name="action_ai_suggest_assignee" type="object"
+                        string="Suggérer un assigné (IA)" class="btn-secondary"
+                        invisible="not id"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="project_task_tree_overdue" model="ir.ui.view">
+        <field name="name">project.task.list.overdue</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_tree2"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <field name="is_overdue" column_invisible="1"/>
+                <field name="days_overdue" string="Retard (j)" optional="show"
+                       decoration-danger="is_overdue"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

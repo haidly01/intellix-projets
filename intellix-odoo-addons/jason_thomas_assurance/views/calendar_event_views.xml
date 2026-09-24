@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_calendar_event_form_jt" model="ir.ui.view">
+    <field name="name">calendar.event.form.jt</field>
+    <field name="model">calendar.event</field>
+    <field name="inherit_id" ref="calendar.view_calendar_event_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//field[@name='partner_ids']" position="after">
+        <field name="jt_client_id" options="{'no_create': True}"/>
+        <button name="action_open_jt_client" type="object" string="Ouvrir client JT"
+                invisible="not jt_client_id" class="btn-link"/>
+      </xpath>
+    </field>
+  </record>
+</odoo>

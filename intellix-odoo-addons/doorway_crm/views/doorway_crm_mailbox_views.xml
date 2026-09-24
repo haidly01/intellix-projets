@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_doorway_crm_mailbox_list" model="ir.ui.view">
+        <field name="name">doorway.crm.mailbox.list</field>
+        <field name="model">doorway.crm.mailbox</field>
+        <field name="arch" type="xml">
+            <list string="Mes boîtes mail">
+                <field name="name"/>
+                <field name="email"/>
+                <field name="is_default"/>
+                <field name="message_count" string="Messages"/>
+                <field name="create_crm_leads"/>
+                <field name="active" column_invisible="True"/>
+                <button name="action_open_messages" type="object" string="Ouvrir"
+                        icon="fa-envelope" class="btn-link"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_doorway_crm_mailbox_form" model="ir.ui.view">
+        <field name="name">doorway.crm.mailbox.form</field>
+        <field name="model">doorway.crm.mailbox</field>
+        <field name="arch" type="xml">
+            <form string="Boîte mail">
+                <header>
+                    <button name="action_open_webmail" type="object" string="Ouvrir la boîte mail"
+                            class="btn-primary" icon="fa-envelope"/>
+                    <button name="action_fetch_now" type="object" string="Récupérer les e-mails"
+                            class="btn-secondary" icon="fa-refresh"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Libellé"/></h1>
+                        <h2><field name="email" readonly="1"/></h2>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="user_id" readonly="1"/>
+                            <field name="shared_user_ids" widget="many2many_tags"
+                                   groups="sales_team.group_sale_manager"/>
+                            <field name="is_default"/>
+                            <field name="create_crm_leads"/>
+                            <field name="message_count" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="imap_server" readonly="1"/>
+                            <field name="smtp_server" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_doorway_crm_mailbox_search" model="ir.ui.view">
+        <field name="name">doorway.crm.mailbox.search</field>
+        <field name="model">doorway.crm.mailbox</field>
+        <field name="arch" type="xml">
+            <search string="Boîtes mail">
+                <field name="name"/>
+                <field name="email"/>
+                <filter string="Mes boîtes" name="my_mailboxes"
+                        domain="[('user_id', '=', uid)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_doorway_crm_mailbox_list" model="ir.actions.act_window">
+        <field name="name">Mes boîtes mail</field>
+        <field name="res_model">doorway.crm.mailbox</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('user_id', '=', uid)]</field>
+        <field name="context">{'search_default_my_mailboxes': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Ajoutez une ou plusieurs boîtes mail personnalisées.
+            </p>
+            <p>Chaque boîte reçoit vos e-mails IMAP et les affiche ci-dessous.</p>
+        </field>
+    </record>
+</odoo>

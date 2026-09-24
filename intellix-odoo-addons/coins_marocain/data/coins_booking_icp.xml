@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Taux indicatif affichage (MAD par 1 CAD) — ajustable sans redeploy -->
+    <record id="icp_coins_mad_per_cad" model="ir.config_parameter">
+        <field name="key">coins_marocain.mad_per_cad</field>
+        <field name="value">7.2</field>
+    </record>
+    <record id="icp_coins_booking_notify" model="ir.config_parameter">
+        <field name="key">coins_marocain.booking_notify_email</field>
+        <field name="value">karine@agencedoorway.com</field>
+    </record>
+    <record id="icp_coins_karine_email" model="ir.config_parameter">
+        <field name="key">coins_marocain.karine_email</field>
+        <field name="value">karine@agencedoorway.com</field>
+    </record>
+    <!-- contact_notify_email : géré via set_param (évite conflit unique key à l’upgrade) -->
+    <record id="icp_coins_public_api_base" model="ir.config_parameter">
+        <field name="key">coins_marocain.public_api_base</field>
+        <field name="value">https://coinsmarocain.com</field>
+    </record>
+    <record id="icp_coins_stripe_success" model="ir.config_parameter">
+        <field name="key">coins_marocain.stripe_success_url</field>
+        <field name="value">https://coinsmarocain.com/forfaits?booking=success</field>
+    </record>
+    <record id="icp_coins_stripe_cancel" model="ir.config_parameter">
+        <field name="key">coins_marocain.stripe_cancel_url</field>
+        <field name="value">https://coinsmarocain.com/forfaits?booking=cancel</field>
+    </record>
+</odoo>

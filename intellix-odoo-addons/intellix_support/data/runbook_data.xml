@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="runbook_access_denied" model="intellix.support.runbook">
+        <field name="name">Accès Odoo refusé</field>
+        <field name="code">access_denied</field>
+        <field name="phase">planned</field>
+        <field name="description">Réinitialisation mot de passe, vérification droits, invitation portail.</field>
+    </record>
+    <record id="runbook_calls_not_dialing" model="intellix.support.runbook">
+        <field name="name">Appels qui ne partent pas</field>
+        <field name="code">calls_not_dialing</field>
+        <field name="phase">planned</field>
+        <field name="category_id" ref="category_dialer"/>
+        <field name="description">Vérifier ADL, hopper, trunk, agent READY.</field>
+    </record>
+    <record id="runbook_lea_silent" model="intellix.support.runbook">
+        <field name="name">Léa ne répond pas</field>
+        <field name="code">lea_silent</field>
+        <field name="phase">planned</field>
+        <field name="category_id" ref="category_lea"/>
+        <field name="description">Agent 86013, AMD, n8n AGI, bridge lea-qc.</field>
+    </record>
+</odoo>

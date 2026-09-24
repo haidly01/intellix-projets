@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="coins_marocain_partenariats.EquipeKpiDashboard">
+        <div class="o_coins_part_backend_dash ix-itex-dash ix-equipe-kpi">
+            <div class="shell">
+                <aside class="sidebar">
+                    <div class="brand">
+                        <div class="brand-mark"/>
+                        <div>
+                            <div class="brand-name">Coins Marocain</div>
+                            <div class="brand-sub">KPI partenariats</div>
+                        </div>
+                    </div>
+                    <ul class="navlist">
+                        <li><a class="active" href="#">KPI équipe</a></li>
+                        <li><a href="/odoo/coins-pipeline-partenariats">Pipeline</a></li>
+                    </ul>
+                    <div class="sidebar-foot">
+                        <strong>Tous les commerciaux</strong>
+                        Appels et conversations restent deux compteurs distincts.
+                    </div>
+                </aside>
+                <main class="ix-main">
+                    <div class="topbar">
+                        <div>
+                            <h1>KPI équipe partenariats</h1>
+                            <div class="sub">
+                                <t t-esc="state.data.date_from or '—'"/>
+                                → <t t-esc="state.data.date_to or '—'"/>
+                                · <t t-esc="state.data.as_of or ''"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="period-tabs">
+                        <button t-att-class="state.period === 'day' ? 'active' : ''"
+                                t-on-click="() => this.setPeriod('day')">Jour</button>
+                        <button t-att-class="state.period === 'week' ? 'active' : ''"
+                                t-on-click="() => this.setPeriod('week')">Semaine</button>
+                        <select class="ix-kpi-select" t-on-change="setCommercial">
+                            <option value="0">Tous les commerciaux</option>
+                            <t t-foreach="state.data.commercials or []" t-as="c" t-key="c.id">
+                                <option t-att-value="c.id"
+                                        t-att-selected="state.commercialId === c.id"
+                                        t-esc="c.name"/>
+                            </t>
+                        </select>
+                        <button t-on-click="refresh">Rafraîchir</button>
+                    </div>
+
+                    <t t-if="state.error">
+                        <div class="card" style="margin-bottom:16px;color:var(--amber);" t-esc="state.error"/>
+                    </t>
+                    <t t-elif="state.loading">
+                        <div class="sub">Chargement…</div>
+                    </t>
+                    <t t-else="">
+                        <t t-set="qualif" t-value="state.data.qualification or state.data.fille or {}"/>
+                        <t t-set="visites" t-value="state.data.visites or state.data.zakaria or {}"/>
+                        <t t-set="shared" t-value="state.data.shared or {}"/>
+                        <t t-set="targets" t-value="state.data.targets or {}"/>
+
+                        <h2 class="ix-kpi-section">Appels composés &amp; qualification</h2>
+                        <div class="kpis">
+                            <div class="kpi">
+                                <div class="label">Appels composés</div>
+                                <div class="val" t-esc="ratio(qualif.appels_composes, targets.appels)"/>
+                                <div class="delta">objectif <t t-esc="targets.appels_jour"/> / jour</div>
+                                <div class="ix-kpi-bar"><div class="ix-kpi-bar-fill" t-att-style="'width:' + barPct(qualif.appels_composes, targets.appels) + '%'"/></div>
+                            </div>
+                            <div class="kpi">
+                                <div class="label">Conversations complétées</div>
+                                <div class="val" t-esc="ratio(qualif.conversations_completees, targets.conversations)"/>
+                                <div class="delta">objectif <t t-esc="targets.conversations_jour"/> / jour — distinct des appels</div>
+                                <div class="ix-kpi-bar"><div class="ix-kpi-bar-fill" t-att-style="'width:' + barPct(qualif.conversations_completees, targets.conversations) + '%'"/></div>
+                            </div>
+                            <div class="kpi">
+                                <div class="label">Taux de réponse live</div>
+                                <div class="val"><t t-esc="qualif.response_rate_pct ?? 0"/>%</div>
+                                <div class="delta">conversations / appels · cible <t t-esc="targets.response_rate_pct"/>%</div>
+                            </div>
+                            <div class="kpi">
+                                <div class="label">Conversion → intérêt confirmé</div>
+                                <div class="val"><t t-esc="qualif.conversion_interet_pct ?? 0"/>%</div>
+                                <div class="delta"><t t-esc="qualif.conversations_avec_interet ?? 0"/> / <t t-esc="qualif.conversations_fiches ?? 0"/> conversations</div>
+                            </div>
+                        </div>
+                        <div class="kpis" style="grid-template-columns:repeat(2,1fr);">
+                            <div class="kpi">
+                                <div class="label">Autonome (Offre 1)</div>
+                                <div class="val" t-esc="qualif.autonome ?? 0"/>
+                                <div class="delta">via canal_traitement</div>
+                            </div>
+                            <div class="kpi">
+                                <div class="label">Accompagné (Offre 2/3)</div>
+                                <div class="val" t-esc="qualif.accompagne ?? 0"/>
+                                <div class="delta">via canal_traitement</div>
+                            </div>
+                        </div>
+
+                        <h2 class="ix-kpi-section">Visites &amp; ententes</h2>
+                        <div class="kpis">
+                            <div class="kpi">
+                                <div class="label">Visites réalisées vs planifiées</div>
+                                <div class="val" t-esc="ratio(visites.visites_realisees, visites.visites_planifiees)"/>
+                                <div class="delta">réalisées / planifiées sur la période</div>
+                            </div>
+                            <div class="kpi">
+                                <div class="label">Conversion visite → entente</div>
+                                <div class="val"><t t-esc="visites.conversion_entente_pct ?? 0"/>%</div>
+                                <div class="delta"><t t-esc="visites.ententes_apres_visite ?? 0"/> ententes après visite</div>
+                            </div>
+                            <div class="kpi">
+                                <div class="label">Délai qualif → visite</div>
+                                <div class="val"><t t-esc="visites.delai_qualif_visite_jours ?? 0"/> j</div>
+                                <div class="delta">moyenne appel / conversation → visite faite</div>
+                            </div>
+                            <div class="kpi">
+                                <div class="label">Ententes signées (cumul)</div>
+                                <div class="val" t-esc="shared.ententes_signees_cumul ?? 0"/>
+                                <div class="delta">coins.entente actives / signées</div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-head">
+                                <div>
+                                    <h2>Temps moyen dans le pipeline</h2>
+                                    <div class="hint">Jours dans l'étape actuelle (crm.lead partenariats)</div>
+                                </div>
+                            </div>
+                            <t t-if="!(shared.stages || []).length">
+                                <div class="empty"><div class="t">Aucune fiche partenariat</div></div>
+                            </t>
+                            <table t-else="">
+                                <thead>
+                                    <tr>
+                                        <th>Étape</th>
+                                        <th>Fiches</th>
+                                        <th>Moyenne (jours)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="shared.stages or []" t-as="st" t-key="st.stage">
+                                        <tr>
+                                            <td class="t-name" t-esc="st.stage"/>
+                                            <td t-esc="st.count"/>
+                                            <td t-esc="st.avg_days"/>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </t>
+                </main>
+            </div>
+        </div>
+    </t>
+</templates>

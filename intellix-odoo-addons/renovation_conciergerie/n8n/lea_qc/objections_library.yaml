@@ -1,0 +1,291 @@
+# Bibliothèque d'objections Léa QC — référence brief SoumissionEntrepreneurs (26 nœuds)
+# Statut vs implémentation actuelle (conversation_sofia_process.js + lea_qc_config.js)
+# Phase 2 (future) : classificateur Claude pour intent=INCONNU uniquement — pas par tour.
+
+meta:
+  version: "2026-06-13"
+  campaign: DW_QCB2C
+  agent_extension: "86013"
+  classifier: regex  # detectIntent post-normTranscript (PRIMARY)
+  tree_validated: GREETING → QUESTION_BESOIN → QUESTION_PROJET|QUESTION_IMMO → CAPTURER_DISPO → CLOSING
+
+nodes:
+  # --- CATÉGORIE A — STATUT ---
+  - node_id: OBJ_STATUT_01
+    category: statut
+    triggers: ["locataire", "je loue", "en location", "pas proprietaire"]
+    lea_response: >
+      Je comprends ! C'est votre propriétaire qui pourrait bénéficier des subventions.
+      On peut lui envoyer l'information directement si vous voulez.
+    outcome: INFO → hangup
+    next_node_brief: COLLECTER_TEL_PROPRIO | SMS_INFO_PROPRIO
+    clip_key: lea_exit_locataire_info
+    intent: locataire
+    crm_action: tag_locataire
+    status: partial
+    notes: "Clip info proprio avant raccrochage ; pas de collecte tel proprio ni SMS auto."
+
+  - node_id: OBJ_STATUT_02
+    category: statut
+    triggers: ["commercial", "bureau", "immeuble", "logement locatif", "bloc appartement"]
+    lea_response: Service ciblé résidentiel ; vérifier résidence perso.
+    outcome: DISQUALIFIÉ
+    next_node_brief: ÉTAPE_3 | FIN_DNC
+    status: future
+    notes: "Non routé — risque faux positif sur « bureau » au greeting."
+
+  - node_id: OBJ_STATUT_03
+    category: statut
+    triggers: ["c'est ma femme", "c'est mon mari", "au nom de mon conjoint", "pas à mon nom"]
+    lea_response: Proposer conjoint disponible ou SMS relai.
+    outcome: RELANCE
+    next_node_brief: TRANSFER_CALL | SMS_INFO
+    status: future
+    notes: "Chevauche OBJ_FREIN_06 — SMS relai phase 2."
+
+  - node_id: OBJ_STATUT_04
+    category: statut
+    triggers: ["j'ai vendu", "on déménage", "plus là", "en vente"]
+    lea_response: Pivoter vers nouveau logement propriétaire.
+    outcome: CHAUD | DISQUALIFIÉ
+    next_node_brief: ÉTAPE_3
+    status: future
+    notes: "Vente au greeting déjà captée (besoin immo) ; pas de pivot déménagement."
+
+  - node_id: OBJ_STATUT_05
+    category: statut
+    triggers: ["chalet", "résidence secondaire", "maison de campagne", "chalet de lac"]
+    lea_response: Chalets admissibles — traiter comme propriétaire.
+    outcome: CHAUD
+    next_node_brief: ÉTAPE_3
+    clip_key: null
+    intent: proprietaire
+    status: implemented
+    notes: "GREETING → proprietaire + suite arbre standard."
+
+  # --- CATÉGORIE B — PAS INTÉRESSÉ ---
+  - node_id: OBJ_INTERET_01
+    category: interet
+    triggers: ["pas intéressé", "intéresse pas", "non merci", "je veux pas"]
+    lea_response: >
+      Relance unique angle subventions (10 000$) avant sortie.
+    outcome: RELANCE | DISQUALIFIÉ
+    next_node_brief: PITCH_SUBVENTIONS | FIN_DNC
+    clip_key: lea_objection_pas_interesse_soft
+    intent: pas_interesse
+    crm_action: tag_pas_interesse
+    status: partial
+    notes: "1 soft attempt puis exit_pi ; pas de branche pitch subventions."
+
+  - node_id: OBJ_INTERET_02
+    category: interet
+    triggers: ["pas de projet", "pas de rénovation prévue", "maison est correcte", "rien à faire"]
+    lea_response: Évaluation gratuite / subventions avant projet ; douleur latente.
+    outcome: CHAUD | RELANCE_J90
+    next_node_brief: ÉTAPE_4 | FIN_RELANCE_J90
+    clip_key: lea_sonder_futur
+    intent: pas_besoin
+    status: partial
+    notes: "Texte sonder_futur aligné brief ; pas d'activité Odoo J90 auto."
+
+  - node_id: OBJ_INTERET_03
+    category: interet
+    triggers: ["on vient de rénover", "on a fini les travaux", "rénovations récentes"]
+    lea_response: Angle subventions rétroactives Rénoclimat / LogisVert.
+    outcome: INFO | RELANCE_S1AN
+    next_node_brief: PITCH_SUBVENTIONS_RÉTRO | FIN_RELANCE_S1AN
+    clip_key: lea_sonder_futur
+    intent: pas_besoin
+    status: partial
+    notes: "Patterns routés vers sonder_futur (pas clip dédié rétro)."
+
+  - node_id: OBJ_INTERET_04
+    category: interet
+    triggers: ["trop vieux", "trop âgé", "retraite", "on est vieux"]
+    lea_response: Programmes confort / chauffage clé en main.
+    outcome: CHAUD | RELANCE
+    next_node_brief: ÉTAPE_4 | FIN_RELANCE_J30
+    status: future
+
+  - node_id: OBJ_INTERET_05
+    category: interet
+    triggers: ["maison est parfaite", "tout est correct", "rien à changer", "on est bien"]
+    lea_response: Subventions thermopompe / isolation « argent sur la table ».
+    outcome: CHAUD | INFO
+    next_node_brief: PITCH_SUBVENTIONS | FIN_RELANCE_J90
+    clip_key: lea_sonder_futur
+    intent: pas_besoin
+    status: partial
+    notes: "Patterns ajoutés à pas_besoin / sonder_futur."
+
+  - node_id: OBJ_INTERET_06
+    category: interet
+    triggers: ["j'ai déjà quelqu'un", "j'ai mon entrepreneur", "mon contracteur"]
+    lea_response: Complément subventions Rénoclimat / LogisVert, pas concurrent.
+    outcome: CHAUD | INFO
+    next_node_brief: PITCH_SUBVENTIONS | FIN_RELANCE_J90
+    clip_key: lea_objection_entrepreneur
+    intent: objection_entrepreneur
+    status: implemented
+    notes: "Texte aligné brief ; continue qualification."
+
+  # --- CATÉGORIE C — FREINS ---
+  - node_id: OBJ_FREIN_01
+    category: frein
+    triggers: ["c'est quoi votre compagnie", "comment vous avez eu mon numéro", "qui êtes-vous", "soumission entrepreneurs"]
+    lea_response: SE.com + RBQ + gratuit + registres publics.
+    outcome: CONTINUER
+    next_node_brief: ÉTAPE_3
+    clip_key: lea_qui_etes_vous
+    intent: qui_etes_vous
+    status: implemented
+    notes: "Clip puis reprise même étape."
+
+  - node_id: OBJ_FREIN_02
+    category: frein
+    triggers: ["c'est une arnaque", "scam", "je fais pas confiance", "appels froids", "phishing"]
+    lea_response: Valider méfiance ; offrir SMS + site ; pas argumenter.
+    outcome: INFO → RELANCE_J3
+    next_node_brief: SMS_LIEN_SITE | FIN_DNC
+    clip_key: lea_arnaque_sms_info
+    intent: arnaque
+    crm_action: tag_rappeler
+    status: partial
+    notes: "Clip + hangup tag_rappeler ; envoi SMS réel phase 2."
+
+  - node_id: OBJ_FREIN_03
+    category: frein
+    triggers: ["je veux rien signer", "vous allez me vendre", "c'est quoi le piège"]
+    lea_response: Répéter sans frais / sans engagement / sans signature.
+    outcome: CONTINUER
+    next_node_brief: ÉTAPE_3
+    status: future
+
+  - node_id: OBJ_FREIN_04
+    category: frein
+    triggers: ["mauvaise expérience", "entrepreneur malhonnête", "travaux mal faits"]
+    lea_response: Valider douleur ; RBQ + évaluations.
+    outcome: CHAUD | RELANCE
+    next_node_brief: ÉTAPE_3 | SMS_TEMOIGNAGES
+    status: future
+
+  - node_id: OBJ_FREIN_05
+    category: frein
+    triggers: ["arrêtez de m'appeler", "trop d'appels", "retirez mon numéro", "liste noire", "ne plus appeler"]
+    lea_response: DNC immédiat sans insistance.
+    outcome: DNC_IMMÉDIAT
+    next_node_brief: FIN_DNC_PERMANENT
+    clip_key: lea_exit_dnc
+    intent: dnc
+    crm_action: tag_dnc
+    status: implemented
+    notes: "Patterns élargis vs brief."
+
+  - node_id: OBJ_FREIN_06
+    category: frein
+    triggers: ["mon mari gère ça", "ma femme s'occupe de ça", "c'est lui qui décide"]
+    lea_response: Proposer conjoint ou SMS relai.
+    outcome: RELANCE
+    next_node_brief: SMS_INFO | FIN_RELANCE_J3
+    status: future
+
+  # --- CATÉGORIE D — SUBVENTIONS ---
+  - node_id: OBJ_SUB_01
+    category: subventions
+    triggers: ["c'est compliqué", "je comprends pas les subventions", "trop de paperasse"]
+    lea_response: On s'occupe de tout ; chiffres 2 000$–10 000$.
+    outcome: CHAUD
+    next_node_brief: ÉTAPE_4
+    status: future
+
+  - node_id: OBJ_SUB_02
+    category: subventions
+    triggers: ["j'ai déjà appliqué", "déjà eu des subventions", "déjà fait"]
+    lea_response: Angle cumul Rénoclimat + LogisVert + fédéral.
+    outcome: CHAUD | INFO
+    next_node_brief: ÉTAPE_5_COLLECTE | FIN_RELANCE_J90
+    status: future
+
+  - node_id: OBJ_SUB_03
+    category: subventions
+    triggers: ["c'est pour les riches", "j'ai pas les revenus", "revenus trop bas"]
+    lea_response: Programmes bonifiés revenus modestes.
+    outcome: CHAUD
+    next_node_brief: ÉTAPE_5_COLLECTE
+    status: future
+
+  - node_id: OBJ_SUB_04
+    category: subventions
+    triggers: ["les subventions sont finies", "plus de budget", "coupé par le gouvernement"]
+    lea_response: Programmes 2026 actifs ; urgence budgets limités.
+    outcome: CHAUD
+    next_node_brief: ÉTAPE_5_COLLECTE
+    status: future
+
+  # --- CATÉGORIE E — TIMING ---
+  - node_id: OBJ_TIMING_01
+    category: timing
+    triggers: ["pas le bon moment", "pas le temps", "trop occupés", "période chargée"]
+    lea_response: Minimiser effort ; proposer soir / fin de semaine.
+    outcome: RELANCE
+    next_node_brief: noter_rappel_créneau | SMS_INFO
+    clip_key: lea_exit_pas_temps_v2
+    intent: pas_le_temps
+    crm_action: tag_rappeler
+    status: implemented
+    notes: "Clip v2 remplace lea_exit_pas_temps au runtime."
+
+  - node_id: OBJ_TIMING_02
+    category: timing
+    triggers: ["on attend l'été", "au printemps", "pas encore la saison"]
+    lea_response: Préparer dossier avant saison ; budgets limités.
+    outcome: CHAUD
+    next_node_brief: ÉTAPE_5_COLLECTE
+    status: future
+
+  - node_id: OBJ_TIMING_03
+    category: timing
+    triggers: ["pas l'argent", "trop cher", "budget serré", "difficultés financières"]
+    lea_response: Subventions + financement entrepreneurs.
+    outcome: CHAUD | INFO
+    next_node_brief: PITCH_SUBVENTIONS | FIN_RELANCE_J90
+    status: future
+
+  - node_id: OBJ_TIMING_04
+    category: timing
+    triggers: ["on pense vendre", "on va vendre", "maison à vendre"]
+    lea_response: Rénovations pré-vente ROI 5–15%.
+    outcome: CHAUD
+    next_node_brief: ÉTAPE_5_COLLECTE
+    status: partial
+    notes: "Vente captée au greeting/besoin (immo) ; pas clip dédié pré-vente."
+
+  - node_id: OBJ_TIMING_05
+    category: timing
+    triggers: ["rappellez plus tard", "dans quelques mois", "pas maintenant", "une autre fois"]
+    lea_response: Qualifier délai J1/J3/printemps + projet.
+    outcome: RELANCE_DATÉE
+    next_node_brief: noter_rappel_odoo | FIN_RELANCE_J30
+    clip_key: lea_rappeler_plus_tard
+    intent: rappeler_plus_tard
+    crm_action: tag_rappeler_plus_tard
+    status: implemented
+    notes: "Séparé de pas_le_temps ; pas de 2e tour collecte date."
+
+  # --- NŒUD RÉUTILISABLE (hors 26) ---
+  - node_id: PITCH_SUBVENTIONS
+    category: pitch
+    triggers: []
+    lea_response: Rénoclimat, LogisVert, fédéral — cumul 10 000$–15 000$.
+    outcome: CHAUD
+    next_node_brief: ÉTAPE_5_COLLECTE
+    status: future
+    notes: "Pas de clip dédié ; intégré partiellement dans soft PI."
+
+deferred:
+  - "Arbre brief 9-10 nœuds (SE_RENO_QC) — campagne DW_QCB2C inchangée"
+  - "Greeting subventions greeting_LEA_SE.ulaw — ouverture actuelle conservée"
+  - "Classificateur Claude par tour — Phase 2 INCONNU only"
+  - "SMS automatiques (SMS_INFO, SMS_LIEN_SITE, SMS_CONFIRMATION)"
+  - "Activités Odoo J3/J30/J90/S1AN automatisées"
+  - "Collecte tel propriétaire (locataire relai)"

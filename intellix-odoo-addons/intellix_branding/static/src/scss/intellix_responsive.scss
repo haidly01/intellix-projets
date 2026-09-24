@@ -1,0 +1,303 @@
+// Intellix — lisibilité scripts + responsive mobile / tablette (tous modules OWL)
+
+// ─── Blocs script / pre / transcription ─────────────────────────────
+.o_web_client .o_action.o_intellix_client_action {
+    pre,
+    .ix-web-call__script-preview,
+    .ix-web-call__analysis,
+    .ix-camp-transcript,
+    .ix-perf-transcript,
+    [class*="__script-preview"],
+    [class*="__transcript"]:not(.ix-web-call__transcript),
+    [class*="__analysis"] {
+        background-color: var(--ix-surface-elevated, #1a1a2e) !important;
+        color: var(--ix-text, #f1f5f9) !important;
+        border: 1px solid var(--ix-border, #334155) !important;
+        -webkit-text-fill-color: var(--ix-text, #f1f5f9);
+    }
+
+    [class*="__script-box"],
+    [class*="__script-head"] {
+        color: var(--ix-text-muted, #94a3b8);
+    }
+
+    .ix-web-call__assist h2,
+    .ix-web-call__assist h3,
+    .ix-web-call__panel h2,
+    .ix-web-call__panel h3 {
+        color: var(--ix-text, #f1f5f9) !important;
+        -webkit-text-fill-color: var(--ix-text, #f1f5f9);
+    }
+}
+
+// ─── Tablette (≤1024px) ─────────────────────────────────────────────
+@media (max-width: 1024px) {
+    .o_web_client .o_action.o_intellix_client_action:not(.ix-fullscreen-dashboard) {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+
+    // Inbox réseaux sociaux
+    .doorway-inbox .inbox-layout {
+        flex-direction: column;
+    }
+
+    .doorway-inbox .conv-list {
+        width: 100%;
+        min-width: 0;
+        max-height: 42vh;
+        border-right: none;
+        border-bottom: 1px solid var(--inbox-border, var(--ix-border));
+    }
+
+    .doorway-inbox .thread {
+        min-height: 48vh;
+    }
+
+    // Traffic Manager
+    .dtm-kpi-row {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    }
+
+    .dtm-drawer-kpis {
+        grid-template-columns: 1fr !important;
+    }
+
+    // Agents dashboard
+    .ix-dash-layout {
+        flex-direction: column;
+    }
+
+    .ix-dash-stats {
+        width: 100% !important;
+    }
+
+    // Wizard prompt 2 colonnes
+    .ix-wiz-prompt-layout {
+        grid-template-columns: 1fr !important;
+    }
+
+    // Performance IA
+    .ix-perf-sat-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+}
+
+// ─── Mobile (≤768px) ────────────────────────────────────────────────
+@media (max-width: 768px) {
+    .o_web_client .o_action.o_intellix_client_action:not(.ix-fullscreen-dashboard) {
+        padding-left: 0.75rem !important;
+        padding-right: 0.75rem !important;
+    }
+
+    // Test web agent
+    .ix-web-call {
+        padding: 1rem 0.75rem 1.5rem !important;
+        max-width: 100% !important;
+    }
+
+    .ix-web-call__hero {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .ix-web-call__back {
+        width: 100%;
+        text-align: center;
+    }
+
+    .ix-web-call__panel {
+        padding: 1rem !important;
+    }
+
+    .ix-web-call__actions {
+        flex-direction: column;
+    }
+
+    .ix-web-call__btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    .ix-web-call__scores {
+        flex-direction: column;
+    }
+
+    .ix-web-call__script-head {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    // Dashboard agents
+    .ix-dash-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .ix-dash-header,
+    .ix-dash-toolbar {
+        flex-direction: column;
+        align-items: stretch !important;
+    }
+
+    // Performance IA
+    .ix-performance-dashboard,
+    .ix-agent-wizard {
+        padding: 1rem 0.75rem !important;
+    }
+
+    .ix-perf-header {
+        flex-direction: column;
+    }
+
+    .ix-perf-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .ix-perf-sat-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .ix-perf-section__head {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    // Inbox
+    .doorway-inbox .inbox-search {
+        max-width: 100% !important;
+    }
+
+    .doorway-inbox .filter-row {
+        gap: 4px;
+    }
+
+    .doorway-inbox .fpill {
+        font-size: 11px;
+        padding: 3px 8px;
+    }
+
+    .doorway-inbox .conv-list {
+        max-height: 38vh;
+    }
+
+    .doorway-inbox .thread-header {
+        flex-wrap: wrap;
+    }
+
+    .doorway-inbox .thread-actions {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .doorway-inbox .msg-bubble,
+    .doorway-inbox .bubble {
+        max-width: 92% !important;
+    }
+
+    // Campagnes VICIdial
+    .ix-campaign-dashboard {
+        padding: 1rem 0.75rem 4rem !important;
+    }
+
+    .ix-camp-header {
+        flex-direction: column;
+    }
+
+    .ix-camp-filters,
+    .ix-camp-lead-filters {
+        width: 100%;
+    }
+
+    .ix-camp-filters select,
+    .ix-camp-lead-filters select,
+    .ix-camp-lead-filters input {
+        flex: 1;
+        min-width: 0;
+    }
+
+    // Traffic Manager
+    .dtm-app {
+        padding: 0.75rem !important;
+    }
+
+    .dtm-topbar {
+        flex-direction: column;
+        align-items: stretch !important;
+        gap: 0.75rem;
+    }
+
+    .dtm-kpi-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+
+    .dtm-section-head {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .dtm-alert-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    // Veille sociale
+    .o_doorway_veille_dashboard {
+        padding: 1rem 0.75rem !important;
+    }
+
+    // Monitor VICIdial
+    .o_vicidial_campaign_monitor .row > [class*="col-"] {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    // Poste d'appels / clavier
+    .o_vicidial_workstation.o_vphub .o_vphub_dialinput {
+        font-size: 16px;
+    }
+
+    // CRM — emails / chatter mobile
+    .o-mail-Message-body,
+    .o-mail-Message-richBody,
+    .o-mail-Message-content {
+        overflow-x: auto;
+        max-width: 100%;
+        word-break: break-word;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .o-mail-Message-body img,
+    .o-mail-Message-richBody img,
+    .o-mail-Message-body table,
+    .o-mail-Message-richBody table,
+    .o-mail-Message-body iframe,
+    .o-mail-Message-richBody iframe {
+        max-width: 100% !important;
+        height: auto !important;
+    }
+
+    .o_form_view .o-mail-Chatter,
+    .o_form_view .o_Chatter {
+        overflow-x: hidden;
+    }
+}
+
+// ─── Petit mobile (≤480px) ─────────────────────────────────────────
+@media (max-width: 480px) {
+    .dtm-kpi-row {
+        grid-template-columns: 1fr !important;
+    }
+
+    .doorway-inbox .conv-list-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .doorway-inbox .conv-list-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+}

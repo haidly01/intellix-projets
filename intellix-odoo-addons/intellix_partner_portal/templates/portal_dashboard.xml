@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_dashboard" name="Portail — Tableau de bord">
+        <t t-call="intellix_partner_portal.ipp_portal_layout">
+            <div class="ipp-crm-page">
+                <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:20px;flex-wrap:wrap">
+                    <div>
+                        <h2 style="font-size:26px;margin:0 0 6px;font-weight:600">Tableau de bord</h2>
+                        <p style="margin:0;color:var(--crm-text-muted);font-size:13.5px">
+                            Ce qui se passe aujourd'hui sur tes leads<t t-if="is_manager"> et ceux de ton équipe</t>.
+                        </p>
+                    </div>
+                    <span class="ipp-crm-live-pill"><span class="ipp-crm-live-dot"/>Temps réel</span>
+                </div>
+
+                <!-- KPI -->
+                <div class="ipp-crm-kpi-row">
+                    <div class="ipp-crm-kpi-card">
+                        <p class="ipp-crm-kpi-label">Leads <t t-esc="'reçus' if is_manager else 'assignés'"/></p>
+                        <div class="ipp-crm-kpi-value" t-esc="kpi_leads_count"/>
+                    </div>
+                    <div class="ipp-crm-kpi-card">
+                        <p class="ipp-crm-kpi-label">Activités aujourd'hui</p>
+                        <div class="ipp-crm-kpi-value" t-esc="kpi_today_count"/>
+                        <p t-if="kpi_today_count" class="ipp-crm-kpi-sub warn"><t t-esc="kpi_today_count"/> à faire avant ce soir</p>
+                        <p t-else="" class="ipp-crm-kpi-sub">Rien de prévu</p>
+                    </div>
+                    <div class="ipp-crm-kpi-card">
+                        <p class="ipp-crm-kpi-label">RDV cette semaine</p>
+                        <div class="ipp-crm-kpi-value" t-esc="kpi_rdv_week_count"/>
+                    </div>
+                    <div class="ipp-crm-kpi-card">
+                        <p class="ipp-crm-kpi-label">Taux de closing</p>
+                        <div class="ipp-crm-kpi-value">
+                            <t t-if="kpi_close_rate is not None"><t t-esc="kpi_close_rate"/><span class="unit">%</span></t>
+                            <t t-else="">—</t>
+                        </div>
+                        <p class="ipp-crm-kpi-sub">
+                            <t t-if="kpi_resolved_count"><t t-esc="kpi_vendu_count"/> vendu<t t-if="kpi_vendu_count > 1">s</t> sur <t t-esc="kpi_resolved_count"/> clos</t>
+                            <t t-else="">aucun dossier clos</t>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Aujourd'hui / Pipeline -->
+                <div class="ipp-crm-dash-grid">
+                    <div class="ipp-crm-panel">
+                        <h4>Aujourd'hui</h4>
+                        <p class="ipp-crm-sub">Tes activités du jour.</p>
+                        <div class="ipp-crm-dash-list">
+                            <t t-if="not due_today">
+                                <p class="ipp-crm-dash-empty">Rien à faire aujourd'hui — profites-en pour prospecter de nouveaux leads.</p>
+                            </t>
+                            <t t-foreach="due_today" t-as="act">
+                                <div class="ipp-crm-activity-row">
+                                    <form t-attf-action="/my/dashboard/activity/#{act.id}/toggle" method="post" style="display:inline">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        <button type="submit" class="ipp-crm-activity-check"/>
+                                    </form>
+                                    <div class="ipp-crm-activity-body">
+                                        <div class="ipp-crm-activity-title">
+                                            <span class="ipp-crm-type-tag" t-esc="activity_type_labels.get(act.activity_type)"/>
+                                            <t t-esc="act.title"/>
+                                        </div>
+                                        <div class="ipp-crm-activity-meta">
+                                            <t t-esc="act.mandate_id.name"/> · <t t-esc="act.scheduled_at" t-options="{'widget':'datetime','format':'HH:mm'}"/>
+                                            <t t-if="is_manager and act.user_id"> · <t t-esc="act.user_id.name"/></t>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                    <div class="ipp-crm-panel">
+                        <h4><t t-esc="'Pipeline de l\'équipe' if is_manager else 'Mon pipeline'"/></h4>
+                        <p class="ipp-crm-sub">Répartition des leads par statut.</p>
+                        <t t-foreach="pipeline_rows" t-as="row">
+                            <div class="ipp-crm-funnel-row">
+                                <span class="ipp-crm-funnel-label" t-esc="row['label']"/>
+                                <span class="ipp-crm-funnel-track">
+                                    <span class="ipp-crm-funnel-fill"
+                                          t-attf-style="width:#{row['pct']}%;background:var(--crm-#{row['color_var']});"/>
+                                </span>
+                                <span class="ipp-crm-funnel-count" t-esc="row['count']"/>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+
+                <!-- Cette semaine / Équipe ou RDV -->
+                <div class="ipp-crm-dash-grid">
+                    <div class="ipp-crm-panel">
+                        <h4>Cette semaine</h4>
+                        <p class="ipp-crm-sub">Prochaines activités planifiées.</p>
+                        <div class="ipp-crm-dash-list">
+                            <t t-if="not upcoming">
+                                <p class="ipp-crm-dash-empty">Rien de planifié dans les prochains jours.</p>
+                            </t>
+                            <t t-foreach="upcoming" t-as="act">
+                                <div class="ipp-crm-activity-row">
+                                    <span class="ipp-crm-activity-check" style="border-color:var(--crm-border-soft)"/>
+                                    <div class="ipp-crm-activity-body">
+                                        <div class="ipp-crm-activity-title">
+                                            <span class="ipp-crm-type-tag" t-esc="activity_type_labels.get(act.activity_type)"/>
+                                            <t t-esc="act.title"/>
+                                        </div>
+                                        <div class="ipp-crm-activity-meta">
+                                            <t t-esc="act.mandate_id.name"/> · <t t-esc="act.scheduled_at" t-options="{'widget':'datetime','format':'EEE d MMM · HH:mm'}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                    <t t-if="is_manager">
+                        <div class="ipp-crm-panel">
+                            <h4>Ton équipe</h4>
+                            <p class="ipp-crm-sub">Clique pour voir les leads d'un membre.</p>
+                            <div class="ipp-crm-team-list">
+                                <t t-foreach="team_stats" t-as="ts">
+                                    <a class="ipp-crm-team-row" t-attf-href="/my/leads">
+                                        <span class="ipp-crm-avatar" t-esc="ts['initials']"/>
+                                        <span class="t-name" t-esc="ts['user'].name"/>
+                                        <span class="t-stats">
+                                            <t t-esc="ts['active']"/> actifs<t t-if="ts['pending']"> · <t t-esc="ts['pending']"/> à relancer</t>
+                                        </span>
+                                    </a>
+                                </t>
+                            </div>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <div class="ipp-crm-panel">
+                            <h4>Mes prochains RDV</h4>
+                            <p class="ipp-crm-sub">Rendez-vous confirmés à venir.</p>
+                            <div class="ipp-crm-dash-list">
+                                <t t-set="my_rdv" t-value="upcoming.filtered(lambda a: a.activity_type == 'meeting') | due_today.filtered(lambda a: a.activity_type == 'meeting')"/>
+                                <t t-if="not my_rdv">
+                                    <p class="ipp-crm-dash-empty">Aucun RDV confirmé pour l'instant.</p>
+                                </t>
+                                <t t-foreach="my_rdv" t-as="act">
+                                    <div class="ipp-crm-activity-row">
+                                        <span class="ipp-crm-activity-check" style="border-color:var(--crm-border-soft)"/>
+                                        <div class="ipp-crm-activity-body">
+                                            <div class="ipp-crm-activity-title" t-esc="act.mandate_id.name"/>
+                                            <div class="ipp-crm-activity-meta" t-esc="act.scheduled_at" t-options="{'widget':'datetime','format':'d MMM · HH:mm'}"/>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+
+                <!-- Analyse du traitement des leads -->
+                <div class="ipp-crm-panel">
+                    <h4>Analyse du traitement des leads</h4>
+                    <p class="ipp-crm-sub">Ce qui marche, ce qui coince, et où agir en premier.</p>
+
+                    <div class="ipp-crm-mini-metrics">
+                        <div class="ipp-crm-mini-metric">
+                            <div class="mm-label">Taux de closing</div>
+                            <div class="mm-value"><t t-if="kpi_close_rate is not None"><t t-esc="kpi_close_rate"/>%</t><t t-else="">—</t></div>
+                            <div class="mm-sub"><t t-if="kpi_resolved_count"><t t-esc="kpi_resolved_count"/> dossier<t t-if="kpi_resolved_count > 1">s</t> clos</t><t t-else="">aucun dossier clos</t></div>
+                        </div>
+                        <div class="ipp-crm-mini-metric">
+                            <div class="mm-label">Appels avant une vente</div>
+                            <div class="mm-value"><t t-if="avg_win"><t t-esc="'%.1f' % avg_win"/></t><t t-else="">—</t></div>
+                            <div class="mm-sub">en moyenne</div>
+                        </div>
+                        <div class="ipp-crm-mini-metric">
+                            <div class="mm-label">Appels avant une perte</div>
+                            <div class="mm-value"><t t-if="avg_loss"><t t-esc="'%.1f' % avg_loss"/></t><t t-else="">—</t></div>
+                            <div class="mm-sub">en moyenne</div>
+                        </div>
+                    </div>
+
+                    <t t-if="is_manager">
+                        <p class="ipp-crm-section-label">Taux de closing par membre</p>
+                        <t t-foreach="team_stats" t-as="ts">
+                            <div class="ipp-crm-rate-row">
+                                <span class="ipp-crm-rate-label"><span class="ipp-crm-avatar" style="width:18px;height:18px;font-size:8px" t-esc="ts['initials']"/><t t-esc="ts['user'].name"/></span>
+                                <span class="ipp-crm-rate-track">
+                                    <span t-attf-class="ipp-crm-rate-fill #{'low' if ts['rate'] is not None and ts['rate'] &lt; 40 else ('mid' if ts['rate'] is not None and ts['rate'] &lt; 70 else '')}"
+                                          t-attf-style="width:#{ts['rate'] or 0}%;"/>
+                                </span>
+                                <span class="ipp-crm-rate-value">
+                                    <t t-if="ts['rate'] is None">aucun dossier clos</t>
+                                    <t t-else=""><t t-esc="ts['rate']"/>% (<t t-esc="ts['resolved']"/>)</t>
+                                </span>
+                            </div>
+                        </t>
+                    </t>
+
+                    <p class="ipp-crm-section-label" t-attf-style="margin-top:#{16 if is_manager else 0}px">Recommandations</p>
+                    <t t-foreach="recos" t-as="reco">
+                        <div class="ipp-crm-insight-item">
+                            <span t-attf-class="ipp-crm-insight-dot #{reco['type']}"/>
+                            <div><b t-if="reco['names']" t-esc="reco['names']"/><t t-esc="reco['text']"/></div>
+                        </div>
+                    </t>
+                </div>
+
+                <!-- Activité récente -->
+                <div class="ipp-crm-panel">
+                    <h4>Activité récente</h4>
+                    <p class="ipp-crm-sub">Dernières relances enregistrées.</p>
+                    <t t-if="not recent_feed">
+                        <p class="ipp-crm-dash-empty">Aucune activité récente.</p>
+                    </t>
+                    <t t-foreach="recent_feed" t-as="f">
+                        <div class="ipp-crm-feed-item">
+                            <span class="ipp-crm-feed-dot"/>
+                            <div>
+                                <div class="ipp-crm-feed-text"><b t-esc="f['lead_name']"/> — <t t-esc="f['result_label']"/></div>
+                                <div class="ipp-crm-feed-when"><t t-esc="f['when']"/> · par <t t-esc="f['by']"/></div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

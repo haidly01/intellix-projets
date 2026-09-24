@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_coins" model="ir.ui.view">
+        <field name="name">res.partner.form.coins</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_coins_reservations" type="object"
+                        class="oe_stat_button" icon="fa-suitcase"
+                        invisible="not coins_is_traveler">
+                    <field name="coins_reservation_count" widget="statinfo"
+                           string="Réservations"/>
+                </button>
+            </xpath>
+            <notebook position="inside">
+                <page string="Coins Marocain" name="coins_marocain">
+                    <group>
+                        <field name="coins_is_traveler"/>
+                    </group>
+                    <group string="Préférences voyage" invisible="not coins_is_traveler">
+                        <field name="coins_preferences" nolabel="1"
+                               placeholder="Allergies, rythme, envies…"/>
+                    </group>
+                </page>
+                <page string="Qualification" name="coins_qualification">
+                    <group string="Identification">
+                        <group>
+                            <field name="coins_local_ou_voyageur"/>
+                            <field name="coins_pays_origine"
+                                   invisible="coins_local_ou_voyageur != 'touriste'"/>
+                            <field name="coins_date_arrivee"
+                                   invisible="coins_local_ou_voyageur != 'touriste'"/>
+                            <field name="coins_date_depart"
+                                   invisible="coins_local_ou_voyageur != 'touriste'"/>
+                        </group>
+                        <group>
+                            <field name="coins_consentement_promo_whatsapp"/>
+                            <field name="coins_source_connaissance"/>
+                        </group>
+                    </group>
+                    <group string="Profil voyage / expérience">
+                        <group>
+                            <field name="coins_budget_approximatif"/>
+                            <field name="coins_type_groupe"/>
+                            <field name="coins_taille_groupe_habituelle"/>
+                        </group>
+                        <group>
+                            <field name="coins_interet_ids" widget="many2many_tags"
+                                   options="{'no_create_edit': True}"/>
+                        </group>
+                    </group>
+                    <group string="Occasions (upsell)">
+                        <group>
+                            <field name="coins_date_anniversaire_contact"/>
+                            <field name="coins_nom_proche"/>
+                            <field name="coins_date_anniversaire_proche"/>
+                        </group>
+                        <group>
+                            <field name="coins_date_anniversaire_mariage"/>
+                            <field name="coins_autre_occasion_recurrente"/>
+                        </group>
+                    </group>
+                    <group string="Notes terrain">
+                        <field name="coins_notes_terrain" nolabel="1"
+                               placeholder="Observations de Zakaria / agents terrain…"/>
+                    </group>
+                </page>
+            </notebook>
+        </field>
+    </record>
+</odoo>

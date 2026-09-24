@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="photo_cat_chambres" model="coins.property.photo.category">
+        <field name="name">Chambres</field>
+        <field name="code">chambres</field>
+        <field name="sequence">10</field>
+    </record>
+    <record id="photo_cat_aires_communes" model="coins.property.photo.category">
+        <field name="name">Aires communes</field>
+        <field name="code">aires_communes</field>
+        <field name="sequence">20</field>
+    </record>
+    <record id="photo_cat_restauration" model="coins.property.photo.category">
+        <field name="name">Restauration</field>
+        <field name="code">restauration</field>
+        <field name="sequence">30</field>
+    </record>
+    <record id="photo_cat_exterieur_piscine" model="coins.property.photo.category">
+        <field name="name">Extérieur / Piscine</field>
+        <field name="code">exterieur_piscine</field>
+        <field name="sequence">40</field>
+    </record>
+    <record id="photo_cat_bien_etre" model="coins.property.photo.category">
+        <field name="name">Bien-être / Spa</field>
+        <field name="code">bien_etre</field>
+        <field name="sequence">50</field>
+    </record>
+</odoo>

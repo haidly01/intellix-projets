@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="ir_cron_coins_channex_flush" model="ir.cron">
+        <field name="name">Coins Marocain : pousser fermetures OTA (Channex)</field>
+        <field name="model_id" ref="model_coins_channex_push"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_flush()</field>
+        <field name="interval_number">15</field>
+        <field name="interval_type">minutes</field>
+        <field name="active">True</field>
+    </record>
+    <record id="ir_cron_coins_channex_revisions" model="ir.cron">
+        <field name="name">Coins Marocain : ingérer résas OTA (Channex)</field>
+        <field name="model_id" ref="model_coins_channex_revision"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_poll_revisions()</field>
+        <field name="interval_number">15</field>
+        <field name="interval_type">minutes</field>
+        <field name="active">True</field>
+    </record>
+</odoo>

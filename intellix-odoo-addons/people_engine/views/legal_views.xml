@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pe_legal_jurisdiction_tree" model="ir.ui.view">
+        <field name="name">pe.legal.jurisdiction.tree</field>
+        <field name="model">pe.legal.jurisdiction</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="country"/>
+                <field name="article_count"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pe_legal_article_tree" model="ir.ui.view">
+        <field name="name">pe.legal.article.tree</field>
+        <field name="model">pe.legal.article</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="code"/>
+                <field name="title"/>
+                <field name="jurisdiction_id"/>
+                <field name="category"/>
+                <field name="is_current"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pe_legal_article_form" model="ir.ui.view">
+        <field name="name">pe.legal.article.form</field>
+        <field name="model">pe.legal.article</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="alert alert-warning" role="alert">
+                        <p>⚠️ Informations à titre informatif uniquement — ne constituent pas des conseils juridiques. Consultez un avocat en droit du travail avant toute action formelle.</p>
+                    </div>
+                    <group>
+                        <field name="code"/>
+                        <field name="title"/>
+                        <field name="jurisdiction_id"/>
+                        <field name="category"/>
+                        <field name="applicable_action_ids" widget="many2many_tags"/>
+                        <field name="is_current"/>
+                        <field name="source_url"/>
+                    </group>
+                    <field name="plain_language"/>
+                    <field name="content"/>
+                    <group>
+                        <field name="employer_obligations"/>
+                        <field name="employee_rights"/>
+                        <field name="penalties"/>
+                        <field name="jurisprudence_notes"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_pe_legal_article_search" model="ir.ui.view">
+        <field name="name">pe.legal.article.search</field>
+        <field name="model">pe.legal.article</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="code"/>
+                <field name="title"/>
+                <field name="plain_language"/>
+                <filter name="qc" string="Québec" domain="[('jurisdiction_id.code', '=', 'QC')]"/>
+                <filter name="fr" string="France" domain="[('jurisdiction_id.code', '=', 'FR')]"/>
+                <filter name="ma" string="Maroc" domain="[('jurisdiction_id.code', '=', 'MA')]"/>
+                <group>
+                    <filter name="group_jurisdiction" string="Juridiction" context="{'group_by': 'jurisdiction_id'}"/>
+                    <filter name="group_category" string="Catégorie" context="{'group_by': 'category'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_pe_legal_library" model="ir.actions.act_window">
+        <field name="name">📚 Bibliothèque juridique — Droit du travail</field>
+        <field name="res_model">pe.legal.article</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_pe_legal_article_search"/>
+    </record>
+
+    <record id="action_pe_legal_jurisdictions" model="ir.actions.act_window">
+        <field name="name">Juridictions</field>
+        <field name="res_model">pe.legal.jurisdiction</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

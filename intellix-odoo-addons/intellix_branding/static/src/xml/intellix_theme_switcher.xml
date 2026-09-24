@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="intellix_branding.DoorwayThemeSwitcher">
+        <div class="o_doorway_theme_switcher d-flex align-items-center">
+            <button type="button"
+                    class="btn o_doorway_theme_btn"
+                    t-att-title="title"
+                    t-att-aria-label="title"
+                    t-on-click="onToggle">
+                <i t-att-class="iconClass"/>
+            </button>
+        </div>
+    </t>
+</templates>

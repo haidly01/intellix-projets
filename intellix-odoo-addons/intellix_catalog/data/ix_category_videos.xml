@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="ix_video_hotel_hebergement" model="ix.category.video">
+        <field name="category">hotel_hebergement</field>
+        <field name="video_url">https://coinsmarocain.com/assets/video/prospection-hotels-riads.mp4</field>
+    </record>
+    <record id="ix_video_restauration" model="ix.category.video">
+        <field name="category">restauration</field>
+        <field name="video_url"></field>
+    </record>
+    <record id="ix_video_bien_etre" model="ix.category.video">
+        <field name="category">bien_etre</field>
+        <field name="video_url"></field>
+    </record>
+    <record id="ix_video_divertissement" model="ix.category.video">
+        <field name="category">divertissement_evenementiel</field>
+        <field name="video_url"></field>
+    </record>
+</odoo>

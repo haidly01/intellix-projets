@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_agent_profile_search_performance" model="ir.ui.view">
+        <field name="name">doorway.agent.profile.search.performance</field>
+        <field name="model">doorway.agent.profile</field>
+        <field name="inherit_id" ref="view_agent_profile_search"/>
+        <field name="arch" type="xml">
+            <field name="pipeline" position="after">
+                <field name="language"/>
+            </field>
+            <filter name="active" position="after">
+                <filter name="inactive" string="En pause"
+                        domain="[('status', '=', 'inactive')]"/>
+                <filter name="has_leads" string="Avec leads ce mois"
+                        domain="[('leads_qualifies_30j', '&gt;', 0)]"/>
+                <filter name="high_score" string="Score IA &gt; 80"
+                        domain="[('score_ia_moyen', '&gt;=', 80)]"/>
+                <filter name="low_conversion" string="Conversion &lt; 10%"
+                        domain="[('taux_conversion', '&lt;', 10)]"/>
+                <filter name="lang_fr" string="Français"
+                        domain="[('language', '=', 'fr')]"/>
+                <filter name="lang_es" string="Espagnol"
+                        domain="[('language', '=', 'es')]"/>
+                <filter name="lang_en" string="Anglais"
+                        domain="[('language', '=', 'en')]"/>
+            </filter>
+            <filter name="group_provider" position="after">
+                <filter name="group_language" string="Langue"
+                        context="{'group_by': 'language'}"/>
+                <filter name="group_status" string="Statut"
+                        context="{'group_by': 'status'}"/>
+            </filter>
+        </field>
+    </record>
+
+    <record id="view_agent_profile_list_performance" model="ir.ui.view">
+        <field name="name">doorway.agent.profile.list.performance</field>
+        <field name="model">doorway.agent.profile</field>
+        <field name="inherit_id" ref="view_agent_profile_list"/>
+        <field name="arch" type="xml">
+            <field name="total_test_calls" position="after">
+                <field name="appels_7j" optional="show"/>
+                <field name="taux_decroches" optional="show"/>
+                <field name="taux_conversion" optional="show"/>
+                <field name="leads_qualifies_30j" optional="show"/>
+                <field name="cout_par_lead" optional="show"/>
+                <field name="nb_campagnes_actives" optional="hide"/>
+            </field>
+        </field>
+    </record>
+</odoo>

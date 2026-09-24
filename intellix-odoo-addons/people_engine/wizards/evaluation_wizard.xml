@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pe_evaluation_wizard" model="ir.ui.view">
+        <field name="name">pe.evaluation.wizard.form</field>
+        <field name="model">pe.evaluation.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Nouvelle évaluation">
+                <group>
+                    <field name="profile_id"/>
+                    <field name="employee_id"/>
+                    <field name="evaluation_type"/>
+                    <field name="evaluator_id"/>
+                    <field name="period_start"/>
+                    <field name="period_end"/>
+                    <field name="manual_score"/>
+                    <field name="recommendation"/>
+                    <field name="legal_basis" invisible="evaluation_type != 'disciplinary'"/>
+                </group>
+                <group>
+                    <field name="strengths"/>
+                    <field name="improvements"/>
+                </group>
+                <footer>
+                    <button name="action_create_evaluation" type="object" string="Créer" class="btn-primary"/>
+                    <button string="Annuler" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

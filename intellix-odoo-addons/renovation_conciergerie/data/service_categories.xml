@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <record id="cat_ecoenergy" model="renovation.service.category">
+        <field name="name">Renovation ecoenergy</field>
+    </record>
+    <record id="cat_interieure" model="renovation.service.category">
+        <field name="name">Renovation interieure</field>
+    </record>
+    <record id="cat_exterieure" model="renovation.service.category">
+        <field name="name">Renovation exterieure</field>
+    </record>
+
+    <record id="cat_isolation" model="renovation.service.category">
+        <field name="name">Isolation</field>
+        <field name="parent_id" ref="cat_ecoenergy"/>
+    </record>
+    <record id="cat_thermopompe" model="renovation.service.category">
+        <field name="name">Thermopompe</field>
+        <field name="parent_id" ref="cat_ecoenergy"/>
+    </record>
+    <record id="cat_portes_fenetres" model="renovation.service.category">
+        <field name="name">Portes et fenetres</field>
+        <field name="parent_id" ref="cat_ecoenergy"/>
+    </record>
+    <record id="cat_solaire" model="renovation.service.category">
+        <field name="name">Solaire</field>
+        <field name="parent_id" ref="cat_ecoenergy"/>
+    </record>
+    <record id="cat_chauffe_eau" model="renovation.service.category">
+        <field name="name">Chauffe-eau</field>
+        <field name="parent_id" ref="cat_ecoenergy"/>
+    </record>
+
+    <record id="cat_cuisine_sdb" model="renovation.service.category">
+        <field name="name">Cuisine et salle de bain</field>
+        <field name="parent_id" ref="cat_interieure"/>
+    </record>
+    <record id="cat_planchers" model="renovation.service.category">
+        <field name="name">Planchers</field>
+        <field name="parent_id" ref="cat_interieure"/>
+    </record>
+    <record id="cat_plomberie" model="renovation.service.category">
+        <field name="name">Plomberie</field>
+        <field name="parent_id" ref="cat_interieure"/>
+    </record>
+    <record id="cat_electricite" model="renovation.service.category">
+        <field name="name">Electricite</field>
+        <field name="parent_id" ref="cat_interieure"/>
+    </record>
+    <record id="cat_peinture" model="renovation.service.category">
+        <field name="name">Peinture</field>
+        <field name="parent_id" ref="cat_interieure"/>
+    </record>
+
+    <record id="cat_toiture" model="renovation.service.category">
+        <field name="name">Toiture</field>
+        <field name="parent_id" ref="cat_exterieure"/>
+    </record>
+    <record id="cat_revetement" model="renovation.service.category">
+        <field name="name">Revetement</field>
+        <field name="parent_id" ref="cat_exterieure"/>
+    </record>
+    <record id="cat_fondations" model="renovation.service.category">
+        <field name="name">Fondations</field>
+        <field name="parent_id" ref="cat_exterieure"/>
+    </record>
+    <record id="cat_paysagement" model="renovation.service.category">
+        <field name="name">Paysagement</field>
+        <field name="parent_id" ref="cat_exterieure"/>
+    </record>
+    <record id="cat_terrasse" model="renovation.service.category">
+        <field name="name">Terrasse et balcon</field>
+        <field name="parent_id" ref="cat_exterieure"/>
+    </record>
+
+    <!-- Décontamination -->
+    <record id="cat_decontamination" model="renovation.service.category">
+        <field name="name">Décontamination</field>
+    </record>
+
+    <!-- Immobilier -->
+    <record id="service_cat_immobilier" model="renovation.service.category">
+        <field name="name">Immobilier</field>
+    </record>
+    <record id="service_cat_courtier_immobilier" model="renovation.service.category">
+        <field name="name">Courtier immobilier</field>
+    </record>
+    <record id="service_cat_courtier_hypothecaire" model="renovation.service.category">
+        <field name="name">Courtier hypothécaire</field>
+    </record>
+    <record id="service_cat_assurances" model="renovation.service.category">
+        <field name="name">Assurances</field>
+    </record>
+
+</odoo>

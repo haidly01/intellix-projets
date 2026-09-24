@@ -1,0 +1,68 @@
+{
+  "_comment": "Alex — Qualification Driven B2B PME QC. Stack Doorway : n8n + Deepgram + ElevenLabs + VICIdial + Odoo intellixcrm.",
+  "version": "1.0.0",
+  "agent_id": "driven-b2b-qc-2026",
+  "agent_name": "Alex",
+  "active": true,
+  "language": "fr-CA",
+  "stack": "n8n+deepgram+elevenlabs",
+  "pipeline": "driven",
+  "brand": "Agence Doorway",
+  "timezone": "America/Toronto",
+  "voice": {
+    "provider": "elevenlabs",
+    "voice_id": "${ELEVENLABS_VOICE_ID_ALEX}",
+    "model": "eleven_multilingual_v2",
+    "settings": {"stability": 0.55, "similarity_boost": 0.82, "style": 0.35, "speaking_rate": 1.0}
+  },
+  "stt": {
+    "provider": "deepgram",
+    "model": "nova-2",
+    "language": "fr-CA",
+    "punctuate": true,
+    "endpointing": 300,
+    "vad_turnoff": 500,
+    "interim_results": true,
+    "smart_format": true
+  },
+  "call_settings": {
+    "max_duration_sec": 120,
+    "silence_timeout_sec": 8,
+    "recording": true,
+    "recording_format": "mp3"
+  },
+  "telephony": {
+    "provider": "vicidial",
+    "vicidial_campaign": "DW_QCB2B",
+    "vicidial_list": "DW_QCB2B",
+    "trunk": "Door_App0",
+    "trunk_provider": "Africa-Con",
+    "remote_agent_exten": "86023",
+    "caller_id": "15817058118"
+  },
+  "crm": {
+    "provider": "odoo",
+    "url": "${ODOO_URL}",
+    "database": "intellixcrm",
+    "team": "Driven",
+    "source_tag": "Driven B2B",
+    "qualified_tag": "Lead chaud Driven",
+    "director_user_login": "martin@agencedoorway.com"
+  },
+  "webhooks": {
+    "outbound": "${N8N_BASE_URL}/webhook/driven-b2b-qc/outbound",
+    "conversation": "${N8N_BASE_URL}/webhook/driven-b2b-qc/conversation",
+    "events": "${N8N_BASE_URL}/webhook/driven-b2b-qc/event",
+    "qualified": "${N8N_BASE_URL}/webhook/driven-b2b-qc/qualified",
+    "non_qualified": "${N8N_BASE_URL}/webhook/driven-b2b-qc/non-qualified",
+    "call_ended": "${ODOO_URL}/doorway/api/driven-b2b/call-ended",
+    "daily_stats": "${N8N_BASE_URL}/webhook/driven-b2b-qc/stats"
+  },
+  "qualification": {
+    "min_months_in_business": 6,
+    "min_annual_revenue": 100000,
+    "sms_link": "driven.ca/partners/agence-doorway",
+    "sms_followup_days": [0, 2, 5]
+  },
+  "dynamic_variables": ["prenom", "nom", "entreprise", "telephone"]
+}

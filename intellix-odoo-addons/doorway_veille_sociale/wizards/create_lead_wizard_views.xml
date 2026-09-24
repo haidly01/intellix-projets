@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_create_lead_wizard_form" model="ir.ui.view">
+        <field name="name">doorway.create.lead.wizard.form</field>
+        <field name="model">doorway.create.lead.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Créer un lead CRM">
+                <group>
+                    <field name="signal_id" readonly="1"/>
+                    <field name="nom_prospect"/>
+                    <field name="pipeline_type"/>
+                    <field name="type_projet"/>
+                    <field name="priorite"/>
+                    <field name="assigner_a"/>
+                </group>
+                <group>
+                    <field name="notes" nolabel="1" placeholder="Notes internes…"/>
+                </group>
+                <footer>
+                    <button name="action_creer_lead" type="object" string="Créer le lead" class="btn-primary"/>
+                    <button name="action_ignorer_signal" type="object" string="Ignorer ce signal"
+                            class="btn-secondary"
+                            confirm="Ignorer ce signal ? Aucune opportunité CRM ne sera créée."/>
+                    <button string="Annuler" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

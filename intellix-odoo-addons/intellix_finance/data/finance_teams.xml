@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="crm_team_growth_capital" model="crm.team">
+            <field name="name">Growth Capital</field>
+            <field name="use_leads">True</field>
+            <field name="use_opportunities">True</field>
+            <field name="sequence">46</field>
+        </record>
+        <record id="crm_team_itex" model="crm.team">
+            <field name="name">ITEX</field>
+            <field name="use_leads">True</field>
+            <field name="use_opportunities">True</field>
+            <field name="sequence">47</field>
+        </record>
+    </data>
+</odoo>

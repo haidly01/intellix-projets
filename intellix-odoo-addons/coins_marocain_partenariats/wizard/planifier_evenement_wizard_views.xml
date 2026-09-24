@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_coins_planifier_evenement_wizard" model="ir.ui.view">
+        <field name="name">coins.planifier.evenement.wizard.form</field>
+        <field name="model">coins.planifier.evenement.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Planifier l'événement" class="o_coins_evt_wizard">
+                <field name="lead_id" invisible="1"/>
+                <field name="step" invisible="1"/>
+                <field name="style_lieu" invisible="1"/>
+                <field name="deco_ready" invisible="1"/>
+                <div class="o_coins_evt_top">
+                    <div class="eyebrow">Wizard interne · pas envoyé au voyageur</div>
+                    <h1>Planifier l'événement</h1>
+                    <field name="subtitle" nolabel="1" readonly="1"/>
+                    <field name="capacity_note" nolabel="1" readonly="1"
+                           class="o_coins_evt_cap"/>
+                </div>
+                <div class="o_coins_evt_pills">
+                    <button name="action_goto" type="object" string="1 Style"
+                            context="{'goto': 1}"
+                            class="o_coins_evt_pill"
+                            invisible="step == 1"/>
+                    <button name="action_goto" type="object" string="1 Style"
+                            context="{'goto': 1}"
+                            class="o_coins_evt_pill on"
+                            invisible="step != 1"/>
+                    <button name="action_goto" type="object" string="2 Lieu"
+                            context="{'goto': 2}"
+                            class="o_coins_evt_pill"
+                            invisible="step == 2"/>
+                    <button name="action_goto" type="object" string="2 Lieu"
+                            context="{'goto': 2}"
+                            class="o_coins_evt_pill on"
+                            invisible="step != 2"/>
+                    <button name="action_goto" type="object" string="3 Menu / divert / déco"
+                            context="{'goto': 3}"
+                            class="o_coins_evt_pill"
+                            invisible="step == 3"/>
+                    <button name="action_goto" type="object" string="3 Menu / divert / déco"
+                            context="{'goto': 3}"
+                            class="o_coins_evt_pill on"
+                            invisible="step != 3"/>
+                    <button name="action_goto" type="object" string="4 Hébergement"
+                            context="{'goto': 4}"
+                            class="o_coins_evt_pill"
+                            invisible="step == 4"/>
+                    <button name="action_goto" type="object" string="4 Hébergement"
+                            context="{'goto': 4}"
+                            class="o_coins_evt_pill on"
+                            invisible="step != 4"/>
+                    <button name="action_goto" type="object" string="5 Résumé"
+                            context="{'goto': 5}"
+                            class="o_coins_evt_pill"
+                            invisible="step == 5"/>
+                    <button name="action_goto" type="object" string="5 Résumé"
+                            context="{'goto': 5}"
+                            class="o_coins_evt_pill on"
+                            invisible="step != 5"/>
+                </div>
+
+                <div class="o_coins_evt_panel" invisible="step != 1">
+                    <h2>1 · Style de lieu</h2>
+                    <p class="lead">Préférence commerciale. Aucun filtre catalogue — 0 lieu classé en prod.</p>
+                    <div class="o_coins_evt_styles">
+                        <button name="action_pick_style" type="object"
+                                context="{'style_code': 'moderne'}"
+                                class="o_coins_evt_card moderne"
+                                string="Moderne — villa contemporaine"/>
+                        <button name="action_pick_style" type="object"
+                                context="{'style_code': 'traditionnel'}"
+                                class="o_coins_evt_card traditionnel"
+                                string="Traditionnel — riad, patio"/>
+                        <button name="action_pick_style" type="object"
+                                context="{'style_code': 'nature_rural'}"
+                                class="o_coins_evt_card nature"
+                                string="Nature-Rural — Ourika, Atlas"/>
+                        <button name="action_pick_style" type="object"
+                                context="{'style_code': 'desert'}"
+                                class="o_coins_evt_card desert"
+                                string="Désert — Agafay, camp"/>
+                    </div>
+                    <p class="o_coins_evt_zero">0 lieux classés derrière chaque carte. Style = préférence seulement.</p>
+                </div>
+
+                <div class="o_coins_evt_panel" invisible="step != 2">
+                    <h2>2 · Le lieu</h2>
+                    <field name="property_list_html" nolabel="1" readonly="1"/>
+                    <label for="note_lieu" string="Lieu pressenti / à confirmer (note libre)"/>
+                    <field name="note_lieu" placeholder="Ex. Dar Sacada à confirmer — pas de style en base."/>
+                </div>
+
+                <div class="o_coins_evt_panel" invisible="step != 3">
+                    <h2>3 · Menu, divertissement, décoration</h2>
+                    <field name="deco_hint" nolabel="1" readonly="1"/>
+                    <label for="note_menu"/>
+                    <field name="note_menu" placeholder="Traiteur pressenti, contraintes, à chiffrer plus tard."/>
+                    <label for="note_divert"/>
+                    <field name="note_divert" placeholder="DJ, gnaoua, feu… prestataire hors catalogue."/>
+                    <label for="note_deco"/>
+                    <field name="note_deco" placeholder="Thème souhaité. Aucun prestataire à proposer."/>
+                </div>
+
+                <div class="o_coins_evt_panel" invisible="step != 4">
+                    <h2>4 · Hébergement</h2>
+                    <p class="lead">Optionnel. Ce wizard ne crée pas de coins.reservation. Le bouton « + Nouvelle réservation » de la fiche reste le seul chemin séjour.</p>
+                    <label for="note_heberg"/>
+                    <field name="note_heberg" placeholder="Pas d’hébergement / suites à confirmer / ouvrir + Nouvelle réservation après validation."/>
+                </div>
+
+                <div class="o_coins_evt_panel" invisible="step != 5">
+                    <h2>5 · Résumé assemblé</h2>
+                    <p class="lead">Même structure que la proposition validée. Totaux à chiffrer. Pas de nouveau champ conversion.</p>
+                    <field name="resume_html" nolabel="1" readonly="1"/>
+                </div>
+
+                <footer>
+                    <button name="action_back" type="object" string="Retour"
+                            class="btn-secondary" invisible="step == 1"/>
+                    <button name="action_next" type="object" string="Continuer"
+                            class="btn-primary o_coins_btn_gold" invisible="step == 5"/>
+                    <button name="action_save_draft" type="object"
+                            string="Enregistrer le brouillon"
+                            class="btn-primary o_coins_btn_gold"
+                            invisible="step != 5"/>
+                    <button string="Fermer" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

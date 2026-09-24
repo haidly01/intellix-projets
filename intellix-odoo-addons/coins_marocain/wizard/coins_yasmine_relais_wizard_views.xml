@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_coins_yasmine_relais_wizard_form" model="ir.ui.view">
+        <field name="name">coins.yasmine.relais.wizard.form</field>
+        <field name="model">coins.yasmine.relais.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Relais Yasmine">
+                <group>
+                    <field name="conversation_id" readonly="1"/>
+                    <field name="visitor_name"/>
+                    <field name="visitor_email"/>
+                    <field name="phone"/>
+                    <field name="message"/>
+                </group>
+                <footer>
+                    <button string="Fermer" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

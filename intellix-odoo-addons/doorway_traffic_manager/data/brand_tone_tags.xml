@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="tone_expert" model="doorway.brand.tone.tag">
+        <field name="name">Expert</field>
+    </record>
+    <record id="tone_proximite" model="doorway.brand.tone.tag">
+        <field name="name">Proximité / Humain</field>
+    </record>
+    <record id="tone_promotionnel" model="doorway.brand.tone.tag">
+        <field name="name">Promotionnel</field>
+    </record>
+    <record id="tone_educatif" model="doorway.brand.tone.tag">
+        <field name="name">Éducatif</field>
+    </record>
+    <record id="tone_inspirant" model="doorway.brand.tone.tag">
+        <field name="name">Inspirant</field>
+    </record>
+    <record id="tone_premium" model="doorway.brand.tone.tag">
+        <field name="name">Premium</field>
+    </record>
+</odoo>

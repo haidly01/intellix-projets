@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pe_prime_rule_tree" model="ir.ui.view">
+        <field name="name">pe.prime.rule.tree</field>
+        <field name="model">pe.prime.rule</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="trigger_type"/>
+                <field name="calculation_method"/>
+                <field name="is_active"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_pe_prime_form" model="ir.ui.view">
+        <field name="name">pe.prime.form</field>
+        <field name="model">pe.prime</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit_manager" type="object" string="Soumettre" invisible="status != 'draft'" groups="people_engine.group_manager"/>
+                    <button name="action_manager_approve" type="object" string="Approuver (manager)" invisible="status != 'pending_manager'" groups="people_engine.group_manager"/>
+                    <button name="action_hr_approve" type="object" string="Approuver RH" invisible="status != 'pending_hr'" groups="people_engine.group_hr"/>
+                    <button name="action_dg_approve" type="object" string="Approuver DG" invisible="status != 'pending_dg'" groups="people_engine.group_admin"/>
+                    <button name="action_accounting_approve_and_post" type="object" string="Comptabiliser" class="btn-primary" invisible="status != 'pending_accounting'" groups="people_engine.group_hr"/>
+                    <field name="status" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="employee_id"/>
+                        <field name="rule_id"/>
+                        <field name="amount_proposed"/>
+                        <field name="amount_approved"/>
+                        <field name="period_start"/>
+                        <field name="period_end"/>
+                        <field name="move_id"/>
+                    </group>
+                    <group string="Approbations">
+                        <field name="manager_approved"/>
+                        <field name="hr_approved"/>
+                        <field name="dg_approved"/>
+                        <field name="accounting_approved"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_pe_primes" model="ir.actions.act_window">
+        <field name="name">Primes de performance</field>
+        <field name="res_model">pe.prime</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_pe_prime_rules" model="ir.actions.act_window">
+        <field name="name">Règles de primes</field>
+        <field name="res_model">pe.prime.rule</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="view_pe_legal_update_tree" model="ir.ui.view">
+        <field name="name">pe.legal.article.update.tree</field>
+        <field name="model">pe.legal.article.update</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="original_article_id"/>
+                <field name="fetched_at"/>
+                <field name="status"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_pe_legal_update_form" model="ir.ui.view">
+        <field name="name">pe.legal.article.update.form</field>
+        <field name="model">pe.legal.article.update</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_validate" type="object" string="Valider RH" invisible="status != 'pending_review'" groups="people_engine.group_hr"/>
+                    <button name="action_apply" type="object" string="Appliquer" class="btn-primary" invisible="status != 'validated'" groups="people_engine.group_hr"/>
+                    <button name="action_reject" type="object" string="Rejeter" invisible="status not in ('pending_review', 'validated')" groups="people_engine.group_hr"/>
+                    <field name="status" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-warning">Mise à jour automatique — validation RH obligatoire.</div>
+                    <field name="original_article_id"/>
+                    <field name="proposed_content"/>
+                    <field name="source_url"/>
+                    <field name="review_notes"/>
+                    <field name="new_article_id"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_pe_legal_updates" model="ir.actions.act_window">
+        <field name="name">Mises à jour juridiques (n8n)</field>
+        <field name="res_model">pe.legal.article.update</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

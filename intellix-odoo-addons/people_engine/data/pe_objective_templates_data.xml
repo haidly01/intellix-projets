@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="pe_objective_template_commercial_terrain" model="pe.objective.template">
+        <field name="name">Commercial terrain</field>
+        <field name="description">Modèle pour gestionnaires commerciaux terrain : visites, démos, revenus et conversion.</field>
+    </record>
+    <record id="pe_objective_template_line_ct_visites" model="pe.objective.template.line">
+        <field name="template_id" ref="pe_objective_template_commercial_terrain"/>
+        <field name="sequence">10</field>
+        <field name="name">Visites terrain mensuelles</field>
+        <field name="objective_type">visites_terrain</field>
+        <field name="period">monthly</field>
+        <field name="target_value">20</field>
+        <field name="unit">visites</field>
+    </record>
+    <record id="pe_objective_template_line_ct_demos" model="pe.objective.template.line">
+        <field name="template_id" ref="pe_objective_template_commercial_terrain"/>
+        <field name="sequence">20</field>
+        <field name="name">Démos réalisées</field>
+        <field name="objective_type">demos</field>
+        <field name="period">monthly</field>
+        <field name="target_value">8</field>
+        <field name="unit">démos</field>
+    </record>
+    <record id="pe_objective_template_line_ct_revenus" model="pe.objective.template.line">
+        <field name="template_id" ref="pe_objective_template_commercial_terrain"/>
+        <field name="sequence">30</field>
+        <field name="name">Revenus générés</field>
+        <field name="objective_type">revenus</field>
+        <field name="period">quarterly</field>
+        <field name="target_value">50000</field>
+        <field name="unit">MAD</field>
+    </record>
+    <record id="pe_objective_template_line_ct_conv" model="pe.objective.template.line">
+        <field name="template_id" ref="pe_objective_template_commercial_terrain"/>
+        <field name="sequence">40</field>
+        <field name="name">Taux de conversion</field>
+        <field name="objective_type">taux_conversion</field>
+        <field name="period">quarterly</field>
+        <field name="target_value">15</field>
+        <field name="unit">%</field>
+    </record>
+
+    <record id="pe_objective_template_call_center" model="pe.objective.template">
+        <field name="name">Call center</field>
+        <field name="description">Modèle pour agents call center : volume d'appels, conversion et tâches.</field>
+    </record>
+    <record id="pe_objective_template_line_cc_appels" model="pe.objective.template.line">
+        <field name="template_id" ref="pe_objective_template_call_center"/>
+        <field name="sequence">10</field>
+        <field name="name">Appels sortants</field>
+        <field name="objective_type">appels</field>
+        <field name="period">weekly</field>
+        <field name="target_value">200</field>
+        <field name="unit">appels</field>
+    </record>
+    <record id="pe_objective_template_line_cc_conv" model="pe.objective.template.line">
+        <field name="template_id" ref="pe_objective_template_call_center"/>
+        <field name="sequence">20</field>
+        <field name="name">Taux de conversion</field>
+        <field name="objective_type">taux_conversion</field>
+        <field name="period">monthly</field>
+        <field name="target_value">8</field>
+        <field name="unit">%</field>
+    </record>
+    <record id="pe_objective_template_line_cc_taches" model="pe.objective.template.line">
+        <field name="template_id" ref="pe_objective_template_call_center"/>
+        <field name="sequence">30</field>
+        <field name="name">Tâches livrées à temps</field>
+        <field name="objective_type">project_ontime</field>
+        <field name="period">monthly</field>
+        <field name="target_value">90</field>
+        <field name="unit">%</field>
+    </record>
+</odoo>

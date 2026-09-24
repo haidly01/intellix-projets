@@ -1,0 +1,20 @@
+/* Formation LMS — viewer plein écran (iframe HTML statique) */
+.o_pe_course_viewer.ix-fullscreen-dashboard {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+    background: #0a0a14 !important;
+}
+
+.o_pe_course_viewer__iframe {
+    flex: 1 1 auto;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    border: none;
+    display: block;
+}

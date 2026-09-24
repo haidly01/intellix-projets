@@ -1,0 +1,502 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_intellix_support_ticket_kanban" model="ir.ui.view">
+        <field name="name">intellix.support.ticket.kanban</field>
+        <field name="model">intellix.support.ticket</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="stage_id" highlight_color="color"
+                    class="o_kanban_small_column intellix-support-kanban"
+                    js_class="intellix_support_kanban"
+                    quick_create="true" sample="1">
+                <field name="color"/>
+                <field name="priority"/>
+                <field name="priority_css"/>
+                <field name="stage_id"/>
+                <field name="stage_is_closed"/>
+                <field name="partner_id"/>
+                <field name="user_scope"/>
+                <field name="scope_group_id"/>
+                <field name="contact_user_id"/>
+                <field name="company_id"/>
+                <field name="ticket_type"/>
+                <field name="category_id"/>
+                <field name="category_tag_class"/>
+                <field name="side_origin"/>
+                <field name="diagnostic_count"/>
+                <field name="has_ai_flag"/>
+                <field name="sla_state"/>
+                <field name="sla_label"/>
+                <field name="time_ago_label"/>
+                <templates>
+                    <t t-name="menu" t-if="!selection_mode">
+                        <field name="color" widget="kanban_color_picker"/>
+                    </t>
+                    <t t-name="card">
+                        <main t-attf-class="intellix-support-ticket-card oe_kanban_global_click #{record.priority_css.raw_value or 'p-medium'} #{record.stage_is_closed.raw_value ? 'is-closed' : ''}">
+                            <div t-if="record.has_ai_flag.raw_value" class="intellix-support-ai-flag" title="Diagnostic IA">🤖</div>
+                            <div class="intellix-support-ticket-id">
+                                <field name="name"/>
+                                <span t-if="record.sla_label.value"
+                                      t-attf-class="intellix-support-sla intellix-support-sla-#{record.sla_state.raw_value or 'ok'}">
+                                    <field name="sla_label"/>
+                                </span>
+                            </div>
+                            <div class="intellix-support-ticket-title">
+                                <field name="subject"/>
+                            </div>
+                            <div class="intellix-support-ticket-client">
+                                <field name="partner_id"/>
+                            </div>
+                            <div class="intellix-support-ticket-tags">
+                                <span t-if="record.category_id.value"
+                                      t-attf-class="intellix-support-tag #{record.category_tag_class.raw_value or 'tag-config'}">
+                                    <field name="category_id"/>
+                                </span>
+                                <span t-if="record.priority.raw_value == '3'"
+                                      class="intellix-support-tag tag-urgent">Urgent</span>
+                                <span t-if="record.side_origin.raw_value == 'platform'"
+                                      class="intellix-support-tag tag-ai">Plateforme</span>
+                                <span t-if="record.side_origin.raw_value == 'client'"
+                                      class="intellix-support-tag tag-onboard">Client</span>
+                            </div>
+                            <footer class="intellix-support-ticket-footer">
+                                <div class="d-flex align-items-center gap-1">
+                                    <field name="contact_user_id" widget="many2one_avatar_user"
+                                           invisible="not contact_user_id"/>
+                                </div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="intellix-support-ticket-time">
+                                        <field name="time_ago_label"/>
+                                    </span>
+                                    <button type="object" name="action_run_diagnostic_silent"
+                                            class="btn btn-sm intellix-support-kanban-play"
+                                            title="Lancer diagnostic">
+                                        <i class="fa fa-play"/>
+                                    </button>
+                                </div>
+                            </footer>
+                        </main>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_intellix_support_ticket_form" model="ir.ui.view">
+        <field name="name">intellix.support.ticket.form</field>
+        <field name="model">intellix.support.ticket</field>
+        <field name="arch" type="xml">
+            <form string="Ticket support" class="o_intellix_support_ticket_form" js_class="intellix_support_form">
+                <header>
+                    <button name="action_run_diagnostic" type="object"
+                            string="Lancer diagnostic"
+                            class="btn-secondary intellix-btn-ghost"/>
+                    <button name="action_analyze_with_cursor" type="object"
+                            string="Analyser avec Cursor"
+                            class="btn-secondary"
+                            groups="intellix_support.group_intellix_support_manager"/>
+                    <button name="action_resolve" type="object"
+                            string="Résoudre" class="btn-primary intellix-btn-resolve"/>
+                    <field name="stage_id" widget="statusbar"
+                           class="intellix-ticket-pipeline"
+                           options="{'clickable': '1', 'fold_field': 'fold'}"/>
+                </header>
+                <field name="sla_state" invisible="1"/>
+                <field name="diagnostic_count" invisible="1"/>
+                <field name="message_count" invisible="1"/>
+                <field name="proposal_count" invisible="1"/>
+                <field name="active_proposal_id" invisible="1"/>
+                <field name="copilot_replies_data" invisible="1"/>
+                <field name="company_id" invisible="1"/>
+                <field name="user_id" invisible="1"/>
+                <div class="o_intellix_support_form_layout">
+                    <div class="o_intellix_support_form_main">
+                        <div class="intellix-ticket-subbar">
+                            <span class="intellix-ticket-breadcrumb">
+                                <i class="fa fa-angle-left"/> Tickets support
+                            </span>
+                            <span class="intellix-ticket-breadcrumb-sep">/</span>
+                            <field name="name" readonly="1" class="intellix-ticket-breadcrumb-ref"/>
+                        </div>
+                        <sheet class="intellix-ticket-sheet">
+                            <div class="intellix-ticket-header">
+                                <div class="intellix-ticket-header-main">
+                                    <div class="intellix-ticket-ref-row">
+                                        <field name="name" readonly="1" class="intellix-ticket-ref"/>
+                                        <field name="category_id" readonly="1"
+                                               class="intellix-ticket-tag intellix-tag-category"
+                                               invisible="not category_id"/>
+                                        <span class="intellix-ticket-tag intellix-tag-client"
+                                              invisible="side_origin != 'client'">Client</span>
+                                        <span class="intellix-ticket-tag intellix-tag-platform"
+                                              invisible="side_origin != 'platform'">Plateforme</span>
+                                        <field name="sla_label" readonly="1"
+                                               class="intellix-ticket-sla"
+                                               invisible="not sla_label"/>
+                                    </div>
+                                    <label for="subject" class="d-none"/>
+                                    <h1 class="intellix-ticket-title">
+                                        <field name="subject" placeholder="Sujet du ticket"/>
+                                    </h1>
+                                </div>
+                                <div class="intellix-ticket-header-actions d-none d-md-flex">
+                                    <button name="action_run_diagnostic" type="object"
+                                            string="Lancer diagnostic"
+                                            class="btn btn-secondary intellix-btn-ghost"/>
+                                    <button name="action_resolve" type="object"
+                                            string="Résoudre"
+                                            class="btn btn-primary intellix-btn-resolve"/>
+                                </div>
+                            </div>
+                            <div class="intellix-form-grid intellix-form-grid-create">
+                                <div class="intellix-form-group intellix-form-step">
+                                    <label for="partner_id" class="o_form_label intellix-form-label">Organisation</label>
+                                    <field name="partner_id"
+                                           domain="['|', ('is_company', '=', True), ('user_ids', '!=', False)]"
+                                           context="{'support_ticket_partner_picker': 1}"
+                                           options="{'no_create': True}"
+                                           placeholder="Sélectionner l'organisation…"/>
+                                </div>
+                                <div class="intellix-form-group intellix-form-step">
+                                    <label for="user_scope" class="o_form_label intellix-form-label">Portée</label>
+                                    <field name="user_scope" widget="radio"/>
+                                </div>
+                                <div class="intellix-form-group intellix-form-step"
+                                     invisible="user_scope != 'group'">
+                                    <label for="scope_group_id" class="o_form_label intellix-form-label">Groupe</label>
+                                    <field name="scope_group_id"
+                                           required="user_scope == 'group'"
+                                           placeholder="Sélectionner un groupe…"/>
+                                </div>
+                                <div class="intellix-form-group intellix-form-step"
+                                     invisible="user_scope != 'specific'">
+                                    <label for="contact_user_id" class="o_form_label intellix-form-label">Utilisateur ciblé</label>
+                                    <field name="contact_user_id"
+                                           widget="many2one_avatar_user"
+                                           domain="[('partner_id', 'child_of', partner_id), ('active', '=', True)]"
+                                           context="{'support_ticket_user_picker': 1}"
+                                           options="{'no_create': True}"
+                                           required="user_scope == 'specific'"
+                                           invisible="not partner_id"/>
+                                    <span invisible="partner_id" class="intellix-form-placeholder">Sélectionnez d'abord l'organisation</span>
+                                </div>
+                                <div class="intellix-form-group intellix-form-step">
+                                    <label for="category_id" class="o_form_label intellix-form-label">Module</label>
+                                    <field name="category_id" placeholder="CRM, RH, Dialer…"/>
+                                </div>
+                                <div class="intellix-form-group intellix-form-step">
+                                    <label for="ticket_type" class="o_form_label intellix-form-label">Type de demande</label>
+                                    <field name="ticket_type" widget="radio"/>
+                                </div>
+                                <div class="intellix-form-group intellix-form-step intellix-form-span-2">
+                                    <label for="description" class="o_form_label intellix-form-label">Description</label>
+                                    <field name="description" class="intellix-desc-area intellix-desc-inline"
+                                           placeholder="Décrivez le problème ou la demande…"/>
+                                    <div class="intellix-attachment-hint text-muted">
+                                        <i class="fa fa-paperclip"/> Vous pouvez joindre une capture d'écran
+                                        via le composer en bas de page.
+                                    </div>
+                                </div>
+                                <div class="intellix-form-group" groups="intellix_support.group_intellix_support_manager">
+                                    <label for="side_origin" class="o_form_label intellix-form-label">Origine probable</label>
+                                    <field name="side_origin"/>
+                                </div>
+                                <div class="intellix-form-group" groups="intellix_support.group_intellix_support_manager">
+                                    <label for="priority" class="o_form_label intellix-form-label">Priorité</label>
+                                    <field name="priority" widget="priority"/>
+                                </div>
+                                <div class="intellix-form-group" groups="intellix_support.group_intellix_support_manager">
+                                    <label for="create_date" class="o_form_label intellix-form-label">Date création</label>
+                                    <field name="create_date" readonly="1" widget="datetime"/>
+                                </div>
+                            </div>
+                            <notebook class="intellix-ticket-tabs">
+                                <page string="Description" name="description"
+                                      groups="intellix_support.group_intellix_support_manager">
+                                    <field name="description" class="intellix-desc-area"
+                                           placeholder="Détails du problème…"/>
+                                </page>
+                                <page string="AnyDesk" name="anydesk">
+                                    <group>
+                                        <field name="anydesk_id"/>
+                                        <field name="anydesk_consent"/>
+                                        <field name="anydesk_session_notes"/>
+                                    </group>
+                                </page>
+                                <page string="Correctifs" name="proposals" badge="proposal_count">
+                                    <field name="proposal_ids" nolabel="1"
+                                           context="{'default_ticket_id': id}">
+                                        <list>
+                                            <field name="name"/>
+                                            <field name="runbook_id"/>
+                                            <field name="state" widget="badge"
+                                                   decoration-success="state == 'executed'"
+                                                   decoration-danger="state in ('failed', 'rejected')"
+                                                   decoration-warning="state == 'pending_approval'"
+                                                   decoration-info="state == 'approved'"/>
+                                            <field name="approved_by" optional="show"/>
+                                            <field name="approved_date" optional="hide"/>
+                                            <button name="action_approve" type="object"
+                                                    string="Approuver" icon="fa-check"
+                                                    groups="intellix_support.group_intellix_support_manager"
+                                                    invisible="state != 'pending_approval'"/>
+                                            <button name="action_execute" type="object"
+                                                    string="Exécuter" icon="fa-play"
+                                                    groups="intellix_support.group_intellix_support_manager"
+                                                    invisible="state != 'approved'"/>
+                                        </list>
+                                        <form>
+                                            <header>
+                                                <button name="action_submit_for_approval" type="object"
+                                                        string="Soumettre"
+                                                        invisible="state not in ('draft', 'rejected')"/>
+                                                <button name="action_approve" type="object"
+                                                        string="Approuver"
+                                                        groups="intellix_support.group_intellix_support_manager"
+                                                        invisible="state != 'pending_approval'"/>
+                                                <button name="action_execute" type="object"
+                                                        string="Exécuter"
+                                                        groups="intellix_support.group_intellix_support_manager"
+                                                        invisible="state != 'approved'"/>
+                                                <field name="state" widget="statusbar"
+                                                       statusbar_visible="draft,pending_approval,approved,executed"/>
+                                            </header>
+                                            <group>
+                                                <field name="name" readonly="1"/>
+                                                <field name="runbook_id" readonly="1"/>
+                                                <field name="diagnostic_id" readonly="1"/>
+                                                <field name="approved_by" readonly="1"/>
+                                                <field name="approved_date" readonly="1"/>
+                                            </group>
+                                            <field name="steps_html" readonly="1"/>
+                                            <field name="execution_log" readonly="1"
+                                                   invisible="not execution_log"/>
+                                            <field name="error_message" readonly="1"
+                                                   invisible="not error_message"/>
+                                        </form>
+                                    </field>
+                                </page>
+                                <page string="Cursor" name="cursor_poc"
+                                      groups="intellix_support.group_intellix_support_manager">
+                                    <group>
+                                        <field name="cursor_analysis_state" readonly="1"/>
+                                        <field name="cursor_agent_id" readonly="1"/>
+                                        <field name="cursor_run_id" readonly="1"/>
+                                        <field name="cursor_analysis_source" readonly="1"/>
+                                    </group>
+                                    <field name="cursor_analysis_result" readonly="1" nolabel="1"/>
+                                </page>
+                                <page string="Fichiers joints" name="attachments" badge="attachment_count">
+                                    <field name="attachment_ids" readonly="1" nolabel="1">
+                                        <list>
+                                            <field name="name"/>
+                                            <field name="mimetype"/>
+                                            <field name="create_date"/>
+                                        </list>
+                                    </field>
+                                </page>
+                                <page string="Historique" name="history" badge="message_count">
+                                    <field name="message_ids" readonly="1" nolabel="1">
+                                        <list>
+                                            <field name="date"/>
+                                            <field name="author_id"/>
+                                            <field name="body"/>
+                                        </list>
+                                    </field>
+                                </page>
+                            </notebook>
+                        </sheet>
+                        <chatter class="intellix-ticket-chatter"/>
+                    </div>
+                    <aside class="intellix-support-copilot-sidebar">
+                        <div class="intellix-copilot-header">
+                            <div class="intellix-copilot-icon">🤖</div>
+                            <div class="intellix-copilot-heading">
+                                <div class="intellix-copilot-title">AI Copilot</div>
+                                <div class="intellix-copilot-sub">
+                                    <span>Analyse diagnostic · </span>
+                                    <field name="name" readonly="1" class="intellix-copilot-ref"/>
+                                </div>
+                            </div>
+                            <button name="action_run_diagnostic_refresh" type="object"
+                                    class="intellix-copilot-refresh btn btn-link p-0"
+                                    title="Actualiser">
+                                <i class="fa fa-refresh"/>
+                            </button>
+                        </div>
+                        <notebook class="intellix-copilot-notebook">
+                            <page string="Diagnostic" name="copilot_diagnostic">
+                                <div class="intellix-copilot-body">
+                                    <field name="copilot_suggestions" nolabel="1" readonly="1"
+                                           invisible="copilot_suggestions"/>
+                                    <div invisible="copilot_suggestions" class="intellix-support-copilot-empty">
+                                        <p>Lancez un diagnostic pour obtenir les cartes IA.</p>
+                                        <button name="action_run_diagnostic_refresh" type="object"
+                                                string="Lancer diagnostic"
+                                                class="btn btn-primary btn-sm"/>
+                                    </div>
+                                </div>
+                            </page>
+                            <page string="Réponses suggérées" name="copilot_replies">
+                                <div class="intellix-copilot-body">
+                                    <field name="copilot_replies_html" nolabel="1" readonly="1"
+                                           invisible="not copilot_replies_html"/>
+                                    <div invisible="copilot_replies_html" class="intellix-support-copilot-empty">
+                                        <p>Aucune réponse suggérée — lancez d'abord un diagnostic.</p>
+                                    </div>
+                                </div>
+                            </page>
+                            <page string="Résumé" name="copilot_summary">
+                                <div class="intellix-copilot-body">
+                                    <field name="copilot_summary_html" nolabel="1" readonly="1"/>
+                                    <div class="intellix-copilot-chat-scroll" invisible="not copilot_chat_log">
+                                        <field name="copilot_chat_log" nolabel="1" readonly="1"/>
+                                    </div>
+                                </div>
+                            </page>
+                        </notebook>
+                        <div class="intellix-copilot-footer">
+                            <input type="text" class="intellix-copilot-input intellix-copilot-input-active"
+                                   name="intellix_copilot_question"
+                                   autocomplete="off" autocorrect="off" autocapitalize="off"
+                                   spellcheck="false" data-lpignore="true" data-form-type="other"
+                                   placeholder="Poser une question à Claude sur ce ticket…"/>
+                            <button type="button"
+                                    class="intellix-copilot-send btn btn-primary"
+                                    title="Envoyer">Envoyer</button>
+                        </div>
+                    </aside>
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="view_intellix_support_ticket_list" model="ir.ui.view">
+        <field name="name">intellix.support.ticket.list</field>
+        <field name="model">intellix.support.ticket</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="priority == '3'"
+                  decoration-warning="priority == '2'"
+                  decoration-muted="side_origin == 'unknown'"
+                  sample="1">
+                <field name="name"/>
+                <field name="subject"/>
+                <field name="partner_id"/>
+                <field name="user_scope" optional="hide"/>
+                <field name="contact_user_id" widget="many2one_avatar_user" optional="show"/>
+                <field name="category_id" string="Module" optional="show"/>
+                <field name="ticket_type" optional="show"/>
+                <field name="stage_id"/>
+                <field name="priority" widget="priority"/>
+                <field name="side_origin"/>
+                <field name="diagnostic_count" optional="hide"/>
+                <field name="color" widget="color_picker" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_intellix_support_ticket_search" model="ir.ui.view">
+        <field name="name">intellix.support.ticket.search</field>
+        <field name="model">intellix.support.ticket</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="subject"/>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="ticket_type"/>
+                <field name="user_scope"/>
+                <field name="category_id"/>
+                <filter string="Mes tickets" name="my_tickets"
+                        domain="[('user_id', '=', uid)]"/>
+                <filter string="Non assignés" name="unassigned"
+                        domain="[('user_id', '=', False)]"/>
+                <filter string="Urgents" name="urgent"
+                        domain="[('priority', '=', '3')]"/>
+                <filter string="SLA breach" name="sla_breach"
+                        domain="[('sla_state', '=', 'breach')]"/>
+                <filter string="Sans diagnostic" name="no_diagnostic"
+                        domain="[('diagnostic_count', '=', 0)]"/>
+                <filter string="Non-bug (Karine)" name="non_bug"
+                        domain="[('ticket_type', '!=', 'bug')]"/>
+                <separator/>
+                <filter string="Côté client" name="side_client"
+                        domain="[('side_origin', '=', 'client')]"/>
+                <filter string="Côté Intellix" name="side_platform"
+                        domain="[('side_origin', '=', 'platform')]"/>
+                <group>
+                    <filter string="Étape" name="group_stage" context="{'group_by': 'stage_id'}"/>
+                    <filter string="Catégorie" name="group_category" context="{'group_by': 'category_id'}"/>
+                    <filter string="Assigné" name="group_user" context="{'group_by': 'user_id'}"/>
+                    <filter string="Origine" name="group_side" context="{'group_by': 'side_origin'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_intellix_support_ticket_graph_stage" model="ir.ui.view">
+        <field name="name">intellix.support.ticket.graph.stage</field>
+        <field name="model">intellix.support.ticket</field>
+        <field name="arch" type="xml">
+            <graph string="Tickets par étape" type="bar" sample="1">
+                <field name="stage_id"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_intellix_support_ticket_graph_category" model="ir.ui.view">
+        <field name="name">intellix.support.ticket.graph.category</field>
+        <field name="model">intellix.support.ticket</field>
+        <field name="arch" type="xml">
+            <graph string="Tickets par catégorie" type="pie" sample="1">
+                <field name="category_id"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_intellix_support_ticket_pivot" model="ir.ui.view">
+        <field name="name">intellix.support.ticket.pivot</field>
+        <field name="model">intellix.support.ticket</field>
+        <field name="arch" type="xml">
+            <pivot string="Analyse tickets" sample="1">
+                <field name="stage_id" type="row"/>
+                <field name="category_id" type="row"/>
+                <field name="priority" type="col"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_intellix_support_ticket" model="ir.actions.act_window">
+        <field name="name">Tickets support</field>
+        <field name="res_model">intellix.support.ticket</field>
+        <field name="path">support-tickets</field>
+        <field name="view_mode">kanban,list,form,graph,pivot</field>
+        <field name="context">{'search_default_my_tickets': 0}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créez un ticket support Intellix
+            </p>
+            <p>Organisation → portée → module → description, puis lancez le diagnostic.</p>
+        </field>
+    </record>
+
+    <record id="action_intellix_support_ticket_user_create" model="ir.actions.act_window">
+        <field name="name">Nouveau ticket</field>
+        <field name="res_model">intellix.support.ticket.create.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_partner_id': user.partner_id.commercial_partner_id.id}</field>
+    </record>
+
+    <record id="action_intellix_support_command_center" model="ir.actions.act_window">
+        <field name="name">Command Center</field>
+        <field name="res_model">intellix.support.ticket</field>
+        <field name="view_mode">graph,pivot,kanban,list</field>
+        <field name="view_id" ref="view_intellix_support_ticket_graph_stage"/>
+        <field name="context">{'search_default_group_stage': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Centre de commande Support
+            </p>
+            <p>Vue agrégée des tickets : volumes par étape, catégorie et priorité.</p>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,92 @@
+{
+  "_comment": "Sofia RénoFacile — France B2C. Stack : n8n + Deepgram fr + Claude + ElevenLabs + VICIdial DW_FRB2C + Odoo.",
+  "version": "1.2.0",
+  "agent_id": "marenofacile",
+  "agent_name": "Sofia",
+  "active": true,
+  "language": "fr-FR",
+  "stack": "n8n+deepgram+claude+elevenlabs",
+  "pipeline": "renovation",
+  "brand": "RénoFacile",
+  "timezone": "Europe/Paris",
+  "stt": {
+    "provider": "deepgram",
+    "model": "nova-2",
+    "language": "fr",
+    "punctuate": true,
+    "endpointing_ms": 450,
+    "utterance_end_ms": 1200,
+    "smart_format": true
+  },
+  "llm": {
+    "provider": "anthropic",
+    "model": "claude-sonnet-4-20250514",
+    "max_tokens": 120,
+    "temperature": 0.6,
+    "system_prompt_file": "system_prompt_claude.txt"
+  },
+  "call_settings": {
+    "max_duration_sec": 120,
+    "silence_timeout_sec": 6,
+    "recording": true,
+    "recording_retention_years": 3
+  },
+  "state_machine": {
+    "steps": [
+      "intro",
+      "q1_statut",
+      "q2_logement",
+      "q3_chauffage",
+      "q4_travaux",
+      "q5_consentement",
+      "closing"
+    ],
+    "required_fields": [
+      "statut_propriete",
+      "type_logement",
+      "chauffage",
+      "travaux_existants",
+      "consentement_recontact"
+    ],
+    "consent_field": "consentement_recontact",
+    "closing_requires_consent": true
+  },
+  "telephony": {
+    "provider": "vicidial",
+    "vicidial_campaign": "DW_FRB2C",
+    "vicidial_list": "1004",
+    "caller_id": "15817058118",
+    "remote_agent_exten": "86022"
+  },
+  "crm": {
+    "provider": "odoo",
+    "url": "${ODOO_URL}",
+    "database": "intellixcrm",
+    "team": "Rénovation",
+    "source_tag": "RénoFacile",
+    "callback_user_login": "karine@agencedoorway.com",
+    "consent_tags": {
+      "yes": "Consentement rappel OK",
+      "no": "Sans consentement rappel",
+      "august_pool": "Pool rappel août 2026"
+    }
+  },
+  "webhooks": {
+    "outbound": "${N8N_BASE_URL}/webhook/renofacile-fr/outbound",
+    "conversation": "${N8N_BASE_URL}/webhook/renofacile-fr/conversation",
+    "events": "${N8N_BASE_URL}/webhook/renofacile-fr/event",
+    "call_ended": "${ODOO_URL}/doorway/api/renofacile-fr/call-ended"
+  },
+  "dynamic_variables": [
+    "prenom",
+    "ville",
+    "phone",
+    "lead_id",
+    "consentement_recontact"
+  ],
+  "tts": {
+    "provider": "elevenlabs",
+    "voice_speed": 0.92,
+    "stability": 0.55
+  }
+}

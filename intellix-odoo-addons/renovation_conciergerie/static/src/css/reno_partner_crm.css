@@ -1,0 +1,25 @@
+.o_reno_partner_crm {
+    --navy: #1B3A6B;
+    --cyan: #0EA5E9;
+}
+.o_reno_partner_card {
+    min-height: 92px;
+}
+.o_reno_partner_card_title {
+    font-weight: 700;
+    color: #1B3A6B;
+    font-size: 14px;
+}
+.o_reno_partner_card_meta {
+    font-size: 12px;
+    color: #64748B;
+    margin-top: 2px;
+}
+.o_reno_partner_card_stage {
+    margin-top: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #1B3A6B;
+}

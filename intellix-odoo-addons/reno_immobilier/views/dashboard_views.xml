@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_reno_immobilier_dashboard_form" model="ir.ui.view">
+        <field name="name">reno.immobilier.dashboard.form</field>
+        <field name="model">reno.immobilier.dashboard</field>
+        <field name="arch" type="xml">
+            <form create="0" edit="1" delete="0" class="o_reno_ops_dash">
+                <sheet>
+                    <div class="o_reno_ops_title">Réno Immobilier — tableau de bord</div>
+                    <group>
+                        <group>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                        </group>
+                        <group>
+                            <field name="pipeline_total"/>
+                            <button name="action_refresh" type="object" string="Actualiser" class="btn-primary"/>
+                        </group>
+                    </group>
+                    <group string="Pipeline" col="6">
+                        <field name="pipeline_nouveau"/>
+                        <field name="pipeline_attribue"/>
+                        <field name="pipeline_a_relancer"/>
+                        <field name="pipeline_en_contact"/>
+                        <field name="pipeline_gagne"/>
+                        <field name="pipeline_perdu"/>
+                    </group>
+                    <group string="Jumelage">
+                        <field name="jumelage_note"/>
+                        <field name="jumelage_auto_pct"/>
+                        <field name="jumelage_manuel_pct"/>
+                        <field name="jumelage_aucun_pct"/>
+                    </group>
+                    <group string="Sources">
+                        <field name="source_summary" nolabel="1" widget="text"/>
+                    </group>
+                    <group string="Forfaits (alerte si ≤ 20 %)">
+                        <field name="package_alert_count"/>
+                        <field name="package_summary" nolabel="1" widget="text"/>
+                    </group>
+                    <footer>
+                        <button name="action_open_leads" type="object" string="Ouvrir Leads Gestion" class="btn-secondary"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_reno_immobilier_dashboard_client" model="ir.actions.client">
+        <field name="name">Tableau de bord</field>
+        <field name="tag">reno_immobilier_dashboard</field>
+        <field name="path">reno-dashboard</field>
+    </record>
+
+    <record id="action_reno_immobilier_dashboard" model="ir.actions.server">
+        <field name="name">Tableau de bord</field>
+        <field name="model_id" ref="model_reno_immobilier_dashboard"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open()</field>
+    </record>
+</odoo>

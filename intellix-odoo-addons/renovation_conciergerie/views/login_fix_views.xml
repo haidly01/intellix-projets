@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Formulaire email + mot de passe toujours visible (Odoo 19 quick login). -->
+    <template id="login_always_show_credentials" inherit_id="web.login">
+        <xpath expr="//owl-component[@name='web.user_switch']" position="replace"/>
+        <xpath expr="//form[contains(@t-attf-class, 'oe_login_form')]" position="attributes">
+            <attribute name="t-attf-class">oe_login_form</attribute>
+        </xpath>
+        <xpath expr="//label[@for='login']" position="replace">
+            <label for="login" class="form-label">Courriel</label>
+        </xpath>
+        <xpath expr="//input[@id='login']" position="attributes">
+            <attribute name="placeholder">votre@courriel.com</attribute>
+        </xpath>
+        <xpath expr="//label[@for='password']" position="replace">
+            <label for="password" class="form-label">Mot de passe</label>
+        </xpath>
+        <xpath expr="//input[@id='password']" position="attributes">
+            <attribute name="placeholder">Saisir le mot de passe</attribute>
+        </xpath>
+        <xpath expr="//div[hasclass('input-group') and .//input[@id='password']]" position="after">
+            <div class="form-check mt-2 mb-0">
+                <input class="form-check-input" type="checkbox" id="doorway_show_password"
+                       onchange="var p=document.getElementById('password'); if(p){ p.type=this.checked?'text':'password'; }"/>
+                <label class="form-check-label small" for="doorway_show_password">
+                    Afficher le mot de passe
+                </label>
+            </div>
+        </xpath>
+        <xpath expr="//button[@type='submit' and hasclass('btn-primary')]" position="attributes">
+            <attribute name="class" add="btn-lg" separator=" "/>
+        </xpath>
+        <xpath expr="//button[@type='submit' and hasclass('btn-primary')]/.." position="inside">
+            <p class="small text-muted mt-2 mb-0">
+                Saisissez le courriel et le mot de passe reçus, puis cochez « Afficher le mot de passe » pour vérifier.
+            </p>
+        </xpath>
+    </template>
+
+    <!-- Masquer passkey sur la page login (évite confusion ; connexion par mot de passe). -->
+    <template id="login_hide_passkey" inherit_id="web.login_oauth">
+        <xpath expr="//div[hasclass('o_login_auth')]" position="replace"/>
+    </template>
+
+    <!-- Après réinitialisation : lien connexion avec base (évite sélecteur DB / 404). -->
+    <template id="reset_password_login_link" inherit_id="auth_signup.reset_password">
+        <xpath expr="//a[@href='/web/login' and contains(@class, 'btn-link')]" position="attributes">
+            <attribute name="href">/web/login?db=intellixcrm</attribute>
+        </xpath>
+        <xpath expr="//a[@href='/web/login' and not(contains(@class, 'btn-link'))]" position="attributes">
+            <attribute name="href">/web/login?db=intellixcrm</attribute>
+        </xpath>
+    </template>
+</odoo>

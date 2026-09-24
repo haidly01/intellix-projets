@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_agent_profile_form_performance_calls" model="ir.ui.view">
+        <field name="name">doorway.agent.profile.form.performance.calls</field>
+        <field name="model">doorway.agent.profile</field>
+        <field name="inherit_id" ref="doorway_agents_dashboard.view_agent_profile_form_performance_tab"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@widget='doorway_agent_chart']" position="after">
+                <field name="production_call_log_ids" readonly="1" nolabel="1">
+                    <list string="Derniers appels" limit="10"
+                          decoration-success="disposition in ('VENTE', 'INTERET')"
+                          decoration-muted="amd_result in ('answering_machine', 'amd_hangup')">
+                        <field name="call_date"/>
+                        <field name="lead_id"/>
+                        <field name="duration" string="Durée (s)"/>
+                        <field name="amd_result" string="AMD"/>
+                        <field name="disposition" string="Résultat"/>
+                        <field name="phone_number" optional="hide"/>
+                    </list>
+                </field>
+            </xpath>
+        </field>
+    </record>
+</odoo>

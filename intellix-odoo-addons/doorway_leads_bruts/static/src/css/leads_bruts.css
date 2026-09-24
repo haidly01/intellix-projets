@@ -1,0 +1,414 @@
+/* IntelliX Extracteur — hub sélection (mockup New Lead Generation) */
+
+.ix-extracteur-hub {
+    --ix-extracteur-bg: #121d33;
+    min-height: 100%;
+    background: var(--ix-extracteur-bg) !important;
+    padding: 3rem 2rem 4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.ix-extracteur-hub__header {
+    text-align: center;
+    margin-bottom: 3rem;
+    max-width: 720px;
+}
+
+.ix-extracteur-hub__title {
+    color: #ffffff;
+    font-size: 2.25rem;
+    font-weight: 700;
+    margin: 0 0 0.75rem;
+    letter-spacing: -0.02em;
+}
+
+.ix-extracteur-hub__subtitle {
+    color: #94a3b8;
+    font-size: 1.05rem;
+    margin: 0;
+    font-weight: 400;
+}
+
+.ix-extracteur-hub__cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(260px, 320px));
+    gap: 2rem;
+    width: 100%;
+    max-width: 1080px;
+    justify-content: center;
+}
+
+.ix-extracteur-card {
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.22);
+    padding: 2rem 1.75rem 1.75rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ix-extracteur-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.28);
+}
+
+.ix-extracteur-card__badge-wrap {
+    margin-bottom: 1.25rem;
+}
+
+.ix-extracteur-card__badge {
+    --ix-card-accent: #34a8ff;
+    width: 72px;
+    height: 72px;
+    background: var(--ix-card-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    clip-path: polygon(
+        50% 0%, 61% 11%, 75% 5%, 82% 20%, 97% 25%, 93% 40%,
+        100% 50%, 93% 60%, 97% 75%, 82% 80%, 75% 95%, 61% 89%,
+        50% 100%, 39% 89%, 25% 95%, 18% 80%, 3% 75%, 7% 60%,
+        0% 50%, 7% 40%, 3% 25%, 18% 20%, 25% 5%, 39% 11%
+    );
+}
+
+.ix-extracteur-card__icon {
+    color: #ffffff;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.ix-extracteur-card__title {
+    color: #1e293b;
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin: 0 0 0.85rem;
+}
+
+.ix-extracteur-card__desc {
+    color: #64748b;
+    font-size: 0.92rem;
+    line-height: 1.55;
+    margin: 0 0 1.75rem;
+    flex: 1;
+    min-height: 4.5em;
+}
+
+.ix-extracteur-card__btn {
+    width: 100%;
+    border: none;
+    border-radius: 10px;
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 0.85rem 1.25rem;
+    cursor: pointer;
+    transition: filter 0.15s ease, transform 0.15s ease;
+}
+
+.ix-extracteur-card__btn:hover {
+    filter: brightness(1.08);
+    transform: scale(1.02);
+}
+
+.ix-extracteur-card__btn:active {
+    transform: scale(0.98);
+}
+
+@media (max-width: 992px) {
+    .ix-extracteur-hub__cards {
+        grid-template-columns: 1fr;
+        max-width: 400px;
+    }
+    .ix-extracteur-hub {
+        padding: 2rem 1.25rem 3rem;
+    }
+    .ix-extracteur-hub__title {
+        font-size: 1.75rem;
+    }
+}
+
+/* IntelliX Extracteur — lisibilité thème sombre Intellix */
+
+.modal:has(.o_leads_bruts_wizard) .modal-content,
+.modal:has(.o_leads_bruts_wizard) .modal-header,
+.modal:has(.o_leads_bruts_wizard) .modal-body,
+.modal:has(.o_leads_bruts_wizard) .modal-footer {
+    background: var(--ix-surface, #1a1a2e);
+    color: var(--ix-text, #f1f5f9);
+    border-color: var(--ix-border, #334155);
+}
+
+.modal:has(.o_leads_bruts_wizard) .modal-title {
+    color: var(--ix-text, #f1f5f9);
+    font-weight: 700;
+}
+
+.o_leads_bruts_wizard {
+    color: var(--ix-text, #f1f5f9);
+}
+
+.o_leads_bruts_wizard .o_leads_wizard_header h2 {
+    color: var(--ix-primary-light, #818cf8);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.01em;
+}
+
+.o_leads_bruts_wizard .o_leads_wizard_header p,
+.o_leads_bruts_wizard .o_form_label,
+.o_leads_bruts_wizard .o_field_widget,
+.o_leads_bruts_wizard .o_field_widget span,
+.o_leads_bruts_wizard .o_field_many2many_checkboxes .form-check-label {
+    color: var(--ix-text, #f1f5f9) !important;
+}
+
+.o_leads_bruts_wizard .text-muted,
+.o_leads_bruts_wizard .o_field_widget.o_readonly_modifier {
+    color: var(--ix-text-muted, #b8c5d6) !important;
+}
+
+.o_leads_bruts_wizard .alert-info {
+    background: rgba(99, 102, 241, 0.14) !important;
+    border-color: rgba(129, 140, 248, 0.45) !important;
+    color: var(--ix-text, #f1f5f9) !important;
+}
+
+.o_leads_bruts_wizard .alert-warning {
+    background: rgba(245, 158, 11, 0.12) !important;
+    border-color: rgba(245, 158, 11, 0.45) !important;
+    color: var(--ix-text, #f1f5f9) !important;
+}
+
+.o_leads_bruts_wizard .o_leads_volume_slider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+}
+
+.o_leads_bruts_wizard input[type="range"].o_leads_range {
+    flex: 1;
+    accent-color: var(--ix-primary, #6366f1);
+    height: 6px;
+    border-radius: 3px;
+}
+
+.o_leads_bruts_wizard .o_leads_volume_value {
+    min-width: 90px;
+    font-weight: 700;
+    color: var(--ix-secondary, #22d3ee);
+}
+
+.o_leads_bruts_wizard [name="volume_possible"] .o_field_widget {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--ix-primary-light, #818cf8);
+}
+
+.o_leads_bruts_wizard .o_field_many2many_checkboxes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 0.75rem;
+}
+
+.o_leads_bruts_wizard .o_field_many2many_checkboxes .form-check {
+    background: var(--ix-surface-elevated, #1e1e32);
+    border: 1px solid var(--ix-border, #334155);
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+.o_leads_bruts_wizard .o_field_many2many_checkboxes .form-check:has(input:checked) {
+    border-color: var(--ix-primary, #6366f1);
+    background: rgba(99, 102, 241, 0.12);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+.o_leads_bruts_wizard .o_field_many2many_checkboxes .form-check-input {
+    border-color: var(--ix-border, #334155);
+    background-color: var(--ix-surface, #1a1a2e);
+}
+
+.o_leads_bruts_wizard .o_field_many2many_checkboxes .form-check-input:checked {
+    background-color: var(--ix-primary, #6366f1);
+    border-color: var(--ix-primary, #6366f1);
+}
+
+.o_leads_bruts_wizard .modal-footer,
+.o_leads_bruts_wizard footer {
+    border-top: 1px solid var(--ix-border, #334155);
+}
+
+.o_leads_campagne_form .o_progressbar {
+    min-width: 200px;
+}
+
+.o_leads_campagne_form .o_leads_result_summary,
+.o_leads_campagne_form .o_leads_result_summary .o_field_widget {
+    color: var(--ix-secondary, #22d3ee) !important;
+    font-size: 1.05rem;
+    font-weight: 600;
+}
+
+.o_leads_campagne_form .oe_stat_button .o_stat_value,
+.o_leads_campagne_form .oe_stat_button .o_field_widget {
+    color: var(--ix-primary-light, #a5b4fc) !important;
+    font-size: 1.75rem !important;
+    font-weight: 700 !important;
+}
+
+.o_leads_campagne_form .oe_stat_button .o_stat_text {
+    color: var(--ix-text-muted, #b8c5d6) !important;
+}
+
+.o_leads_campagne_form [name="leads_count"] .o_field_widget,
+.o_leads_campagne_form [name="volume_cible"] .o_field_widget,
+.o_leads_campagne_form [name="leads_skipped_dup"] .o_field_widget,
+.o_leads_campagne_form [name="leads_scraped_raw"] .o_field_widget {
+    color: var(--ix-text, #f1f5f9) !important;
+    font-weight: 600;
+}
+
+.o_leads_campagne_form .o_progressbar .o_progressbar_value {
+    color: var(--ix-text, #f1f5f9) !important;
+}
+
+.o_list_view[data-model="doorway.campagne.extraction"] [data-name="result_summary"],
+.o_list_view[data-model="doorway.campagne.extraction"] [data-name="leads_count"] {
+    color: var(--ix-secondary, #06b6d4) !important;
+    font-weight: 600;
+}
+
+.o_list_view[data-model="doorway.campagne.extraction"] .o_column_sum,
+.o_list_view[data-model="doorway.campagne.extraction"] tfoot td {
+    color: var(--ix-primary-light, #a5b4fc) !important;
+    font-weight: 700;
+}
+
+.o_kanban_view[data-model="doorway.campagne.extraction"] .o_leads_kanban_stats .badge {
+    font-size: 0.95rem;
+}
+
+.o_kanban_view[data-model="doorway.campagne.extraction"] .text-muted {
+    color: var(--ix-text-muted, #b8c5d6) !important;
+}
+
+.o_list_view[data-model="doorway.campagne.extraction"] .o_list_table,
+.o_list_view[data-model="doorway.leads.bruts"] .o_list_table {
+    --table-color: var(--ix-text, #f1f5f9);
+}
+
+.o_list_view[data-model="doorway.campagne.extraction"] thead th,
+.o_list_view[data-model="doorway.leads.bruts"] thead th {
+    color: var(--ix-text-muted, #b8c5d6) !important;
+}
+
+.o_list_view[data-model="doorway.campagne.extraction"] tbody td,
+.o_list_view[data-model="doorway.leads.bruts"] tbody td {
+    color: var(--ix-text, #f1f5f9);
+}
+
+.o_list_view[data-model="doorway.campagne.extraction"] .o_group_header {
+    background: rgba(99, 102, 241, 0.15) !important;
+    color: var(--ix-text, #f1f5f9) !important;
+}
+
+.o_list_view[data-model="doorway.campagne.extraction"] .o_nocontent_helper,
+.o_list_view[data-model="doorway.campagne.extraction"] .o_view_nocontent,
+.o_list_view[data-model="doorway.leads.bruts"] .o_nocontent_helper,
+.o_list_view[data-model="doorway.leads.bruts"] .o_view_nocontent {
+    color: var(--ix-text-muted, #b8c5d6);
+}
+
+.o_leads_source_star-3 { color: #22c55e; }
+.o_leads_source_star-2 { color: #f59e0b; }
+.o_leads_source_star-1 { color: #94a3b8; }
+
+@media (max-width: 768px) {
+    .o_leads_bruts_wizard .modal-dialog {
+        max-width: 100% !important;
+        margin: 0;
+    }
+    .o_leads_bruts_wizard .o_field_many2many_checkboxes {
+        grid-template-columns: 1fr;
+    }
+}
+
+.ix-extracteur-card__btn-secondary {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    background: transparent;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: all 0.2s;
+}
+
+.ix-extracteur-card__btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.o_leads_bruts_wizard .modal-content,
+.o_dialog .o_leads_bruts_wizard {
+    background: var(--ix-surface, #13132a) !important;
+    color: var(--ix-text, #fff) !important;
+    border: 1px solid rgba(99,102,241,0.2) !important;
+    border-radius: 16px !important;
+}
+.o_leads_bruts_wizard .modal-header,
+.o_dialog:has(.o_leads_bruts_wizard) .modal-header {
+    background: var(--ix-surface-elevated, #1a1040) !important;
+    border-bottom: 1px solid rgba(99,102,241,0.15) !important;
+    color: var(--ix-text, #fff) !important;
+}
+.o_leads_bruts_wizard .o_field_widget input,
+.o_leads_bruts_wizard .o_field_widget select,
+.o_leads_bruts_wizard .o_input {
+    background: var(--ix-surface, #0d0d1f) !important;
+    color: var(--ix-text, #fff) !important;
+    border-color: rgba(99,102,241,0.3) !important;
+    border-radius: 8px !important;
+}
+.o_leads_bruts_wizard label,
+.o_leads_bruts_wizard .o_form_label {
+    color: var(--ix-text-muted, #94a3b8) !important;
+}
+.o_leads_bruts_wizard .o_leads_wizard_header h2 {
+    color: var(--ix-primary, #6366f1) !important;
+}
+.o_leads_bruts_wizard .alert-info {
+    background: rgba(99,102,241,0.1) !important;
+    border-color: rgba(99,102,241,0.3) !important;
+    color: #a5b4fc !important;
+}
+
+/* Hub Extracteur — intellix_client_action force --ix-bg clair en thème light ;
+ * le titre restait blanc (#ffffff) → illisible. On impose le fond sombre du mockup. */
+.o_web_client .o_action.o_intellix_client_action.ix-extracteur-hub {
+    background: #121d33 !important;
+    background-color: #121d33 !important;
+    color: #f1f5f9 !important;
+    min-height: 100%;
+}
+
+.o_web_client .o_action.o_intellix_client_action.ix-extracteur-hub .ix-extracteur-hub__title {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff;
+}
+
+.o_web_client .o_action.o_intellix_client_action.ix-extracteur-hub .ix-extracteur-hub__subtitle {
+    color: #94a3b8 !important;
+    -webkit-text-fill-color: #94a3b8;
+}

@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_cq_channex_config_action" model="ir.actions.act_window">
+        <field name="name">Connexion Channex</field>
+        <field name="path">cq-channex-config</field>
+        <field name="res_model">coins.quebec.channex.config</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_cq_channex_config_list" model="ir.ui.view">
+        <field name="name">coins.quebec.channex.config.list</field>
+        <field name="model">coins.quebec.channex.config</field>
+        <field name="arch" type="xml">
+            <list>
+                    <field name="name"/>
+                    <field name="api_url"/>
+                    <field name="active"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_cq_channex_config_form" model="ir.ui.view">
+        <field name="name">coins.quebec.channex.config.form</field>
+        <field name="model">coins.quebec.channex.config</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                    <group string="Connexion">
+                        <field name="name"/>
+                        <field name="api_url"/>
+                        <field name="api_key"/>
+                        <field name="active"/>
+                        <field name="notes"/>
+                    </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_cq_channex_mapping_action" model="ir.actions.act_window">
+        <field name="name">Mapping propriétés</field>
+        <field name="path">cq-channex-mapping</field>
+        <field name="res_model">coins.quebec.channex.mapping</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_cq_channex_mapping_list" model="ir.ui.view">
+        <field name="name">coins.quebec.channex.mapping.list</field>
+        <field name="model">coins.quebec.channex.mapping</field>
+        <field name="arch" type="xml">
+            <list>
+                    <field name="name"/>
+                    <field name="property_id"/>
+                    <field name="channex_property_id"/>
+                    <field name="active"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_cq_channex_mapping_form" model="ir.ui.view">
+        <field name="name">coins.quebec.channex.mapping.form</field>
+        <field name="model">coins.quebec.channex.mapping</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                    <group string="Mapping">
+                        <field name="name"/>
+                        <field name="property_id"/>
+                        <field name="channex_property_id"/>
+                        <field name="active"/>
+                    </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_cq_channex_calendar_action" model="ir.actions.act_window">
+        <field name="name">Calendrier tarifs OTA</field>
+        <field name="path">cq-channex-calendrier</field>
+        <field name="res_model">coins.quebec.channex.calendar</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_cq_channex_calendar_list" model="ir.ui.view">
+        <field name="name">coins.quebec.channex.calendar.list</field>
+        <field name="model">coins.quebec.channex.calendar</field>
+        <field name="arch" type="xml">
+            <list>
+                    <field name="mapping_id"/>
+                    <field name="date"/>
+                    <field name="price"/>
+                    <field name="closed"/>
+                    <field name="currency_id"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_cq_channex_calendar_form" model="ir.ui.view">
+        <field name="name">coins.quebec.channex.calendar.form</field>
+        <field name="model">coins.quebec.channex.calendar</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                    <group string="Tarif">
+                        <field name="mapping_id"/>
+                        <field name="date"/>
+                        <field name="currency_id"/>
+                        <field name="price"/>
+                        <field name="closed"/>
+                    </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_cq_channex_push_action" model="ir.actions.act_window">
+        <field name="name">File fermeture OTA</field>
+        <field name="path">cq-channex-file</field>
+        <field name="res_model">coins.quebec.channex.push</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_cq_channex_push_list" model="ir.ui.view">
+        <field name="name">coins.quebec.channex.push.list</field>
+        <field name="model">coins.quebec.channex.push</field>
+        <field name="arch" type="xml">
+            <list>
+                    <field name="name"/>
+                    <field name="mapping_id"/>
+                    <field name="state"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_cq_channex_push_form" model="ir.ui.view">
+        <field name="name">coins.quebec.channex.push.form</field>
+        <field name="model">coins.quebec.channex.push</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                    <group string="Push">
+                        <field name="name"/>
+                        <field name="mapping_id"/>
+                        <field name="state"/>
+                        <field name="payload"/>
+                    </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_cq_channex_revision_action" model="ir.actions.act_window">
+        <field name="name">Résas OTA inbound</field>
+        <field name="path">cq-channex-inbound</field>
+        <field name="res_model">coins.quebec.channex.revision</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_cq_channex_revision_list" model="ir.ui.view">
+        <field name="name">coins.quebec.channex.revision.list</field>
+        <field name="model">coins.quebec.channex.revision</field>
+        <field name="arch" type="xml">
+            <list>
+                    <field name="name"/>
+                    <field name="mapping_id"/>
+                    <field name="reservation_id"/>
+                    <field name="amount"/>
+                    <field name="state"/>
+                    <field name="currency_id"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_cq_channex_revision_form" model="ir.ui.view">
+        <field name="name">coins.quebec.channex.revision.form</field>
+        <field name="model">coins.quebec.channex.revision</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                    <group string="Inbound">
+                        <field name="name"/>
+                        <field name="mapping_id"/>
+                        <field name="reservation_id"/>
+                        <field name="currency_id"/>
+                        <field name="amount"/>
+                        <field name="state"/>
+                    </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

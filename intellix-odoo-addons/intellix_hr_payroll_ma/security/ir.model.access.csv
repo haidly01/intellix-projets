@@ -1,0 +1,15 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hr_salary_rule_ma_user,hr.salary.rule.ma.user,model_hr_salary_rule_ma,group_hr_payroll_ma_user,1,0,0,0
+access_hr_salary_rule_ma_manager,hr.salary.rule.ma.manager,model_hr_salary_rule_ma,group_hr_payroll_ma_manager,1,1,1,1
+access_hr_payroll_structure_ma_user,hr.payroll.structure.ma.user,model_hr_payroll_structure_ma,group_hr_payroll_ma_user,1,0,0,0
+access_hr_payroll_structure_ma_manager,hr.payroll.structure.ma.manager,model_hr_payroll_structure_ma,group_hr_payroll_ma_manager,1,1,1,1
+access_hr_ir_bracket_user,hr.ir.bracket.user,model_hr_ir_bracket,group_hr_payroll_ma_user,1,0,0,0
+access_hr_ir_bracket_manager,hr.ir.bracket.manager,model_hr_ir_bracket,group_hr_payroll_ma_manager,1,1,1,1
+access_hr_ir_config_user,hr.ir.config.user,model_hr_ir_config,group_hr_payroll_ma_user,1,0,0,0
+access_hr_ir_config_manager,hr.ir.config.manager,model_hr_ir_config,group_hr_payroll_ma_manager,1,1,1,1
+access_hr_payslip_ma_user,hr.payslip.ma.user,model_hr_payslip_ma,group_hr_payroll_ma_user,1,1,1,0
+access_hr_payslip_ma_manager,hr.payslip.ma.manager,model_hr_payslip_ma,group_hr_payroll_ma_manager,1,1,1,1
+access_hr_payslip_line_ma_user,hr.payslip.line.ma.user,model_hr_payslip_line_ma,group_hr_payroll_ma_user,1,1,1,1
+access_cnss_export_wizard,cnss.export.wizard,model_cnss_export_wizard,group_hr_payroll_ma_user,1,1,1,1
+access_ir9421_export_wizard,ir9421.export.wizard,model_ir9421_export_wizard,group_hr_payroll_ma_user,1,1,1,1
+access_generate_payslip_ma_wizard,generate.payslip.ma.wizard,model_generate_payslip_ma_wizard,group_hr_payroll_ma_user,1,1,1,1

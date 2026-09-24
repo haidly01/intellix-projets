@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="coins_marocain_partenariats.PartenairesDashboard" t-inherit="coins_marocain_partenariats.PartenairesDashboard" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('kpis')]" position="after">
+            <div class="kpis" style="margin-top:12px;">
+                <div class="kpi">
+                    <div class="label">Leads entonnoir</div>
+                    <div class="val" t-esc="state.stats.funnel_in ?? 0"/>
+                    <div class="delta">8 étapes ITEX</div>
+                </div>
+                <div class="kpi">
+                    <div class="label">Approbation</div>
+                    <div class="val" t-esc="state.stats.approval_pct or '—'"/>
+                    <div class="delta">cible 30 %</div>
+                </div>
+                <div class="kpi">
+                    <div class="label">Cycle moyen</div>
+                    <div class="val">
+                        <t t-if="state.stats.cycle_days_avg != null" t-esc="state.stats.cycle_days_avg"/>
+                        <t t-else="">—</t>
+                    </div>
+                    <div class="delta">cible 30–90 j</div>
+                </div>
+                <div class="kpi">
+                    <div class="label">Adhérents</div>
+                    <div class="val" t-esc="state.stats.funnel_adherent ?? 0"/>
+                    <div class="delta">étape 7</div>
+                </div>
+            </div>
+            <div class="ix-panel card" style="margin:12px 0 0;">
+                <div class="card-head">
+                    <div>
+                        <h2>Volumes par étape</h2>
+                        <div class="hint">Entonnoir ITEX réel — pas les compteurs membres seuls</div>
+                    </div>
+                </div>
+                <t t-foreach="(state.stats.itex_funnel and state.stats.itex_funnel.stages) or []" t-as="stage" t-key="stage.key or ('funnel-' + stage_index)">
+                    <div class="cat-row">
+                        <span class="cat-name">
+                            <t t-esc="stage.seq"/> · <t t-esc="stage.label"/>
+                        </span>
+                        <span class="cat-n" t-esc="stage.count ?? 0"/>
+                    </div>
+                </t>
+                <div class="readiness-note" style="margin-top:8px;">
+                    Silence post-intérêt : <t t-esc="state.stats.silence_pct or '—'"/>
+                    · abandon documentaire : <t t-esc="state.stats.documentary_pct or '—'"/>
+                </div>
+            </div>
+        </xpath>
+    </t>
+</templates>

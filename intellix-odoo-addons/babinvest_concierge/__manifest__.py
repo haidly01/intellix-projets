@@ -1,0 +1,25 @@
+# -*- coding: utf-8 -*-
+{
+    "name": "Bab Invest — Conciergerie CRM",
+    "version": "19.0.1.0.0",
+    "summary": "Pipeline lead-to-deposit pour l'investissement immobilier Bab Invest (Marrakech, phase 2 Dubaï/Portugal).",
+    "category": "Sales/CRM",
+    "author": "Intellix",
+    "depends": ["base", "mail", "utm", "crm"],
+    "data": [
+        "security/babinvest_security.xml",
+        "security/ir.model.access.csv",
+        "security/babinvest_security_rules.xml",
+        "data/babinvest_concierge_stage_data.xml",
+        "data/babinvest_concierge_message_template_data.xml",
+        "views/babinvest_concierge_lead_views.xml",
+        "views/babinvest_concierge_visit_views.xml",
+        "views/babinvest_concierge_interaction_views.xml",
+        "views/babinvest_market_project_views.xml",
+        "views/babinvest_message_template_views.xml",
+        "views/babinvest_menus.xml",
+    ],
+    "installable": True,
+    "application": True,
+    "license": "LGPL-3",
+}

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="seq_riad_police_fiche" model="ir.sequence">
+        <field name="name">Fiche de police</field>
+        <field name="code">intellix.riad.police.fiche</field>
+        <field name="prefix">FP/%(year)s/</field>
+        <field name="padding">4</field>
+    </record>
+</odoo>

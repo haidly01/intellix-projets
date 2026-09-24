@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="cron_pe_daily_score" model="ir.cron">
+        <field name="name">People Engine — Calcul scores quotidien</field>
+        <field name="model_id" ref="model_pe_employee_profile"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_calculate_all_scores()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <record id="cron_pe_weekly_alerts" model="ir.cron">
+        <field name="name">People Engine — Alertes hebdomadaires</field>
+        <field name="model_id" ref="model_pe_employee_profile"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_send_weekly_alerts()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">weeks</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <record id="cron_pe_monthly_leaderboard" model="ir.cron">
+        <field name="name">People Engine — Classement mensuel</field>
+        <field name="model_id" ref="model_pe_leaderboard"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_monthly_leaderboard()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">months</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <record id="cron_pe_monthly_primes" model="ir.cron">
+        <field name="name">People Engine — Calcul primes mensuel</field>
+        <field name="model_id" ref="model_pe_employee_profile"/>
+        <field name="state">code</field>
+        <field name="code">env['pe.prime.engine']._cron_monthly_prime_calculation()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">months</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <record id="cron_pe_mandatory_courses" model="ir.cron">
+        <field name="name">People Engine — Formations obligatoires</field>
+        <field name="model_id" ref="model_pe_enrollment"/>
+        <field name="state">code</field>
+        <field name="code">env['pe.lms.service']._cron_check_mandatory_overdue()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">weeks</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <record id="cron_pe_tv_token_rotate" model="ir.cron">
+        <field name="name">People Engine — Rotation tokens TV (90j)</field>
+        <field name="model_id" ref="model_pe_tv_config"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_rotate_tokens()</field>
+        <field name="interval_number">90</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="False"/>
+    </record>
+</odoo>

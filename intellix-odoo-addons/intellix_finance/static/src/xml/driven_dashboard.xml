@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="intellix_finance.DrivenDashboard">
+        <div class="o_coins_part_backend_dash ix-itex-dash ix-driven-dash">
+            <div class="shell">
+                <aside class="sidebar">
+                    <div class="brand">
+                        <div class="brand-mark"/>
+                        <div>
+                            <div class="brand-name">Finance</div>
+                            <div class="brand-sub">Driven · Fonds de roulement</div>
+                        </div>
+                    </div>
+                    <ul class="navlist">
+                        <li><a class="active" href="/odoo/fin-driven-dash">Tableau de bord</a></li>
+                        <li><a href="/odoo/fin-driven">Entonnoir Driven</a></li>
+                        <li><a href="/odoo/fin-driven-rappels">Rappels Alex</a></li>
+                        <li><a href="/odoo/fin-nq-driven">Non qualifiés</a></li>
+                    </ul>
+                    <div class="sidebar-foot">
+                        <strong>Équipe Driven</strong>
+                        Live · crm.lead · lecture seule
+                    </div>
+                </aside>
+                <main class="ix-main">
+                    <div class="topbar">
+                        <div>
+                            <h1>Tableau de bord Driven</h1>
+                            <div class="sub">
+                                <t t-esc="state.stats.members_source or 'crm.lead · équipe Driven'"/>
+                                · <t t-esc="state.stats.as_of or '—'"/>
+                            </div>
+                        </div>
+                        <div class="partner-pill">
+                            <div class="avatar">DR</div>
+                            <div>
+                                <div class="name">Driven</div>
+                                <div class="role">Fonds de roulement B2B · lecture seule</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="period-tabs">
+                        <button t-att-class="state.period === 7 ? 'active' : ''" t-on-click="() => this.setPeriod(7)">7 jours</button>
+                        <button t-att-class="state.period === 30 ? 'active' : ''" t-on-click="() => this.setPeriod(30)">30 jours</button>
+                        <button t-att-class="state.period === 90 ? 'active' : ''" t-on-click="() => this.setPeriod(90)">90 jours</button>
+                        <button t-on-click="refresh">Rafraîchir</button>
+                    </div>
+
+                    <t t-if="state.error">
+                        <div class="card" style="margin-bottom:16px;color:var(--amber);" t-esc="state.error"/>
+                    </t>
+                    <t t-elif="state.loading">
+                        <div class="sub">Chargement…</div>
+                    </t>
+                    <t t-else="">
+                        <div class="kpis">
+                            <div class="kpi">
+                                <div class="label">Leads période</div>
+                                <div class="val" t-esc="state.stats.leads_period ?? 0"/>
+                                <div class="delta">équipe Driven · <t t-esc="state.period"/> j</div>
+                            </div>
+                            <div class="kpi">
+                                <div class="label">Intéressés</div>
+                                <div class="val" t-esc="state.stats.interested ?? 0"/>
+                                <div class="delta">intérêt confirmé / lead chaud</div>
+                            </div>
+                            <div class="kpi">
+                                <div class="label">Qualifiés</div>
+                                <div class="val" t-esc="state.stats.qualified ?? 0"/>
+                                <div class="delta">pré-qualifiés sur la période</div>
+                            </div>
+                            <div class="kpi">
+                                <div class="label">Rappels Alex</div>
+                                <div class="val" t-esc="state.stats.callbacks ?? 0"/>
+                                <div class="delta">
+                                    <t t-esc="state.stats.callbacks_due ?? 0"/> dûs · stock actuel
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="kpis">
+                            <div class="kpi">
+                                <div class="label">Sans match</div>
+                                <div class="val" t-esc="state.stats.sans_match ?? 0"/>
+                                <div class="delta">période · sans fiche contact</div>
+                            </div>
+                            <div class="kpi">
+                                <div class="label">Sans source</div>
+                                <div class="val" t-esc="state.stats.sans_source ?? 0"/>
+                                <div class="delta">source_id vide</div>
+                            </div>
+                            <div class="kpi">
+                                <div class="label">Entonnoir</div>
+                                <div class="val" t-esc="state.stats.in_funnel ?? 0"/>
+                                <div class="delta">
+                                    <t t-esc="state.stats.not_qualified ?? 0"/> non qualifiés (hors)
+                                </div>
+                            </div>
+                            <div class="kpi">
+                                <div class="label">Fonds de roulement</div>
+                                <div class="val" t-esc="state.stats.funded ?? 0"/>
+                                <div class="delta">
+                                    financés
+                                    <t t-if="state.stats.revenue_known">
+                                        · <t t-esc="state.stats.revenue_known"/> revenus renseignés
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid">
+                            <div class="ix-panel card">
+                                <div class="card-head">
+                                    <div>
+                                        <h2>Leads Driven</h2>
+                                        <div class="hint">Opportunités récentes · équipe Driven</div>
+                                    </div>
+                                    <span class="badge live">● Temps réel</span>
+                                </div>
+                                <t t-if="!(state.stats.recent_leads || []).length">
+                                    <div class="empty">
+                                        <div class="t">Aucun lead Driven sur la période</div>
+                                    </div>
+                                </t>
+                                <table t-else="">
+                                    <thead>
+                                        <tr>
+                                            <th>Opportunité</th>
+                                            <th>Source</th>
+                                            <th>Ville</th>
+                                            <th>Statut</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="state.stats.recent_leads || []" t-as="lead" t-key="lead_index">
+                                            <tr>
+                                                <td class="t-name" t-esc="lead.name || '—'"/>
+                                                <td t-esc="lead.services || '—'"/>
+                                                <td t-esc="lead.city || '—'"/>
+                                                <td>
+                                                    <span t-att-class="'status-tag ' + (lead.status_kind || 'renew')"
+                                                          t-esc="lead.status || '—'"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="ix-panel card">
+                                <div class="card-head">
+                                    <div>
+                                        <h2>Sources</h2>
+                                        <div class="hint" t-esc="state.stats.sources_note or 'source_id si renseigné'"/>
+                                    </div>
+                                </div>
+                                <t t-if="!(state.stats.sources || []).length">
+                                    <div class="empty">
+                                        <div class="t">Aucune source sur la période</div>
+                                        <div class="s">Les origines s’affichent ici dès qu’un source_id est posé.</div>
+                                    </div>
+                                </t>
+                                <div t-else="" class="cat-list">
+                                    <t t-foreach="state.stats.sources || []" t-as="src" t-key="src.code + '-' + src_index">
+                                        <div class="cat-row">
+                                            <span class="cat-name" t-esc="src.label || '—'"/>
+                                            <div class="cat-bar-track">
+                                                <div class="cat-bar-fill" t-att-style="'width:' + (src.pct || 0) + '%'"/>
+                                            </div>
+                                            <span class="cat-n" t-esc="src.count ?? 0"/>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ix-panel card" style="margin-top:16px;">
+                            <div class="card-head">
+                                <div>
+                                    <h2>Volumes par étape</h2>
+                                    <div class="hint">Entonnoir Driven à 7 étapes · hors démo · hors ITEX / Growth Capital</div>
+                                </div>
+                            </div>
+                            <t t-foreach="(state.stats.stages) or []" t-as="stage" t-key="stage.key or ('driven-stage-' + stage_index)">
+                                <div class="cat-row">
+                                    <span class="cat-name">
+                                        <t t-esc="stage.seq"/> · <t t-esc="stage.label"/>
+                                    </span>
+                                    <span class="cat-n" t-esc="stage.count ?? 0"/>
+                                </div>
+                            </t>
+                            <div class="readiness-note" style="margin-top:8px;">
+                                Chiffres crm.lead team Driven — pas de démo inventée.
+                            </div>
+                        </div>
+                    </t>
+                </main>
+            </div>
+        </div>
+    </t>
+</templates>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bulk_select_wizard_form" model="ir.ui.view">
+        <field name="name">doorway.bulk.select.wizard.form</field>
+        <field name="model">doorway.bulk.select.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Sélection leads">
+                <group>
+                    <field name="pipeline_id"/>
+                    <field name="stage_ids" widget="many2many_tags"/>
+                    <field name="tag_ids" widget="many2many_tags"/>
+                </group>
+                <field name="lead_ids" widget="many2many_tags" readonly="1"/>
+                <footer>
+                    <button name="action_rechercher" type="object" string="Rechercher" class="btn-secondary"/>
+                    <button name="action_ouvrir_compose" type="object" string="Composer message →" class="btn-primary"/>
+                    <button special="cancel" string="Annuler"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bulk_select_wizard" model="ir.actions.act_window">
+        <field name="name">Sélection leads en masse</field>
+        <field name="res_model">doorway.bulk.select.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pe_department_callcenter_supervisor" model="ir.ui.view">
+        <field name="name">pe.department.callcenter.supervisor</field>
+        <field name="model">pe.department</field>
+        <field name="inherit_id" ref="people_engine.view_pe_department_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Call Center — équipe" name="cc_supervisor"
+                      invisible="work_type not in ('mixte', 'qualification')">
+                    <p class="text-muted mb-2">
+                        Classement et statuts temps réel : menu RH → Écran mural Call Center.
+                    </p>
+                    <field name="objective_ids" readonly="1">
+                        <list>
+                            <field name="name"/>
+                            <field name="metrique"/>
+                            <field name="valeur_cible"/>
+                            <field name="points_atteint"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_pe_employee_profile_cc_kanban" model="ir.ui.view">
+        <field name="name">pe.employee.profile.cc.kanban</field>
+        <field name="model">pe.employee.profile</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_small_column">
+                <field name="display_name"/>
+                <field name="cc_status"/>
+                <field name="appels_jour"/>
+                <field name="demos_bookees_jour"/>
+                <field name="points_jour"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click">
+                            <strong><field name="display_name"/></strong>
+                            <div><field name="cc_status" widget="badge"/></div>
+                            <div>Appels : <field name="appels_jour"/> | Démos : <field name="demos_bookees_jour"/></div>
+                            <div>Points : <field name="points_jour"/></div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="action_pe_callcenter_team" model="ir.actions.act_window">
+        <field name="name">Équipe Call Center</field>
+        <field name="res_model">pe.employee.profile</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="view_id" ref="view_pe_employee_profile_cc_kanban"/>
+        <field name="domain">[('department_pe_id.work_type', 'in', ('mixte', 'qualification'))]</field>
+    </record>
+
+    <menuitem id="menu_pe_callcenter_team"
+              name="Équipe Call Center"
+              parent="people_engine.menu_pe_departments"
+              action="action_pe_callcenter_team"
+              groups="people_engine.group_manager"
+              sequence="25"/>
+</odoo>

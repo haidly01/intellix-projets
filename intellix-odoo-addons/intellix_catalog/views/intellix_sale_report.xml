@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_saleorder_document_ix_video" inherit_id="sale.report_saleorder_document">
+        <xpath expr="//table[hasclass('o_main_table')]" position="before">
+            <div class="mb-3 ix-quote-video" t-if="doc.ix_video_url">
+                <a t-att-href="doc.ix_video_url" target="_blank" style="text-decoration:none;">
+                    <div class="alert alert-info mb-0">
+                        <strong>Regarder la vidéo (50 s)</strong>
+                        — comprenez l’offre avant les chiffres.
+                    </div>
+                </a>
+            </div>
+        </xpath>
+    </template>
+    <template id="report_saleorder_document_ix_terms" inherit_id="sale.report_saleorder_document">
+        <xpath expr="//div[hasclass('page')]" position="inside">
+            <div class="mt-4 ix-quote-terms" t-if="doc.ix_terms_html">
+                <h4>Conditions</h4>
+                <div t-field="doc.ix_terms_html"/>
+            </div>
+        </xpath>
+    </template>
+</odoo>

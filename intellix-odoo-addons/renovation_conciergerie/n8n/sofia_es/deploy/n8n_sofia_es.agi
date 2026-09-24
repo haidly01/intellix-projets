@@ -1,0 +1,898 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+n8n_sofia_es.agi — Boucle conversation Sofia Espagne (VICIdial + TrustSIP → n8n).
+
+Installation :
+  cp n8n_sofia_es.agi /var/lib/asterisk/agi-bin/
+  chmod +x && chown asterisk:asterisk
+"""
+from __future__ import annotations
+
+import base64
+import json
+import os
+import re
+import struct
+import subprocess
+import sys
+import tempfile
+import time
+import urllib.error
+import urllib.request
+from typing import Any
+
+
+class Agi:
+    def __init__(self) -> None:
+        self.env: dict[str, str] = {}
+        while True:
+            line = sys.stdin.readline().strip()
+            if not line:
+                break
+            if ": " in line:
+                key, val = line.split(": ", 1)
+                self.env[key] = val
+
+    def verbose(self, msg: str, level: int = 1) -> None:
+        sys.stdout.write(f'VERBOSE "{msg}" {level}\n')
+        sys.stdout.flush()
+
+    def answer(self) -> None:
+        sys.stdout.write("ANSWER\n")
+        sys.stdout.flush()
+        sys.stdin.readline()
+
+    def set_variable(self, name: str, value: str) -> None:
+        safe = value.replace('"', "")
+        sys.stdout.write(f'SET VARIABLE {name} "{safe}"\n')
+        sys.stdout.flush()
+
+    def stream_file(self, filename: str, escape_digits: str = "") -> None:
+        sys.stdout.write(f'STREAM FILE {filename} "{escape_digits}"\n')
+        sys.stdout.flush()
+        sys.stdin.readline()
+
+    def record_file(
+        self,
+        filename: str,
+        fmt: str = "wav",
+        escape_digits: str = "#",
+        timeout_ms: int = 5000,
+        offset: int = 0,
+        beep: bool = False,
+        max_silence: int = 2,
+    ) -> None:
+        beep_s = "BEEP" if beep else ""
+        sys.stdout.write(
+            f'RECORD FILE {filename} {fmt} "{escape_digits}" {timeout_ms} {offset} {beep_s} s={max_silence}\n'
+        )
+        sys.stdout.flush()
+        sys.stdin.readline()
+
+    def hangup(self) -> None:
+        sys.stdout.write("HANGUP\n")
+        sys.stdout.flush()
+    def get_variable(self, name: str) -> str:
+        sys.stdout.write(f"GET VARIABLE {name}\n")
+        sys.stdout.flush()
+        line = sys.stdin.readline().strip()
+        if "result=1" in line and "(" in line:
+            return line.split("(", 1)[1].rstrip(")").strip()
+        return ""
+
+
+
+def _get(agi: Agi, name: str, default: str = "") -> str:
+    return os.environ.get(name) or agi.env.get(f"agi_{name.lower()}", default) or default
+
+def _chvar(agi: Agi, name: str, default: str = "") -> str:
+    val = (os.environ.get(name) or "").strip()
+    if val:
+        return val
+    val = (agi.get_variable(name) or "").strip()
+    if val and val not in ("(null)", "undefined"):
+        return val
+    return default
+
+
+def _cfg(agi: Agi, name: str, default: str = "") -> str:
+    return _chvar(agi, name, default) or default
+
+
+
+def http_post(url: str, payload: dict[str, Any], timeout: int = 45) -> dict[str, Any]:
+    data = json.dumps(payload).encode("utf-8")
+    req = urllib.request.Request(
+        url,
+        data=data,
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+    with urllib.request.urlopen(req, timeout=timeout) as resp:
+        body = resp.read().decode("utf-8", errors="replace")
+        if not body.strip():
+            return {}
+        parsed = json.loads(body)
+        if isinstance(parsed, list) and parsed:
+            return parsed[0]
+        return parsed if isinstance(parsed, dict) else {}
+
+
+def _engine_response(result: dict[str, Any]) -> dict[str, Any]:
+    if result.get("action"):
+        return result
+    eng = result.get("engine")
+    if isinstance(eng, dict) and eng.get("action"):
+        return eng
+    if isinstance(eng, list) and eng:
+        return eng[0] if isinstance(eng[0], dict) else {}
+    return result
+
+
+def _download_audio(url: str, call_sid: str) -> str:
+    ext = ".mp3" if ".mp3" in url.lower() else ".wav"
+    path = f"/tmp/sofia_es_{call_sid}_{os.getpid()}{ext}"
+    req = urllib.request.Request(url, headers={"User-Agent": "doorway-sofia-es-agi/1.0"})
+    with urllib.request.urlopen(req, timeout=20) as resp:
+        data = resp.read()
+    with open(path, "wb") as fh:
+        fh.write(data)
+    if ext == ".mp3":
+        wav_path = path.replace(".mp3", ".wav")
+        try:
+            subprocess.run(
+                ["ffmpeg", "-y", "-i", path, "-ar", "8000", "-ac", "1", wav_path],
+                check=True,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                timeout=30,
+            )
+            os.unlink(path)
+            return wav_path.replace(".wav", "")
+        except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
+            return path.replace(".mp3", "")
+    return path.replace(".wav", "")
+
+
+
+AST_SOUNDS_ROOTS = (
+    "/usr/share/asterisk/sounds/",
+    "/var/lib/asterisk/sounds/",
+)
+
+
+def _agi_stream_name(path_or_url: str) -> str:
+    """Chemin relatif Asterisk (sans extension) pour STREAM FILE."""
+    if path_or_url.startswith("http"):
+        return path_or_url
+    p = path_or_url.replace(".wav", "").replace(".mp3", "").replace(".ulaw", "").replace(".alaw", "")
+    for root in AST_SOUNDS_ROOTS:
+        if p.startswith(root):
+            return p[len(root):].lstrip("/")
+    return p.lstrip("/")
+
+
+WAV_CACHE_DIR = "/var/lib/asterisk/sounds/sofia"
+VOICEMAIL_KEYWORDS = (
+    "buzon",
+    "buzón",
+    "mensaje despues",
+    "mensaje después",
+    "deje su mensaje",
+    "deja tu mensaje",
+    "grabadora",
+    "contestador",
+    "no esta disponible",
+    "no está disponible",
+    "no puede atender",
+    "servicio de contestador",
+    "tono",
+    "marque",
+    "pulse",
+    "apenas oir",
+    "apenas oír",
+    "movistar te informa",
+    "orange te informa",
+    "vodafone te informa",
+)
+
+
+def _ensure_wav_base(path_or_url: str, call_sid: str = "cache") -> str:
+    """Retourne le chemin sans extension d'un WAV 8 kHz lisible par STREAM FILE."""
+    os.makedirs(WAV_CACHE_DIR, exist_ok=True)
+    if path_or_url.startswith("http"):
+        return _download_audio(path_or_url, call_sid)
+    base = path_or_url.replace(".wav", "").replace(".mp3", "")
+    wav_path = base + ".wav"
+    if os.path.isfile(wav_path) and os.path.getsize(wav_path) > 100:
+        return wav_path.replace(".wav", "")
+    cache_name = re.sub(r"[^a-zA-Z0-9_-]", "_", os.path.basename(base))
+    cached = os.path.join(WAV_CACHE_DIR, cache_name + ".wav")
+    if os.path.isfile(cached) and os.path.getsize(cached) > 100:
+        return cached.replace(".wav", "")
+    src_mp3 = base + ".mp3"
+    src_wav = base + ".wav"
+    src = src_mp3 if os.path.isfile(src_mp3) else src_wav
+    if not os.path.isfile(src):
+        return base
+    try:
+        subprocess.run(
+            ["ffmpeg", "-y", "-i", src, "-ar", "8000", "-ac", "1", cached],
+            check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            timeout=30,
+        )
+        return cached.replace(".wav", "")
+    except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
+        if os.path.isfile(src_wav):
+            return src_wav.replace(".wav", "")
+        return base
+
+
+def _stream_audio(agi: Agi, path_or_url: str, call_sid: str) -> None:
+    if not path_or_url:
+        return
+    try:
+        base = _ensure_wav_base(path_or_url, call_sid)
+        stream_name = _agi_stream_name(base)
+        agi.verbose(f"stream audio {stream_name}", 1)
+        agi.stream_file(stream_name)
+    except (OSError, urllib.error.URLError) as exc:
+        agi.verbose(f"play error: {exc}", 1)
+
+
+def _play_url(agi: Agi, url: str, call_sid: str) -> None:
+    _stream_audio(agi, url, call_sid)
+
+
+def _is_voicemail_transcript(transcript: str) -> bool:
+    t = (transcript or "").lower()
+    t = t.replace("á", "a").replace("é", "e").replace("í", "i").replace("ó", "o").replace("ú", "u")
+    if not t.strip():
+        return False
+    return any(kw in t for kw in VOICEMAIL_KEYWORDS)
+
+
+MIN_CONVERSATION_TRANSCRIPT_CHARS = 12
+MIN_CONVERSATION_DURATION_SEC = 8
+
+
+def _is_conversation(
+    amd: str,
+    *,
+    transcript: str = "",
+    duration_sec: int = 0,
+    cumulative_transcript_len: int = 0,
+) -> bool:
+    """Vrai si dialogue humain réel (pas répondeur / streak vide / AMD machine)."""
+    amd_l = (amd or "human").lower()
+    if amd_l in ("machine", "fax", "answering_machine", "amd_hangup", "not_sure"):
+        return False
+    text_len = cumulative_transcript_len or len((transcript or "").strip())
+    if text_len >= MIN_CONVERSATION_TRANSCRIPT_CHARS:
+        return True
+    if int(duration_sec or 0) >= MIN_CONVERSATION_DURATION_SEC and text_len > 0:
+        return True
+    return False
+
+
+LONG_TTS_CLIP_KEYS = ("ouverture", "intro", "presentation", "pregunta")
+SHORT_TTS_CLIP_KEYS = ("closing", "fallback", "exit_", "timeout")
+
+
+def _post_tts_listen_delay(audio_url: str, short_sec: float, long_sec: float) -> float:
+    u = (audio_url or "").lower()
+    if any(k in u for k in SHORT_TTS_CLIP_KEYS):
+        return short_sec
+    if any(k in u for k in LONG_TTS_CLIP_KEYS):
+        return long_sec
+    return short_sec
+
+
+def _wav_peak_amplitude(rec_path: str) -> float:
+    """Amplitude crête PCM 0..1 (mono 16-bit). Détecte WAV quasi-muets."""
+    try:
+        with open(rec_path, "rb") as fh:
+            hdr = fh.read(44)
+            if len(hdr) < 44 or hdr[0:4] != b"RIFF":
+                return 0.0
+            peak = 0
+            while True:
+                chunk = fh.read(8192)
+                if not chunk:
+                    break
+                n = len(chunk) // 2
+                if n == 0:
+                    continue
+                for sample in struct.unpack(f"<{n}h", chunk[: n * 2]):
+                    a = abs(sample)
+                    if a > peak:
+                        peak = a
+            return peak / 32768.0
+    except (OSError, struct.error):
+        return 0.0
+
+
+def deepgram_stt(rec_path: str) -> tuple[str, float]:
+    """STT via Odoo (évite gros payload n8n)."""
+    stt_url = os.environ.get(
+        "SOFIA_STT_URL", "http://127.0.0.1:8069/api/renov/stt/deepgram"
+    )
+    stt_key = os.environ.get("SOFIA_STT_WEBHOOK_KEY", "doorway-sofia-stt")
+    if not os.path.isfile(rec_path):
+        return "", 0.0
+    with open(rec_path, "rb") as fh:
+        rec_b64 = base64.b64encode(fh.read()).decode("ascii")
+    req = urllib.request.Request(
+        stt_url,
+        data=json.dumps({"recording_b64": rec_b64, "language": "es"}).encode(),
+        headers={
+            "Content-Type": "application/json",
+            "X-Renov-Stt-Key": stt_key,
+        },
+        method="POST",
+    )
+    with urllib.request.urlopen(req, timeout=20) as resp:
+        data = json.loads(resp.read().decode("utf-8", errors="replace") or "{}")
+    return (data.get("transcript") or "").strip(), float(data.get("confidence") or 0)
+
+
+def _log_live(msg: str) -> None:
+    try:
+        from datetime import datetime
+        with open("/var/log/sofia-live.log", "a", encoding="utf-8") as fh:
+            fh.write(f"{datetime.now():%Y-%m-%d %H:%M:%S} {msg}\n")
+    except OSError:
+        pass
+
+
+def _archive_recording(rec_path: str, call_sid: str, turn: int) -> str:
+    """Copie WAV accessible HTTPS pour le dashboard."""
+    if not os.path.isfile(rec_path) or os.path.getsize(rec_path) <= 44:
+        return ""
+    dest_dir = "/var/www/sofia-recordings"
+    try:
+        os.makedirs(dest_dir, exist_ok=True)
+        dest = os.path.join(dest_dir, f"{call_sid}_{turn}.wav")
+        if rec_path != dest:
+            import shutil
+            shutil.copy2(rec_path, dest)
+        base = os.environ.get(
+            "SOFIA_RECORDINGS_URL", "https://intellixcrm.com/sofia-recordings"
+        ).rstrip("/")
+        return f"{base}/{call_sid}_{turn}.wav"
+    except OSError:
+        return f"file://{rec_path}"
+
+
+def _odoo_creds() -> tuple[str, str]:
+    api_key = os.environ.get("SOFIA_TENANT_API_KEY", "").strip()
+    odoo_url = os.environ.get("SOFIA_ODOO_URL", "https://intellixcrm.com").rstrip("/")
+    env_path = "/etc/asterisk/sofi_odoo.env"
+    if os.path.isfile(env_path):
+        for line in open(env_path, encoding="utf-8"):
+            line = line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            key, val = line.split("=", 1)
+            key, val = key.strip(), val.strip()
+            if key == "SOFIA_TENANT_API_KEY" and not api_key:
+                api_key = val
+            elif key == "SOFIA_ODOO_URL" and odoo_url == "https://intellixcrm.com":
+                odoo_url = val.rstrip("/")
+    return api_key, odoo_url
+
+
+def post_odoo_call_recording(
+    call_sid: str,
+    recording_url: str,
+    phone: str,
+    campaign: str,
+    duration_sec: int = 0,
+    *,
+    transcript: str = "",
+    cumulative_transcript_len: int = 0,
+) -> None:
+    """Upsert doorway.call.log dès qu'un WAV conversation est archivé."""
+    api_key, odoo_url = _odoo_creds()
+    if not api_key or not recording_url.startswith("https://"):
+        return
+    amd = os.environ.get("AMD_RESULT", "human")
+    if not _is_conversation(
+        amd,
+        transcript=transcript,
+        duration_sec=duration_sec,
+        cumulative_transcript_len=cumulative_transcript_len,
+    ):
+        _log_live(
+            f"SKIP_RECORDING call={call_sid} reason=non_conversation "
+            f"amd={amd} dur={duration_sec} tlen={cumulative_transcript_len}"
+        )
+        return
+    payload = {
+        "jsonrpc": "2.0",
+        "method": "call",
+        "params": {
+            "tenant_api_key": api_key,
+            "call_sid": call_sid,
+            "recording_url": recording_url,
+            "telephone": phone,
+            "campaign": campaign,
+            "duration_sec": duration_sec,
+            "agent_id": os.environ.get("AGENT_ID", ""),
+            "amd_result": amd,
+            "transcript": (transcript or "")[:2000],
+        },
+        "id": 1,
+    }
+    try:
+        http_post(
+            f"{odoo_url}/doorway/api/sofia-es/call-recording",
+            payload,
+            timeout=12,
+        )
+    except (urllib.error.URLError, json.JSONDecodeError, TimeoutError):
+        pass
+
+
+def post_odoo_call_ended(
+    call_sid: str,
+    phone: str,
+    campaign: str,
+    duration_sec: int,
+    recording_url: str = "",
+    transcript: str = "",
+    sheet: dict[str, Any] | None = None,
+) -> None:
+    api_key, odoo_url = _odoo_creds()
+    if not api_key:
+        return
+    sp = sheet or {}
+    qualified = sp.get("qualified") or sp.get("lead_ganador")
+    propietario = sp.get("proprietaire") or sp.get("propietario")
+    statut = sp.get("statut") or sp.get("etat_final") or ""
+    if not qualified and propietario and duration_sec >= 20:
+        qualified = True
+        statut = statut or "partiel"
+    payload = {
+        "jsonrpc": "2.0",
+        "method": "call",
+        "params": {
+            "tenant_api_key": api_key,
+            "call_sid": call_sid,
+            "duration_seconds": duration_sec,
+            "telephone": phone if phone not in ("s", "unknown") else sp.get("telefono", phone),
+            "campaign": campaign,
+            "amd_result": os.environ.get("AMD_RESULT", "human"),
+            "recording_url": recording_url or sp.get("recording_url", ""),
+            "transcript": transcript or sp.get("transcript", ""),
+            "agent_id": os.environ.get("AGENT_ID", ""),
+            "lead_ganador": qualified,
+            "propietario": propietario,
+            "etat_final": statut,
+            "tipo_vivienda": sp.get("type_logement"),
+            "codigo_postal": sp.get("code_postal"),
+            "nombre": sp.get("nombre"),
+        },
+        "id": 2,
+    }
+    try:
+        http_post(f"{odoo_url}/doorway/api/sofia-es/call-ended", payload, timeout=20)
+    except (urllib.error.URLError, json.JSONDecodeError, TimeoutError):
+        pass
+
+
+def _lead_id_from_callerid(agi: Agi) -> str:
+    cid = (_get(agi, "CALLERID(num)") or _get(agi, "callerid") or "").strip()
+    if len(cid) >= 20:
+        try:
+            return str(int(cid[10:20]))
+        except ValueError:
+            pass
+    lead = (os.environ.get("PARTNER_ID") or _chvar(agi, "LEAD_ID", "") or "").strip()
+    return lead if lead.isdigit() else ""
+
+
+def _mysql_query_phone(sql: str) -> str:
+    try:
+        proc = subprocess.run(
+            [
+                "mysql",
+                "--defaults-extra-file=/opt/intellix-mcp/mysql-vicidial.cnf",
+                "-N",
+                "-B",
+                "-e",
+                sql,
+            ],
+            capture_output=True,
+            text=True,
+            timeout=3,
+            check=False,
+        )
+        phone = (proc.stdout or "").strip()
+        digits = re.sub(r"\D", "", phone)
+        return phone if len(digits) >= 9 else ""
+    except (subprocess.SubprocessError, OSError):
+        return ""
+
+
+def _mysql_lead_phone(lead_id: str) -> str:
+    if not lead_id or not lead_id.isdigit():
+        return ""
+    return _mysql_query_phone(
+        f"SELECT phone_number FROM vicidial_list WHERE lead_id='{lead_id}' LIMIT 1"
+    )
+
+
+def _mysql_phone_from_callerid(callerid: str) -> str:
+    if not callerid or callerid in ("s", "unknown"):
+        return ""
+    safe = re.sub(r"[^A-Za-z0-9]", "", callerid)
+    if not safe:
+        return ""
+    return _mysql_query_phone(
+        "SELECT phone_number FROM vicidial_auto_calls "
+        f"WHERE callerid='{safe}' ORDER BY call_time DESC LIMIT 1"
+    )
+
+
+def _mysql_phone_from_uniqueid(uniqueid: str) -> str:
+    if not uniqueid:
+        return ""
+    safe = re.sub(r"[^0-9.]", "", uniqueid)
+    if not safe:
+        return ""
+    phone = _mysql_query_phone(
+        f"SELECT phone_number FROM vicidial_auto_calls "
+        f"WHERE uniqueid='{safe}' ORDER BY call_time DESC LIMIT 1"
+    )
+    if phone:
+        return phone
+    return _mysql_query_phone(
+        f"SELECT phone_number FROM vicidial_log "
+        f"WHERE uniqueid='{safe}' ORDER BY call_date DESC LIMIT 1"
+    )
+
+
+def _valid_phone(raw: str) -> str:
+    phone = (raw or "").strip()
+    if not phone or phone in ("s", "unknown"):
+        return ""
+    if re.match(r"^[Vv]\d", phone):
+        return ""
+    digits = re.sub(r"\D", "", phone)
+    if len(digits) < 9:
+        return ""
+    if digits.startswith("34") and len(digits) >= 11:
+        return digits
+    if len(digits) >= 9 and not re.match(r"^[Vv]", phone):
+        return digits
+    return ""
+
+
+def _resolve_phone(agi: Agi) -> str:
+    for src in (
+        os.environ.get("PHONE"),
+        _chvar(agi, "PHONE", ""),
+        _chvar(agi, "__PHONE", ""),
+        _chvar(agi, "phone_number", ""),
+        _chvar(agi, "VDAD_phone_number", ""),
+        os.environ.get("PARTNER_PHONE"),
+    ):
+        phone = _valid_phone(src or "")
+        if phone:
+            return phone
+
+    uid = (_get(agi, "UNIQUEID") or _get(agi, "CALLID") or "").strip()
+    phone = _mysql_phone_from_uniqueid(uid)
+    if phone:
+        return phone
+
+    cid = (_get(agi, "CALLERID(num)") or "").strip()
+    phone = _mysql_phone_from_callerid(cid)
+    if phone:
+        return phone
+
+    lead_id = _lead_id_from_callerid(agi)
+    phone = _mysql_lead_phone(lead_id)
+    if phone:
+        return phone
+
+    phone = _valid_phone(cid)
+    if phone:
+        return phone
+
+    for key in ("CONNECTEDLINE(name)", "CONNECTEDLINE(num)"):
+        ext = (_chvar(agi, key, "") or "").strip()
+        digits = re.sub(r"[^0-9]", "", ext)
+        if len(digits) >= 9:
+            return digits
+
+    ext = (_get(agi, "extension") or "").strip()
+    digits = re.sub(r"[^0-9]", "", ext)
+    if len(digits) >= 9:
+        return digits
+
+    return "unknown"
+
+
+
+def build_payload(agi: Agi, event_type: str, **extra) -> dict[str, Any]:
+    uniqueid = _get(agi, "UNIQUEID", _get(agi, "CALLID"))
+    caller = _resolve_phone(agi)
+    lead_id = _lead_id_from_callerid(agi) or os.environ.get("PARTNER_ID", "")
+    return {
+        "source": "vicidial",
+        "event_type": event_type,
+        "call_sid": uniqueid,
+        "agent_id": _cfg(agi, "AGENT_ID", "sofia-es-avatrade-2026"),
+        "stack": "n8n+deepgram+claude+elevenlabs",
+        "from": caller,
+        "to": _get(agi, "DNID"),
+        "phone_number": caller,
+        "provider": "vicidial",
+        "language": "es-ES",
+        "campaign": _cfg(agi, "CAMPAIGN", "DW_ESREN"),
+        "partner_id": lead_id,
+        "lead_id": lead_id,
+        "nombre": os.environ.get("NOMBRE", ""),
+        **extra,
+    }
+
+
+def main() -> int:
+    agi = Agi()
+    n8n_url = _cfg(agi, "N8N_WEBHOOK_URL",
+        "http://127.0.0.1:5678/webhook/sofia-es/vicidial/event",
+    )
+    bucket = _cfg(agi, "STORAGE_BUCKET_URL", "https://intellixcrm.com/sofia-es-tts"
+    ).rstrip("/")
+    call_sid = _get(agi, "UNIQUEID")
+    caller = _resolve_phone(agi)
+    campaign = _cfg(agi, "CAMPAIGN", "DW_ESREN")
+    amd = (_cfg(agi, "AMD_RESULT", "human") or "human").lower()
+    agi.verbose(f"sofia-es AGI start call={call_sid} amd={amd} phone={caller}")
+
+    if amd in ("machine", "fax", "answering_machine"):
+        agi.verbose("skip Sofia — AMD machine", 1)
+        agi.hangup()
+        return 0
+
+    if _cfg(agi, "SOFIA_ES_ANSWER", "1") == "1":
+        agi.answer()
+
+    opening_path = _cfg(agi, "SOFIA_OPENING_PATH", "/var/lib/asterisk/sounds/sofia/sofia_ouverture")
+
+    if _cfg(agi, "SOFIA_SKIP_OPENING", "0") == "1":
+        _log_live(f"OPENING_DIALPLAN call={call_sid} amd={amd} phone={caller}")
+    else:
+        import time
+        t0 = time.time()
+        cached_opening = os.path.join(WAV_CACHE_DIR, "sofia_ouverture")
+        local_opening = "/var/www/sofia-tts/sofia_ouverture"
+        opening_url = os.environ.get("SOFIA_OPENING_URL") or f"{bucket}/sofia_ouverture.mp3"
+        if os.path.isfile(opening_path + ".wav"):
+            _stream_audio(agi, opening_path, call_sid)
+        elif os.path.isfile(cached_opening + ".wav"):
+            _stream_audio(agi, cached_opening, call_sid)
+        elif os.path.isfile(local_opening + ".mp3") or os.path.isfile(local_opening + ".wav"):
+            _stream_audio(agi, local_opening, call_sid)
+        else:
+            _play_url(agi, opening_url, call_sid)
+        _log_live(f"OPENING_PLAYED call={call_sid} ms={int((time.time()-t0)*1000)} phone={caller}")
+
+    _log_live(f"OPENING call={call_sid} amd={amd} phone={caller}")
+
+    rec_timeout = int(_chvar(agi, "SOFIA_RECORD_TIMEOUT", "10") or "10") * 1000
+    rec_max_silence = max(2, int(_chvar(agi, "SOFIA_RECORD_PAUSE_SEC", "2") or "2"))
+    listen_delay = float(_chvar(agi, "SOFIA_LISTEN_DELAY_SEC", "1.5") or "1.5")
+    listen_delay_short = float(_chvar(agi, "SOFIA_LISTEN_DELAY_SHORT_SEC", "0.7") or "0.7")
+    listen_delay_long = float(_chvar(agi, "SOFIA_LISTEN_DELAY_LONG_SEC", "1.2") or "1.2")
+    min_peak = float(_chvar(agi, "SOFIA_MIN_PEAK", "0.015") or "0.015")
+    max_turns = int(_chvar(agi, "SOFIA_MAX_TURNS", "12") or "12")
+    duration_total = 0
+    last_rec_url = ""
+    cumulative_transcript_len = 0
+    conversation_confirmed = False
+    engine: dict[str, Any] = {}
+    empty_streak = 0
+    await_listen_delay = False
+    pending_audio_url = ""
+    fallback_clip = f"{bucket}/sofia_fallback.mp3"
+
+    if listen_delay > 0:
+        time.sleep(listen_delay)
+        _log_live(f"POST_OPENING_DELAY call={call_sid} sec={listen_delay}")
+
+    for turn in range(max_turns):
+        if await_listen_delay:
+            delay = _post_tts_listen_delay(
+                pending_audio_url, listen_delay_short, listen_delay_long
+            )
+            if delay > 0:
+                time.sleep(delay)
+                _log_live(f"POST_TTS_DELAY call={call_sid} turn={turn} sec={delay:.2f}")
+            await_listen_delay = False
+            pending_audio_url = ""
+
+        rec_base = f"/tmp/sofia_rec_{call_sid}_{turn}"
+        agi.record_file(rec_base, "wav", "#", rec_timeout, 0, False, rec_max_silence)
+        rec_path = rec_base + ".wav"
+        if not os.path.isfile(rec_path) and turn == 0:
+            agi.verbose("retry recording (no file turn 0)", 1)
+            agi.record_file(rec_base, "wav", "#", rec_timeout, 0, False, rec_max_silence)
+        if not os.path.isfile(rec_path):
+            agi.verbose("no recording file", 1)
+            empty_streak += 1
+            if empty_streak >= 3:
+                break
+            _stream_audio(agi, fallback_clip, call_sid)
+            await_listen_delay = True
+            pending_audio_url = fallback_clip
+            continue
+
+        size = os.path.getsize(rec_path)
+        if size <= 44 and turn == 0:
+            agi.verbose("retry turn 0 with longer timeout", 1)
+            agi.record_file(rec_base, "wav", "#", 15000, 0, False, rec_max_silence)
+            if os.path.isfile(rec_path):
+                size = os.path.getsize(rec_path)
+
+        peak = _wav_peak_amplitude(rec_path) if size > 44 else 0.0
+        if size <= 44 or (peak < min_peak and size < 8000):
+            empty_streak += 1
+            agi.verbose(
+                f"empty recording turn {turn} (streak={empty_streak} bytes={size} peak={peak:.4f})",
+                1,
+            )
+            _log_live(
+                f"EMPTY_REC call={call_sid} turn={turn} streak={empty_streak} "
+                f"bytes={size} peak={peak:.4f}"
+            )
+            if empty_streak >= 3:
+                break
+            _stream_audio(agi, fallback_clip, call_sid)
+            await_listen_delay = True
+            pending_audio_url = fallback_clip
+            continue
+        duration_total += min(10, max(1, size // 8000))
+        rec_url = ""
+        transcript = ""
+        stt_conf = 0.0
+        if size > 44:
+            try:
+                transcript, stt_conf = deepgram_stt(rec_path)
+                agi.verbose(
+                    f"deepgram turn {turn}: conf={stt_conf:.2f} peak={peak:.4f} text={transcript[:80]!r}",
+                    1,
+                )
+                if _is_voicemail_transcript(transcript):
+                    agi.verbose("repondeur detecte STT — hangup", 1)
+                    os.environ["AMD_RESULT"] = "machine"
+                    break
+            except (urllib.error.URLError, json.JSONDecodeError, OSError) as exc:
+                agi.verbose(f"deepgram error turn {turn}: {exc}", 1)
+
+        if not transcript.strip() and size > 44:
+            empty_streak += 1
+            _log_live(
+                f"EMPTY_STT call={call_sid} turn={turn} streak={empty_streak} "
+                f"bytes={size} peak={peak:.4f}"
+            )
+            if empty_streak >= 3:
+                break
+            _stream_audio(agi, fallback_clip, call_sid)
+            await_listen_delay = True
+            pending_audio_url = fallback_clip
+            continue
+
+        empty_streak = 0
+        if transcript.strip():
+            cumulative_transcript_len += len(transcript.strip())
+        amd_now = os.environ.get("AMD_RESULT", "human")
+        if _is_conversation(
+            amd_now,
+            transcript=transcript,
+            duration_sec=duration_total,
+            cumulative_transcript_len=cumulative_transcript_len,
+        ):
+            conversation_confirmed = True
+            rec_url = _archive_recording(rec_path, call_sid, turn)
+            if rec_url.startswith("https://"):
+                last_rec_url = rec_url
+                post_odoo_call_recording(
+                    call_sid,
+                    rec_url,
+                    caller,
+                    campaign,
+                    duration_total,
+                    transcript=transcript,
+                    cumulative_transcript_len=cumulative_transcript_len,
+                )
+        if not rec_url and not transcript:
+            agi.verbose(f"skip n8n turn {turn} — no audio", 1)
+            break
+        rec_b64 = ""
+        if os.path.isfile(rec_path) and size > 44:
+            with open(rec_path, "rb") as fh:
+                rec_b64 = base64.b64encode(fh.read()).decode("ascii")
+        payload = build_payload(
+            agi,
+            "recording_ready",
+            recording_url=rec_url,
+            recording_path=rec_path,
+            recording_b64=rec_b64,
+            transcript=transcript,
+            stt_confidence=stt_conf,
+            duration_sec=duration_total,
+            amd_result=os.environ.get("AMD_RESULT", "human"),
+        )
+        try:
+            result = http_post(n8n_url, payload)
+            engine = _engine_response(result)
+        except (urllib.error.URLError, json.JSONDecodeError, TimeoutError) as exc:
+            agi.verbose(f"n8n error turn {turn}: {exc}", 1)
+            break
+
+        action = (engine.get("action") or "").lower()
+        if action == "hangup" or engine.get("hangup"):
+            break
+        if action == "play_audio":
+            audio = engine.get("audio_url") or ""
+            if audio.startswith("http"):
+                _play_url(agi, audio, call_sid)
+            elif audio:
+                _stream_audio(agi, audio.replace(".mp3", "").replace(".wav", ""), call_sid)
+            else:
+                _play_url(agi, audio, call_sid)
+            await_listen_delay = True
+            pending_audio_url = audio
+
+    amd_end = os.environ.get("AMD_RESULT", "human")
+    if not conversation_confirmed or not _is_conversation(
+        amd_end,
+        duration_sec=duration_total,
+        cumulative_transcript_len=cumulative_transcript_len,
+    ):
+        if last_rec_url:
+            _log_live(
+                f"SKIP_RECORDING call={call_sid} reason=call_end_non_conversation "
+                f"amd={amd_end} dur={duration_total} tlen={cumulative_transcript_len}"
+            )
+        last_rec_url = ""
+
+    try:
+        end_payload = build_payload(
+            agi,
+            "call_ended",
+            duration_sec=duration_total,
+            recording_url=last_rec_url,
+            amd_result=os.environ.get("AMD_RESULT", "human"),
+        )
+        if engine.get("sheet_payload"):
+            end_payload.update(engine["sheet_payload"])
+        http_post(n8n_url, end_payload, timeout=30)
+    except (urllib.error.URLError, json.JSONDecodeError, TimeoutError):
+        pass
+
+    sheet_end = engine.get("sheet_payload") if isinstance(engine.get("sheet_payload"), dict) else {}
+    transcript_end = (sheet_end.get("transcript") or "")[:4000]
+    post_odoo_call_ended(
+        call_sid,
+        caller,
+        campaign,
+        duration_total,
+        recording_url=last_rec_url,
+        transcript=transcript_end,
+        sheet=sheet_end,
+    )
+
+    agi.set_variable("SOFIA_QUALIFIED", "1" if engine.get("qualified") else "0")
+    agi.hangup()
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

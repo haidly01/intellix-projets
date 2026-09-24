@@ -1,0 +1,138 @@
+// Intellix — modale « Envoyer » (devis, email opportunité, mail.compose.message)
+
+.o_web_client.o_intellix_branded {
+    .modal-content:has(.o_mail_composer_form_view),
+    .o_dialog:has(.o_mail_composer_form_view) {
+        .o_form_renderer {
+            color: var(--ix-text);
+        }
+
+        // Destinataires, sujet, champs standards
+        .o_field_widget:not(.o_field_html) input,
+        .o_field_widget:not(.o_field_html) textarea,
+        .o_field_widget:not(.o_field_html) .o_input {
+            background-color: var(--ix-surface-elevated) !important;
+            color: var(--ix-text) !important;
+            border-color: var(--ix-border) !important;
+        }
+
+        .o_field_many2many_tags .badge {
+            background: rgba(99, 102, 241, 0.25) !important;
+            color: var(--ix-text) !important;
+            border: 1px solid var(--ix-border);
+        }
+    }
+
+    // Corps du message (éditeur HTML Odoo 19)
+    .o_mail_composer_message,
+    .o_field_html[name="body"],
+    .o_field_html[name="body_html"] {
+        .odoo-editor-editable,
+        .note-editable,
+        [contenteditable="true"].odoo-editor-editable {
+            background-color: var(--ix-surface-elevated) !important;
+            color: var(--ix-text) !important;
+            border: 1px solid var(--ix-border) !important;
+            border-radius: var(--ix-radius-btn);
+            caret-color: var(--ix-primary-light);
+
+            p,
+            li,
+            span,
+            div,
+            td,
+            th,
+            strong,
+            em,
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6 {
+                color: var(--ix-text) !important;
+            }
+
+            a {
+                color: var(--ix-primary-light) !important;
+            }
+
+            // Gabarits email avec fond blanc inline
+            &[style*="background"],
+            div[style*="background-color: white"],
+            div[style*="background-color:#fff"],
+            div[style*="background-color: #fff"],
+            table[style*="background"] {
+                background-color: transparent !important;
+            }
+        }
+
+        // Zone autour de l’éditeur
+        .o-wysiwyg,
+        .o_field_html_container {
+            background-color: var(--ix-surface) !important;
+            color: var(--ix-text) !important;
+        }
+    }
+
+    // Barre d’outils éditeur dans la modale
+    .o_dialog:has(.o_mail_composer_form_view) .o-we-toolbar,
+    .modal:has(.o_mail_composer_form_view) .o-we-toolbar,
+    .o_mail_composer_form_view .oe-toolbar {
+        background-color: var(--ix-surface) !important;
+        border-color: var(--ix-border) !important;
+        color: var(--ix-text);
+
+        .btn {
+            color: var(--ix-text-muted) !important;
+
+            &:hover {
+                color: var(--ix-text) !important;
+                background-color: var(--ix-surface-hover) !important;
+            }
+        }
+    }
+
+    // Pièces jointes sous le message
+    .o_field_mail_composer_attachment_list,
+    .o-mail-AttachmentList,
+    .o_attachment_preview {
+        color: var(--ix-text) !important;
+
+        .o_attachment,
+        .o-mail-AttachmentCard,
+        li {
+            background-color: var(--ix-surface-hover) !important;
+            border: 1px solid var(--ix-border) !important;
+            color: var(--ix-text) !important;
+        }
+
+        .text-muted {
+            color: var(--ix-text-muted) !important;
+        }
+    }
+
+    // Pied de modale
+    .modal-content:has(.o_mail_composer_form_view) .modal-footer {
+        .btn-secondary {
+            color: var(--ix-text) !important;
+            background: var(--ix-surface-elevated) !important;
+            border-color: var(--ix-border) !important;
+        }
+    }
+}
+
+// Ancien composeur (mail.compose.message form si encore utilisé)
+.o_web_client.o_intellix_branded .o_mail_composer_form {
+    .oe-bordered-editor[name="body"] .note-editable,
+    .o_field_html .note-editable {
+        background-color: var(--ix-surface-elevated) !important;
+        color: var(--ix-text) !important;
+
+        p,
+        span,
+        div {
+            color: var(--ix-text) !important;
+        }
+    }
+}

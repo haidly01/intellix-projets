@@ -1,0 +1,138 @@
+/* ===== JASON THOMAS ASSURANCE — INTELLIX THEME ===== */
+
+:root {
+  --jt-navy: #0d1e40;
+  --jt-navy-light: #162850;
+  --jt-gold: #c9952a;
+  --jt-gold-light: #daa830;
+  --jt-bg: #f4f5f8;
+}
+
+/* Barre Odoo masquée en app JT ; styles résiduels si navbar visible */
+body.jt-branded .o_main_navbar {
+  background: var(--jt-navy) !important;
+  border-bottom: 2px solid var(--jt-gold) !important;
+}
+
+body.jt-branded .o_main_navbar .o_menu_brand {
+  color: var(--jt-gold) !important;
+  font-family: Georgia, "Times New Roman", serif !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.5px !important;
+}
+
+body.jt-branded .o_main_navbar .o_nav_entry,
+body.jt-branded .o_main_navbar .o_menu_sections .dropdown-toggle,
+body.jt-branded .o_main_navbar .o_menu_sections > li > a {
+  color: rgba(255, 255, 255, 0.82) !important;
+}
+
+body.jt-branded .o_main_navbar .o_nav_entry:hover,
+body.jt-branded .o_main_navbar .o_menu_sections .dropdown-toggle:hover {
+  color: var(--jt-gold) !important;
+  background: rgba(201, 149, 42, 0.12) !important;
+}
+
+/* Shell global JT — sidebar fixe (évite conflits flex Intellix / extensions) */
+body.jt-branded .o_main_navbar,
+body.jt-branded header.o_navbar {
+  display: none !important;
+}
+
+body.jt-branded {
+  padding-left: 240px;
+  box-sizing: border-box;
+}
+
+body.jt-branded #jt-global-sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 240px;
+  height: 100vh;
+  z-index: 100;
+}
+
+body.jt-branded .o_action_manager {
+  margin-left: 0 !important;
+  width: 100% !important;
+  min-height: 100vh;
+  min-width: 0;
+  background: var(--jt-bg);
+}
+
+body.jt-branded .o_action_manager > .o_action,
+body.jt-branded .o_action_manager .o_view_controller,
+body.jt-branded .o_action_manager .o_content {
+  min-height: inherit;
+}
+
+body.jt-branded .o_control_panel {
+  background: #fff;
+  border-bottom: 1px solid #e8eaef;
+}
+
+body.jt-branded .o_list_view,
+body.jt-branded .o_form_view .o_form_sheet {
+  background: #fff;
+}
+
+/* Sidebar nav — neutraliser le bleu Odoo sur les liens */
+body.jt-branded #jt-global-sidebar a.jt-nav-item,
+body.jt-branded #jt-global-sidebar a.jt-nav-item:link,
+body.jt-branded #jt-global-sidebar a.jt-nav-item:visited {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+body.jt-branded #jt-global-sidebar a.jt-nav-item.jt-nav-active {
+  color: var(--jt-gold) !important;
+}
+
+/* Dashboard plein écran — masquer le control panel Odoo */
+body.jt-branded:has(.jt-dashboard-page) .o_control_panel {
+  display: none !important;
+}
+
+body.jt-branded:has(.jt-dashboard-page) .o_content {
+  padding: 0 !important;
+  margin: 0 !important;
+  max-width: none !important;
+}
+
+body.jt-branded:has(.jt-dashboard-page) .o_form_view .o_form_sheet_bg {
+  padding: 0 !important;
+  background: var(--jt-bg) !important;
+  max-width: none !important;
+}
+
+/* Boutons primaires JT */
+body.jt-branded .btn-primary {
+  background: var(--jt-navy) !important;
+  border-color: var(--jt-gold) !important;
+  color: var(--jt-gold) !important;
+}
+
+body.jt-branded .btn-primary:hover {
+  background: var(--jt-navy-light) !important;
+  color: var(--jt-gold-light) !important;
+}
+
+/* Titres formulaires */
+body.jt-branded .o_form_view .o_form_title {
+  color: var(--jt-navy) !important;
+  font-family: Georgia, "Times New Roman", serif !important;
+}
+
+/* Badges statuts polices */
+.badge-en_force {
+  background: #dcfce7 !important;
+  color: #166534 !important;
+}
+.badge-en_traitement {
+  background: #fef3c7 !important;
+  color: #92400e !important;
+}
+.badge-refuse {
+  background: #fee2e2 !important;
+  color: #991b1b !important;
+}

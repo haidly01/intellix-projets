@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="0">
+    <record id="agent_lea_qc" model="doorway.agent.profile">
+        <field name="name">Léa · Qualification QC (réno + immo)</field>
+        <field name="provider">n8n</field>
+        <field name="external_agent_id">lea-qc-2026</field>
+        <field name="pipeline">renovation</field>
+        <field name="agent_type">outbound</field>
+        <field name="language">fr</field>
+        <field name="voice_gender">female</field>
+        <field name="default_volet">cold_call</field>
+        <field name="timezone">America/Toronto</field>
+        <field name="status">active</field>
+        <field name="allow_human_transfer" eval="False"/>
+        <field name="system_prompt">Léa — qualification propriétaires Québec rénovation + immobilier. Campagne DW_QCB2C, listes Estrie puis Québec. Trunk Africa-Con Door_App0. Mode progressif RATIO. Stack n8n + Deepgram fr-CA + Claude + ElevenLabs.</field>
+    </record>
+
+    <record id="agent_lea_qc_phone" model="doorway.agent.phone.number">
+        <field name="agent_id" ref="agent_lea_qc"/>
+        <field name="name">Africa-Con QC — Door_App0</field>
+        <field name="phone_number">+15817058118</field>
+        <field name="phone_source">manual</field>
+        <field name="usage">outbound</field>
+        <field name="is_primary" eval="True"/>
+    </record>
+
+    <record id="agent_lea_qc" model="doorway.agent.profile">
+        <field name="default_phone_number_id" ref="agent_lea_qc_phone"/>
+    </record>
+
+    <record id="agent_lea_qc_volet" model="doorway.agent.volet">
+        <field name="agent_id" ref="agent_lea_qc"/>
+        <field name="sequence">10</field>
+        <field name="code">cold_call</field>
+        <field name="prompt_hint">Prospection QC Estrie/Québec — réno + immo — campagne DW_QCB2C</field>
+    </record>
+</odoo>

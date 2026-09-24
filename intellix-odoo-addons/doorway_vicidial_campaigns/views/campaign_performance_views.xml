@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_doorway_campaign_search_performance" model="ir.ui.view">
+        <field name="name">doorway.campaign.search.performance</field>
+        <field name="model">doorway.campaign</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher une campagne">
+                <field name="name"/>
+                <field name="ia_agent_id" string="Agent IA"/>
+                <field name="pipeline"/>
+                <field name="vicidial_campaign_id"/>
+                <field name="operational_label"/>
+                <field name="dial_site"/>
+                <filter name="actives" string="Actives (Odoo)"
+                        domain="[('state', '=', 'active')]"/>
+                <filter name="dialing_prod" string="En dial PROD"
+                        domain="[('is_dialing_prod', '=', True)]"/>
+                <filter name="dial_hostinger" string="Dial Hostinger"
+                        domain="[('dial_site', '=', 'hostinger')]"/>
+                <filter name="ready" string="Prêtes"
+                        domain="[('state', '=', 'ready')]"/>
+                <filter name="paused" string="En pause"
+                        domain="[('state', '=', 'paused')]"/>
+                <filter name="completed" string="Terminées"
+                        domain="[('state', 'in', ('completed', 'cancelled'))]"/>
+                <separator/>
+                <filter name="lea" string="Léa"
+                        domain="[('ia_agent_id.name', 'ilike', 'Léa')]"/>
+                <filter name="sofia" string="Sofia"
+                        domain="[('ia_agent_id.name', 'ilike', 'Sof')]"/>
+                <filter name="haidly" string="Haidly"
+                        domain="[('ia_agent_id.name', 'ilike', 'Haidly')]"/>
+                <filter name="alex" string="Alex"
+                        domain="[('ia_agent_id.name', 'ilike', 'Alex')]"/>
+                <filter name="sophie" string="Sophie"
+                        domain="[('ia_agent_id.name', 'ilike', 'Sophie')]"/>
+                <group>
+                    <filter name="group_agent" string="Agent"
+                            context="{'group_by': 'ia_agent_id'}"/>
+                    <filter name="group_pipeline" string="Pipeline"
+                            context="{'group_by': 'pipeline'}"/>
+                    <filter name="group_state" string="Statut"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_month" string="Mois"
+                            context="{'group_by': 'date_start:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_doorway_campaign_list_kpi" model="ir.ui.view">
+        <field name="name">doorway.campaign.list.kpi</field>
+        <field name="model">doorway.campaign</field>
+        <field name="inherit_id" ref="view_doorway_campaign_list"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="ia_agent_id" string="Agent" optional="show"/>
+            </field>
+            <field name="answer_rate" position="after">
+                <field name="appels_effectues" optional="show"/>
+                <field name="taux_decroches" optional="show"/>
+                <field name="leads_qualifies" string="Leads" optional="show"/>
+                <field name="taux_conversion" optional="show"/>
+                <field name="cout_total_eur" optional="show"/>
+                <field name="cout_par_lead" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="action_doorway_campaign_filtered" model="ir.actions.act_window">
+        <field name="name">Campagnes — KPIs</field>
+        <field name="res_model">doorway.campaign</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_doorway_campaign_search_performance"/>
+        <field name="context">{'search_default_dialing_prod': 1}</field>
+    </record>
+
+    <menuitem id="menu_campagnes_kpi"
+              name="Campagnes — KPIs"
+              parent="doorway_agents_dashboard.menu_agents_root"
+              action="action_doorway_campaign_filtered"
+              sequence="11"/>
+</odoo>

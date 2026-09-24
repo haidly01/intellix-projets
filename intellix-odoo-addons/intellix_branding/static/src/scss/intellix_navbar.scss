@@ -1,0 +1,15 @@
+// Intellix — navbar (dernier recours : écrase #71639e Odoo + background-color !important)
+
+$ix-navbar-gradient: linear-gradient(90deg, #6366f1 0%, #7c3aed 50%, #a855f7 100%);
+
+body.o_web_client .o_main_navbar,
+.o_web_client .o_main_navbar,
+.o_web_client.o_intellix_branded .o_main_navbar,
+.o_web_client:has(.o-mail-systrayFullscreenDropdownMenu) .o_main_navbar,
+.o_web_client:has(.o-mail-Discuss) .o_main_navbar {
+    background: $ix-navbar-gradient !important;
+    background-color: #6366f1 !important;
+    background-image: $ix-navbar-gradient !important;
+    border-bottom: none !important;
+    box-shadow: 0 2px 12px rgba(99, 102, 241, 0.28) !important;
+}

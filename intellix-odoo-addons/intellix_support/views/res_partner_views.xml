@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_support" model="ir.ui.view">
+        <field name="name">res.partner.form.support</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button type="object" name="action_view_support_tickets"
+                        class="oe_stat_button" icon="fa-life-ring"
+                        groups="intellix_support.group_intellix_support_user">
+                    <field name="support_ticket_count" widget="statinfo" string="Support"/>
+                </button>
+            </xpath>
+            <xpath expr="//page[@name='internal_notes']" position="after">
+                <page string="Support" name="support"
+                      groups="intellix_support.group_intellix_support_user"
+                      class="intellix-support-partner-portal">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <group class="mb-0">
+                            <field name="support_anydesk_id" class="oe_inline"/>
+                        </group>
+                        <button name="action_create_support_ticket" type="object"
+                                string="Nouveau ticket" class="btn btn-primary"
+                                icon="fa-plus"/>
+                    </div>
+                    <field name="support_ticket_ids" readonly="1"
+                           context="{'default_partner_id': id}">
+                        <list decoration-danger="priority == '3'"
+                              decoration-warning="priority == '2'">
+                            <field name="name"/>
+                            <field name="subject"/>
+                            <field name="contact_user_id" widget="many2one_avatar_user" optional="show"/>
+                            <field name="category_id" optional="show"/>
+                            <field name="stage_id" widget="badge"/>
+                            <field name="priority" widget="priority"/>
+                            <field name="side_origin" widget="badge" optional="hide"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

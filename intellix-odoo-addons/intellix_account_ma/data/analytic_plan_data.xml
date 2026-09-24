@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="analytic_plan_intellix_modules" model="account.analytic.plan">
+        <field name="name">Modules Intellix</field>
+        <field name="description">Suivi analytique par module IntelliX (Sales, RH, Formation, Marketing, TM, Extracteur).</field>
+        <field name="default_applicability">optional</field>
+    </record>
+
+    <record id="analytic_account_ana_sales" model="account.analytic.account">
+        <field name="name">ANA-SALES</field>
+        <field name="plan_id" ref="analytic_plan_intellix_modules"/>
+        <field name="code">ANA-SALES</field>
+    </record>
+    <record id="analytic_account_ana_rh" model="account.analytic.account">
+        <field name="name">ANA-RH</field>
+        <field name="plan_id" ref="analytic_plan_intellix_modules"/>
+        <field name="code">ANA-RH</field>
+    </record>
+    <record id="analytic_account_ana_form" model="account.analytic.account">
+        <field name="name">ANA-FORM</field>
+        <field name="plan_id" ref="analytic_plan_intellix_modules"/>
+        <field name="code">ANA-FORM</field>
+    </record>
+    <record id="analytic_account_ana_mkt" model="account.analytic.account">
+        <field name="name">ANA-MKT</field>
+        <field name="plan_id" ref="analytic_plan_intellix_modules"/>
+        <field name="code">ANA-MKT</field>
+    </record>
+    <record id="analytic_account_ana_tm" model="account.analytic.account">
+        <field name="name">ANA-TM</field>
+        <field name="plan_id" ref="analytic_plan_intellix_modules"/>
+        <field name="code">ANA-TM</field>
+    </record>
+    <record id="analytic_account_ana_ext" model="account.analytic.account">
+        <field name="name">ANA-EXT</field>
+        <field name="plan_id" ref="analytic_plan_intellix_modules"/>
+        <field name="code">ANA-EXT</field>
+    </record>
+</odoo>

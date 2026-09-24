@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="cron_riad_payroll_report" model="ir.cron">
+        <field name="name">Module Hébergement — rapport présences / paie</field>
+        <field name="model_id" ref="model_intellix_riad_establishment"/>
+        <field name="state">code</field>
+        <field name="code">model.sudo().cron_send_payroll_reports()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="nextcall" eval="(DateTime.now() + timedelta(days=1)).replace(hour=6, minute=15, second=0).strftime('%Y-%m-%d %H:%M:%S')"/>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

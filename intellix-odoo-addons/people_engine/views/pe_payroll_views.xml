@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Contrats -->
+    <record id="view_pe_employment_contract_tree" model="ir.ui.view">
+        <field name="name">pe.employment.contract.tree</field>
+        <field name="model">pe.employment.contract</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="contract_type"/>
+                <field name="type_facturation" optional="hide"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="salaire_base"/>
+                <field name="devise"/>
+                <field name="statut" widget="badge"
+                       decoration-success="statut == 'active'"
+                       decoration-warning="statut == 'draft'"
+                       decoration-danger="expiry_alert"/>
+                <field name="expiry_alert" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pe_employment_contract_form" model="ir.ui.view">
+        <field name="name">pe.employment.contract.form</field>
+        <field name="model">pe.employment.contract</field>
+        <field name="arch" type="xml">
+            <form string="Contrat de travail">
+                <header>
+                    <button name="action_activate" type="object" string="Activer"
+                            class="btn-primary" invisible="statut != 'draft'"/>
+                    <button name="action_terminate" type="object" string="Résilier"
+                            invisible="statut not in ('active', 'draft')"/>
+                    <button name="action_request_signature" type="object" string="✉️ Demander signature"
+                            class="btn-secondary"
+                            invisible="statut not in ('active', 'draft')"/>
+                    <field name="statut" widget="statusbar"
+                           statusbar_visible="draft,active,expired,terminated"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_objectives" type="object"
+                                class="oe_stat_button" icon="fa-bullseye"
+                                invisible="not employee_id">
+                            <field name="objective_count" widget="statinfo" string="Objectifs"/>
+                        </button>
+                    </div>
+                    <div class="alert alert-warning" role="alert"
+                         invisible="not expiry_alert">
+                        CDD expire dans <field name="days_to_expiry" readonly="1" nolabel="1"/> jour(s).
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="employee_id"/>
+                            <field name="profile_id" invisible="1"/>
+                            <field name="contract_type"/>
+                        </group>
+                        <group>
+                            <field name="date_start"/>
+                            <field name="date_end" invisible="contract_type != 'cdd'"/>
+                            <field name="salaire_base" invisible="contract_type == 'freelance'"/>
+                            <field name="devise"/>
+                            <field name="rib"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Objectifs &amp; performance" invisible="contract_type == 'freelance'">
+                            <div class="alert alert-secondary mb-3" role="alert">
+                                <strong>Objectifs contractuels</strong> — KPI inscrits au contrat de travail.
+                                Le texte libre ci-dessous décrit le cadre qualitatif ; les lignes mesurables
+                                alimentent la paie et les évaluations. Le suivi opérationnel quotidien se fait
+                                sur le <strong>profil employé</strong> (onglet Objectifs).
+                            </div>
+                            <div class="mb-2">
+                                <button name="action_apply_objective_template" type="object"
+                                        string="Appliquer modèle d'objectifs"
+                                        class="btn-primary"
+                                        groups="people_engine.group_hr"/>
+                                <button name="action_save_objectives_as_template" type="object"
+                                        string="Enregistrer comme modèle"
+                                        class="btn-secondary ms-2"
+                                        groups="people_engine.group_hr"/>
+                            </div>
+                            <group>
+                                <field name="objectifs_text" nolabel="1" colspan="2"
+                                       placeholder="Décrivez les objectifs du poste, KPI qualitatifs et critères d'évaluation…"/>
+                            </group>
+                            <group>
+                                <group string="Prime &amp; challenges">
+                                    <field name="prime_performance_base"
+                                           help="Prime conditionnelle KPI (MAD). 0 pour admin, support ou période d'essai."/>
+                                    <field name="challenges_eligible"/>
+                                </group>
+                            </group>
+                            <group string="Objectifs mesurables (contrat)">
+                                <field name="objective_ids" nolabel="1" colspan="2"
+                                       context="{'default_profile_id': profile_id, 'default_contract_id': id}">
+                                    <list editable="bottom">
+                                        <field name="name"/>
+                                        <field name="objective_type"/>
+                                        <field name="period"/>
+                                        <field name="target_value"/>
+                                        <field name="unit"/>
+                                        <field name="date_deadline"/>
+                                        <field name="status"/>
+                                    </list>
+                                </field>
+                            </group>
+                            <group string="Suivi opérationnel (profil)" invisible="not profile_objective_ids">
+                                <div class="text-muted mb-2">
+                                    Performance quotidienne sur le profil — distincte des objectifs contractuels ci-dessus.
+                                </div>
+                                <field name="profile_objective_ids" nolabel="1" colspan="2" readonly="1">
+                                    <list>
+                                        <field name="name"/>
+                                        <field name="objective_type"/>
+                                        <field name="period"/>
+                                        <field name="target_value"/>
+                                        <field name="current_value"/>
+                                        <field name="achievement_rate" widget="progressbar"/>
+                                        <field name="status"/>
+                                    </list>
+                                </field>
+                            </group>
+                        </page>
+                        <page string="Poste &amp; conditions" invisible="contract_type == 'freelance'">
+                            <group>
+                                <field name="description_poste" nolabel="1" colspan="2"
+                                       placeholder="Missions, responsabilités et périmètre du poste…"/>
+                            </group>
+                            <group>
+                                <group string="Conditions de travail">
+                                    <field name="modalite"/>
+                                    <field name="lieu_travail" placeholder="Ex. Casablanca, télétravail hybride…"/>
+                                </group>
+                                <group string="Notes internes" groups="people_engine.group_hr">
+                                    <field name="notes_rh" nolabel="1" colspan="2"
+                                           placeholder="Notes RH internes (non imprimées sur le contrat)…"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Rémunération" invisible="contract_type == 'freelance'">
+                            <div class="alert alert-secondary mb-3" role="alert"
+                                 invisible="type_remuneration != 'mixte'">
+                                La <strong>part variable</strong> est reliée aux <strong>objectifs KPI</strong>
+                                et aux <strong>primes de performance</strong>. Choisissez un modèle de prime
+                                variable ou activez « Personnaliser » pour définir des règles sur ce contrat.
+                            </div>
+                            <group>
+                                <group string="Rémunération fixe">
+                                    <field name="type_remuneration"/>
+                                    <field name="salaire_base"/>
+                                    <field name="devise"/>
+                                </group>
+                                <group string="Part variable" invisible="type_remuneration != 'mixte'">
+                                    <field name="variable_prime_template_id"
+                                           options="{'no_create': True}"
+                                           domain="[('active', '=', True)]"/>
+                                    <field name="variable_prime_customize" readonly="0"/>
+                                    <field name="montant_variable"
+                                           readonly="variable_prime_template_id and not variable_prime_customize"/>
+                                    <field name="taux_commission"
+                                           readonly="variable_prime_template_id and not variable_prime_customize"/>
+                                    <field name="description_variable"
+                                           readonly="variable_prime_template_id and not variable_prime_customize"/>
+                                </group>
+                                <group string="Primes KPI">
+                                    <field name="prime_performance_base"/>
+                                    <field name="challenges_eligible"/>
+                                </group>
+                            </group>
+                            <div class="text-muted">
+                                Détail des objectifs et primes KPI : onglet « Objectifs &amp; performance ».
+                            </div>
+                        </page>
+                        <page string="Freelance" invisible="contract_type != 'freelance'">
+                            <group>
+                                <group>
+                                    <field name="type_facturation"/>
+                                    <field name="taux_horaire_freelance"
+                                           invisible="type_facturation != 'horaire'"/>
+                                    <field name="taux_journalier"
+                                           invisible="type_facturation != 'journalier'"/>
+                                    <field name="montant_forfait"
+                                           invisible="type_facturation != 'forfait'"/>
+                                    <field name="heures_forfait_min"
+                                           invisible="type_facturation != 'forfait'"/>
+                                    <field name="delai_paiement"/>
+                                    <field name="challenges_eligible"/>
+                                </group>
+                                <group>
+                                    <field name="ice_numero"/>
+                                    <field name="rc_numero"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="📄 Aperçu contrat" invisible="contract_type != 'freelance'">
+                            <field name="letter_html_preview" readonly="1" nolabel="1" widget="html"/>
+                        </page>
+                    </notebook>
+                    <field name="is_freelance" invisible="1"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_pe_employment_contract" model="ir.actions.act_window">
+        <field name="name">Contrats de travail</field>
+        <field name="res_model">pe.employment.contract</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Bulletins de paie -->
+    <record id="view_pe_payroll_bulletin_tree" model="ir.ui.view">
+        <field name="name">pe.payroll.bulletin.tree</field>
+        <field name="model">pe.payroll.bulletin</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="period_label"/>
+                <field name="payment_date"/>
+                <field name="heures_nettes" widget="float_time"/>
+                <field name="heures_sup_25"/>
+                <field name="heures_sup_50"/>
+                <field name="montant_brut"/>
+                <field name="montant_net"/>
+                <field name="state" widget="badge"/>
+                <field name="date_calcul"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pe_payroll_bulletin_form" model="ir.ui.view">
+        <field name="name">pe.payroll.bulletin.form</field>
+        <field name="model">pe.payroll.bulletin</field>
+        <field name="arch" type="xml">
+            <form string="Bulletin de paie">
+                <header>
+                    <button name="action_calculate" type="object" string="Recalculer"
+                            class="btn-primary"/>
+                    <button name="action_validate" type="object" string="Valider"
+                            invisible="state != 'calculated'"/>
+                    <button name="action_mark_paid" type="object" string="Marquer payé"
+                            invisible="state != 'validated'"/>
+                    <button name="action_print_bulletin" type="object" string="PDF"
+                            class="btn-secondary"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,calculated,validated,paid"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                        <h3><field name="employee_id" readonly="1" nolabel="1"/></h3>
+                    </div>
+                    <group>
+                        <group string="Période">
+                            <field name="period_start"/>
+                            <field name="period_end"/>
+                            <field name="period_label" readonly="1"/>
+                            <field name="payment_date"/>
+                            <field name="contract_id"/>
+                        </group>
+                        <group string="Heures">
+                            <field name="heures_loggees" widget="float_time"/>
+                            <field name="heures_pause_deductibles" widget="float_time"/>
+                            <field name="heures_nettes" widget="float_time"/>
+                            <field name="heures_sup_25"/>
+                            <field name="heures_sup_50"/>
+                            <field name="nb_appels"/>
+                        </group>
+                    </group>
+                    <group string="Montants">
+                        <group>
+                            <field name="salaire_base"/>
+                            <field name="devise"/>
+                            <field name="prime_plateau"/>
+                            <field name="prime_upsell"/>
+                            <field name="prime_conversion"/>
+                            <field name="primes_challenges"/>
+                            <field name="deduction_absences"/>
+                            <field name="deductions_disciplinaires"/>
+                            <field name="heures_non_reconnues"/>
+                        </group>
+                        <group>
+                            <field name="montant_brut"/>
+                            <field name="montant_net"/>
+                            <field name="date_calcul"/>
+                            <field name="detail_calcul" widget="text"/>
+                        </group>
+                    </group>
+                    <group string="Primes challenges" invisible="not challenge_line_ids">
+                        <field name="challenge_line_ids" nolabel="1">
+                            <list create="0" delete="0" edit="0">
+                                <field name="challenge_name"/>
+                                <field name="type_metrique"/>
+                                <field name="valeur_atteinte"/>
+                                <field name="objectif_valeur"/>
+                                <field name="pourcentage"/>
+                                <field name="palier_atteint"/>
+                                <field name="montant"/>
+                            </list>
+                        </field>
+                    </group>
+                    <group string="Déductions disciplinaires" invisible="not deduction_line_ids">
+                        <field name="deduction_line_ids" nolabel="1">
+                            <list create="0" delete="0" edit="0">
+                                <field name="label"/>
+                                <field name="type_deduction"/>
+                                <field name="heures"/>
+                                <field name="jours"/>
+                                <field name="montant"/>
+                                <field name="procedure_id"/>
+                            </list>
+                        </field>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_pe_payroll_bulletin_current" model="ir.actions.server">
+        <field name="name">Bulletins période courante</field>
+        <field name="model_id" ref="model_pe_payroll_bulletin"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_current_period()</field>
+    </record>
+
+    <record id="action_pe_payroll_bulletin_all" model="ir.actions.act_window">
+        <field name="name">Historique bulletins</field>
+        <field name="res_model">pe.payroll.bulletin</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Pauses -->
+    <record id="view_pe_session_pause_tree" model="ir.ui.view">
+        <field name="name">pe.session.pause.tree</field>
+        <field name="model">pe.session.pause</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="date_start"/>
+                <field name="employee_id"/>
+                <field name="pause_type"/>
+                <field name="duration_seconds"/>
+                <field name="is_deductible"/>
+                <field name="state" widget="badge"/>
+                <field name="session_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_pe_session_pause" model="ir.actions.act_window">
+        <field name="name">Pauses agents</field>
+        <field name="res_model">pe.session.pause</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <!-- Dashboard superviseur pauses -->
+    <record id="action_pe_supervisor_pause_dashboard" model="ir.actions.client">
+        <field name="name">Supervision pauses</field>
+        <field name="tag">pe_supervisor_pause_dashboard</field>
+    </record>
+
+<record id="view_pe_electronic_signature_list" model="ir.ui.view">
+        <field name="name">pe.electronic.signature.list</field>
+        <field name="model">pe.electronic.signature</field>
+        <field name="arch" type="xml">
+            <list string="Signatures électroniques">
+                <field name="document_name"/>
+                <field name="signer_name"/>
+                <field name="signer_email"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'signed'"
+                       decoration-warning="state == 'otp_sent'"
+                       decoration-danger="state in ('expired', 'refused')"/>
+                <field name="signed_at"/>
+                <field name="signed_ip"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pe_electronic_signature_form" model="ir.ui.view">
+        <field name="name">pe.electronic.signature.form</field>
+        <field name="model">pe.electronic.signature</field>
+        <field name="arch" type="xml">
+            <form string="Signature électronique">
+                <header>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="pending,otp_sent,signed"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Document">
+                            <field name="document_name"/>
+                            <field name="contract_id"/>
+                            <field name="signer_name"/>
+                            <field name="signer_email"/>
+                        </group>
+                        <group string="Signature">
+                            <field name="signed_at"/>
+                            <field name="signed_ip"/>
+                            <field name="signed_by_email"/>
+                        </group>
+                    </group>
+                    <group string="Certificat">
+                        <field name="signature_certificate" readonly="1" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

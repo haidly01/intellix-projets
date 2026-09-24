@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ix_category_video_salesman,ix.category.video salesman,model_ix_category_video,sales_team.group_sale_salesman,1,0,0,0
+access_ix_category_video_manager,ix.category.video manager,model_ix_category_video,sales_team.group_sale_manager,1,1,1,1

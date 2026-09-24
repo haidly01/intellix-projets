@@ -1,0 +1,221 @@
+// Intellix — CRM (pipelines Doorway, kanban opportunités, listes, formulaires)
+// Les fonds kanban/listes utilisent les variables Odoo ($o-view-background-color) via primary_variables.scss
+
+.o_web_client.o_intellix_branded {
+    // ─── Pipelines Doorway (control panel + en-tête kanban CRM) ────────
+    .o_doorway_pipeline_btn,
+    .o_control_panel .o_doorway_pipeline_btn,
+    .o_kanban_header .o_doorway_pipeline_btn,
+    .o_cp_buttons .o_doorway_pipeline_btn {
+        border-radius: var(--ix-radius-pill) !important;
+        border: 1px solid var(--ix-border) !important;
+        background: var(--ix-surface) !important;
+        color: var(--ix-text) !important;
+        font-weight: 500;
+        font-size: 0.8125rem;
+        padding: 0.35rem 0.9rem !important;
+        margin-right: 0.25rem;
+
+        &:hover {
+            border-color: var(--ix-primary) !important;
+            color: var(--ix-text) !important;
+            background: var(--ix-surface-hover) !important;
+        }
+
+        &.active,
+        &:focus {
+            border-color: var(--ix-primary) !important;
+            box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.35);
+            color: var(--ix-text) !important;
+            background: var(--ix-surface-elevated) !important;
+        }
+    }
+
+    // Bouton « Nouvelle opportunité » (kanban header)
+    .o_doorway_new_opportunity_btn.btn-primary {
+        font-weight: 600;
+    }
+
+    // ─── Kanban CRM (ne pas écraser les couleurs de colonnes / highlight_color) ─
+    .o_opportunity_kanban,
+    .o_crm_team_kanban {
+        .o_kanban_renderer {
+            --Kanban-background: var(--ix-bg);
+            --KanbanGroup-background: var(--ix-bg);
+        }
+
+        .o_kanban_record {
+            color: var(--ix-text);
+            border-color: var(--ix-border);
+
+            .text-muted,
+            .o_text_muted,
+            .o_kanban_card_crm_lead_revenue .text-muted {
+                color: var(--ix-text-muted) !important;
+            }
+
+            .fw-bold,
+            .fs-5 {
+                color: var(--ix-text);
+            }
+        }
+
+        // En-têtes de colonnes : garder les teintes Odoo (progressbar)
+        .o_kanban_header {
+            .o_column_title,
+            .o_kanban_header_title {
+                color: var(--ix-text);
+            }
+        }
+
+        .o_kanban_counter,
+        .o_column_progress {
+            color: var(--ix-text-muted);
+
+            .bg-200 {
+                --bs-bg-opacity: 1;
+                background-color: var(--ix-border) !important;
+            }
+        }
+    }
+
+    // ─── CTA en-tête opportunité (Email, SMS, devis) ───────────────────
+    .o_lead_opportunity_form header {
+        .btn-secondary {
+            color: var(--ix-text) !important;
+            background: var(--ix-surface-elevated) !important;
+            border: 1px solid var(--ix-border) !important;
+
+            .fa,
+            .oi {
+                color: var(--ix-primary-light);
+            }
+
+            &:hover,
+            &:focus {
+                background: rgba(99, 102, 241, 0.18) !important;
+                border-color: var(--ix-primary) !important;
+                color: var(--ix-text) !important;
+            }
+        }
+
+        .oe_highlight,
+        .btn-primary {
+            font-weight: 600;
+        }
+    }
+
+    // Stat buttons (réunion, devis, appels) — lisibles sur fond sombre
+    .o_lead_opportunity_form .o-form-buttonbox {
+        --o-stat-text-color: var(--ix-primary-light);
+        --o-stat-button-color: var(--ix-primary-light);
+
+        .oe_stat_button.btn-outline-secondary {
+            color: var(--ix-text) !important;
+            background: var(--ix-surface-elevated) !important;
+            border-color: var(--ix-border) !important;
+
+            .o_button_icon,
+            .o_stat_text,
+            > span {
+                color: var(--ix-text-muted) !important;
+            }
+
+            .o_stat_value {
+                color: var(--ix-primary-light) !important;
+            }
+
+            &:hover,
+            &:focus {
+                background: rgba(99, 102, 241, 0.14) !important;
+                border-color: var(--ix-primary) !important;
+                z-index: 2;
+
+                .o_button_icon,
+                .o_stat_text,
+                > span {
+                    color: var(--ix-text) !important;
+                }
+            }
+        }
+    }
+
+    // ─── Barre opportunité (étape + fil d'Ariane) ───────────────────────
+    .o_control_panel {
+        .btn-outline-primary.o_form_button_create {
+            color: var(--ix-primary-light) !important;
+            border-color: var(--ix-primary-light) !important;
+            background: transparent !important;
+            font-weight: 600;
+
+            &:hover {
+                color: #fff !important;
+                background: var(--ix-primary) !important;
+                border-color: var(--ix-primary) !important;
+            }
+        }
+
+        .o_form_status_indicator .btn-light {
+            color: var(--ix-text) !important;
+            background: var(--ix-surface-elevated) !important;
+            border: 1px solid var(--ix-border) !important;
+        }
+    }
+
+    // ─── Formulaire lead / opportunité ─────────────────────────────────
+    .o_lead_opportunity_form {
+        .o_form_statusbar {
+            background: var(--ix-surface-elevated) !important;
+            border-bottom: 1px solid var(--ix-border) !important;
+        }
+
+        .o_field_statusbar,
+        .o_field_rotting_statusbar_duration {
+            .o_arrow_button {
+                color: var(--ix-text) !important;
+                background-color: var(--ix-surface) !important;
+                font-weight: 500;
+            }
+
+            .o_arrow_button.o_arrow_button_current {
+                color: #fff !important;
+                background-color: var(--ix-primary) !important;
+                font-weight: 600;
+            }
+
+            .o_arrow_button:not(.o_arrow_button_current):hover {
+                color: var(--ix-text) !important;
+                background-color: var(--ix-surface-hover) !important;
+            }
+        }
+
+        // En-tête Perdu : boutons secondaires lisibles
+        header .btn-secondary,
+        header .btn[data-hotkey="l"] {
+            color: var(--ix-text) !important;
+            background: var(--ix-surface-elevated) !important;
+            border-color: var(--ix-border) !important;
+        }
+    }
+
+    // Tags CRM
+    .o_field_many2many_tags .badge,
+    .o_field_many2many_tags .o_tag {
+        border-radius: var(--ix-radius-pill);
+    }
+
+    // Graphiques / pivot CRM
+    .o_graph_view .o_graph_canvas_container,
+    .o_pivot_view table {
+        color: var(--ix-text);
+    }
+
+    // Activity CRM
+    .o_activity_view {
+        .o_activity_summary {
+            background: var(--ix-surface);
+            border-color: var(--ix-border);
+            color: var(--ix-text);
+        }
+    }
+}

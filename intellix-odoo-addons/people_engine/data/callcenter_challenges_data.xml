@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="pe_challenge_cc_quotidien" model="pe.challenge">
+        <field name="created_by_id" model="hr.employee" search="[('user_id', '=', ref('base.user_admin'))]"/>
+        <field name="date_start" eval="DateTime.today().strftime('%Y-%m-01')"/>
+        <field name="date_end" eval="DateTime.today().strftime('%Y-12-31')"/>
+        <field name="name">Objectif du jour</field>
+        <field name="description">Atteindre le quota d'appels journalier du département Call Center.</field>
+        <field name="challenge_type">individual</field>
+        <field name="metric">appels</field>
+        <field name="target_value">80</field>
+        <field name="winner_points">50</field>
+        <field name="participation_points">10</field>
+        <field name="status">draft</field>
+        <field name="department_pe_id" ref="pe_department_template_callcenter"/>
+        <field name="reward_badge_id" ref="pe_badge_cc_eclair"/>
+    </record>
+    <record id="pe_challenge_cc_hebdo" model="pe.challenge">
+        <field name="created_by_id" model="hr.employee" search="[('user_id', '=', ref('base.user_admin'))]"/>
+        <field name="date_start" eval="DateTime.today().strftime('%Y-%m-01')"/>
+        <field name="date_end" eval="DateTime.today().strftime('%Y-12-31')"/>
+        <field name="name">Semaine de feu</field>
+        <field name="description">Booker 3 démos cette semaine.</field>
+        <field name="challenge_type">individual</field>
+        <field name="metric">demos</field>
+        <field name="target_value">3</field>
+        <field name="winner_points">200</field>
+        <field name="participation_points">25</field>
+        <field name="status">draft</field>
+        <field name="department_pe_id" ref="pe_department_template_callcenter"/>
+        <field name="reward_badge_id" ref="pe_badge_cc_en_feu"/>
+    </record>
+    <record id="pe_challenge_cc_mensuel" model="pe.challenge">
+        <field name="created_by_id" model="hr.employee" search="[('user_id', '=', ref('base.user_admin'))]"/>
+        <field name="date_start" eval="DateTime.today().strftime('%Y-%m-01')"/>
+        <field name="date_end" eval="DateTime.today().strftime('%Y-12-31')"/>
+        <field name="name">Le grand challenge</field>
+        <field name="description">Meilleur taux de ventes du mois.</field>
+        <field name="challenge_type">individual</field>
+        <field name="metric">ventes</field>
+        <field name="target_value">1</field>
+        <field name="winner_points">500</field>
+        <field name="participation_points">50</field>
+        <field name="status">draft</field>
+        <field name="department_pe_id" ref="pe_department_template_callcenter"/>
+    </record>
+    <record id="pe_challenge_cc_equipe" model="pe.challenge">
+        <field name="created_by_id" model="hr.employee" search="[('user_id', '=', ref('base.user_admin'))]"/>
+        <field name="date_start" eval="DateTime.today().strftime('%Y-%m-01')"/>
+        <field name="date_end" eval="DateTime.today().strftime('%Y-12-31')"/>
+        <field name="name">All Stars</field>
+        <field name="description">Toute l'équipe atteint ses objectifs d'appels.</field>
+        <field name="challenge_type">collective</field>
+        <field name="metric">appels</field>
+        <field name="target_value">80</field>
+        <field name="winner_points">100</field>
+        <field name="participation_points">100</field>
+        <field name="status">draft</field>
+        <field name="department_pe_id" ref="pe_department_template_callcenter"/>
+    </record>
+</odoo>

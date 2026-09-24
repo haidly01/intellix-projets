@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_site_builder" model="ir.actions.client">
+        <field name="name">Site Builder IA</field>
+        <field name="tag">doorway_site_builder_action</field>
+    </record>
+
+    <menuitem id="menu_site_builder_root"
+              name="Site Builder IA"
+              web_icon="website,static/description/icon.png"
+              sequence="92"/>
+
+    <menuitem id="menu_site_builder_chat"
+              name="Assistant de création"
+              parent="menu_site_builder_root"
+              action="action_site_builder"
+              sequence="1"/>
+</odoo>

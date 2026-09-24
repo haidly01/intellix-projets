@@ -1,0 +1,54 @@
+{
+  "name": "driven-b2b-qc — 04 Lead Chaud Driven",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "driven-b2b-qc/qualified",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        300
+      ],
+      "webhookId": "driven-b2b-qc-qualified"
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * Alex — Qualification Driven B2B PME QC (fr-CA)\n * Répliques fixes — MP3 : DRIVEN_STORAGE_BUCKET_URL/{key}.mp3\n */\nconst REPLIQUES = {\n  alex_ouverture:\n    'Bonjour, c\\'est Alex de Agence Doorway. Je vous appelle parce que votre entreprise ' +\n    'pourrait être admissible à du financement entre 10 000$ et 500 000$ en moins de 24 heures. ' +\n    'Est-ce que c\\'est quelque chose qui vous intéresse ?',\n\n  alex_q1_anciennete:\n    'Votre entreprise est en activité depuis combien de temps ?',\n\n  alex_q2_revenus:\n    'Est-ce que votre entreprise génère au moins 100 000$ de revenus annuels ?',\n\n  alex_q3_compte:\n    'Avez-vous un compte bancaire au nom de votre entreprise ?',\n\n  alex_closing_prequal:\n    'Parfait, vous êtes préqualifié. Je vous envoie tout de suite un lien sécurisé — ' +\n    'ça prend 10 minutes, c\\'est gratuit et sans impact sur votre crédit. Prêt ?',\n\n  alex_no_compte:\n    'On peut quand même vous envoyer l\\'information, ça ne prend que 10 minutes à ouvrir.',\n\n  alex_exit_anciennete:\n    'Malheureusement le minimum requis est 6 mois. Bonne continuation.',\n\n  alex_exit_revenus:\n    'Je comprends. Pour l\\'instant nos critères exigent au moins 100 000$ de revenus annuels. ' +\n    'Bonne continuation !',\n\n  alex_exit_pas_interesse:\n    'Aucun problème ! Si vous changez d\\'idée, Agence Doorway reste disponible. Bonne journée !',\n\n  alex_exit_dnc:\n    'C\\'est noté, on vous retire de notre liste. Bonne journée !',\n\n  alex_fallback:\n    'Désolé, je n\\'ai pas bien entendu. Pouvez-vous répéter s\\'il vous plaît ?',\n\n  alex_exit_timeout:\n    'Je vois que vous êtes occupé — on pourra vous rappeler une autre fois. Bonne journée !',\n};\n\nconst CLIP_KEYS = {\n  ouverture: 'alex_ouverture',\n  q1_anciennete: 'alex_q1_anciennete',\n  q2_revenus: 'alex_q2_revenus',\n  q3_compte: 'alex_q3_compte',\n  closing_prequal: 'alex_closing_prequal',\n  no_compte: 'alex_no_compte',\n  exit_anciennete: 'alex_exit_anciennete',\n  exit_revenus: 'alex_exit_revenus',\n  exit_pi: 'alex_exit_pas_interesse',\n  exit_dnc: 'alex_exit_dnc',\n  fallback: 'alex_fallback',\n  timeout: 'alex_exit_timeout',\n};\n\nfunction buildClips() {\n  const out = {};\n  for (const logical in CLIP_KEYS) {\n    out[logical] = audioUrl(CLIP_KEYS[logical]);\n  }\n  return out;\n}\n\nconst DEEPGRAM_CONFIG = {\n  model: 'nova-2',\n  language: 'fr-CA',\n  endpointing: 300,\n  utterance_end_ms: 700,\n  interim_results: true,\n  smart_format: true,\n  punctuate: true,\n  encoding: 'mulaw',\n  sample_rate: 8000,\n};\n\nfunction audioUrl(key) {\n  const bucket = ($env.DRIVEN_STORAGE_BUCKET_URL || 'https://intellixcrm.com/driven-b2b-tts').replace(/\\/$/, '');\n  return bucket ? `${bucket}/${key}.mp3` : '';\n}\n\nfunction computeCost(durationSec, amdResult) {\n  const amd = (amdResult || '').toLowerCase();\n  if (['machine', 'not_sure', 'fax'].includes(amd)) {\n    return { cost: 0, billed: false, reason: 'AMD_DETECTED' };\n  }\n  const sec = Math.max(0, parseInt(durationSec, 10) || 0);\n  if (!sec) return { cost: 0, billed: false, reason: 'ZERO_DURATION' };\n  const rate = parseFloat($env.DRIVEN_QC_RATE_PER_MIN || '0.25') / 60;\n  return { cost: Math.round(sec * rate * 10000) / 10000, billed: true, duration: sec };\n}\n\nconst DRIVEN_SMS_LINK = 'driven.ca/partners/agence-doorway';\n\nfunction drivenSmsBody(prenom, variant) {\n  const name = (prenom || 'Bonjour').trim();\n  if (variant === 'j2') {\n    return `Bonjour ${name}, avez-vous eu la chance de vérifier votre préqualification Driven ? driven.ca/partners/agence-doorway`;\n  }\n  if (variant === 'j5') {\n    return `Bonjour ${name}, dernière relance — des PME comme la vôtre ont obtenu 50K$-200K$ en 24h. driven.ca/partners/agence-doorway`;\n  }\n  return (\n    `Bonjour ${name}, voici votre lien de préqualification Driven : ` +\n    `${DRIVEN_SMS_LINK} — 10 min, gratuit, sans impact crédit.`\n  );\n}\n\nconst p = $input.first().json.body || $input.first().json;\nconst phone = p.telephone || p.phone || '';\nconst prenom = p.prenom || (p.nom || '').split(' ')[0] || 'Bonjour';\nconst msg = drivenSmsBody(prenom, 'j0');\n\nif (!phone) return [{ json: { ok: false, error: 'no_phone' } }];\n\nconst sid = $env.TWILIO_ACCOUNT_SID;\nconst auth = Buffer.from(`${sid}:${$env.TWILIO_AUTH_TOKEN}`).toString('base64');\nconst from = $env.TWILIO_FROM_SOUMISSION || '+15817058118';\n\nlet sms_sent = false;\ntry {\n  await this.helpers.httpRequest({\n    method: 'POST',\n    url: `https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`,\n    headers: { Authorization: 'Basic ' + auth, 'Content-Type': 'application/x-www-form-urlencoded' },\n    body: `To=${encodeURIComponent(phone)}&From=${encodeURIComponent(from)}&Body=${encodeURIComponent(msg)}`,\n  });\n  sms_sent = true;\n} catch (_e) { /* fail-open SMS */ }\n\nconst odooUrl = ($env.ODOO_URL || 'https://intellixcrm.com').replace(/\\/$/, '');\nlet odoo = {};\ntry {\n  const res = await this.helpers.httpRequest({\n    method: 'POST',\n    url: odooUrl + '/doorway/api/driven-b2b/qualified',\n    body: {\n      jsonrpc: '2.0',\n      method: 'call',\n      params: { tenant_api_key: $env.DOORWAY_TENANT_API_KEY, ...p, sms_sent },\n      id: Date.now(),\n    },\n    json: true,\n  });\n  odoo = res.result || res;\n} catch (e) {\n  odoo = { error: (e.message || String(e)).slice(0, 200) };\n}\n\nreturn [{ json: { ok: true, sms_sent, odoo } }];"
+      },
+      "name": "Qualified Lead",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Qualified Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [
+    {
+      "name": "driven-b2b-qc"
+    }
+  ]
+}

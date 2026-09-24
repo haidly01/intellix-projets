@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_supervisor_dashboard" model="ir.actions.client">
+        <field name="name">Superviseurs</field>
+        <field name="tag">supervisor_dashboard_action</field>
+    </record>
+</odoo>

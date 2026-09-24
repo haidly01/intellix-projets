@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="doorway_vicidial_campaigns.VicidialQualificationHub">
+        <div class="o_vicidial_qualification_hub o_action o_intellix_client_action p-3">
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <div>
+                    <h2 class="mb-0">Qualification CRM</h2>
+                    <div class="text-muted small">Dashboard, file de qualification et supervision</div>
+                </div>
+                <div class="d-flex gap-2 align-items-center">
+                    <span class="text-muted small" t-if="state.refreshedAt">
+                        <i class="fa fa-circle text-success" t-if="!state.loading"/>
+                        <i class="fa fa-spinner fa-spin" t-if="state.silentRefresh"/>
+                        <t t-esc="formatRefreshedAt(state.refreshedAt)"/>
+                    </span>
+                    <button class="btn btn-outline-secondary btn-sm" t-on-click="() => this.load()">
+                        <i class="fa fa-refresh"/> Actualiser
+                    </button>
+                    <button class="btn btn-primary btn-sm" t-on-click="openQueue">
+                        Ouvrir la file complète
+                    </button>
+                </div>
+            </div>
+
+            <ul class="nav nav-tabs mb-3">
+                <li class="nav-item">
+                    <button type="button"
+                            t-att-class="'nav-link ' + (state.activeTab === 'dashboard' ? 'active' : '')"
+                            t-on-click="() => this.setTab('dashboard')">
+                        Dashboard
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button type="button"
+                            t-att-class="'nav-link ' + (state.activeTab === 'queue' ? 'active' : '')"
+                            t-on-click="() => this.setTab('queue')">
+                        Ma file
+                        <span class="badge text-bg-warning ms-1" t-if="state.queue.pending"
+                              t-esc="state.queue.pending"/>
+                    </button>
+                </li>
+                <li class="nav-item" t-if="state.isSupervisor">
+                    <button type="button"
+                            t-att-class="'nav-link ' + (state.activeTab === 'supervision' ? 'active' : '')"
+                            t-on-click="() => this.setTab('supervision')">
+                        Supervision
+                    </button>
+                </li>
+            </ul>
+
+            <div class="card mb-3 p-3" t-if="state.activeTab !== 'queue'">
+                <div class="row g-2 align-items-end">
+                    <div class="col-md-2">
+                        <label class="form-label small">Date début</label>
+                        <input type="date" class="form-control"
+                               t-att-value="state.dateFrom"
+                               t-on-change="onDateFromChange"/>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small">Date fin</label>
+                        <input type="date" class="form-control"
+                               t-att-value="state.dateTo"
+                               t-on-change="onDateToChange"/>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small">Campagne</label>
+                        <select class="form-select form-select-sm" t-on-change="onCampaignChange">
+                            <option value="all" t-att-selected="state.activeCampaign === 'all'">Toutes les campagnes</option>
+                            <t t-foreach="state.campaignOptions" t-as="camp" t-key="camp.id">
+                                <option t-att-value="camp.vicidial_id"
+                                        t-att-selected="state.activeCampaign === camp.vicidial_id"
+                                        t-esc="camp.name + (camp.vicidial_id ? ' (' + camp.vicidial_id + ')' : '')"/>
+                            </t>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small">Statut campagne</label>
+                        <select class="form-select form-select-sm" t-on-change="onCampaignStateChange">
+                            <option value="all" t-att-selected="state.activeCampaignState === 'all'">Tous les statuts</option>
+                            <t t-foreach="state.campaignStates" t-as="st" t-key="st.id">
+                                <option t-att-value="st.id"
+                                        t-att-selected="state.activeCampaignState === st.id"
+                                        t-esc="st.label"/>
+                            </t>
+                        </select>
+                    </div>
+                    <div class="col-12 text-end" t-if="state.isSupervisor">
+                        <button class="btn btn-outline-primary btn-sm me-2" t-on-click="openGlobalDashboard">
+                            Dashboard global
+                        </button>
+                        <button class="btn btn-outline-primary btn-sm" t-on-click="openSupervisorDashboard">
+                            Vue superviseur complète
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <t t-if="state.loading">
+                <div class="text-center text-muted py-5">
+                    <i class="fa fa-spinner fa-spin fa-2x"/>
+                </div>
+            </t>
+            <t t-else="">
+                <div class="alert alert-warning mb-3 d-flex justify-content-between align-items-center"
+                     t-if="state.liveCall">
+                    <div>
+                        <strong>Appel en cours</strong> —
+                        <span t-esc="state.liveCall.lead_name"/>
+                        (<span t-esc="state.liveCall.phone"/>)
+                        <span class="ms-2 text-muted">
+                            Campagne <span t-esc="state.liveCall.campagne"/>
+                        </span>
+                    </div>
+                    <button class="btn btn-sm btn-primary"
+                            t-on-click="() => this.openLead(state.liveCall.lead_id)">
+                        Ouvrir la fiche
+                    </button>
+                </div>
+
+                <!-- Dashboard -->
+                <t t-if="state.activeTab === 'dashboard'">
+                    <div class="row g-2 mb-3">
+                        <div class="col-md-2 col-lg" t-foreach="state.dashboard.kpi_cards" t-as="kpi" t-key="kpi.key">
+                            <div class="card p-3 text-center">
+                                <div class="small text-muted" t-esc="kpi.label"/>
+                                <div class="fs-4 fw-bold" t-esc="kpi.value"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card mb-3">
+                        <div class="card-header fw-bold">Campagnes &amp; qualifications</div>
+                        <div class="table-responsive">
+                            <table class="table table-sm mb-0 o_vicidial_qual_campaign_stats">
+                                <thead>
+                                    <tr>
+                                        <th>Campagne</th>
+                                        <th>ID VICIdial</th>
+                                        <th>Statut</th>
+                                        <th class="text-center">Total</th>
+                                        <th class="text-center"
+                                            t-foreach="state.statusColumns"
+                                            t-as="col"
+                                            t-key="col.key"
+                                            t-esc="col.label"/>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-if="!state.campaigns.length">
+                                        <tr><td t-att-colspan="4 + state.statusColumns.length + 1" class="text-muted p-3">Aucune campagne sur les filtres sélectionnés.</td></tr>
+                                    </t>
+                                    <tr t-foreach="state.campaigns" t-as="camp" t-key="camp.vicidial_id">
+                                        <td t-esc="camp.name"/>
+                                        <td t-esc="camp.vicidial_id"/>
+                                        <td>
+                                            <span t-if="camp.state"
+                                                  t-att-class="'badge ' + this.campaignStateBadge(camp.state)"
+                                                  t-esc="camp.state_label || camp.state"/>
+                                            <span t-else="" class="text-muted">—</span>
+                                        </td>
+                                        <td class="text-center fw-semibold" t-esc="camp.total"/>
+                                        <td class="text-center"
+                                            t-foreach="state.statusColumns"
+                                            t-as="col"
+                                            t-key="col.key"
+                                            t-esc="this.statusCount(camp, col.key)"/>
+                                        <td>
+                                            <button t-if="camp.odoo_campaign_id"
+                                                    class="btn btn-sm btn-link"
+                                                    t-on-click="() => this.openCampaign(camp.odoo_campaign_id)">
+                                                Voir
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header fw-bold">Derniers appels / qualifications</div>
+                        <div class="table-responsive">
+                            <table class="table table-sm mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Lead</th>
+                                        <th>Campagne</th>
+                                        <th>Statut</th>
+                                        <th>Agent</th>
+                                        <th>Qualification</th>
+                                        <th>Score</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-if="!state.dashboard.rows.length">
+                                        <tr><td colspan="7" class="text-muted p-3">Aucun appel sur la période.</td></tr>
+                                    </t>
+                                    <tr t-foreach="state.dashboard.rows" t-as="row" t-key="row.id"
+                                        t-att-class="row.live ? 'table-warning' : ''">
+                                        <td t-esc="(row.date_appel || '').replace('T', ' ').slice(0, 16)"/>
+                                        <td>
+                                            <a href="#" t-on-click.prevent="() => this.openLead(row.lead_id)"
+                                               t-if="row.lead_id" t-esc="row.lead_name"/>
+                                            <t t-else="" t-esc="row.lead_name"/>
+                                            <span t-if="row.live" class="badge text-bg-danger ms-1">LIVE</span>
+                                        </td>
+                                        <td t-esc="row.campagne_name || row.campagne || '—'"/>
+                                        <td>
+                                            <span t-if="row.campagne_state"
+                                                  t-att-class="'badge ' + this.campaignStateBadge(row.campagne_state)"
+                                                  t-esc="row.campagne_state_label"/>
+                                            <span t-else="" class="text-muted">—</span>
+                                        </td>
+                                        <td t-esc="row.employee"/>
+                                        <td><span class="badge text-bg-secondary" t-esc="row.qualification_label"/></td>
+                                        <td t-esc="row.score_global || '—'"/>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </t>
+
+                <!-- Ma file -->
+                <t t-if="state.activeTab === 'queue'">
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            <div class="card p-3 text-center">
+                                <div class="text-muted small">Leads en file</div>
+                                <div class="fs-3 fw-bold" t-esc="state.queue.total"/>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card p-3 text-center">
+                                <div class="text-muted small">À qualifier</div>
+                                <div class="fs-3 fw-bold text-warning" t-esc="state.queue.pending"/>
+                            </div>
+                        </div>
+                        <div class="col-md-4 d-flex align-items-center justify-content-center">
+                            <button class="btn btn-lg btn-primary" t-on-click="openQueue">
+                                Qualifier un lead
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header fw-bold">Mes leads Appels</div>
+                        <div class="table-responsive">
+                            <table class="table table-sm mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Contact</th>
+                                        <th>Téléphone</th>
+                                        <th>Ville</th>
+                                        <th>Campagne</th>
+                                        <th>Statut</th>
+                                        <th>Score</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-if="!state.queue.leads.length">
+                                        <tr><td colspan="6" class="text-muted p-3">Aucun lead dans votre file.</td></tr>
+                                    </t>
+                                    <tr t-foreach="state.queue.leads" t-as="lead" t-key="lead.id">
+                                        <td>
+                                            <a href="#" t-on-click.prevent="() => this.openLead(lead.id)"
+                                               t-esc="lead.name"/>
+                                        </td>
+                                        <td t-esc="lead.phone"/>
+                                        <td t-esc="lead.city"/>
+                                        <td t-esc="lead.campagne"/>
+                                        <td><span class="badge text-bg-secondary" t-esc="lead.qualification_label"/></td>
+                                        <td t-esc="lead.score"/>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </t>
+
+                <!-- Supervision -->
+                <t t-if="state.activeTab === 'supervision' and state.supervision">
+                    <div class="row g-2 mb-3">
+                        <div class="col-md-2">
+                            <div class="card p-3 text-center">
+                                <div class="small text-muted">Campagnes actives</div>
+                                <div class="fs-4 fw-bold" t-esc="state.supervision.kpis.active_campaigns || 0"/>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="card p-3 text-center">
+                                <div class="small text-muted">Agents live</div>
+                                <div class="fs-4 fw-bold" t-esc="state.supervision.kpis.live_agents || 0"/>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="card p-3 text-center">
+                                <div class="small text-muted">Appels période</div>
+                                <div class="fs-4 fw-bold" t-esc="state.supervision.kpis.calls_period || 0"/>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="card p-3 text-center">
+                                <div class="small text-muted">Qualifiés</div>
+                                <div class="fs-4 fw-bold text-success" t-esc="state.supervision.kpis.qualifies || 0"/>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="card p-3 text-center">
+                                <div class="small text-muted">Score coaching moy.</div>
+                                <div class="fs-4 fw-bold" t-esc="state.supervision.kpis.coaching_avg || 0"/>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="card p-3 text-center">
+                                <div class="small text-muted">Sessions actives</div>
+                                <div class="fs-4 fw-bold" t-esc="state.supervision.kpis.active_sessions || 0"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card mb-3">
+                        <div class="card-header fw-bold">Agents du jour</div>
+                        <div class="table-responsive">
+                            <table class="table table-sm mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Agent</th>
+                                        <th>Login</th>
+                                        <th>Sessions</th>
+                                        <th>Appels</th>
+                                        <th>Qualifiés</th>
+                                        <th>Durée</th>
+                                        <th>État</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="state.supervision.agents" t-as="agent" t-key="agent.id">
+                                        <td t-esc="agent.name"/>
+                                        <td t-esc="agent.vicidial_user"/>
+                                        <td t-esc="agent.sessions"/>
+                                        <td t-esc="agent.appels"/>
+                                        <td t-esc="agent.qualifies"/>
+                                        <td t-esc="formatDuration(agent.duree_secondes)"/>
+                                        <td>
+                                            <span t-if="agent.session_state"
+                                                  class="badge text-bg-success"
+                                                  t-esc="agent.session_state"/>
+                                            <span t-else="" class="text-muted">—</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header fw-bold">Derniers appels équipe</div>
+                        <div class="table-responsive">
+                            <table class="table table-sm mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Agent</th>
+                                        <th>Lead</th>
+                                        <th>Qualification</th>
+                                        <th>Score</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="state.supervision.recent_calls" t-as="call" t-key="call.id">
+                                        <td t-esc="(call.date_appel || '').replace('T', ' ').slice(0, 16)"/>
+                                        <td t-esc="call.employee"/>
+                                        <td t-esc="call.lead_name"/>
+                                        <td><span class="badge text-bg-secondary" t-esc="call.qualification_label"/></td>
+                                        <td t-esc="call.score_global || '—'"/>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </div>
+    </t>
+</templates>

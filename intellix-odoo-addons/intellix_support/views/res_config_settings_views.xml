@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_support" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.support</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base_setup.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app string="Support Intellix" name="intellix_support"
+                     groups="intellix_support.group_intellix_support_manager">
+                    <block title="API tickets">
+                        <setting string="Token API support"
+                                 help="Authentifie les appels POST /doorway/api/support/ticket et /diagnostic. En-tête HTTP : X-Doorway-Token (ou X-Doorway-Key). Généré automatiquement à l'installation si vide.">
+                            <field name="intellix_support_api_token" password="True"/>
+                            <button name="action_intellix_support_generate_api_token"
+                                    type="object"
+                                    string="Générer un token"
+                                    class="btn-link"
+                                    icon="fa-refresh"/>
+                        </setting>
+                    </block>
+                    <block title="Copilot IA (Phase 2)">
+                        <setting string="Claude / Anthropic"
+                                 help="Le Copilot support appelle renovation.ai.service — même clé que Rénovation Conciergerie et People Engine. Pas de clé séparée dans ce module.">
+                            <field name="intellix_support_copilot_ai_ready" readonly="1"/>
+                            <field name="intellix_support_copilot_ai_hint" readonly="1" nolabel="1"/>
+                        </setting>
+                    </block>
+                    <block title="AnyDesk (Phase 3)">
+                        <setting string="Sessions AnyDesk"
+                                 help="Stub actuel : protocole anydesk:ID. Token REST pour my.anydesk à fournir plus tard.">
+                            <field name="intellix_support_anydesk_enabled"/>
+                            <field name="intellix_support_anydesk_rest_token" password="True"
+                                   invisible="not intellix_support_anydesk_enabled"/>
+                        </setting>
+                    </block>
+                    <block title="Alertes (Phase A)">
+                        <setting string="Alertes tickets critiques"
+                                 help="Priorité Haute/Urgente, SLA dépassé, ou diagnostic plateforme en échec. Webhook n8n/Slack ou mail fallback.">
+                            <field name="intellix_support_alert_enabled"/>
+                            <field name="intellix_support_alert_webhook_url"
+                                   placeholder="https://hooks.slack.com/... ou webhook n8n"
+                                   invisible="not intellix_support_alert_enabled"/>
+                        </setting>
+                        <setting string="Alerte produit (Karine)"
+                                 help="Notification email + activité pour les demandes non-bug (feature, question, autre) lors du diagnostic.">
+                            <field name="intellix_support_karine_partner_id"/>
+                            <field name="intellix_support_karine_alert_email"
+                                   placeholder="karine@…"/>
+                        </setting>
+                    </block>
+                    <block title="Cursor (Phase B POC)">
+                        <setting string="Bridge Cursor Agent"
+                                 help="Analyse diagnostic via API Cursor (mode plan). CURSOR_API_KEY env ou clé ci-dessous. Aucun deploy auto.">
+                            <field name="intellix_support_cursor_bridge_enabled"/>
+                            <field name="intellix_support_cursor_api_key" password="True"
+                                   invisible="not intellix_support_cursor_bridge_enabled"/>
+                            <field name="intellix_support_cursor_repo_url"
+                                   invisible="not intellix_support_cursor_bridge_enabled"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

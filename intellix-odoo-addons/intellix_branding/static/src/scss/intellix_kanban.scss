@@ -1,0 +1,71 @@
+// Intellix — correctifs kanban CRM (fond blanc, titres de colonnes illisibles)
+// Chargé en dernier (sequence élevée) pour gagner sur le CSS Odoo compilé en clair.
+
+.o_web_client.o_intellix_branded {
+  // Fond de la zone vue (souvent blanc si --Kanban-background compilé en #f8f9fb)
+  .o_action_manager .o_action .o_content,
+  .o_view_controller,
+  .o_kanban_view,
+  .o_kanban_renderer {
+    background-color: var(--ix-bg, #0a0a1a) !important;
+  }
+
+  .o_kanban_renderer {
+    --Kanban-background: var(--ix-bg, #0a0a1a);
+    --KanbanGroup-background: var(--ix-bg, #0a0a1a);
+    --KanbanColumn__highlight-background: rgba(99, 102, 241, 0.12);
+    --KanbanColumn__highlight-border: var(--ix-primary, #6366f1);
+    --KanbanColumn__highlight-selected: rgba(99, 102, 241, 0.22);
+    --KanbanColumn__highlight-selected-border: var(--ix-primary-light, #818cf8);
+
+    &.o_kanban_grouped .o_kanban_group {
+      background: var(--ix-bg, #0a0a1a) !important;
+    }
+  }
+
+  // Titres de colonnes (Bootstrap text-900 reste noir sans data-bs-theme sur le sous-arbre)
+  .o_kanban_header,
+  .o_kanban_header_title {
+    .o_column_title,
+    .o_column_title span,
+    .text-900,
+    .fw-bold {
+      color: var(--ix-text, #fff) !important;
+    }
+
+    .opacity-50 {
+      opacity: 0.65 !important;
+      color: var(--ix-text-muted, #94a3b8) !important;
+    }
+  }
+
+  .o_kanban_counter,
+  .o_column_progress,
+  .o_kanban_counter .progress {
+    color: var(--ix-text-muted, #94a3b8) !important;
+  }
+
+  // Cartes opportunité
+  .o_kanban_record:not(.o_kanban_ghost):not(.o-kanban-button-new) {
+    background-color: var(--ix-surface, #1a1a2e) !important;
+    border-color: var(--ix-border, #1e293b) !important;
+    color: var(--ix-text, #fff) !important;
+  }
+
+  // Colonnes filtrées par progressbar (activité)
+  .o_kanban_group.o_kanban_group_show_success,
+  .o_kanban_group.o_kanban_group_show_warning,
+  .o_kanban_group.o_kanban_group_show_danger,
+  .o_kanban_group.o_kanban_group_show_muted {
+    .o_column_title,
+    .o_column_title span {
+      color: var(--ix-text, #fff) !important;
+    }
+  }
+
+  // Quick create
+  .o_kanban_quick_create {
+    background-color: var(--ix-surface, #1a1a2e) !important;
+    border-color: var(--ix-border, #1e293b) !important;
+  }
+}

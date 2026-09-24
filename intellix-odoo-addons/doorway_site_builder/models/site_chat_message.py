@@ -1,0 +1,36 @@
+# -*- coding: utf-8 -*-
+from odoo import api, fields, models
+
+
+class SiteChatMessage(models.Model):
+    _name = "doorway.site.chat.message"
+    _description = "Message de chat — Site Builder IA"
+    _order = "id asc"
+
+    brief_id = fields.Many2one(
+        "doorway.site.brief",
+        string="Brief",
+        required=True,
+        ondelete="cascade",
+        index=True,
+    )
+    role = fields.Selection(
+        [
+            ("user", "Utilisateur"),
+            ("assistant", "Assistant"),
+            ("system", "Système"),
+        ],
+        string="Rôle",
+        required=True,
+        default="user",
+    )
+    content = fields.Text(string="Message", required=True)
+
+    def to_dict(self):
+        self.ensure_one()
+        return {
+            "id": self.id,
+            "role": self.role,
+            "content": self.content or "",
+            "date": fields.Datetime.to_string(self.create_date) if self.create_date else "",
+        }

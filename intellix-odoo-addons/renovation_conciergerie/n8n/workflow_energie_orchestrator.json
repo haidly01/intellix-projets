@@ -1,0 +1,112 @@
+{
+  "name": "Énergie Pro — Orchestrateur (Odoo + SMS + Appel Alex)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "energie-lead",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "e1-webhook",
+      "name": "1 Webhook Lead Énergie",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 300],
+      "webhookId": "energie-lead-doorway"
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = $input.first().json;\nconst body = item.body || item;\nconst page_id = String(body.page_id || body.facebook_page_id || (body.entry && body.entry[0] && body.entry[0].changes && body.entry[0].changes[0].value && body.entry[0].changes[0].value.page_id) || '').trim();\nfunction normalizePhone(phone) {\n  if (!phone) return '';\n  const d = String(phone).replace(/\\D/g, '');\n  if (d.length === 10) return '+1' + d;\n  if (d.length === 11 && d.startsWith('1')) return '+' + d;\n  return d ? '+1' + d : '';\n}\nconst raw = [body.source, body.site, body.page_url, body.form_name, body.website].join(' ').toLowerCase();\nlet site = 'inconnu', projet = 'multi';\nif (raw.includes('icithermopompe') || raw.includes('thermopompe')) { site = 'icithermopompe'; projet = 'thermopompe'; }\nelse if (raw.includes('isolationqc')) { site = 'isolationqc'; projet = 'isolation'; }\nelse if (raw.includes('portesetfenetres') || raw.includes('fenetres')) { site = 'portesetfenetresqc'; projet = 'portes_fenetres'; }\nconst nowStr = new Date().toLocaleString('en-US', { timeZone: 'America/Toronto' });\nconst toronto = new Date(nowStr);\nconst hour = toronto.getHours();\nconst day = toronto.getDay();\nconst isBusinessHours = day >= 1 && day <= 6 && hour >= 8 && hour < 20;\nreturn [{ json: {\n  ...body,\n  first_name: body.first_name || '',\n  last_name: body.last_name || '',\n  phone: normalizePhone(body.phone || body.mobile),\n  email: body.email || '',\n  lead_city: body.lead_city || body.city || '',\n  current_heating: body.current_heating || body.chauffage_actuel || '',\n  project_type: body.project_type || projet,\n  energie_site_source: site,\n  page_id,\n  facebook_page_id: page_id,\n  isBusinessHours,\n  torontoHour: hour\n}}];"
+      },
+      "id": "e2-router",
+      "name": "2 Site + Tel + Heures",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [260, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const b = $('2 Site + Tel + Heures').first().json;\nconst token = '{{ENERGIE_WEBHOOK_TOKEN}}';\nconst res = await this.helpers.httpRequest({\n  method: 'POST',\n  url: 'https://intellixcrm.com/api/energie/lead',\n  headers: { 'X-Energie-Webhook-Token': token, 'Content-Type': 'application/json' },\n  body: {\n    first_name: b.first_name,\n    last_name: b.last_name,\n    phone: b.phone,\n    email: b.email,\n    city: b.lead_city,\n    current_heating: b.current_heating,\n    project_type: b.project_type,\n    site: b.energie_site_source,\n    page_id: b.page_id || b.facebook_page_id || '',\n    form_id: b.form_id || b.leadgen_form_id || '',\n    page_url: b.page_url || '',\n    form_name: b.form_name || ''\n  },\n  json: true,\n});\nreturn [{ json: { ...b, ...res } }];"
+      },
+      "id": "e3-odoo",
+      "name": "3 Odoo Create Lead",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [520, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $('2 Site + Tel + Heures').item.json.isBusinessHours }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "e4-if-hours",
+      "name": "4 Heures ouvrées?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [780, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const b = $('2 Site + Tel + Heures').first().json;\nconst odoo = $('3 Odoo Create Lead').first().json;\nconst apiKey = '{{ELEVENLABS_API_KEY}}';\nconst agentId = odoo.elevenlabs_agent_id_energie || $env.ELEVENLABS_AGENT_ID_ENERGIE;\nconst phoneId = odoo.elevenlabs_phone_number_id || $env.ELEVENLABS_PHONE_NUMBER_ID_ENERGIE;\nif (!agentId || !phoneId || !b.phone) {\n  return [{ json: { ...odoo, error: 'missing_call_ids' } }];\n}\nconst res = await this.helpers.httpRequest({\n  method: 'POST',\n  url: 'https://api.elevenlabs.io/v1/convai/twilio/outbound-call',\n  headers: { 'xi-api-key': apiKey, 'Content-Type': 'application/json' },\n  body: {\n    agent_id: agentId,\n    agent_phone_number_id: phoneId,\n    to_number: b.phone,\n    telephony_call_config: { ringing_timeout_secs: 25 },\n    conversation_initiation_client_data: {\n      dynamic_variables: {\n        lead_name: b.first_name || 'there',\n        lead_site: b.energie_site_source,\n        lead_city: b.lead_city,\n        current_heating: b.current_heating,\n        project_type: b.project_type,\n        lead_id_odoo: String(odoo.lead_id || '')\n      }\n    }\n  },\n  json: true,\n});\nreturn [{ json: { ...odoo, call: res } }];"
+      },
+      "id": "e5-call",
+      "name": "5 Appel ElevenLabs Alex",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1040, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "const lead = $('3 Odoo Create Lead').first().json;\nconst prep = $('2 Site + Tel + Heures').first().json;\nif (!lead.lead_id) return [];\nconst token = '{{ENERGIE_WEBHOOK_TOKEN}}';\nawait this.helpers.httpRequest({\n  method: 'POST',\n  url: 'https://intellixcrm.com/api/energie/lead/update',\n  headers: { 'X-Energie-Webhook-Token': token, 'Content-Type': 'application/json' },\n  body: { lead_id: lead.lead_id, next_action: 'Appel matin programmé 8h Toronto (lead hors heures)' },\n  json: true,\n});\nreturn [{ json: {\n  pipeline: 'energie',\n  lead_id: lead.lead_id,\n  phone: prep.phone || lead.phone,\n  first_name: prep.first_name,\n  lead_city: prep.lead_city,\n  current_heating: prep.current_heating,\n  project_type: prep.project_type,\n  energie_site_source: prep.energie_site_source,\n  agent_id: lead.elevenlabs_agent_id_energie || lead.agent_id || '',\n  elevenlabs_phone_number_id: lead.elevenlabs_phone_number_id || ''\n}}];"
+      },
+      "id": "e6-offhours",
+      "name": "6 Hors heures — note Odoo",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1040, 420]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ '{{N8N_WEBHOOK_BASE}}' + '/webhook/morning-call-schedule' }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}"
+      },
+      "id": "e7-morning",
+      "name": "7 Planifier appel matin",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1300, 420]
+    }
+  ],
+  "connections": {
+    "1 Webhook Lead Énergie": {
+      "main": [[{ "node": "2 Site + Tel + Heures", "type": "main", "index": 0 }]]
+    },
+    "2 Site + Tel + Heures": {
+      "main": [[{ "node": "3 Odoo Create Lead", "type": "main", "index": 0 }]]
+    },
+    "3 Odoo Create Lead": {
+      "main": [[{ "node": "4 Heures ouvrées?", "type": "main", "index": 0 }]]
+    },
+    "4 Heures ouvrées?": {
+      "main": [
+        [{ "node": "5 Appel ElevenLabs Alex", "type": "main", "index": 0 }],
+        [{ "node": "6 Hors heures — note Odoo", "type": "main", "index": 0 }]
+      ]
+    },
+    "6 Hors heures — note Odoo": {
+      "main": [[{ "node": "7 Planifier appel matin", "type": "main", "index": 0 }]]
+    }
+  },
+  "meta": { "templateCredsSetupCompleted": false },
+  "tags": [{ "name": "energie-pro" }]
+}

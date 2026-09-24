@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="tour_renovation" model="doorway.onboarding.tour">
+        <field name="name">Pipelines Doorway</field>
+        <field name="code">renovation_conciergerie</field>
+        <field name="sequence">15</field>
+        <field name="quest_label">Quête Pipelines CRM</field>
+        <field name="home_action_xmlid">renovation_conciergerie.doorway_action_pipeline_renovation</field>
+        <field name="badge_icon">🏗️</field>
+        <field name="badge_name">Champion Pipeline</field>
+        <field name="reward_points">40</field>
+    </record>
+    <record id="tour_renov_step_welcome" model="doorway.onboarding.tour.step">
+        <field name="tour_id" ref="tour_renovation"/>
+        <field name="sequence">1</field>
+        <field name="key">welcome</field>
+        <field name="title">Rénovation Conciergerie</field>
+        <field name="body_html" type="html">
+            <p>CRM multi-pipelines Doorway : rénovation, immobilier, marketing, B2B, assurance…</p>
+            <div class="alert alert-info border-0 pe-xp-callout" role="status">
+                Badge <em>Champion Pipeline</em> 🏗️ (+40 XP)
+            </div>
+        </field>
+    </record>
+    <record id="tour_renov_step_pipelines" model="doorway.onboarding.tour.step">
+        <field name="tour_id" ref="tour_renovation"/>
+        <field name="sequence">2</field>
+        <field name="key">pipelines</field>
+        <field name="title">Pipelines &amp; segments</field>
+        <field name="body_html" type="html">
+            <p>Menu <strong>Pipelines Doorway</strong> sous CRM — chaque onglet selon vos droits.</p>
+            <ul>
+                <li>Rénovation, Immobilier, Marketing, Driven</li>
+                <li>Doorway Clients (B2B), Assurance</li>
+            </ul>
+        </field>
+        <field name="action_xmlid">renovation_conciergerie.doorway_action_pipeline_renovation</field>
+        <field name="action_label">Pipeline Rénovation</field>
+    </record>
+    <record id="tour_renov_step_gamification" model="doorway.onboarding.tour.step">
+        <field name="tour_id" ref="tour_renovation"/>
+        <field name="sequence">3</field>
+        <field name="key">gamification</field>
+        <field name="title">Gamification CRM</field>
+        <field name="body_html" type="html">
+            <p>Classements, karma et automatisations intégrés au CRM Doorway.</p>
+        </field>
+        <field name="action_xmlid">renovation_conciergerie.action_doorway_leaderboard</field>
+        <field name="action_label">Classement</field>
+    </record>
+    <record id="tour_renov_step_automation" model="doorway.onboarding.tour.step">
+        <field name="tour_id" ref="tour_renovation"/>
+        <field name="sequence">4</field>
+        <field name="key">automation</field>
+        <field name="title">Automatisations &amp; IA</field>
+        <field name="body_html" type="html">
+            <ul>
+                <li>Règles d'automatisation CRM</li>
+                <li>Prompts IA et tâches projet assistées</li>
+                <li>Twilio / messagerie partenaires</li>
+            </ul>
+        </field>
+        <field name="action_xmlid">base_automation.base_automation_act</field>
+        <field name="action_label">Automatisations</field>
+    </record>
+</odoo>

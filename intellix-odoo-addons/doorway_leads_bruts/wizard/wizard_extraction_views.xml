@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_extraction_wizard_form" model="ir.ui.view">
+        <field name="name">doorway.extraction.wizard.form</field>
+        <field name="model">doorway.extraction.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Nouvelle extraction" class="o_leads_bruts_wizard">
+                <field name="etape_courante" invisible="1"/>
+                <field name="solde_suffisant" invisible="1"/>
+                <field name="mode_commercial" invisible="1"/>
+                <field name="cout_detail_json" invisible="1"/>
+                <field name="extractions_passees_count" invisible="1"/>
+                <field name="leads_base_count" invisible="1"/>
+
+                <!-- Étape 1 -->
+                <group invisible="etape_courante != 1">
+                    <div class="o_leads_wizard_header">
+                        <h2>🎯 Nouvelle extraction de leads</h2>
+                    </div>
+                    <group>
+                        <field name="name" placeholder="PAC Île-de-France Juin 2026"/>
+                        <field name="mot_cle" placeholder="centre d'appel, panneau solaire, plombier..."/>
+                        <field name="zone_geographique"/>
+                        <field name="ville_region"/>
+                        <field name="rayon_km"/>
+                    </group>
+                    <div class="alert alert-info" role="alert"
+                         invisible="not avertissement_historique">
+                        <field name="avertissement_historique" nolabel="1" readonly="1"/>
+                    </div>
+                </group>
+
+                <!-- Étape 2 -->
+                <group invisible="etape_courante != 2">
+                    <div class="o_leads_wizard_header">
+                        <h2>📡 Sources de données</h2>
+                        <p>Filtrées automatiquement selon la zone : <field name="zone_geographique" readonly="1" nolabel="1"/></p>
+                    </div>
+                    <field name="sources_ids" widget="many2many_checkboxes"
+                           domain="['|', ('pays', '=', zone_geographique), ('pays', '=', 'tous'), ('actif', '=', True)]"
+                           options="{'no_create': True}"/>
+                    <group string="Volume de leads">
+                        <field name="volume_possible" readonly="1" string="Volume possible (max)"/>
+                        <label for="volume_cible" string="Quantité à extraire"/>
+                        <div class="o_leads_volume_slider">
+                            <field name="volume_cible" nolabel="1"/>
+                            <span class="o_leads_volume_value"> leads</span>
+                        </div>
+                    </group>
+                </group>
+
+                <!-- Étape 3 -->
+                <group invisible="etape_courante != 3">
+                    <div class="o_leads_wizard_header">
+                        <h2>💳 Récapitulatif &amp; confirmation</h2>
+                    </div>
+                    <group>
+                        <group string="Campagne">
+                            <field name="name" readonly="1"/>
+                            <field name="mot_cle" readonly="1"/>
+                            <field name="zone_geographique" readonly="1"/>
+                            <field name="ville_region" readonly="1"/>
+                        </group>
+                        <group string="Estimation volumes">
+                            <field name="volume_possible" readonly="1"/>
+                            <field name="volume_cible" readonly="1" string="Quantité à extraire"/>
+                            <label for="leads_estime_min" string="Leads estimés"/>
+                            <div class="o_row">
+                                <field name="leads_estime_min" readonly="1" nolabel="1"/>
+                                <span> à </span>
+                                <field name="leads_estime_max" readonly="1" nolabel="1"/>
+                                <span> leads</span>
+                            </div>
+                            <field name="cout_credits_estime" readonly="1" string="Total crédits"/>
+                            <field name="prix_ht" readonly="1" invisible="not mode_commercial"/>
+                            <field name="prix_ttc" readonly="1" invisible="not mode_commercial"/>
+                            <field name="duree_estime_min" readonly="1"/>
+                            <field name="duree_estime_max" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Solde">
+                        <field name="balance_credits" readonly="1"/>
+                        <field name="balance_after" readonly="1"/>
+                    </group>
+                    <div class="alert alert-info" role="alert"
+                         invisible="not avertissement_historique">
+                        <field name="avertissement_historique" nolabel="1" readonly="1"/>
+                    </div>
+                    <div class="alert alert-warning" role="alert">
+                        Les leads déjà extraits (même téléphone, email ou nom) ne seront pas réimportés.
+                        Le volume final peut être inférieur à la quantité cible si la zone a déjà été couverte.
+                    </div>
+                </group>
+
+                <footer>
+                    <button name="action_etape_precedente" string="← Retour" type="object"
+                            invisible="etape_courante == 1" class="btn-secondary"/>
+                    <button name="action_etape_suivante" string="Suivant →" type="object"
+                            invisible="etape_courante == 3" class="btn-primary"/>
+                    <button name="action_etape_suivante" string="Calculer le coût →" type="object"
+                            invisible="etape_courante != 2" class="btn-primary"/>
+                    <button name="action_valider_lancer" string="🚀 Valider et lancer" type="object"
+                            invisible="etape_courante != 3" class="btn-primary"
+                            confirm="Confirmer le lancement de l'extraction ?"/>
+                    <button string="Annuler" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_extraction_wizard" model="ir.actions.act_window">
+        <field name="name">Nouvelle extraction</field>
+        <field name="res_model">doorway.extraction.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="action_wizard_callcenter" model="ir.actions.act_window">
+        <field name="name">Centres d'appels (France)</field>
+        <field name="res_model">doorway.extraction.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context" eval="{
+            'default_name': 'Centres d\'appels France',
+            'default_mot_cle': 'centre d\'appel',
+            'default_zone_geographique': 'france',
+            'default_ville_region': 'Île-de-France',
+            'default_sources_ids': [(6, 0, [
+                ref('source_pagesjaunes_fr'),
+                ref('source_societe_com'),
+                ref('source_kompass_fr'),
+                ref('source_google_maps'),
+            ])],
+        }"/>
+    </record>
+
+    <record id="action_wizard_callcenter_ma" model="ir.actions.act_window">
+        <field name="name">Call centers Maroc</field>
+        <field name="res_model">doorway.extraction.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context" eval="{
+            'default_name': 'Call centers Maroc',
+            'default_mot_cle': 'centre d\'appels call center BPO',
+            'default_zone_geographique': 'maroc',
+            'default_ville_region': 'Casablanca',
+            'default_sources_ids': [(6, 0, [
+                ref('source_moncallcenter_ma'),
+                ref('source_telecontact_ma'),
+                ref('source_avito_ma'),
+                ref('source_google_maps'),
+            ])],
+        }"/>
+    </record>
+
+    <record id="action_wizard_callcenter_tn" model="ir.actions.act_window">
+        <field name="name">Call centers Tunisie</field>
+        <field name="res_model">doorway.extraction.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context" eval="{
+            'default_name': 'Call centers Tunisie',
+            'default_mot_cle': 'centre d\'appels call center BPO outsourcing',
+            'default_zone_geographique': 'tunisie',
+            'default_ville_region': 'Tunis',
+            'default_sources_ids': [(6, 0, [
+                ref('source_google_maps_tn'),
+                ref('source_keejob_tn'),
+                ref('source_tunisie_annonce_tn'),
+            ])],
+        }"/>
+    </record>
+
+    <record id="action_wizard_solar" model="ir.actions.act_window">
+        <field name="name">Photovoltaïque (France)</field>
+        <field name="res_model">doorway.extraction.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context" eval="{
+            'default_name': 'Photovoltaïque France',
+            'default_mot_cle': 'panneau solaire photovoltaïque',
+            'default_zone_geographique': 'france',
+            'default_ville_region': 'Provence-Alpes-Côte d\'Azur',
+            'default_sources_ids': [(6, 0, [
+                ref('source_pagesjaunes_fr'),
+                ref('source_leboncoin_fr'),
+                ref('source_societe_com'),
+                ref('source_google_maps'),
+            ])],
+        }"/>
+    </record>
+
+    <record id="action_wizard_pac" model="ir.actions.act_window">
+        <field name="name">PAC / thermopompe (France)</field>
+        <field name="res_model">doorway.extraction.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context" eval="{
+            'default_name': 'PAC thermopompe France',
+            'default_mot_cle': 'pompe à chaleur thermopompe',
+            'default_zone_geographique': 'france',
+            'default_ville_region': 'Occitanie',
+            'default_sources_ids': [(6, 0, [
+                ref('source_pagesjaunes_fr'),
+                ref('source_leboncoin_fr'),
+                ref('source_kompass_fr'),
+                ref('source_google_maps'),
+            ])],
+        }"/>
+    </record>
+
+    <record id="action_wizard_renovation" model="ir.actions.act_window">
+        <field name="name">Rénovation énergétique (France)</field>
+        <field name="res_model">doorway.extraction.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context" eval="{
+            'default_name': 'Rénovation énergétique France',
+            'default_mot_cle': 'rénovation énergétique isolation',
+            'default_zone_geographique': 'france',
+            'default_ville_region': 'Nouvelle-Aquitaine',
+            'default_sources_ids': [(6, 0, [
+                ref('source_pagesjaunes_fr'),
+                ref('source_societe_com'),
+                ref('source_leboncoin_fr'),
+                ref('source_google_maps'),
+            ])],
+        }"/>
+    </record>
+</odoo>

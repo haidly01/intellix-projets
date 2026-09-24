@@ -1,0 +1,347 @@
+[
+  {
+    "name": "soumission-qc — 01 Outbound",
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "soumission-qc/outbound",
+          "responseMode": "lastNode",
+          "options": {}
+        },
+        "name": "Webhook",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          0,
+          300
+        ],
+        "webhookId": "soumission-qc-outbound"
+      },
+      {
+        "parameters": {
+          "jsCode": "const item = $input.first().json;\nconst body = item.body || item;\n\nfunction normCa(p) {\n  if (!p) return '';\n  const d = String(p).replace(/\\D/g, '');\n  if (d.length === 10) return '+1' + d;\n  if (d.length === 11 && d.startsWith('1')) return '+' + d;\n  if (String(p).startsWith('+')) return '+' + d;\n  return d ? '+1' + d : '';\n}\n\nconst phone = normCa(body.telephone || body.phone || body.phone_number);\nif (!phone) throw new Error('telephone requis');\n\nconst provider = ($env.TELEPHONY_PROVIDER || 'vicidial').toLowerCase();\nconst odooUrl = ($env.ODOO_URL || 'https://intellixcrm.com').replace(/\\/$/, '');\n\nif (provider === 'twilio') {\n  const sid = $env.TWILIO_ACCOUNT_SID;\n  const auth = Buffer.from(`${sid}:${$env.TWILIO_AUTH_TOKEN}`).toString('base64');\n  const from = $env.TWILIO_FROM_SOUMISSION || '+15817058118';\n  const base = ($env.N8N_WEBHOOK_URL || '').replace(/\\/$/, '');\n  await this.helpers.httpRequest({\n    method: 'POST',\n    url: `https://api.twilio.com/2010-04-01/Accounts/${sid}/Calls.json`,\n    headers: { Authorization: 'Basic ' + auth, 'Content-Type': 'application/x-www-form-urlencoded' },\n    body: `To=${encodeURIComponent(phone)}&From=${encodeURIComponent(from)}&Url=${encodeURIComponent(base + '/soumission-qc/twilio/voice')}&StatusCallback=${encodeURIComponent(base + '/soumission-qc/event')}`,\n  });\n  return [{ json: { ok: true, telephone: phone, provider: 'twilio', campaign: $env.VICIDIAL_CAMPAIGN || 'DW_QCB2C' } }];\n}\n\nconst res = await this.helpers.httpRequest({\n  method: 'POST',\n  url: odooUrl + '/doorway/api/soumission-qc/dial',\n  body: {\n    jsonrpc: '2.0',\n    method: 'call',\n    params: {\n      tenant_api_key: $env.DOORWAY_TENANT_API_KEY,\n      telephone: phone,\n      prenom: body.prenom || body.nombre || body.name || '',\n      partner_id: body.partner_id || body.lead_id || '',\n    },\n    id: Date.now(),\n  },\n  json: true,\n  timeout: 30000,\n});\nconst result = res.result || res;\nreturn [{\n  json: {\n    telephone: phone,\n    campaign: $env.VICIDIAL_CAMPAIGN || 'DW_QCB2C',\n    provider: 'vicidial',\n    ok: !!(result.ok || result.success),\n    ...result,\n  },\n}];"
+        },
+        "name": "Outbound Dial",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          280,
+          300
+        ]
+      }
+    ],
+    "connections": {
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Outbound Dial",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "tags": [
+      {
+        "name": "soumission-qc"
+      },
+      {
+        "name": "sofia"
+      }
+    ]
+  },
+  {
+    "name": "soumission-qc — 02 Telephony Events",
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "soumission-qc/event",
+          "responseMode": "lastNode",
+          "options": {}
+        },
+        "name": "Webhook",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          0,
+          300
+        ],
+        "webhookId": "soumission-qc-event"
+      },
+      {
+        "parameters": {
+          "jsCode": "const b = $input.first().json.body || $input.first().json;\nconst ev = {\n  event_type: b.event_type || 'recording_ready',\n  call_sid: b.call_sid || b.CallSid || b.uniqueid || '',\n  from: b.from || b.From || '',\n  to: b.to || b.To || '',\n  recording_url: b.recording_url || b.RecordingUrl || b.recording_path || '',\n  amd_result: (b.amd_result || b.AnsweredBy || 'unknown').toLowerCase(),\n  duration_sec: parseInt(b.duration_sec || b.CallDuration || b.duration || 0, 10) || 0,\n  provider: b.provider || 'vicidial',\n  partner_id: b.partner_id || b.lead_id || '',\n  prenom: b.prenom || b.nombre || b.first_name || '',\n  raw: b,\n};\n\nconst base = ($env.N8N_WEBHOOK_URL || '').replace(/\\/$/, '');\nconst engine = await this.helpers.httpRequest({\n  method: 'POST',\n  url: base + '/soumission-qc/conversation',\n  body: ev,\n  json: true,\n});\nconst out = engine && engine.action ? engine : (Array.isArray(engine) ? engine[0] : { normalized: ev, engine });\n\nif (ev.event_type === 'call_ended' || out.action === 'hangup') {\n  const odooUrl = ($env.ODOO_URL || 'https://intellixcrm.com').replace(/\\/$/, '');\n  const cp = out.crm_payload || {};\n  try {\n    await this.helpers.httpRequest({\n      method: 'POST',\n      url: odooUrl + '/doorway/api/soumission-qc/call-ended',\n      body: {\n        jsonrpc: '2.0',\n        method: 'call',\n        params: { tenant_api_key: $env.DOORWAY_TENANT_API_KEY, ...cp },\n        id: Date.now(),\n      },\n      json: true,\n      timeout: 15000,\n    });\n  } catch (e) {\n    out.odoo_error = (e.message || String(e)).slice(0, 200);\n  }\n  if (cp.crm_action === 'tag_lead_qualifie') {\n    try {\n      await this.helpers.httpRequest({\n        method: 'POST',\n        url: base + '/soumission-qc/qualified',\n        body: cp,\n        json: true,\n      });\n    } catch (_e) { /* qualified wf */ }\n  } else if (cp.crm_action) {\n    try {\n      await this.helpers.httpRequest({\n        method: 'POST',\n        url: base + '/soumission-qc/non-qualified',\n        body: cp,\n        json: true,\n      });\n    } catch (_e) { /* non-qualified wf */ }\n  }\n}\nreturn [{ json: out }];"
+        },
+        "name": "Telephony Events",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          280,
+          300
+        ]
+      }
+    ],
+    "connections": {
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Telephony Events",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "tags": [
+      {
+        "name": "soumission-qc"
+      },
+      {
+        "name": "sofia"
+      }
+    ]
+  },
+  {
+    "name": "soumission-qc — 03 Conversation Engine",
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "soumission-qc/conversation",
+          "responseMode": "lastNode",
+          "options": {}
+        },
+        "name": "Webhook",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          0,
+          300
+        ],
+        "webhookId": "soumission-qc-conversation"
+      },
+      {
+        "parameters": {
+          "jsCode": "/**\n * Sofia — Soumission Entrepreneurs (Québec fr-CA)\n * Répliques fixes — pré-générer en MP3 : STORAGE_BUCKET_URL/{key}.mp3\n */\nconst REPLIQUES = {\n  sofia_ouverture:\n    'Bonjour ! Je m\\'appelle Sofia, je vous appelle de Soumission Entrepreneurs. ' +\n    'J\\'ai juste une petite question rapide — êtes-vous bien propriétaire de votre maison ?',\n\n  sofia_q1_clarif:\n    'Pas de problème, je reformule : est-ce que la maison est à votre nom, ou vous êtes locataire ?',\n\n  sofia_exit_locataire:\n    'Pas de souci du tout ! Bonne journée et merci pour votre temps !',\n\n  sofia_q2_age:\n    'Super ! Votre maison a à peu près quel âge ? Moins de dix ans, entre dix et trente ans, ou plus de trente ans ?',\n\n  sofia_q3_travaux:\n    'Parfait, merci ! Y a-t-il des travaux dont vous auriez besoin en ce moment — ' +\n    'toiture, fenêtres, salle de bain, cuisine, ou autre chose ?',\n\n  sofia_q4_vente:\n    'Je comprends ! Est-ce que vous pensez vendre votre maison dans les trois prochaines années ?',\n\n  sofia_exit_pas_projet:\n    'Très bien ! On pourra vous recontacter si ça change. Bonne journée !',\n\n  sofia_q5_pitch:\n    'Excellente nouvelle ! Il existe des subventions gouvernementales auxquelles vous avez peut-être droit. ' +\n    'Notre directeur des travaux fait des visites gratuites — il évalue votre projet, trouve des soumissions ' +\n    'd\\'entrepreneurs certifiés et vérifie les subventions qui s\\'appliquent. ' +\n    'Ça vous intéresserait qu\\'il vous rappelle cette semaine ?',\n\n  sofia_q5_objection:\n    'Je comprends tout à fait ! C\\'est vraiment sans engagement — juste cinq minutes pour voir ce qui s\\'applique chez vous. ' +\n    'Vous n\\'avez rien à perdre et peut-être des milliers de dollars à récupérer ! Qu\\'est-ce qui vous retient ?',\n\n  sofia_q6_preference:\n    'Super ! C\\'est quoi le meilleur moment pour vous joindre — plutôt en avant-midi ou en après-midi ?',\n\n  sofia_q7_closing:\n    'Parfait ! Notre directeur des travaux va vous appeler bientôt. ' +\n    'Vous allez recevoir un texto de confirmation dans quelques minutes. Bonne journée et à très bientôt !',\n\n  sofia_exit_pas_interesse:\n    'Pas de problème ! Bonne journée et à peut-être une prochaine fois !',\n\n  sofia_exit_polite: 'Merci beaucoup pour votre temps. Bonne journée !',\n  sofia_exit_dnc: 'C\\'est noté, on vous retire de notre liste. Bonne journée !',\n  sofia_fallback: 'Désolée, je n\\'ai pas bien entendu. Pouvez-vous répéter s\\'il vous plaît ?',\n  sofia_repondeur:\n    'Bonjour, c\\'est Sofia de Soumission Entrepreneurs. Votre maison pourrait être admissible ' +\n    'à des subventions pour des travaux. On vous rappelle bientôt. Merci !',\n  sofia_exit_timeout: 'Je vois que vous êtes occupé — on vous rappellera une autre fois. Bonne journée !',\n};\n\nconst DEEPGRAM_CONFIG = {\n  model: 'nova-2',\n  language: 'fr-CA',\n  endpointing: 300,\n  utterance_end_ms: 500,\n  interim_results: true,\n  smart_format: true,\n  punctuate: true,\n  encoding: 'mulaw',\n  sample_rate: 8000,\n};\n\nfunction audioUrl(key) {\n  const bucket = ($env.STORAGE_BUCKET_URL || '').replace(/\\/$/, '');\n  return bucket ? `${bucket}/${key}.mp3` : '';\n}\n\nfunction computeCost(durationSec, amdResult) {\n  const amd = (amdResult || '').toLowerCase();\n  if (['machine', 'not_sure', 'fax'].includes(amd)) {\n    return { cost: 0, billed: false, reason: 'AMD_DETECTED' };\n  }\n  const sec = Math.max(0, parseInt(durationSec, 10) || 0);\n  if (!sec) return { cost: 0, billed: false, reason: 'ZERO_DURATION' };\n  const rate = parseFloat($env.SOFIA_QC_RATE_PER_MIN || '0.25') / 60;\n  return { cost: Math.round(sec * rate * 10000) / 10000, billed: true, duration: sec };\n}\n\n/**\n * Classification rapide fr-CA — évite appel LLM sur réponses courantes.\n */\nfunction normTranscript(t) {\n  return (t || '')\n    .toLowerCase()\n    .normalize('NFD')\n    .replace(/[\\u0300-\\u036f]/g, '')\n    .replace(/[^a-z0-9\\s]/g, ' ')\n    .replace(/\\s+/g, ' ')\n    .trim();\n}\n\nfunction fastClassifyIntent(etape, transcript) {\n  const t = normTranscript(transcript);\n  if (!t) return null;\n\n  const affirm =\n    /^(oui|ouais|ouin|yes|ok|correct|exact|c est ca|cest ca|bien sur)\\b/.test(t) ||\n    /\\b(oui|ouais|ouin|bien sur|exactement|correct|c est ca)\\b/.test(t);\n  const deny =\n    /^(non|nan|nope|no)\\s*$/.test(t) ||\n    /\\b(non je|pas proprietaire|pas proprio|locataire|je loue|en location|je suis locataire)\\b/.test(t);\n  const owner =\n    /\\b(proprietaire|proprio|a mon nom|c est ma maison|maison est a moi|titulaire)\\b/.test(t);\n  const tenant = /\\b(locataire|je loue|en location|pas proprietaire|pas proprio)\\b/.test(t);\n  const pasInteresse = /\\b(pas interesse|pas interesse|ca m interesse pas|laissez moi|rappelez plus)\\b/.test(t);\n  const dnc = /\\b(ne plus appeler|retirez|retirer|do not call|enlevez mon numero)\\b/.test(t);\n  const unsure = /\\b(je sais pas|sais pas|pas sur|peut etre|je pense)\\b/.test(t);\n\n  if (etape === 'ouverture' || etape === 'Q1_clarif') {\n    if (tenant || (deny && !owner)) return { intent: 'non' };\n    if (owner || affirm) return { intent: 'oui' };\n    if (pasInteresse) return { intent: 'pas_interesse' };\n    if (dnc) return { intent: 'do_not_call' };\n    if (unsure) return { intent: 'incertain' };\n  }\n\n  if (etape === 'Q2_age') {\n    if (/\\b(moins de 10|neuve|recente|moins de dix)\\b/.test(t)) return { intent: 'ok', valeur: 'moins_10' };\n    if (/\\b(10 et 30|dix et trente|entre 10|entre dix)\\b/.test(t)) return { intent: 'ok', valeur: '10_30' };\n    if (/\\b(plus de 30|plus de trente|vieille|ancienne)\\b/.test(t)) return { intent: 'ok', valeur: 'plus_30' };\n    if (affirm) return { intent: 'ok', valeur: t.slice(0, 40) };\n  }\n\n  if (etape === 'Q3_travaux') {\n    if (/\\b(rien|aucun|pas de travaux|rien pour l instant|ca va bien)\\b/.test(t)) return { intent: 'aucun' };\n    const trav = t.match(/\\b(toiture|fenetre|fenetres|cuisine|salle de bain|sdb|sous sol|patio|thermopompe|isolation)\\b/);\n    if (trav) return { intent: 'ok', valeur: trav[1] };\n    if (affirm && t.length > 8) return { intent: 'ok', valeur: t.slice(0, 60) };\n  }\n\n  if (etape === 'Q4_vente') {\n    if (affirm && !deny) return { intent: 'oui' };\n    if (deny) return { intent: 'non' };\n  }\n\n  if (['Q5_pitch', 'Q5_objection'].includes(etape)) {\n    if (affirm && !deny) return { intent: 'oui' };\n    if (deny || pasInteresse) return { intent: 'non' };\n    if (unsure) return { intent: 'incertain' };\n  }\n\n  if (etape === 'Q6_preference') {\n    if (/\\b(avant midi|matin|matinee|am|avant-midi)\\b/.test(t)) return { intent: 'ok', valeur: 'avant_midi' };\n    if (/\\b(apres midi|apres-midi|pm|soir|apres-midi)\\b/.test(t)) return { intent: 'ok', valeur: 'apres_midi' };\n    if (affirm) return { intent: 'ok', valeur: t.slice(0, 40) };\n  }\n\n  if (pasInteresse) return { intent: 'pas_interesse' };\n  if (dnc) return { intent: 'do_not_call' };\n  return null;\n}\n\nconst A = {\n  ouverture: audioUrl('sofia_ouverture'),\n  q1: audioUrl('sofia_q1_clarif'),\n  q2: audioUrl('sofia_q2_age'),\n  q3: audioUrl('sofia_q3_travaux'),\n  q4: audioUrl('sofia_q4_vente'),\n  q5: audioUrl('sofia_q5_pitch'),\n  q5b: audioUrl('sofia_q5_objection'),\n  q6: audioUrl('sofia_q6_preference'),\n  q7: audioUrl('sofia_q7_closing'),\n  exit_loc: audioUrl('sofia_exit_locataire'),\n  exit_projet: audioUrl('sofia_exit_pas_projet'),\n  exit_pi: audioUrl('sofia_exit_pas_interesse'),\n  exit_polite: audioUrl('sofia_exit_polite'),\n  exit_dnc: audioUrl('sofia_exit_dnc'),\n  fallback: audioUrl('sofia_fallback'),\n  timeout: audioUrl('sofia_exit_timeout'),\n};\n\nconst _raw = $input.first().json;\nconst ev = (_raw && _raw.body && typeof _raw.body === 'object') ? _raw.body : _raw;\n\nif (ev.event_type === 'amd_result' && ['machine', 'fax', 'not_sure'].includes((ev.amd_result || '').toLowerCase())) {\n  return [{ json: {\n    action: 'hangup', call_sid: ev.call_sid, qualified: false, statut: 'messagerie',\n    crm_action: null, event: ev,\n  } }];\n}\n\nfunction buildCrmPayload(session, ev, opts) {\n  const phone = session?.data?.telephone || session?.telephone || ev.to || ev.from || '';\n  if (!phone || !session) return null;\n  const d = session.data || {};\n  return {\n    call_sid: ev.call_sid || '',\n    partner_id: ev.partner_id || ev.lead_id || '',\n    prenom: d.prenom || ev.prenom || ev.nombre || '',\n    telephone: phone,\n    qualified: !!(opts && opts.qualified),\n    statut: (opts && opts.statut) || session.crm_action || 'en_cours',\n    crm_action: session.crm_action || null,\n    age_maison: d.age_maison || '',\n    travaux: d.travaux || '',\n    vente_prevue: d.vente_prevue,\n    preference_rappel: d.preference_rappel || '',\n    transcript: (session.transcript_log || []).join('\\n'),\n    recording_url: ev.recording_url || '',\n    duration_sec: session.duree_sec || ev.duration_sec || 0,\n    campaign: $env.CAMPAIGN_ID || 'sofia-soumission-qc-2026',\n  };\n}\n\nif (ev.event_type === 'call_ended' || ev.action === 'hangup') {\n  const sd = $getWorkflowStaticData('global');\n  const session = (sd.sofia_qc_sessions || {})[ev.call_sid];\n  const crm_payload = session ? buildCrmPayload(session, ev, {\n    qualified: session.crm_action === 'tag_lead_qualifie',\n    statut: session.crm_action || 'non_qualifie',\n  }) : null;\n  return [{ json: { action: 'hangup', call_sid: ev.call_sid, crm_payload, session, event: ev } }];\n}\n\nconst callSid = ev.call_sid || '';\nconst sd = $getWorkflowStaticData('global');\nif (!sd.sofia_qc_sessions) sd.sofia_qc_sessions = {};\nlet session = sd.sofia_qc_sessions[callSid];\n\nif (!session) {\n  session = {\n    etape: 'ouverture',\n    telephone: ev.to || ev.from || '',\n    prenom: ev.prenom || ev.nombre || '',\n    duree_sec: 0,\n    hors_sujet_count: 0,\n    silence_count: 0,\n    soft_limit: parseInt($env.AGENT_SOFT_LIMIT_SEC || '170', 10),\n    crm_action: null,\n    data: {\n      prenom: ev.prenom || ev.nombre || '',\n      proprietaire: null,\n      age_maison: null,\n      travaux: null,\n      vente_prevue: null,\n      preference_rappel: null,\n      telephone: ev.to || ev.from || '',\n    },\n    transcript_log: [],\n  };\n  sd.sofia_qc_sessions[callSid] = session;\n}\n\nif (ev.event_type === 'call_start' || (!ev.recording_url && session.etape === 'ouverture' && !ev.event_type)) {\n  return [{ json: {\n    action: 'play_audio', audio_url: A.ouverture, call_sid: callSid,\n    qualified: false, statut: 'en_cours', session, event: ev,\n  } }];\n}\n\nif (ev.event_type !== 'recording_ready' || !ev.recording_url) {\n  return [{ json: { action: 'hangup', error: 'no_recording', event: ev } }];\n}\n\nlet transcript = '';\nlet classification = { intent: 'silence' };\nconst odooBase = ($env.ODOO_URL || 'https://intellixcrm.com').replace(/\\/$/, '');\n\ntry {\n  const sttRes = await this.helpers.httpRequest({\n    method: 'POST',\n    url: odooBase + '/api/renov/stt/deepgram',\n    headers: { 'Content-Type': 'application/json', 'X-Renov-Stt-Key': ($env.SOFIA_STT_WEBHOOK_KEY || 'doorway-sofia-stt') },\n    body: { recording_url: ev.recording_url, language: 'fr-CA' },\n    json: true,\n    timeout: 25000,\n  });\n  transcript = (sttRes && sttRes.transcript) || '';\n} catch (e) {\n  transcript = '';\n}\n\nconst fast = fastClassifyIntent(session.etape, transcript);\nif (fast) {\n  classification = fast;\n} else if (transcript.trim()) {\n  const sys = `Classificateur JSON fr-CA Soumission Entrepreneurs. Étape: ${session.etape}. JSON seulement.\nouverture/Q1_clarif: oui|non|incertain|pas_interesse|do_not_call|silence\nQ2_age: {intent:ok,valeur:moins_10|10_30|plus_30}\nQ3_travaux: {intent:ok,valeur:...}|aucun|silence\nQ4_vente: oui|non|silence\nQ5_pitch/Q5_objection: oui|non|incertain|silence\nQ6_preference: {intent:ok,valeur:avant_midi|apres_midi}`;\n  try {\n    const cl = await this.helpers.httpRequest({\n      method: 'POST',\n      url: 'https://api.anthropic.com/v1/messages',\n      headers: { 'x-api-key': $env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01', 'Content-Type': 'application/json' },\n      body: {\n        model: $env.CLAUDE_MODEL || 'claude-3-5-haiku-20241022',\n        max_tokens: 80,\n        system: sys,\n        messages: [{ role: 'user', content: `Transcription: \"${transcript}\"` }],\n      },\n      json: true,\n      timeout: 12000,\n    });\n    const txt = (cl.content && cl.content[0] && cl.content[0].text) || '{}';\n    const m = txt.match(/\\{[\\s\\S]*\\}/);\n    classification = JSON.parse(m ? m[0] : txt);\n  } catch (_e) {\n    classification = { intent: 'silence' };\n  }\n}\n\nlet intent = classification.intent || 'silence';\nconst valeur = classification.valeur || '';\nconst etape = session.etape;\nsession.transcript_log.push(`[${etape}] ${transcript || '(silence)'} → ${intent}${valeur ? '/' + valeur : ''}`);\nsession.duree_sec += Math.max(4, parseInt(ev.duration_sec, 10) || 6);\n\nlet route = { hangup: false, qualified: false, audioUrl: A.fallback, crm_action: null };\n\nif (session.duree_sec >= session.soft_limit) {\n  route = { hangup: true, audioUrl: A.timeout, crm_action: null };\n} else if (intent === 'do_not_call') {\n  route = { hangup: true, audioUrl: A.exit_dnc, crm_action: 'tag_dnc' };\n} else if (intent === 'pas_interesse' || intent === 'refus') {\n  route = { hangup: true, audioUrl: A.exit_pi, crm_action: 'tag_pas_interesse' };\n} else if (intent === 'silence') {\n  session.silence_count += 1;\n  if (etape === 'ouverture') session.etape = 'Q1_clarif';\n  route = { hangup: false, audioUrl: etape === 'ouverture' ? A.q1 : A.fallback };\n} else {\n  session.silence_count = 0;\n  if (etape === 'ouverture' || etape === 'Q1_clarif') {\n    if (intent === 'oui') {\n      session.data.proprietaire = true;\n      session.etape = 'Q2_age';\n      route = { hangup: false, audioUrl: A.q2 };\n    } else if (intent === 'non') {\n      route = { hangup: true, audioUrl: A.exit_loc, crm_action: 'tag_locataire' };\n    } else {\n      session.etape = 'Q1_clarif';\n      route = { hangup: false, audioUrl: A.q1 };\n    }\n  } else if (etape === 'Q2_age' && intent === 'ok') {\n    session.data.age_maison = valeur;\n    session.etape = 'Q3_travaux';\n    route = { hangup: false, audioUrl: A.q3 };\n  } else if (etape === 'Q3_travaux') {\n    if (intent === 'aucun') {\n      session.data.travaux = '';\n      session.etape = 'Q4_vente';\n      route = { hangup: false, audioUrl: A.q4 };\n    } else if (intent === 'ok') {\n      session.data.travaux = valeur || transcript.slice(0, 80);\n      session.crm_action = 'tag_travaux';\n      session.etape = 'Q5_pitch';\n      route = { hangup: false, audioUrl: A.q5 };\n    }\n  } else if (etape === 'Q4_vente') {\n    if (intent === 'oui') {\n      session.data.vente_prevue = true;\n      session.etape = 'Q5_pitch';\n      route = { hangup: false, audioUrl: A.q5 };\n    } else {\n      route = { hangup: true, audioUrl: A.exit_projet, crm_action: 'tag_pas_projet' };\n    }\n  } else if (etape === 'Q5_pitch') {\n    if (intent === 'oui') {\n      session.etape = 'Q6_preference';\n      route = { hangup: false, audioUrl: A.q6 };\n    } else if (intent === 'incertain' || intent === 'non') {\n      session.etape = 'Q5_objection';\n      route = { hangup: false, audioUrl: A.q5b };\n    }\n  } else if (etape === 'Q5_objection') {\n    if (intent === 'oui') {\n      session.etape = 'Q6_preference';\n      route = { hangup: false, audioUrl: A.q6 };\n    } else {\n      route = { hangup: true, audioUrl: A.exit_pi, crm_action: 'tag_pas_interesse' };\n    }\n  } else if (etape === 'Q6_preference' && intent === 'ok') {\n    session.data.preference_rappel = valeur;\n    session.etape = 'Q7_closing';\n    session.crm_action = 'tag_lead_qualifie';\n    route = { hangup: true, qualified: true, audioUrl: A.q7, crm_action: 'tag_lead_qualifie' };\n  }\n}\n\nsession.crm_action = route.crm_action || session.crm_action;\nsd.sofia_qc_sessions[callSid] = session;\n\nconst crm_payload = route.hangup\n  ? buildCrmPayload(session, ev, { qualified: route.qualified, statut: session.crm_action || 'non_qualifie' })\n  : null;\n\nreturn [{\n  json: {\n    action: route.hangup ? 'hangup' : 'play_audio',\n    audio_url: route.audioUrl,\n    call_sid: callSid,\n    qualified: !!route.qualified,\n    crm_action: session.crm_action,\n    crm_payload,\n    transcript,\n    statut: session.crm_action || 'en_cours',\n    session,\n    event: ev,\n  },\n}];"
+        },
+        "name": "Sofia QC Engine",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          280,
+          300
+        ]
+      }
+    ],
+    "connections": {
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Sofia QC Engine",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "tags": [
+      {
+        "name": "soumission-qc"
+      },
+      {
+        "name": "sofia"
+      }
+    ]
+  },
+  {
+    "name": "soumission-qc — 04 Lead Qualifié",
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "soumission-qc/qualified",
+          "responseMode": "lastNode",
+          "options": {}
+        },
+        "name": "Webhook",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          0,
+          300
+        ],
+        "webhookId": "soumission-qc-qualified"
+      },
+      {
+        "parameters": {
+          "jsCode": "const p = $input.first().json.body || $input.first().json;\nconst phone = p.telephone || p.phone || '';\nconst prenom = p.prenom || (p.nom || '').split(' ')[0] || 'Bonjour';\nconst jour = p.jour || 'cette semaine';\nconst moment = p.preference_rappel === 'avant_midi' ? 'avant-midi' : 'après-midi';\n\nconst msg =\n  `Bonjour ${prenom} ! 😊\\nMerci pour votre temps.\\n` +\n  `Notre directeur des travaux vous contactera ${jour} en ${moment}.\\n` +\n  `Des questions ? Répondez à ce message !\\n— Soumission Entrepreneurs`;\n\nif (!phone) return [{ json: { ok: false, error: 'no_phone' } }];\n\nconst sid = $env.TWILIO_ACCOUNT_SID;\nconst auth = Buffer.from(`${sid}:${$env.TWILIO_AUTH_TOKEN}`).toString('base64');\nconst from = $env.TWILIO_FROM_SOUMISSION || '+15817058118';\n\nawait this.helpers.httpRequest({\n  method: 'POST',\n  url: `https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`,\n  headers: { Authorization: 'Basic ' + auth, 'Content-Type': 'application/x-www-form-urlencoded' },\n  body: `To=${encodeURIComponent(phone)}&From=${encodeURIComponent(from)}&Body=${encodeURIComponent(msg)}`,\n});\n\nconst odooUrl = ($env.ODOO_URL || 'https://intellixcrm.com').replace(/\\/$/, '');\nlet odoo = {};\ntry {\n  const res = await this.helpers.httpRequest({\n    method: 'POST',\n    url: odooUrl + '/doorway/api/soumission-qc/qualified',\n    body: {\n      jsonrpc: '2.0',\n      method: 'call',\n      params: { tenant_api_key: $env.DOORWAY_TENANT_API_KEY, ...p },\n      id: Date.now(),\n    },\n    json: true,\n  });\n  odoo = res.result || res;\n} catch (e) {\n  odoo = { error: (e.message || String(e)).slice(0, 200) };\n}\n\nreturn [{ json: { ok: true, sms_sent: true, odoo } }];"
+        },
+        "name": "Qualified Lead",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          280,
+          300
+        ]
+      }
+    ],
+    "connections": {
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Qualified Lead",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "tags": [
+      {
+        "name": "soumission-qc"
+      },
+      {
+        "name": "sofia"
+      }
+    ]
+  },
+  {
+    "name": "soumission-qc — 05 Lead Non Qualifié",
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "soumission-qc/non-qualified",
+          "responseMode": "lastNode",
+          "options": {}
+        },
+        "name": "Webhook",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          0,
+          300
+        ],
+        "webhookId": "soumission-qc-non-qualified"
+      },
+      {
+        "parameters": {
+          "jsCode": "const p = $input.first().json.body || $input.first().json;\nconst action = p.crm_action || p.statut || '';\n\nconst odooUrl = ($env.ODOO_URL || 'https://intellixcrm.com').replace(/\\/$/, '');\nlet odoo = {};\ntry {\n  const res = await this.helpers.httpRequest({\n    method: 'POST',\n    url: odooUrl + '/doorway/api/soumission-qc/non-qualified',\n    body: {\n      jsonrpc: '2.0',\n      method: 'call',\n      params: { tenant_api_key: $env.DOORWAY_TENANT_API_KEY, ...p, crm_action: action },\n      id: Date.now(),\n    },\n    json: true,\n  });\n  odoo = res.result || res;\n} catch (e) {\n  odoo = { error: (e.message || String(e)).slice(0, 200) };\n}\n\nreturn [{ json: { ok: true, action, odoo } }];"
+        },
+        "name": "Non Qualified",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          280,
+          300
+        ]
+      }
+    ],
+    "connections": {
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Non Qualified",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "tags": [
+      {
+        "name": "soumission-qc"
+      },
+      {
+        "name": "sofia"
+      }
+    ]
+  },
+  {
+    "name": "soumission-qc — 06 Stats Quotidiennes",
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "cronExpression",
+                "expression": "0 18 * * *"
+              }
+            ]
+          }
+        },
+        "name": "Cron 18h",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          0,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const today = new Date().toISOString().slice(0, 10);\nconst odooUrl = ($env.ODOO_URL || 'https://intellixcrm.com').replace(/\\/$/, '');\n\nlet stats = { date: today, calls: 0, qualified: 0, pas_interesse: 0, locataire: 0, pas_projet: 0 };\ntry {\n  const res = await this.helpers.httpRequest({\n    method: 'POST',\n    url: odooUrl + '/doorway/api/soumission-qc/daily-stats',\n    body: {\n      jsonrpc: '2.0',\n      method: 'call',\n      params: { tenant_api_key: $env.DOORWAY_TENANT_API_KEY, date: today },\n      id: Date.now(),\n    },\n    json: true,\n  });\n  stats = { ...stats, ...(res.result || res) };\n} catch (_e) { /* stats optional */ }\n\nconst pct = stats.calls ? Math.round((stats.qualified / stats.calls) * 100) : 0;\nconst body =\n  `Rapport Sofia — ${today}\\n` +\n  `📞 Appels : ${stats.calls}\\n` +\n  `✅ Qualifiés : ${stats.qualified} (${pct}%)\\n` +\n  `❌ Pas intéressés : ${stats.pas_interesse}\\n` +\n  `🏠 Locataires : ${stats.locataire}\\n` +\n  `📋 Sans projet : ${stats.pas_projet}`;\n\nconst email = $env.MANAGER_EMAIL || $env.DIRECTOR_EMAIL;\nif (email) {\n  try {\n    await this.helpers.httpRequest({\n      method: 'POST',\n      url: odooUrl + '/doorway/api/soumission-qc/send-report',\n      body: {\n        jsonrpc: '2.0',\n        method: 'call',\n        params: { tenant_api_key: $env.DOORWAY_TENANT_API_KEY, email, subject: `Rapport Sofia SE — ${today}`, body },\n        id: Date.now(),\n      },\n      json: true,\n    });\n  } catch (_e) { /* email optional */ }\n}\n\nreturn [{ json: { ok: true, stats, report: body } }];"
+        },
+        "name": "Daily Stats",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          280,
+          300
+        ]
+      }
+    ],
+    "connections": {
+      "Cron 18h": {
+        "main": [
+          [
+            {
+              "node": "Daily Stats",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "tags": [
+      {
+        "name": "soumission-qc"
+      },
+      {
+        "name": "sofia"
+      }
+    ]
+  }
+]

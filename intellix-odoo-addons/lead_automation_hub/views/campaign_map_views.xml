@@ -1,0 +1,33 @@
+<odoo>
+
+    <!-- LIST VIEW -->
+    <record id="view_campaign_map_list" model="ir.ui.view">
+        <field name="name">lead.campaign.map.list</field>
+        <field name="model">lead.campaign.map</field>
+        <field name="arch" type="xml">
+            <list class="o_lead_automation_list">
+                <field name="country_id"/>
+                <field name="tag_name"/>
+                <field name="campaign_name"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- FORM VIEW -->
+    <record id="view_campaign_map_form" model="ir.ui.view">
+        <field name="name">lead.campaign.map.form</field>
+        <field name="model">lead.campaign.map</field>
+        <field name="arch" type="xml">
+            <form class="o_lead_automation_form">
+                <sheet>
+                    <group>
+                        <field name="country_id"/>
+                        <field name="tag_name"/>
+                        <field name="campaign_name"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+</odoo>

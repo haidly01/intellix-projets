@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pe_badge_tree" model="ir.ui.view">
+        <field name="name">pe.badge.tree</field>
+        <field name="model">pe.badge</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="icon"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="criterion_type"/>
+                <field name="criterion_value"/>
+                <field name="points_value"/>
+                <field name="rarity"/>
+                <field name="times_awarded"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pe_badge_award_tree" model="ir.ui.view">
+        <field name="name">pe.badge.award.tree</field>
+        <field name="model">pe.badge.award</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="award_date"/>
+                <field name="employee_id"/>
+                <field name="badge_id"/>
+                <field name="manager_approved"/>
+                <field name="notified"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pe_badge_award_form" model="ir.ui.view">
+        <field name="name">pe.badge.award.form</field>
+        <field name="model">pe.badge.award</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_manager_approve" type="object" string="Approuver" class="btn-primary" invisible="manager_approved" groups="people_engine.group_manager"/>
+                    <button name="action_notify_employee" type="object" string="Notifier employé" invisible="not notified or not manager_approved" groups="people_engine.group_manager"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="badge_id"/>
+                        <field name="profile_id"/>
+                        <field name="reason"/>
+                        <field name="manager_approved"/>
+                        <field name="is_public"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_pe_level_tree" model="ir.ui.view">
+        <field name="name">pe.level.tree</field>
+        <field name="model">pe.level</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="level_number"/>
+                <field name="icon"/>
+                <field name="name"/>
+                <field name="points_required"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pe_challenge_form" model="ir.ui.view">
+        <field name="name">pe.challenge.form</field>
+        <field name="model">pe.challenge</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_activate" type="object" string="Activer" invisible="status != 'draft'" groups="people_engine.group_manager"/>
+                    <button name="action_finish_and_award" type="object" string="Clôturer et récompenser" invisible="status != 'active'" groups="people_engine.group_hr"/>
+                    <field name="status" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="challenge_type"/>
+                        <field name="metric"/>
+                        <field name="target_value"/>
+                        <field name="date_start"/>
+                        <field name="date_end"/>
+                        <field name="created_by_id"/>
+                        <field name="approved_by_id"/>
+                    </group>
+                    <field name="participant_ids" widget="many2many_tags"/>
+                    <field name="description"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_pe_reward_tree" model="ir.ui.view">
+        <field name="name">pe.reward.tree</field>
+        <field name="model">pe.reward</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="reward_type"/>
+                <field name="amount"/>
+                <field name="dg_approval_required"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pe_reward_wizard_form" model="ir.ui.view">
+        <field name="name">pe.reward.wizard.form</field>
+        <field name="model">pe.reward.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="profile_id"/>
+                    <field name="reward_id"/>
+                    <field name="note"/>
+                    <field name="dg_approved"/>
+                </group>
+                <footer>
+                    <button name="action_grant" type="object" string="Attribuer" class="btn-primary"/>
+                    <button string="Annuler" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_pe_badges" model="ir.actions.act_window">
+        <field name="name">Badges PE</field>
+        <field name="res_model">pe.badge</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_pe_badge_awards" model="ir.actions.act_window">
+        <field name="name">Attributions badges</field>
+        <field name="res_model">pe.badge.award</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_pe_levels" model="ir.actions.act_window">
+        <field name="name">Niveaux PE</field>
+        <field name="res_model">pe.level</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_pe_challenges" model="ir.actions.act_window">
+        <field name="name">Défis d'équipe</field>
+        <field name="res_model">pe.challenge</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_pe_rewards" model="ir.actions.act_window">
+        <field name="name">Récompenses</field>
+        <field name="res_model">pe.reward</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_pe_gamification_dashboard" model="ir.actions.act_window">
+        <field name="name">Gamification — Classement</field>
+        <field name="res_model">pe.leaderboard</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="doorway_social_ia.HomeDashboard" owl="1">
+        <div class="o_action o_social_home_dashboard">
+            <iframe class="o_social_home_iframe"
+                    t-att-src="iframeSrc"
+                    title="Module Réseaux Sociaux — Veille et LinkedIn"/>
+        </div>
+    </t>
+</templates>

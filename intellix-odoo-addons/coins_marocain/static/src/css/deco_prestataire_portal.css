@@ -1,0 +1,219 @@
+/* Page publique /prestataire-deco/[token] — charte Coins Marocain.
+   Ne pas charger dans web.assets_backend. Distinct de /partenaire/. */
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #faf6ee;
+  color: #262220;
+  font-family: Jost, "Segoe UI", sans-serif;
+  min-height: 100%;
+}
+.cm-wrap {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 28px 20px 56px;
+}
+.cm-hero {
+  background: linear-gradient(135deg, #e6b876 0%, #b5732f 70%, #8a5420 100%);
+  border-radius: 14px;
+  padding: 28px 28px 24px;
+  color: #fffdf8;
+  margin-bottom: 22px;
+  box-shadow: 0 10px 28px rgba(181, 115, 47, 0.22);
+}
+.cm-kicker {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.9;
+  margin: 0 0 8px;
+}
+.cm-hero h1 {
+  font-family: "Cormorant Garamond", "Playfair Display", Georgia, serif;
+  font-weight: 600;
+  font-size: 34px;
+  line-height: 1.15;
+  margin: 0 0 8px;
+}
+.cm-hero p {
+  margin: 0;
+  font-size: 15px;
+  opacity: 0.95;
+}
+.cm-card {
+  background: #fffdf8;
+  border: 1px solid #e6ddcc;
+  border-radius: 12px;
+  padding: 22px 22px 8px;
+}
+.cm-card h2 {
+  font-family: "Playfair Display", "Cormorant Garamond", Georgia, serif;
+  font-size: 20px;
+  font-weight: 600;
+  margin: 8px 0 16px;
+  color: #262220;
+}
+label {
+  display: block;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #8a8172;
+  margin: 12px 0 6px;
+}
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="number"],
+input[type="url"],
+select,
+textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #e6ddcc;
+  border-radius: 8px;
+  background: #fff;
+  color: #262220;
+  font-family: inherit;
+  font-size: 15px;
+  padding: 10px 12px;
+}
+textarea { min-height: 110px; resize: vertical; }
+.cm-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.cm-cats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 18px;
+}
+.cm-cat {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 8px 12px;
+  border: 1px solid #e6ddcc;
+  border-radius: 999px;
+  background: #fff;
+  text-transform: none;
+  letter-spacing: 0;
+  color: #262220;
+  font-size: 14px;
+}
+.cm-cat:has(input:checked) {
+  border-color: #b5732f;
+  background: #fff6ea;
+}
+.cm-check-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-transform: none;
+  letter-spacing: 0;
+  color: #262220;
+  font-size: 14px;
+  margin: 12px 0 16px;
+}
+.cm-btn {
+  display: inline-block;
+  margin: 18px 0 20px;
+  border: 0;
+  border-radius: 8px;
+  padding: 12px 22px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, #e6b876, #b5732f);
+  cursor: pointer;
+}
+.cm-note {
+  font-size: 13px;
+  color: #8a8172;
+  margin: 0 0 16px;
+}
+.cm-ok {
+  background: #eef4e6;
+  border: 1px solid #d3e0bd;
+  color: #4f6a2c;
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin-bottom: 18px;
+}
+.cm-err {
+  background: #fdeceb;
+  border: 1px solid #f3c8c3;
+  color: #a3352b;
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 16px;
+}
+.cm-foot {
+  text-align: center;
+  margin-top: 28px;
+  color: #8a8172;
+  font-size: 13px;
+}
+.cm-foot em {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 18px;
+  font-style: italic;
+  color: #262220;
+}
+.cm-theme-photos {
+  border: 1px solid #e6ddcc;
+  border-radius: 10px;
+  padding: 14px 16px 10px;
+  margin: 0 0 16px;
+  background: #fff;
+}
+.cm-theme-photos h3 {
+  margin: 0 0 12px;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 17px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+.cm-photo-count {
+  font-family: Jost, sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #8a5420;
+}
+.cm-gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 0 0 12px;
+}
+.cm-gallery figure {
+  margin: 0;
+}
+.cm-gallery img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
+  background: #efe6d4;
+}
+.cm-gallery figcaption {
+  font-size: 11px;
+  color: #8a8172;
+  margin-top: 4px;
+}
+.cm-kind-block {
+  margin-top: 8px;
+}
+@media (max-width: 640px) {
+  .cm-row { grid-template-columns: 1fr; }
+  .cm-hero h1 { font-size: 28px; }
+  .cm-gallery { grid-template-columns: 1fr 1fr; }
+}

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="event_template_privatisation_weekend" model="intellix.riad.event.template">
+        <field name="name">Privatisation weekend</field>
+        <field name="event_kind">privatisation_weekend</field>
+    </record>
+    <record id="event_tpl_pw_1" model="intellix.riad.event.template.line">
+        <field name="template_id" ref="event_template_privatisation_weekend"/>
+        <field name="sequence">10</field>
+        <field name="name">Réservation des chambres confirmée</field>
+        <field name="offset_days">10</field>
+    </record>
+    <record id="event_tpl_pw_2" model="intellix.riad.event.template.line">
+        <field name="template_id" ref="event_template_privatisation_weekend"/>
+        <field name="sequence">20</field>
+        <field name="name">Devis traiteur envoyé au client</field>
+        <field name="offset_days">8</field>
+    </record>
+    <record id="event_tpl_pw_3" model="intellix.riad.event.template.line">
+        <field name="template_id" ref="event_template_privatisation_weekend"/>
+        <field name="sequence">30</field>
+        <field name="name">Créneaux bien-être bloqués au calendrier</field>
+        <field name="offset_days">7</field>
+    </record>
+    <record id="event_tpl_pw_4" model="intellix.riad.event.template.line">
+        <field name="template_id" ref="event_template_privatisation_weekend"/>
+        <field name="sequence">40</field>
+        <field name="name">Confirmer menu traiteur avec le client</field>
+        <field name="offset_days">1</field>
+    </record>
+    <record id="event_tpl_pw_5" model="intellix.riad.event.template.line">
+        <field name="template_id" ref="event_template_privatisation_weekend"/>
+        <field name="sequence">50</field>
+        <field name="name">Préparer décoration terrasse (thème demandé)</field>
+        <field name="offset_days">0</field>
+    </record>
+    <record id="event_tpl_pw_6" model="intellix.riad.event.template.line">
+        <field name="template_id" ref="event_template_privatisation_weekend"/>
+        <field name="sequence">60</field>
+        <field name="name">Briefer l'équipe de service sur l'horaire événement</field>
+        <field name="offset_days">0</field>
+    </record>
+    <record id="event_tpl_pw_7" model="intellix.riad.event.template.line">
+        <field name="template_id" ref="event_template_privatisation_weekend"/>
+        <field name="sequence">70</field>
+        <field name="name">Préparation des chambres (ménage renforcé)</field>
+        <field name="offset_days">0</field>
+    </record>
+    <record id="event_tpl_pw_8" model="intellix.riad.event.template.line">
+        <field name="template_id" ref="event_template_privatisation_weekend"/>
+        <field name="sequence">80</field>
+        <field name="name">Coordination session bien-être groupe</field>
+        <field name="offset_days">-1</field>
+    </record>
+
+    <record id="event_template_mariage" model="intellix.riad.event.template">
+        <field name="name">Mariage</field>
+        <field name="event_kind">mariage</field>
+    </record>
+    <record id="event_tpl_ma_1" model="intellix.riad.event.template.line">
+        <field name="template_id" ref="event_template_mariage"/>
+        <field name="sequence">10</field>
+        <field name="name">Confirmer le nombre d'invités et le plan de table</field>
+        <field name="offset_days">14</field>
+    </record>
+    <record id="event_tpl_ma_2" model="intellix.riad.event.template.line">
+        <field name="template_id" ref="event_template_mariage"/>
+        <field name="sequence">20</field>
+        <field name="name">Valider menu et horaires de service</field>
+        <field name="offset_days">7</field>
+    </record>
+    <record id="event_tpl_ma_3" model="intellix.riad.event.template.line">
+        <field name="template_id" ref="event_template_mariage"/>
+        <field name="sequence">30</field>
+        <field name="name">Préparer décoration et plan de circulation</field>
+        <field name="offset_days">1</field>
+    </record>
+    <record id="event_tpl_ma_4" model="intellix.riad.event.template.line">
+        <field name="template_id" ref="event_template_mariage"/>
+        <field name="sequence">40</field>
+        <field name="name">Brief équipe réception / ménage / service</field>
+        <field name="offset_days">0</field>
+    </record>
+
+    <record id="event_template_retraite" model="intellix.riad.event.template">
+        <field name="name">Retraite corporative</field>
+        <field name="event_kind">retraite_corpo</field>
+    </record>
+    <record id="event_tpl_re_1" model="intellix.riad.event.template.line">
+        <field name="template_id" ref="event_template_retraite"/>
+        <field name="sequence">10</field>
+        <field name="name">Confirmer salles et horaires de réunion</field>
+        <field name="offset_days">7</field>
+    </record>
+    <record id="event_tpl_re_2" model="intellix.riad.event.template.line">
+        <field name="template_id" ref="event_template_retraite"/>
+        <field name="sequence">20</field>
+        <field name="name">Préparer pauses café et repas groupe</field>
+        <field name="offset_days">2</field>
+    </record>
+    <record id="event_tpl_re_3" model="intellix.riad.event.template.line">
+        <field name="template_id" ref="event_template_retraite"/>
+        <field name="sequence">30</field>
+        <field name="name">Brief personnel de service</field>
+        <field name="offset_days">0</field>
+    </record>
+
+    <record id="event_template_celebration" model="intellix.riad.event.template">
+        <field name="name">Célébration</field>
+        <field name="event_kind">celebration</field>
+    </record>
+    <record id="event_tpl_ce_1" model="intellix.riad.event.template.line">
+        <field name="template_id" ref="event_template_celebration"/>
+        <field name="sequence">10</field>
+        <field name="name">Confirmer le nombre d'invités et le déroulé</field>
+        <field name="offset_days">7</field>
+    </record>
+    <record id="event_tpl_ce_2" model="intellix.riad.event.template.line">
+        <field name="template_id" ref="event_template_celebration"/>
+        <field name="sequence">20</field>
+        <field name="name">Valider menu et horaires de service</field>
+        <field name="offset_days">3</field>
+    </record>
+    <record id="event_tpl_ce_3" model="intellix.riad.event.template.line">
+        <field name="template_id" ref="event_template_celebration"/>
+        <field name="sequence">30</field>
+        <field name="name">Préparer décoration terrasse (thème demandé)</field>
+        <field name="offset_days">1</field>
+    </record>
+    <record id="event_tpl_ce_4" model="intellix.riad.event.template.line">
+        <field name="template_id" ref="event_template_celebration"/>
+        <field name="sequence">40</field>
+        <field name="name">Brief équipe réception / ménage / service</field>
+        <field name="offset_days">0</field>
+    </record>
+</odoo>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_order_form_quotation_tracking" model="ir.ui.view">
+        <field name="name">sale.order.form.quotation.tracking</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='other_information']" position="inside">
+                <group string="Suivi client (devis)" name="quotation_tracking">
+                    <group>
+                        <field name="quotation_email_opened"/>
+                        <field name="quotation_email_opened_at"/>
+                        <field name="quotation_email_open_count"/>
+                    </group>
+                    <group>
+                        <field name="quotation_portal_viewed"/>
+                        <field name="quotation_portal_viewed_at"/>
+                        <field name="quotation_portal_view_count"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_quotation_tree_quotation_tracking" model="ir.ui.view">
+        <field name="name">sale.order.tree.quotation.tracking</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_quotation_tree"/>
+        <field name="arch" type="xml">
+            <field name="state" position="after">
+                <field name="quotation_email_opened" optional="hide"/>
+                <field name="quotation_portal_viewed" optional="hide"/>
+            </field>
+        </field>
+    </record>
+</odoo>

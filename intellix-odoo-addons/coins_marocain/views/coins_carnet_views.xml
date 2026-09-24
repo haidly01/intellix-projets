@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_coins_carnet_badge_form" model="ir.ui.view">
+        <field name="name">coins.carnet.badge.form</field>
+        <field name="model">coins.carnet.badge</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml"><form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="carnet_id"/>
+                            <field name="categorie_badge"/>
+                            <field name="date_obtention"/>
+                            <field name="display_name_badge"/>
+                        </group>
+                        <group>
+                            <field name="activite_id"/>
+                            <field name="activite_booking_id"/>
+                            <field name="detente_booking_id"/>
+                            <field name="reservation_id"/>
+                            <field name="notes"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form></field>
+    </record>
+
+    <record id="view_coins_carnet_badge_list" model="ir.ui.view">
+        <field name="name">coins.carnet.badge.list</field>
+        <field name="model">coins.carnet.badge</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml"><list>
+                <field name="date_obtention"/>
+                <field name="partner_id"/>
+                <field name="categorie_badge"/>
+                <field name="display_name_badge"/>
+                <field name="carnet_id"/>
+                <field name="activite_id"/>
+            </list></field>
+    </record>
+
+    <record id="view_coins_carnet_form" model="ir.ui.view">
+        <field name="name">coins.carnet.form</field>
+        <field name="model">coins.carnet</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml"><form string="Carnet du Voyageur">
+                <header>
+                    <field name="palier_actuel" widget="statusbar" statusbar_visible="decouvreur,habitue,initie,ambassadeur"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_badges" type="object" class="oe_stat_button" icon="fa-certificate">
+                            <field name="nombre_badges" widget="statinfo" string="Badges"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Ambassadeur éligible" bg_color="text-bg-warning" invisible="not eligible_programme_ambassadeur"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="code_parrainage"/>
+                            <field name="portal_token" groups="base.group_no_one"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="nombre_parrainages_valides"/>
+                            <field name="date_premier_badge"/>
+                            <field name="date_dernier_badge"/>
+                            <field name="animation_premium"/>
+                            <field name="catalogue_vip_debloque"/>
+                            <field name="eligible_programme_ambassadeur"/>
+                            <field name="ambassador_notified"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Badges" name="badges">
+                            <field name="badge_ids">
+                                <list>
+                                    <field name="date_obtention"/>
+                                    <field name="categorie_badge"/>
+                                    <field name="display_name_badge"/>
+                                    <field name="activite_id"/>
+                                    <field name="activite_booking_id"/>
+                                    <field name="detente_booking_id"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form></field>
+    </record>
+
+    <record id="view_coins_carnet_list" model="ir.ui.view">
+        <field name="name">coins.carnet.list</field>
+        <field name="model">coins.carnet</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml"><list>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="palier_actuel" widget="badge" decoration-info="palier_actuel == 'decouvreur'" decoration-success="palier_actuel == 'habitue'" decoration-warning="palier_actuel == 'initie'" decoration-danger="palier_actuel == 'ambassadeur'"/>
+                <field name="nombre_badges"/>
+                <field name="nombre_parrainages_valides"/>
+                <field name="code_parrainage"/>
+                <field name="animation_premium"/>
+                <field name="eligible_programme_ambassadeur"/>
+                <field name="date_dernier_badge"/>
+            </list></field>
+    </record>
+
+    <record id="view_coins_carnet_pivot" model="ir.ui.view">
+        <field name="name">coins.carnet.pivot</field>
+        <field name="model">coins.carnet</field>
+        <field name="type">pivot</field>
+        <field name="arch" type="xml"><pivot string="KPI Carnets">
+                <field name="palier_actuel" type="row"/>
+                <field name="nombre_badges" type="measure"/>
+                <field name="nombre_parrainages_valides" type="measure"/>
+            </pivot></field>
+    </record>
+
+    <record id="view_coins_carnet_search" model="ir.ui.view">
+        <field name="name">coins.carnet.search</field>
+        <field name="model">coins.carnet</field>
+        <field name="type">search</field>
+        <field name="arch" type="xml"><search>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="code_parrainage"/>
+                <filter name="filter_eligible" string="Éligible ambassadeur" domain="[('eligible_programme_ambassadeur', '=', True)]"/>
+                <filter name="filter_premium_anim" string="Animation premium" domain="[('animation_premium', '=', True)]"/>
+                <group>
+                    <filter name="group_palier" string="Palier" context="{'group_by': 'palier_actuel'}"/>
+                </group>
+            </search></field>
+    </record>
+
+    <record id="view_coins_carnet_tier_form" model="ir.ui.view">
+        <field name="name">coins.carnet.tier.form</field>
+        <field name="model">coins.carnet.tier</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml"><form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="seuil_badges"/>
+                            <field name="seuil_parrainages_alternatif"/>
+                            <field name="debloque_animation_premium"/>
+                            <field name="debloque_catalogue_vip"/>
+                        </group>
+                    </group>
+                    <field name="description"/>
+                    <field name="avantages_ids">
+                        <list editable="bottom">
+                            <field name="sequence" widget="handle"/>
+                            <field name="name"/>
+                            <field name="discount_percent"/>
+                            <field name="description"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form></field>
+    </record>
+
+    <record id="view_coins_carnet_tier_list" model="ir.ui.view">
+        <field name="name">coins.carnet.tier.list</field>
+        <field name="model">coins.carnet.tier</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml"><list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="seuil_badges"/>
+                <field name="seuil_parrainages_alternatif"/>
+                <field name="debloque_animation_premium"/>
+                <field name="debloque_catalogue_vip"/>
+            </list></field>
+    </record>
+
+</odoo>

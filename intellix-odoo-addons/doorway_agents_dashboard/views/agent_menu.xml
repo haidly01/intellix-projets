@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_agent_creation"
+              name="Création agent"
+              parent="menu_agents_root"
+              action="action_agent_wizard"
+              sequence="5"/>
+
+    <menuitem id="menu_agent_performance"
+              name="Performance IA"
+              parent="menu_agents_root"
+              action="action_agent_performance"
+              sequence="8"/>
+
+    <menuitem id="menu_campagnes_ia"
+              name="Campagnes"
+              parent="menu_agents_root"
+              action="doorway_vicidial_campaigns.action_campaign_dashboard"
+              sequence="12"/>
+
+    <menuitem id="menu_doorway_dashboard_live"
+              name="Monitoring en direct"
+              parent="menu_agents_root"
+              action="action_doorway_dashboard_live"
+              sequence="15"/>
+
+    <menuitem id="menu_agent_profiles"
+              name="Agents (sync API)"
+              parent="menu_agents_root"
+              action="action_agent_profile"
+              sequence="20"/>
+
+    <menuitem id="menu_doorway_call_reports"
+              name="Rapports post-appel"
+              parent="menu_agents_root"
+              action="action_doorway_call_report"
+              sequence="25"/>
+
+    <menuitem id="menu_agent_test_calls"
+              name="Appels test"
+              parent="menu_agents_root"
+              action="action_agent_test_call"
+              sequence="30"/>
+
+    <menuitem id="menu_doorway_agents_config"
+              name="Configuration"
+              parent="menu_agents_root"
+              sequence="90"/>
+
+    <menuitem id="menu_doorway_agents_onboarding"
+              name="Visite guidée"
+              parent="menu_doorway_agents_config"
+              action="action_agents_onboarding_tour"
+              sequence="5"/>
+
+    <menuitem id="menu_doorway_agent_ia"
+              name="Agents vocaux (legacy)"
+              parent="menu_doorway_agents_config"
+              action="action_doorway_agent_ia"
+              sequence="10"/>
+
+    <menuitem id="menu_doorway_vicidial_campaign"
+              name="Campagnes d'appels"
+              parent="menu_doorway_agents_config"
+              action="doorway_vicidial_campaigns.action_doorway_campaign"
+              sequence="20"/>
+
+    <menuitem id="menu_doorway_sessions_all"
+              name="Historique des appels"
+              parent="menu_doorway_agents_config"
+              action="action_doorway_call_sessions_all"
+              sequence="30"/>
+</odoo>

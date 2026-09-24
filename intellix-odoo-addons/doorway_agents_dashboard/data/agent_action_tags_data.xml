@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="action_tag_create_lead" model="doorway.agent.action.tag">
+        <field name="name">Créer un lead dans Odoo CRM</field>
+        <field name="code">create_lead</field>
+        <field name="description">Crée automatiquement une opportunité CRM qualifiée après l'appel.</field>
+        <field name="sequence">10</field>
+    </record>
+    <record id="action_tag_send_sms" model="doorway.agent.action.tag">
+        <field name="name">Envoyer un SMS de confirmation</field>
+        <field name="code">send_sms</field>
+        <field name="description">Envoie un SMS Twilio de confirmation au prospect.</field>
+        <field name="sequence">20</field>
+    </record>
+    <record id="action_tag_human_transfer" model="doorway.agent.action.tag">
+        <field name="name">Transférer l'appel à un humain</field>
+        <field name="code">human_transfer</field>
+        <field name="description">Transfère l'appel vers un conseiller humain si demandé.</field>
+        <field name="sequence">30</field>
+    </record>
+    <record id="action_tag_lead_note" model="doorway.agent.action.tag">
+        <field name="name">Enregistrer une note sur le lead</field>
+        <field name="code">lead_note</field>
+        <field name="description">Ajoute une note de synthèse sur la fiche lead Odoo.</field>
+        <field name="sequence">40</field>
+    </record>
+    <record id="action_tag_n8n_workflow" model="doorway.agent.action.tag">
+        <field name="name">Déclencher un workflow n8n</field>
+        <field name="code">n8n_workflow</field>
+        <field name="description">Appelle un webhook n8n pour relances ou orchestration.</field>
+        <field name="sequence">50</field>
+    </record>
+    <record id="action_tag_send_email" model="doorway.agent.action.tag">
+        <field name="name">Envoyer un email de suivi</field>
+        <field name="code">send_email</field>
+        <field name="description">Envoie un courriel de suivi personnalisé après l'appel.</field>
+        <field name="sequence">60</field>
+    </record>
+</odoo>

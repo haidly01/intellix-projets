@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Packs crédits IA référencés par les modèles de devis Call Center -->
+    <record id="product_intlx_ia_m" model="product.template">
+        <field name="name">Intellix — Pack Crédits IA Medium</field>
+        <field name="default_code">INTLX-IA-M</field>
+        <field name="type">service</field>
+        <field name="list_price">499.0</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="categ_id" ref="product_category_intellix_ia"/>
+        <field name="description_sale">Pack crédits IA mensuel — tier Medium. Agent vocal, coaching IA et automatisations pour équipes jusqu'à 10 agents. Facturation mensuelle.</field>
+    </record>
+
+    <record id="product_intlx_ia_l" model="product.template">
+        <field name="name">Intellix — Pack Crédits IA Large</field>
+        <field name="default_code">INTLX-IA-L</field>
+        <field name="type">service</field>
+        <field name="list_price">1299.0</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="categ_id" ref="product_category_intellix_ia"/>
+        <field name="description_sale">Pack crédits IA mensuel — tier Large. Volume adapté aux centres d'appels de 30 agents. Facturation mensuelle.</field>
+    </record>
+
+    <record id="product_intlx_ia_xl" model="product.template">
+        <field name="name">Intellix — Pack Crédits IA XL</field>
+        <field name="default_code">INTLX-IA-XL</field>
+        <field name="type">service</field>
+        <field name="list_price">2199.0</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="categ_id" ref="product_category_intellix_ia"/>
+        <field name="description_sale">Pack crédits IA mensuel — tier XL. Volume entreprise pour 50 agents et plus. Facturation mensuelle.</field>
+    </record>
+</odoo>

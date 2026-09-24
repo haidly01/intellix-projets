@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_riad_establishment_list" model="ir.ui.view">
+        <field name="name">intellix.riad.establishment.list</field>
+        <field name="model">intellix.riad.establishment</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="property_id"/>
+                <field name="tiktok_handle"/>
+                <field name="company_id" optional="hide"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_riad_establishment_form" model="ir.ui.view">
+        <field name="name">intellix.riad.establishment.form</field>
+        <field name="model">intellix.riad.establishment</field>
+        <field name="arch" type="xml">
+            <form string="Établissement">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="property_id"/>
+                            <field name="name"/>
+                            <field name="company_id"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="social_account_ids" widget="many2many_tags"/>
+                            <field name="tiktok_handle"/>
+                            <field name="user_ids" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                    <group string="Paiement (passerelle de l’établissement)">
+                        <group>
+                            <field name="payment_brand"/>
+                            <field name="compatible_provider_ids" invisible="1"/>
+                            <field name="payment_provider_id"
+                                   domain="[('id', 'in', compatible_provider_ids)]"/>
+                            <field name="payment_provider_state"/>
+                        </group>
+                        <group>
+                            <button name="action_ensure_test_payment_provider"
+                                    type="object"
+                                    string="Connecter une passerelle (mode test)"
+                                    class="btn-primary"/>
+                            <button name="action_open_payment_provider"
+                                    type="object"
+                                    string="Configurer les clés API"
+                                    class="btn-secondary"
+                                    invisible="not payment_provider_id"/>
+                        </group>
+                    </group>
+                    <group string="Paie — rapport mensuel de présences">
+                        <group>
+                            <field name="payroll_accountant_name"/>
+                            <field name="payroll_accountant_email"/>
+                        </group>
+                        <group>
+                            <field name="payroll_report_day"/>
+                            <field name="payroll_last_sent_month"/>
+                            <button name="action_send_last_month_payroll_report"
+                                    type="object"
+                                    string="Envoyer le rapport du mois dernier"
+                                    class="btn-primary"
+                                    groups="intellix_riad.group_riad_manager"/>
+                        </group>
+                    </group>
+                    <group string="Taxe de séjour (communale — distincte des fiches de police)">
+                        <group>
+                            <field name="tourist_tax_rate"/>
+                            <field name="tourist_tax_currency_id"/>
+                            <field name="tourist_tax_commune"
+                                     placeholder="ex. Commune Urbaine de Marrakech"/>
+                            <field name="tourist_tax_pending_confirmation"/>
+                            <field name="tourist_tax_tpt_amount"
+                                     string="Dont TPT (optionnel)"/>
+                            <field name="tourist_tax_communal_amount"
+                                     string="Dont communale (optionnel)"/>
+                            <field name="tourist_tax_awaiting_karine" readonly="1"/>
+                            <field name="tourist_tax_owner_submitted_at" readonly="1"/>
+                            <field name="tourist_tax_owner_rate"
+                                     string="Proposition proprio — taux"
+                                     readonly="1"/>
+                            <field name="tourist_tax_owner_commune"
+                                     string="Proposition proprio — commune"
+                                     readonly="1"/>
+                            <field name="tourist_tax_owner_tpt" readonly="1"/>
+                            <field name="tourist_tax_owner_communal" readonly="1"/>
+                            <button name="action_apply_owner_tourist_tax_proposal"
+                                    type="object"
+                                    string="Valider la proposition propriétaire"
+                                    class="btn-primary"
+                                    invisible="not tourist_tax_awaiting_karine"
+                                    groups="intellix_riad.group_riad_manager"
+                                    confirm="Copier la proposition vers le taux actif (collecte / bordereau) ?"/>
+                            <field name="tax_bordereau_template_id"/>
+                            <field name="tax_operator_name"/>
+                            <field name="tax_operator_address"/>
+                            <field name="tax_operator_cin"/>
+                            <field name="tax_operator_phone"/>
+                            <field name="tax_operator_fax"/>
+                            <field name="tax_operator_nature"/>
+                        </group>
+                        <group>
+                            <field name="tax_report_name"/>
+                            <field name="tax_report_email"/>
+                            <field name="tax_report_generate_day"/>
+                            <field name="tax_last_sent_quarter"/>
+                            <button name="action_print_last_quarter_tax_bordereau"
+                                    type="object"
+                                    string="Imprimer le bordereau du trimestre précédent"
+                                    class="btn-primary"
+                                    groups="intellix_riad.group_riad_manager"/>
+                            <button name="action_send_last_quarter_tourist_tax_report"
+                                    type="object"
+                                    string="Générer / ouvrir le bordereau du trimestre précédent"
+                                    groups="intellix_riad.group_riad_manager"/>
+                        </group>
+                    </group>
+                    <group string="Créateur d'Expérience (un seul agent)" name="experience">
+                        <group>
+                            <field name="experience_agent_enabled"/>
+                            <field name="experience_use_claude"/>
+                            <field name="experience_checkin_hour" widget="float_time"/>
+                            <field name="experience_checkout_hour" widget="float_time"/>
+                            <field name="experience_neighborhood"/>
+                        </group>
+                        <group>
+                            <field name="experience_review_enabled"/>
+                            <field name="experience_review_delay_hours"/>
+                            <field name="google_review_url"
+                                   placeholder="https://g.page/…/review"/>
+                            <field name="facebook_review_url"
+                                   placeholder="https://www.facebook.com/…/reviews"/>
+                            <field name="experience_n8n_webhook"/>
+                            <field name="experience_howto"/>
+                            <field name="experience_facts"/>
+                            <field name="experience_wifi"/>
+                            <field name="experience_house_rules"/>
+                            <field name="experience_useful_contacts"/>
+                            <field name="experience_local_tips"/>
+                            <field name="experience_review_template" invisible="1"/>
+                        </group>
+                    </group>
+                    <group string="Connexions OTA (Channex)" name="ota_channels">
+                        <group>
+                            <field name="ota_booking_status"/>
+                            <field name="ota_airbnb_status"/>
+                            <field name="ota_expedia_status"/>
+                            <field name="ota_agoda_status"/>
+                            <field name="ota_vrbo_status"/>
+                            <field name="ota_feratel_status"/>
+                            <field name="ota_inntopia_status"/>
+                            <field name="ota_hrs_status"/>
+                            <field name="ota_smith_status"/>
+                            <field name="ota_trip_status"/>
+                            <field name="ota_google_status"/>
+                            <field name="ota_instant_status"/>
+                            <field name="ota_status_synced_at" readonly="1"/>
+                            <button name="action_refresh_ota_statuses_from_channex"
+                                    type="object"
+                                    string="Rafraîchir depuis Channex"
+                                    class="btn-secondary"
+                                    groups="intellix_riad.group_riad_manager"/>
+                        </group>
+                        <group string="WhatsApp Business (dédié à ce lieu)">
+                            <field name="whatsapp_provision_status"/>
+                            <field name="whatsapp_e164"/>
+                            <field name="whatsapp_display_name"/>
+                            <field name="whatsapp_phone_number_id"/>
+                            <field name="whatsapp_waba_id"/>
+                        </group>
+                        <group string="Commission Coins (portail facturation)">
+                            <field name="coins_commission_direct_pct"/>
+                            <field name="coins_commission_ota_pct"/>
+                            <field name="coins_monthly_fee"/>
+                        </group>
+                    </group>
+                    <group string="Cross-promotion Coins (sans fusion de back-office)">
+                        <group>
+                            <field name="listed_on_coins_marocain"/>
+                            <field name="coins_partner_activity_id"/>
+                            <field name="creator_compensation"/>
+                            <field name="creator_commission_pct"/>
+                        </group>
+                        <group>
+                            <field name="creator_payout_webhook"
+                                   placeholder="https://… n8n / versement créateurs"/>
+                            <button name="action_open_riad_availability_readonly"
+                                    type="object"
+                                    string="Calendrier (lecture seule)"
+                                    class="btn-secondary"/>
+                        </group>
+                    </group>
+                    <group string="Terrasse — créneaux par défaut">
+                        <group>
+                            <field name="terrace_wellness_start" widget="float_time"/>
+                            <field name="terrace_wellness_end" widget="float_time"/>
+                            <field name="terrace_wellness_label"/>
+                        </group>
+                        <group>
+                            <field name="terrace_restaurant_start" widget="float_time"/>
+                            <field name="terrace_restaurant_end" widget="float_time"/>
+                            <field name="terrace_restaurant_label"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Modes d'espace" name="space">
+                            <field name="space_mode_ids">
+                                <list editable="bottom">
+                                    <field name="is_template"/>
+                                    <field name="weekday"/>
+                                    <field name="date"/>
+                                    <field name="wellness_start" widget="float_time"/>
+                                    <field name="wellness_end" widget="float_time"/>
+                                    <field name="restaurant_start" widget="float_time"/>
+                                    <field name="restaurant_end" widget="float_time"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_riad_establishment" model="ir.actions.act_window">
+        <field name="name">Établissements</field>
+        <field name="res_model">intellix.riad.establishment</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

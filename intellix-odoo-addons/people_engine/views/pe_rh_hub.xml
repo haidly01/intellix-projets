@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_pe_rh_hub" model="ir.actions.client">
+        <field name="name">Mon tableau de bord</field>
+        <field name="tag">pe_rh_hub_action</field>
+    </record>
+
+    <record id="action_pe_rh_global" model="ir.actions.client">
+        <field name="name">Vue d'ensemble RH</field>
+        <field name="tag">pe_rh_global_action</field>
+    </record>
+</odoo>

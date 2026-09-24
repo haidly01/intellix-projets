@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_crm_lead_form_coins_deco" model="ir.ui.view">
+        <field name="name">crm.lead.form.coins.deco</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <field name="coins_is_deco_lead" invisible="1"/>
+                <button name="action_coins_envoyer_lien_deco_email"
+                        type="object"
+                        string="Envoyer lien fiche déco"
+                        class="btn-secondary"
+                        invisible="not coins_is_deco_lead"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Prestataire déco" name="coins_deco_prestataire"
+                      invisible="not coins_is_deco_lead">
+                    <group>
+                        <group>
+                            <field name="coins_deco_prestataire_id"/>
+                            <field name="coins_deco_lien" widget="url"/>
+                        </group>
+                        <group>
+                            <button name="action_coins_envoyer_lien_deco_email"
+                                    type="object"
+                                    string="Envoyer le lien par email"
+                                    class="btn-primary"
+                                    colspan="2"/>
+                        </group>
+                    </group>
+                    <p class="text-muted">
+                        Lien optionnel vers coins.deco.prestataire.
+                        Ne remplace pas les Prestataires CRM (catalogue événements).
+                    </p>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

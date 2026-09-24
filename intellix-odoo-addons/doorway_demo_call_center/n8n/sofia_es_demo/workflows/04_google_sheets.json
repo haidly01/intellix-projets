@@ -1,0 +1,60 @@
+{
+  "name": "sofia-es-demo — 04 Google Sheets",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "sofia-es-demo/sheets",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "name": "Webhook Sheets",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        300
+      ],
+      "webhookId": "sofia-es-demo-sheets"
+    },
+    {
+      "parameters": {
+        "jsCode": "const b = $input.first().json.body || $input.first().json;\nconst now = new Date().toLocaleString('es-ES', { timeZone: 'Europe/Madrid' });\nconst telefono = (b.telefono || b.telephone || b.to || '').toString();\nif (!telefono) return [{ json: { ok: false, error: 'telefono requis' } }];\nconst webhook = $env.GOOGLE_SHEETS_WEBHOOK_URL;\nif (!webhook) throw new Error('GOOGLE_SHEETS_WEBHOOK_URL requis');\nconst rate = parseFloat($env.SOFIA_DEMO_BILLING_RATE || $env.SOFIA_BILLING_RATE || '0.22');\nconst amd = (b.amd_result || '').toLowerCase();\nconst dur = parseInt(b.duree_sec || b.duration_seconds || 0, 10) || 0;\nconst cost = amd === 'machine' || amd === 'not_sure' ? 0 : Math.round((dur * rate / 60) * 10000) / 10000;\nconst leadGanador = !!(b.qualified || b.lead_ganador || b.statut === 'qualifie' || b.lead_gagnant === 'OUI');\nconst sinCp = b.code_postal === 'desconocido' || b.code_postal === 'inconnu' || b.etat_final === 'q3_sin_cp';\nconst tab = b.sheet_name || $env.GOOGLE_SHEETS_TAB_DEMO || 'Leads_Sofia_Demo_Abdallah';\nconst bodyOut = {\n  sheet_name: tab,\n  row: [\n    now,\n    b.nombre || b.nom_complet || '',\n    telefono,\n    b.email || '',\n    b.adresse || b.address || '',\n    b.ville || b.city || '',\n    b.code_postal || '',\n    b.call_sid || '',\n    amd || 'unknown',\n    dur,\n    cost,\n    b.proprietaire === true ? 'OUI' : (b.proprietaire === false ? 'NON' : (b.propietario || '?')),\n    b.type_logement || b.tipo_vivienda || '',\n    leadGanador ? 'OUI' : (sinCp ? 'SUPERVISEUR_RAPPELLE' : 'NON'),\n    b.statut || b.etat_final || '',\n    b.recording_url || b.url_enregistrement || '',\n    b.transcript || b.transcripcion || '',\n    b.score_ia || '',\n    (b.notes_sofia || '') + ' [demo-abdallah]',\n    sinCp || leadGanador ? 'RAPPEL_SUPERVISEUR' : 'AUCUNE',\n    sinCp || leadGanador ? 'OUI' : 'NON',\n    $env.VICIDIAL_DEMO_CAMPAIGN || 'ABD_DEMO',\n  ],\n};\nawait this.helpers.httpRequest({ method: 'POST', url: webhook, body: bodyOut, json: true });\nreturn [{ json: { ok: true, telefono, cost, lead_ganador: leadGanador, demo: true } }];"
+      },
+      "name": "Append Leads Espagne",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Sheets": {
+      "main": [
+        [
+          {
+            "node": "Append Leads Espagne",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [
+    {
+      "name": "sofia-es-demo"
+    },
+    {
+      "name": "demo-abdallah"
+    },
+    {
+      "name": "vicidial"
+    }
+  ]
+}

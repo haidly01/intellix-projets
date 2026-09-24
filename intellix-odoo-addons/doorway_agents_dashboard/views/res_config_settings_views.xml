@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_doorway_agents" model="ir.ui.view">
+        <field name="name">res.config.settings.doorway.agents</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base_setup.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app string="Agents IA" name="doorway_agents_dashboard">
+                    <block title="Google Sheets — export appels">
+                        <setting string="Activer l'export Google Sheets">
+                            <field name="doorway_google_sheets_enabled"/>
+                            <div class="text-muted">
+                                Chaque agent peut activer l'export dans le wizard (sans pipeline CRM).
+                            </div>
+                        </setting>
+                        <setting string="Spreadsheet ID">
+                            <field name="doorway_google_sheets_spreadsheet_id"
+                                   placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms"/>
+                        </setting>
+                        <setting string="Nom de l'onglet">
+                            <field name="doorway_google_sheets_sheet_name"/>
+                        </setting>
+                        <setting string="Service account JSON">
+                            <field name="doorway_google_sheets_credentials_json" password="True"/>
+                            <div class="text-muted">
+                                Compte de service Google Cloud avec accès éditeur au Sheet.
+                                Partagez le Sheet avec l'e-mail du service account.
+                            </div>
+                        </setting>
+                        <setting string="Google API Key">
+                            <field name="doorway_google_api_key" password="True"/>
+                            <div class="text-muted">
+                                Clé API Google Cloud (projet lié au compte Sheets). Activer l'API Google Sheets.
+                            </div>
+                        </setting>
+                        <setting string="Webhook Apps Script (alternative)">
+                            <field name="doorway_google_sheets_webhook_url"
+                                   placeholder="https://script.google.com/macros/s/…/exec"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_coins_reservation_list" model="ir.ui.view">
+        <field name="name">coins.reservation.list</field>
+        <field name="model">coins.reservation</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name" decoration-warning="is_demo"/>
+                <field name="is_demo" optional="show" string="Démo"/>
+                <field name="traveler_id"/>
+                <field name="property_id"/>
+                <field name="check_in"/>
+                <field name="check_out"/>
+                <field name="nights"/>
+                <field name="driver_id"/>
+                <field name="amount_total"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="payment_status" widget="badge"
+                       decoration-success="payment_status == 'paid'"
+                       decoration-warning="payment_status == 'partial'"
+                       decoration-danger="payment_status == 'unpaid'"/>
+                <field name="overbooking" optional="show"/>
+                <field name="concierge_state" optional="hide"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'confirmed'"
+                       decoration-success="state == 'done'"
+                       decoration-warning="state == 'in_progress'"
+                       decoration-muted="state == 'draft'"
+                       decoration-danger="state == 'cancelled' or overbooking"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_coins_reservation_form" model="ir.ui.view">
+        <field name="name">coins.reservation.form</field>
+        <field name="model">coins.reservation</field>
+        <field name="arch" type="xml">
+            <form string="Réservation">
+                <header>
+                    <button name="action_confirm" type="object" string="Confirmer"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_start" type="object" string="Démarrer séjour"
+                            invisible="state != 'confirmed'"/>
+                    <button name="action_done" type="object" string="Terminer"
+                            class="btn-primary" invisible="state != 'in_progress'"/>
+                    <button name="action_cancel" type="object" string="Annuler"
+                            invisible="state in ('done', 'cancelled')"/>
+                    <button name="action_reset_draft" type="object" string="Remettre en brouillon"
+                            invisible="state != 'cancelled'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,confirmed,in_progress,done"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-danger" role="alert" invisible="not overbooking">
+                        Overbooking OTA : cette réservation chevauche un événement ou une résa Coins.
+                        On la garde (confirmation OTA). Traiter à la main.
+                    </div>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_calendar_event" type="object"
+                                class="oe_stat_button" icon="fa-calendar"
+                                invisible="not calendar_event_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Calendrier</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="traveler_id"/>
+                            <field name="lead_id"/>
+                            <field name="property_id"/>
+                            <field name="driver_id"/>
+                            <field name="partner_activity_ids" widget="many2many_tags"/>
+                        </group>
+                        <group>
+                            <field name="check_in"/>
+                            <field name="check_out"/>
+                            <field name="nights"/>
+                            <field name="voyageurs"/>
+                            <field name="room_id"/>
+                            <field name="pickup_time" widget="float_time"/>
+                            <field name="pickup_address"/>
+                            <field name="dropoff_address"/>
+                            <field name="trip_status"/>
+                            <field name="source"/>
+                            <field name="overbooking"/>
+                            <field name="concierge_state"/>
+                            <field name="channex_booking_id" invisible="not channex_booking_id"/>
+                            <field name="referral_code"
+                                   invisible="source != 'referral'"/>
+                            <field name="calendar_event_id" invisible="1"/>
+                            <field name="calendar_color" invisible="1"/>
+                        </group>
+                    </group>
+                    <group string="Daypass / repas / allergies">
+                        <group>
+                            <field name="daypass_piscine"/>
+                            <field name="meal_breakfast"/>
+                            <field name="meal_lunch"/>
+                            <field name="meal_dinner"/>
+                        </group>
+                        <group>
+                            <field name="allergies" placeholder="Allergies, régimes, intolérances…"/>
+                        </group>
+                    </group>
+                    <group string="Montants (répartition)">
+                        <group>
+                            <field name="amount_property"/>
+                            <field name="amount_activities"/>
+                            <field name="amount_transport"/>
+                            <field name="amount_cross_sell"/>
+                            <field name="currency_id"/>
+                        </group>
+                        <group>
+                            <field name="amount_total"/>
+                            <field name="payment_method"/>
+                            <field name="payment_status"/>
+                            <field name="payment_reference"
+                                   invisible="not payment_method"/>
+                            <field name="booking_channel"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Site / Stripe" name="website">
+                            <group>
+                                <group>
+                                    <field name="client_nom"/>
+                                    <field name="client_email"/>
+                                    <field name="client_telephone"/>
+                                </group>
+                                <group>
+                                    <field name="stripe_checkout_session_id"/>
+                                    <field name="stripe_payment_intent_id"/>
+                                    <field name="blocage_id"/>
+                                </group>
+                            </group>
+                            <field name="ligne_ids">
+                                <list editable="bottom">
+                                    <field name="code"/>
+                                    <field name="name"/>
+                                    <field name="qty"/>
+                                    <field name="price_unit_cad"/>
+                                    <field name="amount_cad"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Agenda ops" name="ops">
+                            <field name="ops_slot_ids">
+                                <list>
+                                    <field name="date_start"/>
+                                    <field name="slot_type"/>
+                                    <field name="name"/>
+                                    <field name="state"/>
+                                    <field name="notes"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Conciergerie" name="concierge">
+                            <field name="concierge_line_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="line_type"/>
+                                    <field name="name"/>
+                                    <field name="state"/>
+                                    <field name="scheduled_at"/>
+                                    <field name="partner_note"/>
+                                    <field name="notes"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_coins_reservation_search" model="ir.ui.view">
+        <field name="name">coins.reservation.search</field>
+        <field name="model">coins.reservation</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="traveler_id"/>
+                <field name="property_id"/>
+                <field name="driver_id"/>
+                <filter name="confirmed" string="Confirmées"
+                        domain="[('state', '=', 'confirmed')]"/>
+                <filter name="in_progress" string="En cours"
+                        domain="[('state', '=', 'in_progress')]"/>
+                <filter name="unpaid" string="Non payées"
+                        domain="[('payment_status', '=', 'unpaid')]"/>
+                <filter name="overbooking" string="Overbooking OTA"
+                        domain="[('overbooking', '=', True)]"/>
+                <filter name="demo_channex" string="Démo Channex (fictif)"
+                        domain="[('is_demo', '=', True)]"/>
+                <filter name="reelles" string="Réservations réelles"
+                        domain="[('is_demo', '=', False)]"/>
+                <filter name="concierge_open" string="Conciergerie ouverte"
+                        domain="[('concierge_state', '=', 'open')]"/>
+                <group>
+                    <filter name="group_property" string="Bien"
+                            context="{'group_by': 'property_id'}"/>
+                    <filter name="group_state" string="Statut"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_source" string="Source"
+                            context="{'group_by': 'source'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_coins_reservation_calendar" model="ir.ui.view">
+        <field name="name">coins.reservation.calendar</field>
+        <field name="model">coins.reservation</field>
+        <field name="arch" type="xml">
+            <calendar string="Locations"
+                      date_start="check_in"
+                      date_stop="check_out"
+                      color="calendar_color"
+                      mode="month"
+                      event_open_popup="true"
+                      quick_create="0">
+                <field name="name"/>
+                <field name="traveler_id"/>
+                <field name="property_id"/>
+                <field name="state"/>
+                <field name="calendar_color"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="action_coins_reservation" model="ir.actions.act_window">
+        <field name="name">Réservations</field>
+        <field name="res_model">coins.reservation</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Créez votre première réservation</p>
+            <p>Bien + activités + transport, avec répartition des montants.</p>
+        </field>
+    </record>
+</odoo>

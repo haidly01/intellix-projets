@@ -1,0 +1,546 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_cq_martin_booking_url" model="ir.actions.act_url">
+        <field name="name">Assigner un RDV à Martin</field>
+        <field name="url">/intellix/rdv/martin</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Pipeline partenariats — modèle dédié coins.quebec.partenariat -->
+    <record id="view_cq_partenariat_search" model="ir.ui.view">
+        <field name="name">coins.quebec.partenariat.search</field>
+        <field name="model">coins.quebec.partenariat</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="Partenaire" filter_domain="[
+                    '|', '|', '|', '|', '|', '|', '|', '|',
+                    ('name', 'ilike', self),
+                    ('contact_name', 'ilike', self),
+                    ('contact_firstname', 'ilike', self),
+                    ('contact_lastname', 'ilike', self),
+                    ('email', 'ilike', self),
+                    ('phone', 'ilike', self),
+                    ('city', 'ilike', self),
+                    ('street', 'ilike', self),
+                    ('notes', 'ilike', self)]"/>
+                <field name="email" string="Email"/>
+                <field name="contact_name"/>
+                <field name="contact_firstname"/>
+                <field name="contact_lastname"/>
+                <field name="phone"/>
+                <field name="city"/>
+                <filter name="f_hebergement" string="Hôtel / hébergement" domain="[('type_partenaire', '=', 'hebergement')]"/>
+                <filter name="f_resto" string="Restaurant" domain="[('type_partenaire', '=', 'resto')]"/>
+                <filter name="f_spa" string="Spa / bien-être" domain="[('type_partenaire', '=', 'spa')]"/>
+                <filter name="f_activite" string="Activité" domain="[('type_partenaire', '=', 'activite')]"/>
+                <separator/>
+                <filter name="f_pub_draft" string="Fiche brouillon" domain="[('publish_state', '=', 'draft')]"/>
+                <filter name="f_pub_mod" string="En modération" domain="[('publish_state', '=', 'moderation')]"/>
+                <filter name="f_pub_on" string="Publié carte" domain="[('publish_state', '=', 'published')]"/>
+                <filter name="f_demo" string="Fiches démo Mon Coin" domain="[('is_demo', '=', True)]"/>
+                <separator/>
+                <filter name="f_montreal" string="Montréal" domain="[('region', '=', 'montreal')]"/>
+                <filter name="f_quebec" string="Québec" domain="[('region', '=', 'quebec')]"/>
+                <filter name="f_laurentides" string="Laurentides" domain="[('region', '=', 'laurentides')]"/>
+                <filter name="f_estrie" string="Estrie" domain="[('region', '=', 'estrie')]"/>
+                <filter name="f_outaouais" string="Outaouais" domain="[('region', '=', 'outaouais')]"/>
+                <filter name="f_monteregie" string="Montérégie" domain="[('region', '=', 'monteregie')]"/>
+                <separator/>
+                <filter name="f_z_tremblant" string="Zone Mont-Tremblant" domain="[('zone', '=', 'mont_tremblant')]"/>
+                <filter name="f_z_sauveur" string="Zone Saint-Sauveur" domain="[('zone', '=', 'saint_sauveur')]"/>
+                <filter name="f_z_spas" string="Zone corridor spas" domain="[('zone', '=', 'corridor_spas')]"/>
+                <filter name="f_z_sjerome" string="Zone Saint-Jérôme sud" domain="[('zone', '=', 'saint_jerome_sud')]"/>
+                <filter name="f_z_labelle" string="Zone Labelle nord" domain="[('zone', '=', 'labelle_nord')]"/>
+                <separator/>
+                <field name="coins_commercial_assigne"/>
+                <field name="coins_agent_ia_id"/>
+                <field name="coins_assignee_display"/>
+                <filter name="filter_assigne_humain" string="Assigné humain"
+                        domain="[('assignee_kind', '=', 'humain'), ('coins_commercial_assigne', '!=', False)]"/>
+                <filter name="filter_assigne_ia" string="Assigné IA"
+                        domain="[('assignee_kind', '=', 'ia'), ('coins_agent_ia_id', '!=', False)]"/>
+                <separator/>
+                <separator/>
+                <filter name="inactive" string="Archivés" domain="[('active', '=', False)]"/>
+                <separator/>
+                <filter name="group_type" string="Type de partenaire" context="{'group_by': 'type_partenaire'}"/>
+                <filter name="group_region" string="Région" context="{'group_by': 'region'}"/>
+                <filter name="group_zone" string="Zone Laurentides" context="{'group_by': 'zone'}"/>
+                <filter name="group_kind" string="Humain / IA" context="{'group_by': 'assignee_kind'}"/>
+                <filter name="group_commercial" string="Commercial humain" context="{'group_by': 'coins_commercial_assigne'}"/>
+                <filter name="group_ia" string="Agent IA" context="{'group_by': 'coins_agent_ia_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_cq_partenariat_kanban" model="ir.ui.view">
+        <field name="name">coins.quebec.partenariat.kanban</field>
+        <field name="model">coins.quebec.partenariat</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="stage" class="o_cq_pipeline" records_draggable="true" quick_create="true">
+                <field name="name"/>
+                <field name="type_partenaire"/>
+                <field name="region"/>
+                <field name="city"/>
+                <field name="phone"/>
+                <field name="google_rating"/>
+                <field name="coins_assignee_display"/>
+                <field name="stage"/>
+                <field name="statut_presence"/>
+                <field name="cq_rdv_followup_note"/>
+                <field name="active"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="o_cq_card">
+                            <div class="o_cq_card_title"><field name="name"/></div>
+                            <div class="o_cq_card_meta">
+                                <field name="type_partenaire"/>
+                            </div>
+                            <div class="o_cq_card_meta">
+                                <field name="region"/>
+                                <t t-if="record.city.raw_value"> · <field name="city"/></t>
+                            </div>
+                            <div class="o_cq_card_contact" t-if="record.phone.raw_value">
+                                <field name="phone"/>
+                            </div>
+                            <div class="o_cq_card_rating" t-if="record.google_rating.raw_value">
+                                Note Google <field name="google_rating"/>
+                            </div>
+                            <div class="o_cq_card_contact" t-if="record.coins_assignee_display.raw_value">
+                                <field name="coins_assignee_display"/>
+                            </div>
+                            <div class="o_cq_card_presence" t-if="record.statut_presence.raw_value">
+                                <field name="statut_presence"/>
+                            </div>
+                            <div class="o_cq_card_note" t-if="record.cq_rdv_followup_note.raw_value">
+                                <field name="cq_rdv_followup_note"/>
+                            </div>
+                            <div class="o_cq_card_stage">
+                                <field name="stage"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_cq_partenariat_list" model="ir.ui.view">
+        <field name="name">coins.quebec.partenariat.list</field>
+        <field name="model">coins.quebec.partenariat</field>
+        <field name="arch" type="xml">
+            <list class="o_cq_list">
+                <field name="name"/>
+                <field name="type_partenaire" string="Activité"/>
+                <field name="region"/>
+                <field name="zone"/>
+                <field name="city"/>
+                <field name="contact_name"/>
+                <field name="phone"/>
+                <field name="google_rating"/>
+                <field name="coins_assignee_display" string="Assigné"/>
+                <field name="statut_presence" string="Présence Martin" optional="show"/>
+                <field name="cq_rdv_followup_note" string="Note Martin" optional="show"/>
+                <field name="assignee_kind" optional="hide"/>
+                <field name="user_id" optional="hide"/>
+                <field name="stage"/>
+                <field name="publish_state" optional="show"/>
+                <field name="active" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_cq_partenariat_form" model="ir.ui.view">
+        <field name="name">coins.quebec.partenariat.form</field>
+        <field name="model">coins.quebec.partenariat</field>
+        <field name="arch" type="xml">
+            <form class="o_cq_form">
+                <header>
+                    <button name="action_cq_phone_call"
+                            type="object"
+                            string="Appeler"
+                            class="btn-primary"
+                            title="Compose via le poste VICIdial."
+                            invisible="not phone"/>
+                    <button name="action_send_cq_entente"
+                            type="object"
+                            string="Envoyer l'entente"
+                            class="btn-primary o_cq_btn_entente"
+                            title="Wizard mauve — entente visibilité (10 % resto / activité, 15 % hôtel / spa)."/>
+                    <button name="action_send_cq_intro_entente"
+                            type="object"
+                            string="Courrier de bonjour"
+                            class="btn-primary"
+                            title="Introduction 1 — présentation de l'entente. Brouillon éditable, à valider avant envoi au partenaire."/>
+                    <button name="%(action_cq_martin_booking_url)d"
+                            type="action"
+                            string="Assigner un RDV à Martin"
+                            class="btn-primary o_cq_btn_martin"
+                            title="Ouvre l'agenda / booking de Martin."/>
+                    <button name="action_send_cq_prospect_email"
+                            type="object"
+                            string="Email prospection"
+                            class="btn-primary"
+                            title="Avant la visite — modèle 72/74/75/76 selon le type de partenaire. Brouillon éditable, envoi manuel (Brevo)."/>
+                    <button name="action_send_cq_followup_email"
+                            type="object"
+                            string="Envoyer suivi rencontre"
+                            class="btn-primary"
+                            title="Après la visite — forfaits / packs. Autre modèle que la prospection. Brouillon éditable, envoi manuel uniquement."/>
+                    <button name="action_publish_fiche" type="object" string="Publier sur la carte"
+                            class="btn-primary" invisible="publish_state == 'published'"
+                            groups="coins_quebec.group_coins_quebec_user"/>
+                    <button name="action_reject_fiche" type="object" string="Refuser la fiche"
+                            invisible="publish_state != 'moderation'"
+                            groups="coins_quebec.group_coins_quebec_user"/>
+                    <button name="action_unpublish_fiche" type="object" string="Retirer de la carte"
+                            invisible="publish_state != 'published'"
+                            groups="coins_quebec.group_coins_quebec_user"/>
+                    <field name="stage" widget="statusbar" statusbar_visible="nouveau,contacte,en_rdv,suivi,entente"/>
+                </header>
+                <sheet>
+                    <field name="active" invisible="1"/>
+                    <field name="is_demo" invisible="1"/>
+                    <div class="o_cq_banner" invisible="is_demo">Coins Québec · Pipeline partenariats</div>
+                    <div class="o_cq_banner" invisible="not is_demo">DÉMO MON COIN — fiche isolée, hors production</div>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_cq_meeting_stat" type="object"
+                                class="oe_stat_button" icon="fa-calendar"
+                                groups="coins_quebec.group_coins_quebec_user">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text"><field name="cq_meeting_display_label"/></span>
+                                <field name="cq_meeting_display_date" class="o_stat_value"
+                                       invisible="not cq_meeting_display_date"/>
+                                <span class="o_stat_text" invisible="not cq_rdv_booked_display">
+                                    <field name="cq_rdv_booked_display"/>
+                                </span>
+                            </div>
+                        </button>
+                        <button name="action_open_cq_entente" type="object"
+                                class="oe_stat_button o_cq_stat_entente"
+                                icon="fa-pencil-square-o">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Entente</span>
+                                <field name="cq_entente_label" class="o_stat_value"/>
+                            </div>
+                        </button>
+                    </div>
+                    <field name="cq_rdv_event_id" invisible="1"/>
+                    <group string="Rendez-vous (heure du Canada)">
+                        <group>
+                            <field name="cq_meeting_display_date" string="Créneau client" readonly="1"/>
+                            <field name="cq_rdv_booked_display" readonly="1"/>
+                            <field name="statut_presence"/>
+                        </group>
+                        <group>
+                            <field name="cq_rdv_followup_note"
+                                   placeholder="Note de Martin après le RDV — recopiée depuis le calendrier"/>
+                        </group>
+                    </group>
+                    <field name="cq_entente_res_id" invisible="1"/>
+                    <field name="cq_entente_html_url" invisible="1"/>
+                    <div class="o_cq_entente_strip">
+                        <div>
+                            <div class="o_cq_entente_strip_kicker">Entente visibilité</div>
+                            <div class="o_cq_entente_strip_status"><field name="cq_entente_label" nolabel="1"/></div>
+                        </div>
+                        <button name="action_send_cq_entente" type="object"
+                                string="Envoyer l'entente"
+                                class="btn-primary o_cq_btn_entente"/>
+                        <button name="action_send_cq_intro_entente" type="object"
+                                string="Courrier de bonjour"
+                                class="btn-primary"/>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="type_partenaire" string="Activité"/>
+                            <field name="region"/>
+                            <field name="zone"/>
+                            <field name="city"/>
+                            <field name="street"/>
+                        </group>
+                        <group>
+                            <field name="contact_firstname"/>
+                            <field name="contact_lastname"/>
+                            <field name="contact_name" invisible="1"/>
+                            <field name="phone"/>
+                            <field name="phone_source"/>
+                            <field name="email"/>
+                            <field name="cq_entente_html_url"
+                                   placeholder="https://coinsquebec.com/prive/entente-….html"/>
+                            <field name="assignee_kind" widget="radio" options="{'horizontal': true}"/>
+                            <field name="coins_commercial_assigne"
+                                   string="Responsable assigné"
+                                   invisible="assignee_kind != 'humain'"
+                                   options="{'no_create': True}"
+                                   help="Choix manuel. Les réunions vont toujours sur le calendrier de Martin."/>
+                            <field name="coins_agent_ia_id"
+                                   invisible="assignee_kind != 'ia'"
+                                   options="{'no_create': True}"
+                                   domain="[('external_agent_id', 'not ilike', 'draft-')]"/>
+                            <field name="user_id" invisible="1"/>
+                            <field name="property_id"/>
+                            <field name="fiche_lien" placeholder="URL du formulaire partenaire (à renseigner)"/>
+                        </group>
+                    </group>
+                    <group string="Téléphones">
+                        <field name="phone_ids" nolabel="1" colspan="2">
+                            <list editable="bottom">
+                                <field name="sequence" widget="handle"/>
+                                <field name="label"/>
+                                <field name="phone"/>
+                            </list>
+                        </field>
+                    </group>
+                    <group string="Adresses">
+                        <field name="address_ids" nolabel="1" colspan="2">
+                            <list editable="bottom">
+                                <field name="sequence" widget="handle"/>
+                                <field name="label"/>
+                                <field name="street"/>
+                                <field name="city"/>
+                                <field name="zip"/>
+                            </list>
+                        </field>
+                    </group>
+                    <group string="Google Places">
+                        <group>
+                            <field name="google_rating"/>
+                            <field name="google_maps_url" widget="url"/>
+                            <field name="place_id"/>
+                            <field name="source"/>
+                        </group>
+                        <group>
+                            <field name="partner_lat"/>
+                            <field name="partner_lng"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Fiche publique / Mon Coin">
+                            <group>
+                                <group>
+                                    <field name="is_demo" invisible="1"/>
+                                    <field name="publish_state"/>
+                                    <field name="description"/>
+                                    <field name="video_url"/>
+                                    <field name="portal_user_id" readonly="1"/>
+                                    <field name="partner_id"/>
+                                </group>
+                                <group>
+                                    <field name="pin_view_count"/>
+                                    <field name="pin_click_count"/>
+                                    <field name="reservation_public_count"/>
+                                    <field name="itex_lead_id"/>
+                                    <field name="driven_lead_id"/>
+                                    <field name="authorize_connected"/>
+                                </group>
+                            </group>
+                            <field name="photo_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="image" widget="image"/>
+                                    <field name="caption"/>
+                                </list>
+                            </field>
+                            <field name="service_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="price"/>
+                                    <field name="unit"/>
+                                </list>
+                            </field>
+                            <field name="offer_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="price"/>
+                                    <field name="unit"/>
+                                </list>
+                            </field>
+                            <field name="boost_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="kind"/>
+                                    <field name="state"/>
+                                    <field name="lead_ref"/>
+                                    <field name="create_date"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="cq_notes">
+                            <group string="Note de Martin après le RDV" invisible="not cq_rdv_followup_note">
+                                <field name="cq_rdv_followup_note" nolabel="1" colspan="2"/>
+                            </group>
+                            <field name="notes" placeholder="Notes de prospection et suivi…"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_cq_pipeline_partenariats" model="ir.actions.act_window">
+        <field name="name">Partenariats Coins Québec</field>
+        <field name="res_model">coins.quebec.partenariat</field>
+        <field name="path">cq-partenariats</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_cq_partenariat_search"/>
+        <field name="domain">[('is_demo', '=', False)]</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_cq_partenariat_kanban')}),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_cq_partenariat_list')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_cq_partenariat_form')})]"/>
+        <field name="context">{'cq_pipeline': 'partenariat'}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Pipeline partenariats Coins Québec</p>
+            <p>Aucune fiche pour l’instant. Créez un établissement partenaire (hébergement, resto, spa).</p>
+        </field>
+    </record>
+
+    <!-- Pipeline voyageurs — modèle dédié coins.quebec.voyageur -->
+    <record id="view_cq_voyageur_search" model="ir.ui.view">
+        <field name="name">coins.quebec.voyageur.search</field>
+        <field name="model">coins.quebec.voyageur</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="city"/>
+                <filter name="f_hebergement" string="Hébergement" domain="[('type_sejour', '=', 'hebergement')]"/>
+                <filter name="f_resto" string="Restaurant" domain="[('type_sejour', '=', 'resto')]"/>
+                <filter name="f_spa" string="Spa / bien-être" domain="[('type_sejour', '=', 'spa')]"/>
+                <filter name="f_activite" string="Activité" domain="[('type_sejour', '=', 'activite')]"/>
+                <filter name="f_mixte" string="Séjour mixte" domain="[('type_sejour', '=', 'mixte')]"/>
+                <separator/>
+                <filter name="f_montreal" string="Montréal" domain="[('region', '=', 'montreal')]"/>
+                <filter name="f_quebec" string="Québec" domain="[('region', '=', 'quebec')]"/>
+                <filter name="f_laurentides" string="Laurentides" domain="[('region', '=', 'laurentides')]"/>
+                <filter name="f_estrie" string="Estrie" domain="[('region', '=', 'estrie')]"/>
+                <filter name="f_outaouais" string="Outaouais" domain="[('region', '=', 'outaouais')]"/>
+                <filter name="f_monteregie" string="Montérégie" domain="[('region', '=', 'monteregie')]"/>
+                <separator/>
+                <separator/>
+                <filter name="inactive" string="Archivés" domain="[('active', '=', False)]"/>
+                <separator/>
+                <filter name="group_type" string="Type de séjour" context="{'group_by': 'type_sejour'}"/>
+                <filter name="group_region" string="Région" context="{'group_by': 'region'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_cq_voyageur_kanban" model="ir.ui.view">
+        <field name="name">coins.quebec.voyageur.kanban</field>
+        <field name="model">coins.quebec.voyageur</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="stage" class="o_cq_pipeline" records_draggable="1" quick_create="true">
+                <field name="name"/>
+                <field name="type_sejour"/>
+                <field name="region"/>
+                <field name="city"/>
+                <field name="stage"/>
+                <field name="active"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="o_cq_card">
+                            <div class="o_cq_card_title"><field name="name"/></div>
+                            <div class="o_cq_card_meta">
+                                <field name="type_sejour"/>
+                                <t t-if="record.city.raw_value"> · <field name="city"/></t>
+                                <t t-else=""> · <field name="region"/></t>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_cq_voyageur_list" model="ir.ui.view">
+        <field name="name">coins.quebec.voyageur.list</field>
+        <field name="model">coins.quebec.voyageur</field>
+        <field name="arch" type="xml">
+            <list class="o_cq_list">
+                <field name="name"/>
+                <field name="type_sejour"/>
+                <field name="region"/>
+                <field name="city"/>
+                <field name="phone"/>
+                <field name="stage"/>
+                <field name="active" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_cq_voyageur_form" model="ir.ui.view">
+        <field name="name">coins.quebec.voyageur.form</field>
+        <field name="model">coins.quebec.voyageur</field>
+        <field name="arch" type="xml">
+            <form class="o_cq_form">
+                <header>
+                    <button name="action_cq_phone_call"
+                            type="object"
+                            string="Appeler"
+                            class="btn-primary"
+                            title="Compose via le poste VICIdial."
+                            invisible="not phone"/>
+                    <button name="action_cq_planifier_evenement"
+                            type="object"
+                            string="Planifier l'événement"
+                            class="o_cq_btn_planifier"
+                            invisible="cq_evt_resume"/>
+                    <button name="action_cq_planifier_evenement"
+                            type="object"
+                            string="Reprendre le brouillon"
+                            class="o_cq_btn_planifier"
+                            invisible="not cq_evt_resume"/>
+                    <field name="cq_evt_resume" invisible="1"/>
+                    <field name="stage" widget="statusbar" statusbar_visible="nouveau,contacte,en_rdv,suivi,entente"/>
+                </header>
+                <sheet>
+                    <field name="active" invisible="1"/>
+                    <div class="o_cq_banner">Coins Québec · Pipeline voyageurs</div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="type_sejour"/>
+                            <field name="region"/>
+                            <field name="city"/>
+                        </group>
+                        <group>
+                            <field name="phone"/>
+                            <field name="email"/>
+                            <field name="reservation_id"/>
+                        </group>
+                    </group>
+                    <field name="notes" placeholder="Besoin, dates, budget…"/>
+                    <div class="o_cq_section_label" invisible="not cq_evt_resume">
+                        Brouillon événement — interne, pas envoyé au voyageur
+                    </div>
+                    <field name="cq_evt_resume" nolabel="1" readonly="1"
+                           invisible="not cq_evt_resume"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_cq_pipeline_voyageurs" model="ir.actions.act_window">
+        <field name="name">Voyageurs Coins Québec</field>
+        <field name="res_model">coins.quebec.voyageur</field>
+        <field name="path">cq-voyageurs</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_cq_voyageur_search"/>
+        <field name="domain" eval="[]"/>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_cq_voyageur_kanban')}),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_cq_voyageur_list')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_cq_voyageur_form')})]"/>
+        <field name="context">{'cq_pipeline': 'voyageur'}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Pipeline voyageurs Coins Québec</p>
+            <p>Aucune demande pour l’instant. Les fiches voyageurs apparaîtront ici.</p>
+        </field>
+    </record>
+</odoo>

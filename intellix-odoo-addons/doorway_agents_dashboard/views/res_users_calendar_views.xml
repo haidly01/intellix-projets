@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_users_form_doorway_calendar" model="ir.ui.view">
+        <field name="name">res.users.form.doorway.calendar</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="calendar.res_users_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='calendar_default_privacy']" position="after">
+                <field name="doorway_calendar_visible"/>
+                <field name="doorway_is_ai_agent_user" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

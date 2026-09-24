@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Lien Google Sheet → pipeline Événements / Zakaria -->
+    <record id="icp_coins_events_sheet_id" model="ir.config_parameter">
+        <field name="key">coins_marocain.events_sheet_id</field>
+        <field name="value">1OfNUID-FO_kud70jeUZi002RFzqn1rsAzNSTR3tVhqw</field>
+    </record>
+    <record id="icp_coins_events_sheet_gid" model="ir.config_parameter">
+        <field name="key">coins_marocain.events_sheet_gid</field>
+        <field name="value">0</field>
+    </record>
+    <record id="icp_coins_events_sheet_url" model="ir.config_parameter">
+        <field name="key">coins_marocain.events_sheet_url</field>
+        <field name="value">https://docs.google.com/spreadsheets/d/1OfNUID-FO_kud70jeUZi002RFzqn1rsAzNSTR3tVhqw/edit?usp=sharing</field>
+    </record>
+    <record id="icp_coins_events_default_user_login" model="ir.config_parameter">
+        <field name="key">coins_marocain.events_default_user_login</field>
+        <field name="value">zakaria@agencedoorway.com</field>
+    </record>
+
+    <record id="cron_coins_events_google_sheet_sync" model="ir.cron">
+        <field name="name">Coins — Sync Google Sheet leads événements (Zakaria)</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_sync_coins_events_google_sheet()</field>
+        <field name="interval_number">15</field>
+        <field name="interval_type">minutes</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="action_server_coins_events_sheet_sync" model="ir.actions.server">
+        <field name="name">Sync Google Sheet événements</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="binding_model_id" ref="crm.model_crm_lead"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+result = env["crm.lead"].action_sync_coins_events_google_sheet()
+action = {
+    "type": "ir.actions.client",
+    "tag": "display_notification",
+    "params": {
+        "title": "Sync Sheet Événements",
+        "message": str(result),
+        "type": "success" if result.get("ok") else "danger",
+        "sticky": True,
+    },
+}
+        </field>
+    </record>
+</odoo>

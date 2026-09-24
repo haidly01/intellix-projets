@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_subscription_list" model="ir.ui.view">
+        <field name="name">doorway.subscription.list</field>
+        <field name="model">doorway.subscription</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="tenant_id"/>
+                <field name="user_count"/>
+                <field name="price_per_user"/>
+                <field name="monthly_total"/>
+                <field name="status"/>
+                <field name="next_billing_date"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_subscriptions" model="ir.actions.act_window">
+        <field name="name">Abonnements SaaS</field>
+        <field name="res_model">doorway.subscription</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

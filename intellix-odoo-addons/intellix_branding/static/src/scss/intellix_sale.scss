@@ -1,0 +1,29 @@
+// Intellix — Ventes (catalogue produits, kanban non groupé)
+
+.o_web_client.o_intellix_branded {
+    .o_product_kanban_view,
+    .o_kanban_view.o_modules_kanban,
+    .o_kanban_renderer:not(.o_kanban_grouped) {
+        .o_kanban_record {
+            .o_kanban_record_title,
+            .o_kanban_record_subtitle,
+            .o_kanban_record_body,
+            strong,
+            span {
+                color: var(--ix-text);
+            }
+
+            .text-muted,
+            .o_text_muted {
+                color: var(--ix-text-muted) !important;
+            }
+        }
+    }
+
+    .o_control_panel .o_cp_searchview {
+        .o_searchview,
+        .o_searchview_input {
+            color: var(--ix-text);
+        }
+    }
+}

@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_coins_deco_prestataire_list" model="ir.ui.view">
+        <field name="name">coins.deco.prestataire.list</field>
+        <field name="model">coins.deco.prestataire</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="type_ids" widget="many2many_tags"/>
+                <field name="theme_ids" widget="many2many_tags" optional="show"/>
+                <field name="zone_couverture"/>
+                <field name="contact_name" optional="show"/>
+                <field name="phone" optional="hide"/>
+                <field name="email" optional="hide"/>
+                <field name="photo_count" optional="show"/>
+                <field name="onboarding_status" widget="badge"
+                       decoration-success="onboarding_status == 'publie'"
+                       decoration-warning="onboarding_status == 'en_attente_validation'"
+                       decoration-info="onboarding_status == 'lien_envoye'"
+                       decoration-muted="onboarding_status == 'brouillon'"/>
+                <field name="active" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_coins_deco_prestataire_form" model="ir.ui.view">
+        <field name="name">coins.deco.prestataire.form</field>
+        <field name="model">coins.deco.prestataire</field>
+        <field name="arch" type="xml">
+            <form string="Prestataire déco">
+                <header>
+                    <button name="action_publish_onboarding" type="object"
+                            string="Publier"
+                            class="btn-primary"
+                            invisible="onboarding_status != 'en_attente_validation'"
+                            confirm="Publication humaine uniquement. Minimum 3 photos par thème coché."/>
+                    <button name="action_open_portal" type="object"
+                            string="Ouvrir le portail"
+                            class="btn-secondary"/>
+                    <field name="onboarding_status" widget="statusbar"
+                           statusbar_visible="brouillon,lien_envoye,en_attente_validation,publie"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Nom du prestataire déco"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="type_ids" widget="many2many_checkboxes"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="street"/>
+                            <field name="zone_couverture"/>
+                            <field name="contact_name"/>
+                            <field name="phone"/>
+                            <field name="email"/>
+                            <field name="portal_token" groups="base.group_no_one"/>
+                            <field name="portal_url" widget="url"/>
+                        </group>
+                    </group>
+                    <group string="Thèmes">
+                        <field name="theme_ids" widget="many2many_checkboxes" nolabel="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Fleuriste" name="fleuriste">
+                            <group>
+                                <field name="fl_types_arrangements"/>
+                                <field name="fl_prix"/>
+                                <field name="fl_prix_piece"/>
+                                <field name="fl_prix_forfait"/>
+                                <field name="fl_fleurs_origine"/>
+                            </group>
+                        </page>
+                        <page string="Mobilier" name="mobilier">
+                            <group>
+                                <field name="mob_inventaire"/>
+                                <field name="mob_prix"/>
+                                <field name="mob_livraison_incluse"/>
+                            </group>
+                        </page>
+                        <page string="Chapiteau" name="chapiteau">
+                            <group>
+                                <field name="chap_tailles_disponibles"/>
+                                <field name="chap_prix_par_taille"/>
+                                <field name="chap_delai_montage"/>
+                                <field name="chap_contraintes_terrain"/>
+                            </group>
+                        </page>
+                        <page string="Déco générale" name="decoration">
+                            <group>
+                                <field name="dec_services_inclus"/>
+                                <field name="dec_prix"/>
+                            </group>
+                        </page>
+                        <page string="Tarifs" name="tarifs">
+                            <group>
+                                <field name="prix_minimum_commande"/>
+                                <field name="inclus_prix_base"/>
+                                <field name="delai_reservation_min"/>
+                                <field name="commission"/>
+                            </group>
+                        </page>
+                        <page string="Photos" name="photos">
+                            <p class="text-muted">Au moins 3 photos par thème coché pour publier.</p>
+                            <field name="photo_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="image" widget="image" options="{'size': [80, 80]}"/>
+                                    <field name="theme_id" required="1"/>
+                                    <field name="legende"/>
+                                </list>
+                                <form string="Photo">
+                                    <group>
+                                        <field name="image" widget="image"/>
+                                        <field name="theme_id"/>
+                                        <field name="sequence"/>
+                                        <field name="legende"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes" placeholder="Notes internes Karine"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_coins_deco_prestataire_search" model="ir.ui.view">
+        <field name="name">coins.deco.prestataire.search</field>
+        <field name="model">coins.deco.prestataire</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="contact_name"/>
+                <field name="zone_couverture"/>
+                <field name="email"/>
+                <field name="type_ids"/>
+                <field name="theme_ids"/>
+                <filter name="filter_publie" string="Publiés"
+                        domain="[('onboarding_status', '=', 'publie')]"/>
+                <filter name="filter_attente" string="En attente"
+                        domain="[('onboarding_status', '=', 'en_attente_validation')]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_coins_deco_prestataire" model="ir.actions.act_window">
+        <field name="name">Prestataires déco</field>
+        <field name="res_model">coins.deco.prestataire</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Ajoutez un prestataire décoration (fleuriste, mobilier, chapiteau, déco).
+            </p>
+            <p>
+                Distinct du catalogue Prestataires CRM et des prestataires liés à un événement.
+            </p>
+        </field>
+    </record>
+</odoo>

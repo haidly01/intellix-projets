@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Superadmins Odoo (base.group_system) : tous les groupes IntelliX pour les démos -->
+    <function model="res.users" name="_init_ensure_demo_superadmin_groups"/>
+</odoo>

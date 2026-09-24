@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-inherit="people_engine.PeRhHub" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('pe-rh-hub__topbar-actions')]" position="inside">
+            <t t-if="state.payroll and state.hiba_clock">
+                <button t-if="!state.hiba_clock.checked_in"
+                        type="button"
+                        class="pe-rh-hub__pill-btn btn-primary"
+                        t-on-click="hibaCheckIn">
+                    <i class="fa fa-sign-in"/> Login — pointer l'arrivée
+                </button>
+                <button t-if="state.hiba_clock.checked_in"
+                        type="button"
+                        class="pe-rh-hub__pill-btn"
+                        t-on-click="hibaCheckOut">
+                    <i class="fa fa-sign-out"/> Logout — pointer la sortie
+                </button>
+            </t>
+        </xpath>
+        <xpath expr="//strong[hasclass('pe-rh-hub__pay-amount')]" position="after">
+            <t t-if="state.payroll and state.payroll.base">
+                <p class="text-muted" style="margin-top:8px;font-size:13px;">
+                    Forfait <t t-esc="state.payroll.base"/> MAD
+                    + RDV <t t-esc="state.payroll.bonus_rdv"/> MAD
+                    (<t t-esc="state.payroll.rdv_present"/> présents, moy. <t t-esc="state.payroll.rdv_avg"/>/j)
+                    + CA <t t-esc="state.payroll.bonus_ca"/> MAD
+                    (<t t-esc="state.payroll.sales_usd"/> $)
+                </p>
+            </t>
+        </xpath>
+    </t>
+</templates>

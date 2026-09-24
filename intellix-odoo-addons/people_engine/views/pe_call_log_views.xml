@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pe_call_log_list" model="ir.ui.view">
+        <field name="name">pe.call.log.list</field>
+        <field name="model">pe.call.log</field>
+        <field name="arch" type="xml">
+            <list string="Journal appels Call Center">
+                <field name="date_call"/>
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <field name="campaign_id" optional="show"/>
+                <field name="outcome" widget="badge"/>
+                <field name="duration_fmt"/>
+                <field name="ai_score"/>
+                <field name="points_awarded"/>
+                <field name="lead_id" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pe_call_log_form" model="ir.ui.view">
+        <field name="name">pe.call.log.form</field>
+        <field name="model">pe.call.log</field>
+        <field name="arch" type="xml">
+            <form string="Appel Call Center">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="employee_id"/>
+                            <field name="department_id"/>
+                            <field name="campaign_id"/>
+                            <field name="lead_id"/>
+                            <field name="date_call"/>
+                            <field name="duration"/>
+                            <field name="duration_fmt"/>
+                            <field name="outcome"/>
+                            <field name="vicidial_id"/>
+                        </group>
+                        <group string="IA &amp; gamification">
+                            <field name="ai_score"/>
+                            <field name="points_awarded"/>
+                            <field name="recording_url"/>
+                            <field name="badge_award_ids" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Transcription">
+                            <field name="transcript" nolabel="1"/>
+                            <field name="ai_feedback"/>
+                            <field name="ai_strengths"/>
+                            <field name="ai_improvements"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_pe_call_log" model="ir.actions.act_window">
+        <field name="name">Journal appels CC</field>
+        <field name="res_model">pe.call.log</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

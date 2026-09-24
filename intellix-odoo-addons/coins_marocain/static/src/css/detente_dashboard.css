@@ -1,0 +1,103 @@
+/* coins dashboards */
+.o_coins_dashboard {
+  padding: 20px 24px 32px;
+  background: #f4f1ea;
+  min-height: 100%;
+  color: #211d18;
+}
+.o_coins_dash_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.o_coins_dash_header h1 {
+  margin: 0;
+  font-size: 1.55rem;
+  font-weight: 700;
+}
+.o_coins_dash_sub {
+  margin: 4px 0 0;
+  color: #59524a;
+  font-size: 0.95rem;
+}
+.o_coins_dash_total {
+  background: #1b3a2f;
+  color: #faf7f1;
+  border-radius: 14px;
+  padding: 14px 18px;
+  min-width: 200px;
+}
+.o_coins_dash_total span {
+  display: block;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+.o_coins_dash_total b {
+  display: block;
+  margin-top: 4px;
+  font-size: 1.35rem;
+}
+.o_coins_dash_status {
+  padding: 24px;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid rgba(33, 29, 24, 0.1);
+}
+.o_coins_dash_error {
+  color: #8a2b2b;
+  border-color: rgba(138, 43, 43, 0.25);
+}
+.o_coins_dash_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+.o_coins_dash_card {
+  background: #fff;
+  border: 1px solid rgba(33, 29, 24, 0.1);
+  border-radius: 16px;
+  padding: 16px 18px 18px;
+  box-shadow: 0 10px 24px -18px rgba(18, 40, 34, 0.45);
+}
+.o_coins_dash_card h2 {
+  margin: 0 0 14px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1b3a2f;
+}
+.o_coins_kpi_row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.o_coins_kpi {
+  background: #faf7f1;
+  border-radius: 12px;
+  padding: 12px;
+}
+.o_coins_kpi span {
+  display: block;
+  font-size: 0.78rem;
+  color: #59524a;
+  margin-bottom: 4px;
+}
+.o_coins_kpi b {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+.o_coins_crm_metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+@media (max-width: 860px) {
+  .o_coins_crm_metrics { grid-template-columns: 1fr; }
+}
+.o_coins_metric_red { color: #a3352b; }
+.o_coins_metric_green { color: #4f6a2c; }

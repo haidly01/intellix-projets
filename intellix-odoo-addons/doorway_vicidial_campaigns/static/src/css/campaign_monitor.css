@@ -1,0 +1,44 @@
+/* Appels — monitoring live */
+.o_vicidial_campaign_monitor {
+    color: var(--ix-text, #f1f5f9);
+}
+
+.o_vicidial_campaign_monitor h2 {
+    color: var(--ix-text, #f1f5f9);
+    font-weight: 700;
+}
+
+.o_vicidial_campaign_monitor .text-muted {
+    color: var(--ix-text-muted, #b8c5d6) !important;
+}
+
+.o_vicidial_campaign_monitor .o_monitor_kpi {
+    border-radius: var(--ix-radius-card, 8px);
+    border: 1px solid var(--ix-border, #334155);
+    background: var(--ix-surface, #1a1a2e);
+    padding: 1rem;
+    color: var(--ix-text, #f1f5f9);
+}
+
+.o_vicidial_campaign_monitor .o_monitor_kpi .o_kpi_value {
+    font-weight: 700;
+    color: var(--ix-primary-light, #818cf8);
+    font-family: var(--ix-font, "DM Sans", sans-serif);
+}
+
+.o_vicidial_campaign_monitor .card {
+    background: var(--ix-surface, #1a1a2e);
+    border-color: var(--ix-border, #334155);
+    color: var(--ix-text, #f1f5f9);
+}
+
+@media (max-width: 768px) {
+    .o_vicidial_campaign_monitor {
+        padding: 0.75rem !important;
+    }
+
+    .o_vicidial_campaign_monitor .row > [class*="col-"] {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}

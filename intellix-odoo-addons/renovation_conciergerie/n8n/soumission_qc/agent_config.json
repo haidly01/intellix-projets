@@ -1,0 +1,100 @@
+{
+  "_comment": "Sofia — Soumission Entrepreneurs (Québec). Stack Doorway : n8n + Deepgram + Claude + ElevenLabs + VICIdial/Twilio + Odoo intellixcrm.",
+  "version": "1.0.0",
+  "agent_id": "sofia-soumission-qc-2026",
+  "agent_name": "Émilie",
+  "active": true,
+  "language": "fr-CA",
+  "stack": "n8n+deepgram+claude+elevenlabs",
+  "pipeline": "renovation",
+  "brand": "Soumission Entrepreneurs",
+  "timezone": "America/Toronto",
+  "voice": {
+    "provider": "elevenlabs",
+    "voice_id": "${ELEVENLABS_VOICE_ID}",
+    "model": "eleven_multilingual_v2",
+    "settings": {
+      "stability": 0.55,
+      "similarity_boost": 0.82,
+      "style": 0.35,
+      "speaking_rate": 1.05
+    }
+  },
+  "stt": {
+    "provider": "deepgram",
+    "model": "nova-2",
+    "language": "fr-CA",
+    "punctuate": true,
+    "endpointing": 300,
+    "vad_turnoff": 500,
+    "interim_results": true,
+    "smart_format": true
+  },
+  "llm": {
+    "provider": "anthropic",
+    "model": "claude-sonnet-4-20250514",
+    "max_tokens": 150,
+    "temperature": 0.7,
+    "system_prompt_file": "system_prompt_claude.txt"
+  },
+  "call_settings": {
+    "max_duration_sec": 180,
+    "silence_timeout_sec": 8,
+    "interruption_threshold": 0.6,
+    "recording": true,
+    "recording_format": "mp3"
+  },
+  "telephony": {
+    "provider": "${TELEPHONY_PROVIDER}",
+    "default": "vicidial",
+    "vicidial_campaign": "SE_RENOV_QC",
+    "vicidial_list": "SE_RENOV_QC",
+    "twilio_from": "${TWILIO_FROM_SOUMISSION}",
+    "caller_id_note": "Québec +1 — trunk Door_App0 ou Twilio +15817058118"
+  },
+  "crm": {
+    "provider": "odoo",
+    "url": "${ODOO_URL}",
+    "database": "intellixcrm",
+    "team": "Rénovation",
+    "source_tag": "Soumission Entrepreneurs",
+    "qualified_tag": "Lead qualifié Sofia",
+    "director_user_login": "karine"
+  },
+  "sms": {
+    "provider": "twilio",
+    "from": "${TWILIO_FROM_SOUMISSION}",
+    "templates_file": "sms_templates.json"
+  },
+  "webhooks": {
+    "outbound": "${N8N_BASE_URL}/webhook/soumission-qc/outbound",
+    "conversation": "${N8N_BASE_URL}/webhook/soumission-qc/conversation",
+    "events": "${N8N_BASE_URL}/webhook/soumission-qc/event",
+    "qualified": "${N8N_BASE_URL}/webhook/soumission-qc/qualified",
+    "non_qualified": "${N8N_BASE_URL}/webhook/soumission-qc/non-qualified",
+    "call_ended": "${ODOO_URL}/doorway/api/soumission-qc/call-ended",
+    "daily_stats": "${N8N_BASE_URL}/webhook/soumission-qc/stats"
+  },
+  "dynamic_variables": [
+    "prenom",
+    "nom",
+    "telephone",
+    "ville",
+    "partner_id",
+    "lead_id",
+    "jour",
+    "moment_prefere"
+  ],
+  "qualification_actions": {
+    "tag_locataire": { "crm_qualification": "locataire", "end_call": true },
+    "tag_travaux": { "crm_field": "travaux_identifies", "continue": true },
+    "tag_pas_projet": { "crm_qualification": "pas_interesse", "callback_months": 6 },
+    "tag_pas_interesse": { "crm_qualification": "pas_interesse", "dnc": false },
+    "tag_lead_qualifie": {
+      "crm_qualification": "qualifie",
+      "create_activity": true,
+      "send_sms": "confirmation_qualifie",
+      "notify_director": true
+    }
+  }
+}

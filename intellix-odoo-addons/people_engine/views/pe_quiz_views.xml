@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Quiz -->
+    <record id="pe_quiz_list_view" model="ir.ui.view">
+        <field name="name">pe.quiz.list</field>
+        <field name="model">pe.quiz</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'active'" decoration-muted="state == 'archived'">
+                <field name="name"/>
+                <field name="category"/>
+                <field name="state" widget="badge"
+                    decoration-info="state == 'draft'"
+                    decoration-success="state == 'active'"
+                    decoration-muted="state == 'archived'"/>
+                <field name="question_count"/>
+                <field name="passing_score" string="Seuil %"/>
+                <field name="certified_count" string="Certifiés"/>
+                <field name="attempt_count" string="Tentatives"/>
+                <field name="croissance_points" string="Pts Croissance"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="pe_quiz_form_view" model="ir.ui.view">
+        <field name="name">pe.quiz.form</field>
+        <field name="model">pe.quiz</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_activate" string="Activer" type="object"
+                        class="oe_highlight" invisible="state != 'draft'"
+                        groups="people_engine.group_hr"/>
+                    <button name="action_archive" string="Archiver" type="object"
+                        invisible="state != 'active'"
+                        groups="people_engine.group_hr"/>
+                    <button name="action_draft" string="Remettre en brouillon" type="object"
+                        invisible="state != 'archived'"
+                        groups="people_engine.group_hr"/>
+                    <button name="action_start_quiz" string="Passer le quiz" type="object"
+                        class="btn-secondary" invisible="state != 'active'"
+                        groups="people_engine.group_employee"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_attempts" type="object" class="oe_stat_button" icon="fa-list">
+                            <field name="attempt_count" widget="statinfo" string="Tentatives"/>
+                        </button>
+                        <button name="action_view_certified" type="object" class="oe_stat_button" icon="fa-certificate">
+                            <field name="certified_count" widget="statinfo" string="Certifiés"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Ex : Certification Rénovation &amp; Immobilier"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="category"/>
+                            <field name="passing_score"/>
+                            <field name="croissance_points"/>
+                            <field name="course_id"/>
+                        </group>
+                        <group>
+                            <field name="max_attempts"/>
+                            <field name="time_limit"/>
+                            <field name="randomize_questions"/>
+                            <field name="show_correct_answers"/>
+                            <field name="created_by" readonly="1"/>
+                            <field name="created_date" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Conditions d'accès aux campagnes">
+                        <field name="required_for_campaign"/>
+                        <field name="campaign_ids" widget="many2many_tags"
+                            invisible="not required_for_campaign"/>
+                    </group>
+                    <field name="description" placeholder="Description du quiz et de ses objectifs..."/>
+                    <notebook>
+                        <page string="Questions" name="questions">
+                            <field name="question_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="question_text"/>
+                                    <field name="question_type"/>
+                                    <field name="category_tag"/>
+                                    <field name="points"/>
+                                    <field name="correct_answer_count" string="Nb réponses OK"/>
+                                </list>
+                                <form>
+                                    <group>
+                                        <field name="question_text"/>
+                                        <field name="question_type"/>
+                                        <field name="category_tag"/>
+                                        <field name="points"/>
+                                        <field name="legal_article_id"/>
+                                    </group>
+                                    <field name="explanation" placeholder="Explication affichée à l'agent après sa réponse"/>
+                                    <separator string="Choix de réponses"/>
+                                    <field name="answer_ids">
+                                        <list editable="bottom">
+                                            <field name="sequence" widget="handle"/>
+                                            <field name="answer_text"/>
+                                            <field name="is_correct"/>
+                                        </list>
+                                    </field>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Assignations" name="assignments" groups="people_engine.group_manager">
+                            <field name="assignment_ids">
+                                <list editable="bottom">
+                                    <field name="profile_id"/>
+                                    <field name="department_id"/>
+                                    <field name="date_assigned"/>
+                                    <field name="deadline"/>
+                                    <field name="mandatory"/>
+                                    <field name="active"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Résultats des agents" name="attempts">
+                            <field name="attempt_ids" readonly="1">
+                                <list>
+                                    <field name="employee_id"/>
+                                    <field name="date_start"/>
+                                    <field name="score_pct" string="Score %"/>
+                                    <field name="passed"/>
+                                    <field name="attempt_number"/>
+                                    <field name="is_best_attempt"/>
+                                    <field name="duration_seconds" string="Durée (s)"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="pe_quiz_search_view" model="ir.ui.view">
+        <field name="name">pe.quiz.search</field>
+        <field name="model">pe.quiz</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="category"/>
+                <filter name="filter_active" string="Actifs" domain="[('state', '=', 'active')]"/>
+                <filter name="draft" string="Brouillons" domain="[('state', '=', 'draft')]"/>
+                <group>
+                    <filter name="group_category" string="Catégorie" context="{'group_by': 'category'}"/>
+                    <filter name="group_state" string="Statut" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Attempts -->
+    <record id="pe_quiz_attempt_list_view" model="ir.ui.view">
+        <field name="name">pe.quiz.attempt.list</field>
+        <field name="model">pe.quiz.attempt</field>
+        <field name="arch" type="xml">
+            <list decoration-success="passed" decoration-danger="state == 'timed_out'">
+                <field name="quiz_id"/>
+                <field name="employee_id"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="score_pct" string="Score %"/>
+                <field name="passed"/>
+                <field name="attempt_number"/>
+                <field name="is_best_attempt"/>
+                <field name="duration_seconds"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="pe_quiz_attempt_form_view" model="ir.ui.view">
+        <field name="name">pe.quiz.attempt.form</field>
+        <field name="model">pe.quiz.attempt</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="quiz_id"/>
+                            <field name="employee_id"/>
+                            <field name="user_id"/>
+                            <field name="profile_id"/>
+                        </group>
+                        <group>
+                            <field name="state"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="duration_seconds"/>
+                            <field name="score_pct"/>
+                            <field name="passed"/>
+                            <field name="attempt_number"/>
+                            <field name="is_best_attempt"/>
+                            <field name="points_awarded"/>
+                        </group>
+                    </group>
+                    <field name="answer_line_ids">
+                        <list>
+                            <field name="question_id"/>
+                            <field name="selected_answer_ids" widget="many2many_tags"/>
+                            <field name="is_correct"/>
+                            <field name="points_earned"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="pe_quiz_attempt_search_view" model="ir.ui.view">
+        <field name="name">pe.quiz.attempt.search</field>
+        <field name="model">pe.quiz.attempt</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="employee_id"/>
+                <field name="quiz_id"/>
+                <filter name="completed" string="Terminées" domain="[('state', '=', 'completed')]"/>
+                <filter name="certified" string="Certifiées" domain="[('passed', '=', True)]"/>
+                <filter name="best" string="Meilleures tentatives" domain="[('is_best_attempt', '=', True)]"/>
+                <group>
+                    <filter name="group_quiz" string="Quiz" context="{'group_by': 'quiz_id'}"/>
+                    <filter name="group_employee" string="Agent" context="{'group_by': 'employee_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="pe_quiz_action" model="ir.actions.act_window">
+        <field name="name">Quiz &amp; Certifications</field>
+        <field name="res_model">pe.quiz</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'default_state': 'draft'}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Créez un quiz de certification produit</p>
+            <p>Ajoutez des questions, activez le quiz et assignez-le aux agents.</p>
+        </field>
+    </record>
+
+    <record id="pe_quiz_attempts_action" model="ir.actions.act_window">
+        <field name="name">Résultats certifications</field>
+        <field name="res_model">pe.quiz.attempt</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state', 'in', ('completed', 'timed_out'))]</field>
+        <field name="context">{'search_default_group_quiz': 1}</field>
+    </record>
+
+    <record id="pe_quiz_my_attempts_action" model="ir.actions.act_window">
+        <field name="name">Mes tentatives</field>
+        <field name="res_model">pe.quiz.attempt</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('employee_id.user_id', '=', uid)]</field>
+    </record>
+
+    <record id="action_pe_quiz_player_renovation" model="ir.actions.client">
+        <field name="name">Certification Rénovation &amp; Immobilier</field>
+        <field name="tag">pe_quiz_player</field>
+        <field name="params" eval="{'quiz_id': ref('people_engine.quiz_renovation_demo')}"/>
+    </record>
+
+    <!-- Menus -->
+    <menuitem id="menu_pe_quiz"
+        name="Quiz &amp; Certifications"
+        parent="menu_people_engine_root"
+        action="pe_quiz_action"
+        sequence="46"
+        groups="people_engine.group_manager"/>
+
+    <menuitem id="menu_pe_quiz_results"
+        name="Résultats certifications"
+        parent="menu_people_engine_root"
+        action="pe_quiz_attempts_action"
+        sequence="47"
+        groups="people_engine.group_manager"/>
+
+    <menuitem id="menu_pe_lms_quiz_cert"
+        name="Certification Rénovation &amp; Immobilier"
+        parent="menu_pe_lms"
+        action="action_pe_quiz_player_renovation"
+        sequence="9"
+        groups="people_engine.group_employee"/>
+
+    <menuitem id="menu_pe_lms_my_quiz_attempts"
+        name="Mes certifications"
+        parent="menu_pe_lms"
+        action="pe_quiz_my_attempts_action"
+        sequence="35"
+        groups="people_engine.group_employee"/>
+</odoo>

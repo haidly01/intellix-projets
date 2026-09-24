@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_renovation_secteur_tarif_user,renovation.secteur.tarif.user,model_renovation_secteur_tarif,base.group_user,1,0,0,0
+access_renovation_secteur_tarif_manager,renovation.secteur.tarif.manager,model_renovation_secteur_tarif,base.group_system,1,1,1,1
+access_renovation_forfait_type_user,renovation.forfait.type.user,model_renovation_forfait_type,base.group_user,1,0,0,0
+access_renovation_forfait_type_manager,renovation.forfait.type.manager,model_renovation_forfait_type,base.group_system,1,1,1,1
+access_renovation_forfait_credit_user,renovation.forfait.credit.user,model_renovation_forfait_credit,base.group_user,1,1,1,0
+access_renovation_forfait_credit_manager,renovation.forfait.credit.manager,model_renovation_forfait_credit,base.group_system,1,1,1,1

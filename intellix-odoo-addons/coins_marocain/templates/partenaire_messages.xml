@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="partenaire_messages_page" name="Portail — Messages du lieu">
+        <html lang="fr">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <title>Messages — <t t-out="prop.name"/> — Coins Marocain</title>
+                <link rel="preconnect" href="https://fonts.googleapis.com"/>
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
+                <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,500&amp;family=Playfair+Display:wght@600&amp;family=Jost:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+                <link rel="stylesheet" href="/coins_marocain/static/src/css/partenaire_portal.css"/>
+            </head>
+            <body>
+                <div class="cm-wrap">
+                    <header class="cm-hero">
+                        <p class="cm-kicker">Coins Marocain · Messages</p>
+                        <h1><t t-out="prop.name"/></h1>
+                        <p>Conversations de ce lieu uniquement — aucun autre établissement n’apparaît ici.</p>
+                    </header>
+
+                    <t t-call="coins_marocain.partenaire_hebergement_nav"/>
+
+                    <div class="cm-card">
+                        <h2>WhatsApp Business</h2>
+                        <p class="cm-note">
+                            Statut : <b><t t-out="wa_status"/></b>
+                            <t t-if="wa_number">
+                                · Numéro dédié : <b><t t-out="wa_number"/></b>
+                            </t>
+                        </p>
+                        <p class="cm-note">
+                            Un numéro Business distinct par lieu. L’agent répond depuis la
+                            bibliothèque de <t t-out="prop.name"/> uniquement (même moteur que Yasmine,
+                            contenu isolé).
+                        </p>
+
+                        <h2>Conversations récentes</h2>
+                        <t t-if="not threads">
+                            <p class="cm-note">
+                                Aucune conversation pour l’instant. Dès que le numéro est live et
+                                qu’un voyageur écrit, les échanges apparaissent ici.
+                            </p>
+                        </t>
+                        <t t-foreach="threads" t-as="row">
+                            <div style="margin:0 0 18px;padding-bottom:14px;border-bottom:1px solid #e6ddcc;">
+                                <p class="cm-note" style="margin:0 0 6px;">
+                                    <b><t t-out="row['guest']"/></b>
+                                    · <t t-out="row['channel']"/>
+                                    · <t t-out="row['decision']"/>
+                                    <t t-if="row.get('when')">
+                                        · <t t-out="row['when']"/>
+                                    </t>
+                                </p>
+                                <p style="margin:0 0 6px;font-size:14px;"><t t-out="row['inbound']"/></p>
+                                <t t-if="row.get('reply')">
+                                    <p class="cm-note" style="margin:0;">
+                                        Réponse : <t t-out="row['reply']"/>
+                                    </p>
+                                </t>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </body>
+        </html>
+    </template>
+</odoo>

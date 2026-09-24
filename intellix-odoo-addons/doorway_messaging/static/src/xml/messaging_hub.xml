@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="doorway_messaging.MessagingHub" owl="1">
+        <div class="dmsg-hub o_action o_intellix_client_action">
+            <aside class="dmsg-sidebar">
+                <div class="dmsg-sidebar__brand">
+                    <i class="fa fa-envelope-o"/>
+                    <span>Messages</span>
+                </div>
+                <nav class="dmsg-sidebar__nav">
+                    <t t-foreach="mainSidebarItems" t-as="item" t-key="item.id">
+                        <button type="button"
+                                t-att-class="'dmsg-sidebar__item' + (state.activeNav === item.id ? ' dmsg-sidebar__item--active' : '')"
+                                t-on-click="() => this.onNavClick(item)">
+                            <i t-att-class="'fa ' + item.icon"/>
+                            <span t-esc="item.label"/>
+                        </button>
+                    </t>
+                </nav>
+                <div class="dmsg-sidebar__bottom" t-if="bottomSidebarItems.length">
+                    <t t-foreach="bottomSidebarItems" t-as="item" t-key="item.id">
+                        <button type="button"
+                                t-att-class="'dmsg-sidebar__item' + (state.activeNav === item.id ? ' dmsg-sidebar__item--active' : '')"
+                                t-on-click="() => this.onNavClick(item)">
+                            <i t-att-class="'fa ' + item.icon"/>
+                            <span t-esc="item.label"/>
+                        </button>
+                    </t>
+                </div>
+            </aside>
+
+            <main class="dmsg-main" style="flex:1;overflow-y:auto;min-width:0;height:100%;">
+                <t t-if="state.loading">
+                    <div class="dmsg-loading">
+                        <i class="fa fa-spinner fa-spin"/>
+                        <span>Chargement du hub…</span>
+                    </div>
+                </t>
+                <t t-else="">
+                    <section class="dmsg-section">
+                        <h2 class="dmsg-section__title">Create &amp; WhatsApp campaigns</h2>
+                        <div class="dmsg-cards-row">
+                            <t t-foreach="currentSlide" t-as="card" t-key="card.key">
+                                <article class="dmsg-campaign-card">
+                                    <div class="dmsg-campaign-card__icon">
+                                        <i t-att-class="'fa ' + card.icon"/>
+                                    </div>
+                                    <h3 t-esc="card.title"/>
+                                    <p t-esc="card.subtitle"/>
+                                    <div class="dmsg-campaign-card__actions">
+                                        <button type="button" class="dmsg-btn dmsg-btn--outline"
+                                                t-on-click="() => this.onCardSecondary(card)"
+                                                t-esc="card.secondaryLabel"/>
+                                        <button type="button" class="dmsg-btn dmsg-btn--primary"
+                                                t-on-click="() => this.onCardPrimary(card)"
+                                                t-esc="card.primaryLabel"/>
+                                    </div>
+                                </article>
+                            </t>
+                        </div>
+                        <div class="dmsg-carousel-dots">
+                            <t t-foreach="[0, 1]" t-as="idx" t-key="idx">
+                                <button type="button"
+                                        t-att-class="'dmsg-dot' + (state.carouselIndex === idx ? ' dmsg-dot--active' : '')"
+                                        t-on-click="() => this.onCarouselDot(idx)"/>
+                            </t>
+                        </div>
+                    </section>
+
+                    <section class="dmsg-section dmsg-section--hub">
+                        <div class="dmsg-section__head">
+                            <h2 class="dmsg-section__title">Messaging Hub</h2>
+                            <div class="dmsg-stats-pills">
+                                <span class="dmsg-pill">
+                                    <strong t-esc="state.campaignStats.total"/> campagnes
+                                </span>
+                                <span class="dmsg-pill dmsg-pill--teal">
+                                    <strong t-esc="state.campaignStats.active"/> actives
+                                </span>
+                                <span class="dmsg-pill dmsg-pill--muted">
+                                    <strong t-esc="state.campaignStats.draft"/> brouillons
+                                </span>
+                            </div>
+                        </div>
+                        <div class="dmsg-channel-grid">
+                            <t t-foreach="state.channels" t-as="ch" t-key="ch.canal">
+                                <article class="dmsg-channel-card"
+                                         t-att-class="ch.connected ? '' : ' dmsg-channel-card--offline'"
+                                         t-on-click="() => this.onChannelClick(ch)">
+                                    <div class="dmsg-channel-card__icon" t-att-style="'color:' + ch.color">
+                                        <i t-att-class="'fa ' + ch.icon"/>
+                                    </div>
+                                    <h4 t-esc="ch.title"/>
+                                    <p class="dmsg-channel-card__status">
+                                        <t t-if="ch.connected">
+                                            <span class="dmsg-status-dot dmsg-status-dot--ok"/>
+                                            <t t-esc="ch.status_label"/>
+                                        </t>
+                                        <t t-else="">
+                                            <span class="dmsg-status-dot"/>
+                                            <t t-esc="ch.status_label"/>
+                                        </t>
+                                    </p>
+                                    <p class="dmsg-channel-card__metrics">
+                                        Envoyés: <strong t-esc="ch.sent_count"/>
+                                        · Erreurs: <strong t-esc="ch.error_count"/>
+                                    </p>
+                                    <p class="dmsg-channel-card__config" t-if="ch.config_name" t-esc="ch.config_name"/>
+                                    <button t-if="ch.connected and ch.config_id"
+                                            type="button"
+                                            class="dmsg-channel-card__disconnect"
+                                            title="Déconnecter"
+                                            t-on-click="(ev) => this.onDisconnectChannel(ch, ev)">
+                                        <i class="fa fa-times"/>
+                                    </button>
+                                </article>
+                            </t>
+                            <button type="button" class="dmsg-channel-card dmsg-channel-card--add"
+                                    t-on-click="() => this.onAddChannel()">
+                                <i class="fa fa-plus"/>
+                                <span>Ajouter un canal</span>
+                            </button>
+                        </div>
+                    </section>
+                </t>
+            </main>
+        </div>
+    </t>
+
+</templates>

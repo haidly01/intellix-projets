@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="cron_social_publish_scheduled" model="ir.cron">
+        <field name="name">Social IA — Publier les posts programmés</field>
+        <field name="model_id" ref="model_doorway_social_post"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_publish_scheduled_posts()</field>
+        <field name="interval_number">5</field>
+        <field name="interval_type">minutes</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

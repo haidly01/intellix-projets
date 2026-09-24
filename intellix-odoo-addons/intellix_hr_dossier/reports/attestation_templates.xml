@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="paperformat_attestation_a4" model="report.paperformat">
+        <field name="name">Attestation RH A4</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">40</field>
+        <field name="margin_bottom">28</field>
+        <field name="margin_left">20</field>
+        <field name="margin_right">20</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">35</field>
+        <field name="dpi">96</field>
+    </record>
+
+    <!-- En-tête commun -->
+    <template id="attestation_common_header">
+        <div class="row mb-4">
+            <div class="col-3">
+                <img t-if="company.logo" t-att-src="image_data_uri(company.logo)"
+                     style="max-height: 70px; max-width: 180px;" alt="Logo"/>
+            </div>
+            <div class="col-9 text-end" style="font-size: 11px;">
+                <strong t-field="company.name"/>
+                <br/>
+                <span t-if="partner.street" t-field="partner.street"/>
+                <t t-if="partner.street2">, <span t-field="partner.street2"/></t>
+                <br t-if="partner.city"/>
+                <span t-if="partner.city" t-field="partner.city"/>
+                <t t-if="partner.zip"> <span t-field="partner.zip"/></t>
+                <br/>
+                <t t-if="company.x_morocco_ice">ICE : <span t-esc="company.x_morocco_ice"/> — </t>
+                <t t-if="company.x_morocco_rc">RC : <span t-esc="company.x_morocco_rc"/></t>
+                <t t-if="company.vat and not company.x_morocco_ice">IF : <span t-field="company.vat"/></t>
+            </div>
+        </div>
+    </template>
+
+    <template id="attestation_common_footer">
+        <div class="mt-5">
+            <p>
+                Fait à <span t-esc="signatory.get('city') or partner.city or '…'"/>,
+                le <span t-esc="document_date" t-options="{'widget': 'date'}"/>.
+            </p>
+            <div class="row mt-4">
+                <div class="col-6"/>
+                <div class="col-6 text-center">
+                    <p class="mb-1"><strong t-esc="signatory.get('name') or 'Le service RH'"/></p>
+                    <p t-if="signatory.get('title')" t-esc="signatory.get('title')"/>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- 1. Attestation de travail -->
+    <template id="report_attestation_travail_document">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <t t-call="intellix_hr_dossier.attestation_common_header"/>
+                <h3 class="text-center mt-4 mb-4"><u>ATTESTATION DE TRAVAIL</u></h3>
+                <p>Nous soussignés, <strong t-field="company.name"/>, certifions que :</p>
+                <p class="ms-3">
+                    <strong t-field="doc.name"/>,
+                    titulaire de la CIN n° <span t-esc="doc.x_cin_number or '………………'"/>,
+                    est employé(e) au sein de notre société en qualité de
+                    <strong t-esc="doc.job_id.name or doc.job_title or '………………'"/>
+                    <t t-if="doc.department_id"> au sein du département
+                        <strong t-field="doc.department_id.name"/>
+                    </t>.
+                </p>
+                <p>
+                    L'intéressé(e) est sous contrat
+                    <t t-if="doc.contract_type_id"><span t-field="doc.contract_type_id.name"/></t>
+                    <t t-else="">de travail</t>
+                    depuis le
+                    <strong t-esc="doc.contract_date_start or doc.date_start"
+                            t-options="{'widget': 'date'}"/>.
+                    <t t-if="doc.contract_date_end">
+                        jusqu'au <strong t-field="doc.contract_date_end" t-options="{'widget': 'date'}"/>.
+                    </t>
+                    <t t-else=""> pour une durée indéterminée.</t>
+                </p>
+                <p t-if="attestation_usage">
+                    La présente attestation est délivrée à l'intéressé(e) pour servir et valoir
+                    ce que de droit : <em t-esc="attestation_usage"/>.
+                </p>
+                <p t-else="">
+                    La présente attestation est délivrée à l'intéressé(e) pour servir et valoir ce que de droit.
+                </p>
+                <t t-call="intellix_hr_dossier.attestation_common_footer"/>
+            </div>
+        </t>
+    </template>
+
+    <template id="report_attestation_travail">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="intellix_hr_dossier.report_attestation_travail_document"/>
+            </t>
+        </t>
+    </template>
+
+    <!-- 2. Attestation de salaire -->
+    <template id="report_attestation_salaire_document">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <t t-call="intellix_hr_dossier.attestation_common_header"/>
+                <h3 class="text-center mt-4 mb-4"><u>ATTESTATION DE SALAIRE</u></h3>
+                <p>Nous soussignés, <strong t-field="company.name"/>, certifions que :</p>
+                <p class="ms-3">
+                    <strong t-field="doc.name"/>,
+                    CIN n° <span t-esc="doc.x_cin_number or '………………'"/>,
+                    occupe le poste de <strong t-esc="doc.job_id.name or doc.job_title or '………………'"/>
+                    au sein de notre établissement.
+                </p>
+                <p>
+                    Son salaire brut mensuel s'élève à
+                    <strong>
+                        <span t-field="doc.wage" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                    </strong>
+                    (<em t-esc="doc.get_wage_in_words()"/>).
+                </p>
+                <p t-if="attestation_usage">
+                    Cette attestation est établie à la demande de l'intéressé(e) pour : <em t-esc="attestation_usage"/>.
+                </p>
+                <p t-else="">
+                    Cette attestation est établie à la demande de l'intéressé(e) pour servir et valoir ce que de droit.
+                </p>
+                <t t-call="intellix_hr_dossier.attestation_common_footer"/>
+            </div>
+        </t>
+    </template>
+
+    <template id="report_attestation_salaire">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="intellix_hr_dossier.report_attestation_salaire_document"/>
+            </t>
+        </t>
+    </template>
+
+    <!-- 3. Attestation CNSS -->
+    <template id="report_attestation_cnss_document">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <t t-call="intellix_hr_dossier.attestation_common_header"/>
+                <h3 class="text-center mt-4 mb-4"><u>ATTESTATION D'AFFILIATION CNSS</u></h3>
+                <p>Nous soussignés, <strong t-field="company.name"/>,
+                   immatriculée à la CNSS sous le n°
+                   <strong t-esc="company.x_cnss_employer_number or '………………'"/>,
+                   certifions que :</p>
+                <p class="ms-3">
+                    <strong t-field="doc.name"/>,
+                    CIN n° <span t-esc="doc.x_cin_number or '………………'"/>,
+                    est affilié(e) à la Caisse Nationale de Sécurité Sociale sous le n°
+                    <strong t-esc="doc.x_cnss_number or '………………'"/>.
+                </p>
+                <p t-if="doc.x_cnss_affiliation_date">
+                    Date d'affiliation :
+                    <strong t-field="doc.x_cnss_affiliation_date" t-options="{'widget': 'date'}"/>.
+                </p>
+                <p t-if="attestation_usage">
+                    La présente attestation est délivrée pour : <em t-esc="attestation_usage"/>.
+                </p>
+                <p t-else="">
+                    La présente attestation est délivrée pour servir et valoir ce que de droit.
+                </p>
+                <t t-call="intellix_hr_dossier.attestation_common_footer"/>
+            </div>
+        </t>
+    </template>
+
+    <template id="report_attestation_cnss">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="intellix_hr_dossier.report_attestation_cnss_document"/>
+            </t>
+        </t>
+    </template>
+
+    <!-- 4. Certificat de travail (fin de contrat) -->
+    <template id="report_certificat_travail_document">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <t t-call="intellix_hr_dossier.attestation_common_header"/>
+                <h3 class="text-center mt-4 mb-4"><u>CERTIFICAT DE TRAVAIL</u></h3>
+                <p>Nous soussignés, <strong t-field="company.name"/>, certifions que :</p>
+                <p class="ms-3">
+                    <strong t-field="doc.name"/>,
+                    CIN n° <span t-esc="doc.x_cin_number or '………………'"/>,
+                    a été employé(e) en qualité de
+                    <strong t-esc="doc.job_id.name or doc.job_title or '………………'"/>
+                    du
+                    <strong t-esc="doc.contract_date_start or doc.date_start"
+                            t-options="{'widget': 'date'}"/>
+                    <t t-if="doc.contract_date_end or doc.departure_date">
+                        au <strong t-esc="doc.contract_date_end or doc.departure_date"
+                                   t-options="{'widget': 'date'}"/>.
+                    </t>.
+                </p>
+                <p t-if="leave_reason">
+                    Motif de départ : <em t-esc="leave_reason"/>.
+                </p>
+                <p>
+                    Le certificat de travail est délivré conformément à la législation du travail en vigueur
+                    au Maroc, sans que cela emporte limitation de responsabilité.
+                </p>
+                <t t-call="intellix_hr_dossier.attestation_common_footer"/>
+            </div>
+        </t>
+    </template>
+
+    <template id="report_certificat_travail">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="intellix_hr_dossier.report_certificat_travail_document"/>
+            </t>
+        </t>
+    </template>
+
+    <!-- 5. Attestation de stage -->
+    <template id="report_attestation_stage_document">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <t t-call="intellix_hr_dossier.attestation_common_header"/>
+                <h3 class="text-center mt-4 mb-4"><u>ATTESTATION DE STAGE</u></h3>
+                <p>Nous soussignés, <strong t-field="company.name"/>, certifions que :</p>
+                <p class="ms-3">
+                    <strong t-field="doc.name"/>,
+                    CIN n° <span t-esc="doc.x_cin_number or '………………'"/>,
+                    <t t-if="establishment or (internship and internship.establishment)">
+                        étudiant(e) à <strong t-esc="establishment or internship.establishment"/>,
+                    </t>
+                    a effectué un stage au sein de notre société
+                    <t t-if="internship and internship.date_start">
+                        du <span t-field="internship.date_start" t-options="{'widget': 'date'}"/>
+                        <t t-if="internship.date_end">
+                            au <span t-field="internship.date_end" t-options="{'widget': 'date'}"/>
+                        </t>.
+                    </t>.
+                </p>
+                <p t-if="internship and internship.mission_description">
+                    Mission confiée : <em t-esc="internship.mission_description"/>.
+                </p>
+                <p t-if="internship and internship.supervisor_id">
+                    Stage encadré par : <strong t-field="internship.supervisor_id.name"/>.
+                </p>
+                <p>
+                    La présente attestation est délivrée pour servir et valoir ce que de droit.
+                </p>
+                <t t-call="intellix_hr_dossier.attestation_common_footer"/>
+            </div>
+        </t>
+    </template>
+
+    <template id="report_attestation_stage">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="intellix_hr_dossier.report_attestation_stage_document"/>
+            </t>
+        </t>
+    </template>
+</odoo>

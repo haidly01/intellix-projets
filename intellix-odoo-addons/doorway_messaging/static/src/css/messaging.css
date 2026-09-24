@@ -1,0 +1,29 @@
+.o_doorway_compose_wizard .oe_title h2,
+.o_doorway_compose_wizard .oe_title p {
+    color: var(--o-view-background-color, #f8f9fa);
+    margin-bottom: 0.5rem;
+}
+
+.o_doorway_compose_wizard .oe_title h2 {
+    font-weight: 600;
+}
+
+body:not(.o_light_theme) .o_doorway_compose_wizard .oe_title h2,
+body:not(.o_light_theme) .o_doorway_compose_wizard .oe_title p,
+.o_doorway_compose_wizard .oe_title h2 {
+    color: var(--ix-text, #e8eaed);
+}
+
+.o_doorway_compose_wizard group[string="Canaux cibles"] > label,
+.o_doorway_compose_wizard .o_group .o_form_label {
+    color: var(--ix-text-muted, #c5cad3);
+}
+
+.o_doorway_compose_wizard .alert {
+    margin-top: 1rem;
+}
+
+.o_doorway_sms_field textarea {
+    min-height: 80px;
+    font-family: monospace;
+}

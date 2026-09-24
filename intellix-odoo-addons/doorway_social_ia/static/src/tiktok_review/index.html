@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Intellix CRM — TikTok Login Kit + Content Posting API</title>
+  <link rel="stylesheet" href="/doorway_social_ia/static/src/tiktok_review/demo.css"/>
+</head>
+<body data-step="overview">
+  <div class="browser">
+    <div class="browser-bar">
+      <span class="dots" aria-hidden="true"></span>
+      <div class="url">https://intellixcrm.com/doorway/publication/tiktok/demo</div>
+    </div>
+
+    <header class="top">
+      <div class="brand">
+        <span class="mark">IX</span>
+        <div>
+          <strong>Intellix CRM</strong>
+          <small>Web app · https://intellixcrm.com</small>
+        </div>
+      </div>
+      <div class="pills">
+        <span class="pill sandbox">Sandbox</span>
+        <span class="pill">Login Kit</span>
+        <span class="pill">Content Posting API</span>
+      </div>
+    </header>
+
+    <nav class="steps" aria-label="Demo steps">
+      <a href="?step=overview" data-step="overview">1. Website</a>
+      <a href="?step=login-kit" data-step="login-kit">2. Login Kit</a>
+      <a href="?step=scopes" data-step="scopes">3. Scopes</a>
+      <a href="?step=composer" data-step="composer">4. Composer</a>
+      <a href="?step=publish" data-step="publish">5. Direct Post</a>
+      <a href="?step=status" data-step="status">6. Status</a>
+    </nav>
+
+    <main>
+      <section class="panel" id="panel-overview">
+        <p class="kicker">TikTok for Developers — app review demo</p>
+        <h1>Where the integration actually lives</h1>
+        <p class="lead">
+          TikTok Login Kit and the Content Posting API (Direct Post) are built
+          into the Intellix CRM web application. The website URL declared in
+          the developer portal is <strong>https://intellixcrm.com</strong> —
+          the same domain shown in this demo.
+        </p>
+        <ul class="facts">
+          <li><span>Website URL</span><strong>https://intellixcrm.com</strong></li>
+          <li><span>Environment</span><strong>Sandbox (not Production)</strong></li>
+          <li><span>App</span><strong>Intellix · type Other · Web only</strong></li>
+          <li><span>Brand account</span><strong>@coinsmarrakech · connected</strong></li>
+        </ul>
+      </section>
+
+      <section class="panel" id="panel-login-kit">
+        <p class="kicker">Product — Login Kit</p>
+        <h1>Connect a TikTok account per brand</h1>
+        <p class="lead">
+          A publisher clicks <strong>Connect TikTok</strong> in Intellix.
+          The web app sends them to TikTok OAuth v2, then stores the token
+          on that brand’s social account (one authorization per brand).
+        </p>
+        <div class="card connect">
+          <div>
+            <h2>Coins Marocain — TikTok</h2>
+            <p>Connected · @coinsmarrakech · Login Kit token stored per brand</p>
+            <p class="muted">Redirect URI (Login Kit, exact match)</p>
+            <code>https://intellixcrm.com/doorway/publication/tiktok/oauth/callback</code>
+          </div>
+          <a class="btn" href="/doorway/publication/tiktok/oauth/start">Connect TikTok</a>
+        </div>
+        <p class="note">
+          Authorize URL: <code>https://www.tiktok.com/v2/auth/authorize/</code>
+          with <code>response_type=code</code>.
+        </p>
+      </section>
+
+      <section class="panel" id="panel-scopes">
+        <p class="kicker">Scopes requested — only what the app uses</p>
+        <h1>Every selected scope is demonstrated</h1>
+        <div class="scope-grid">
+          <article>
+            <h2>user.info.basic</h2>
+            <p>Login Kit reads the connected creator’s open_id, display name and username after the token exchange, then labels the Intellix account (e.g. @coinsmarrakech).</p>
+          </article>
+          <article>
+            <h2>video.publish</h2>
+            <p>Content Posting API Direct Post uploads an MP4 and publishes it. In sandbox the privacy status is <strong>SELF_ONLY</strong>.</p>
+          </article>
+        </div>
+        <p class="note">Unused products and scopes were not added. Share Kit and Display API are not selected.</p>
+      </section>
+
+      <section class="panel" id="panel-composer">
+        <p class="kicker">Intellix composer — user interface</p>
+        <h1>Create a TikTok video post</h1>
+        <form class="composer" action="#" method="get" onsubmit="return false;">
+          <label>Brand
+            <select disabled>
+              <option selected>Coins Marocain</option>
+            </select>
+          </label>
+          <label>Share to
+            <div class="account-pill on">TikTok · @coinsmarrakech</div>
+          </label>
+          <label>Caption
+            <textarea rows="3" readonly>Découvrez Coins Marocain — publié depuis Intellix CRM (sandbox, visible only to the creator).</textarea>
+          </label>
+          <label>Video (mp4 / mov)
+            <div class="drop">
+              <strong>intellix_sandbox_demo.mp4</strong>
+              <span>MP4 · vertical · 4 seconds · under 50 MB</span>
+            </div>
+          </label>
+        </form>
+      </section>
+
+      <section class="panel" id="panel-publish">
+        <p class="kicker">Product — Content Posting API</p>
+        <h1>Direct Post · FILE_UPLOAD</h1>
+        <ol class="flow">
+          <li><code>POST /v2/post/publish/creator_info/query/</code> — creator capabilities</li>
+          <li><code>POST /v2/post/publish/video/init/</code> — Direct Post, source FILE_UPLOAD</li>
+          <li>Chunked PUT of the MP4 to the returned upload URL</li>
+          <li>Sandbox privacy: <strong>SELF_ONLY</strong></li>
+        </ol>
+        <button class="btn" type="button" id="btn-fake-publish">Publish to TikTok</button>
+        <p class="note">Posts stay private until the app passes Production audit. No unused kit is called.</p>
+      </section>
+
+      <section class="panel" id="panel-status">
+        <p class="kicker">Async status — required for Direct Post</p>
+        <h1>Poll until PUBLISH_COMPLETE</h1>
+        <ol class="flow">
+          <li><code>POST /v2/post/publish/status/fetch/</code></li>
+          <li>PROCESSING_UPLOAD → PROCESSING_DOWNLOAD → PUBLISH_COMPLETE</li>
+          <li>Intellix marks the calendar post published and consumes the credit only then</li>
+        </ol>
+        <div class="status-box">
+          <span class="dot"></span>
+          PUBLISH_COMPLETE · privacy SELF_ONLY · @coinsmarrakech
+        </div>
+      </section>
+    </main>
+
+    <footer class="caption" id="caption">
+      Intellix CRM web app · https://intellixcrm.com · Sandbox · Login Kit + Content Posting API · scopes user.info.basic, video.publish
+    </footer>
+  </div>
+  <p class="download">
+    <a href="/doorway/publication/tiktok/demo/video">Download the review MP4</a>
+    ·
+    <a href="https://intellixcrm.com">intellixcrm.com</a>
+  </p>
+  <script src="/doorway_social_ia/static/src/tiktok_review/demo.js"></script>
+</body>
+</html>

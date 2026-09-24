@@ -1,0 +1,641 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="doorway_vicidial_campaigns.VicidialWorkstation">
+        <div class="o_vicidial_workstation o_vphub o_action o_intellix_client_action">
+
+            <!-- Barre supérieure -->
+            <div class="o_vphub_topbar">
+                <div class="o_vphub_brand">
+                    <span class="o_vphub_brand__dot"/>
+                    <span class="o_vphub_brand__name">Poste d'appels</span>
+                    <span class="o_vphub_brand__sub" t-if="state.agent.full_name">
+                        <i class="fa fa-angle-right mx-1"/>
+                        <t t-esc="state.agent.full_name"/>
+                        <t t-if="state.agent.phone_extension">
+                            · Poste <t t-esc="state.agent.phone_extension"/>
+                        </t>
+                    </span>
+                </div>
+                <div class="o_vphub_topbar__right">
+                    <div class="o_vphub_session_ctl">
+                        <button type="button"
+                                class="o_vphub_status o_vphub_status--btn"
+                                t-att-class="sessionPillClass()"
+                                t-on-click="onSessionPillClick"
+                                t-att-title="state.session ? 'Gérer la session' : 'Démarrer une session'">
+                            <span class="o_vphub_status__dot"/>
+                            <t t-esc="sessionPillLabel()"/>
+                            <i class="fa fa-caret-down o_vphub_status__caret"/>
+                        </button>
+                        <div class="o_vphub_session_menu" t-if="state.showSessionMenu">
+                            <!-- Hors ligne : choix campagne -->
+                            <t t-if="!state.session">
+                                <div class="o_vphub_session_menu__head">Démarrer une session</div>
+                                <t t-if="singleCampaignMode()">
+                                    <div class="o_vphub_campaign_ok o_vphub_campaign_ok--sm">
+                                        <strong t-esc="state.campaigns[0].name"/>
+                                        <t t-if="state.campaigns[0].vicidial_campaign_id">
+                                            (<t t-esc="state.campaigns[0].vicidial_campaign_id"/>)
+                                        </t>
+                                        — <t t-esc="state.campaigns[0].hopper_count || 0"/> leads
+                                    </div>
+                                </t>
+                                <t t-else="">
+                                    <label class="o_vphub_field__label">Campagne</label>
+                                    <select class="o_vphub_select" t-on-change="onCampaignChange">
+                                        <option value="">— Sélectionner —</option>
+                                        <t t-foreach="state.campaigns" t-as="camp" t-key="camp.id">
+                                            <option t-att-value="camp.id"
+                                                    t-att-selected="state.selectedCampaignId === camp.id"
+                                                    t-att-disabled="!canStartCampaign(camp)">
+                                                <t t-esc="camp.name"/>
+                                                <t t-if="camp.vicidial_campaign_id">
+                                                    (<t t-esc="camp.vicidial_campaign_id"/>)
+                                                </t>
+                                                — <t t-esc="camp.hopper_count || 0"/> leads
+                                            </option>
+                                        </t>
+                                    </select>
+                                </t>
+                                <button class="o_vphub_btn o_vphub_btn--primary w-100 mt-2"
+                                        t-att-disabled="!state.selectedCampaignId"
+                                        t-on-click="startSessionAndClose">
+                                    <i class="fa fa-play me-1"/> Démarrer
+                                </button>
+                            </t>
+                            <!-- Session active : contrôles compacts -->
+                            <t t-else="">
+                                <div class="o_vphub_session_menu__head">
+                                    <t t-esc="state.session.campaign_name"/>
+                                </div>
+                                <div class="o_vphub_sessionbar o_vphub_sessionbar--menu">
+                                    <span class="o_vphub_chip"
+                                          t-att-class="state.session.state === 'paused' ? 'o_vphub_chip--warn' : 'o_vphub_chip--ok'"
+                                          t-esc="state.session.state === 'paused' ? 'En pause' : 'Active'"/>
+                                    <span class="o_vphub_chip"
+                                          t-att-class="state.webphoneRegistered ? 'o_vphub_chip--ok' : 'o_vphub_chip--warn'"
+                                          t-esc="state.webphoneRegistered ? 'Téléphone OK' : 'Téléphone…'"/>
+                                </div>
+                                <div class="o_vphub_alert o_vphub_alert--warn o_vphub_alert--sm"
+                                     t-if="state.session.state === 'active' &amp;&amp; !state.session.vicidial_ready">
+                                    VICIdial : <t t-esc="state.session.vicidial_status || 'connexion…'"/>
+                                </div>
+                                <div class="o_vphub_alert o_vphub_alert--warn o_vphub_alert--sm"
+                                     t-if="state.session.state === 'active' &amp;&amp; state.session.vicidial_ready &amp;&amp; !state.webphoneRegistered">
+                                    Autorisez le micro sur le téléphone.
+                                </div>
+                                <div class="o_vphub_session_actions o_vphub_session_actions--menu">
+                                    <t t-if="state.session.state === 'active'">
+                                        <button class="o_vphub_btn o_vphub_btn--warn w-100" t-on-click="() => this.pausePausette()">Pausette</button>
+                                        <button class="o_vphub_btn o_vphub_btn--warn w-100" t-on-click="() => this.pauseDejeuner()">Déjeuner</button>
+                                        <button class="o_vphub_btn o_vphub_btn--warn w-100" t-on-click="pauseSessionAndClose">Pause</button>
+                                    </t>
+                                    <t t-if="state.session.state === 'paused'">
+                                        <button class="o_vphub_btn o_vphub_btn--primary w-100" t-on-click="resumeSessionAndClose">Reprendre</button>
+                                    </t>
+                                    <t t-if="state.vicidialWebphoneUrl">
+                                        <button class="o_vphub_btn o_vphub_btn--ghost w-100"
+                                                t-on-click="() => { this.toggleWebphone(); }">
+                                            <i class="fa fa-phone me-1"/>
+                                            <t t-esc="state.showWebphone ? 'Masquer téléphone' : 'Afficher téléphone'"/>
+                                        </button>
+                                        <button class="o_vphub_btn o_vphub_btn--ghost w-100" t-on-click="openWebphoneTab">
+                                            <i class="fa fa-external-link me-1"/> Téléphone plein écran
+                                        </button>
+                                    </t>
+                                    <t t-if="state.session.manual_dial">
+                                        <button class="o_vphub_btn o_vphub_btn--ghost w-100"
+                                                t-att-disabled="!state.session.vicidial_ready || !state.webphoneRegistered"
+                                                t-on-click="() => { this.dialNextLead(); this.closeSessionMenu(); }">
+                                            <i class="fa fa-forward me-1"/> Appeler suivant
+                                        </button>
+                                    </t>
+                                    <button class="o_vphub_btn o_vphub_btn--ghost w-100" t-on-click="() => { this.openQualification(); this.closeSessionMenu(); }">
+                                        File qualification CRM
+                                    </button>
+                                    <button class="o_vphub_btn o_vphub_btn--danger w-100" t-on-click="endSessionAndClose">
+                                        Fin de session
+                                    </button>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                    <button class="o_vphub_iconbtn" t-on-click="load" title="Actualiser">
+                        <i class="fa fa-refresh"/>
+                    </button>
+                </div>
+            </div>
+
+            <nav class="o_vphub_mobile_tabs" aria-label="Navigation mobile">
+                <button type="button"
+                        t-att-class="'o_vphub_mobile_tab' + (state.mobilePane === 'calls' ? ' o_vphub_mobile_tab--active' : '')"
+                        t-on-click="(ev) => this.onMobileTabClick('calls', ev)">
+                    <i class="fa fa-list"/> Appels
+                </button>
+                <button type="button"
+                        t-att-class="'o_vphub_mobile_tab' + (state.mobilePane === 'dialer' ? ' o_vphub_mobile_tab--active' : '')"
+                        t-on-click="(ev) => this.onMobileTabClick('dialer', ev)">
+                    <i class="fa fa-th"/> Clavier
+                </button>
+                <button type="button"
+                        t-att-class="'o_vphub_mobile_tab' + (state.mobilePane === 'contact' ? ' o_vphub_mobile_tab--active' : '')"
+                        t-on-click="(ev) => this.onMobileTabClick('contact', ev)">
+                    <i class="fa fa-user"/> Contact
+                </button>
+            </nav>
+
+            <t t-if="state.loading">
+                <div class="o_vphub_loading">
+                    <i class="fa fa-spinner fa-spin fa-2x"/>
+                </div>
+            </t>
+            <t t-else="">
+                <div class="o_vphub_body">
+                <div t-att-class="'o_vphub_grid o_vphub_mobile--' + state.mobilePane">
+
+                    <!-- =========================================================
+                         GAUCHE — Appels (liste + recherche + filtres)
+                    ========================================================== -->
+                    <aside class="o_vphub_pane o_vphub_left">
+                        <div class="o_vphub_pane__head">
+                            <h3 class="o_vphub_pane__title">Appels</h3>
+                        </div>
+                        <div class="o_vphub_search">
+                            <i class="fa fa-search"/>
+                            <input type="text"
+                                   placeholder="Rechercher un contact…"
+                                   t-att-value="state.callSearch"
+                                   t-on-input="onCallSearchInput"/>
+                        </div>
+                        <div class="o_vphub_tabs">
+                            <button class="o_vphub_tab"
+                                    t-att-class="state.callFilter === 'all' ? 'o_vphub_tab--active' : ''"
+                                    t-on-click="() => this.setCallFilter('all')">Tous</button>
+                            <button class="o_vphub_tab"
+                                    t-att-class="state.callFilter === 'entrants' ? 'o_vphub_tab--active' : ''"
+                                    t-on-click="() => this.setCallFilter('entrants')">Entrants</button>
+                            <button class="o_vphub_tab"
+                                    t-att-class="state.callFilter === 'manques' ? 'o_vphub_tab--active' : ''"
+                                    t-on-click="() => this.setCallFilter('manques')">Manqués</button>
+                        </div>
+                        <div class="o_vphub_calllist">
+                            <t t-if="!state.recentCalls.length">
+                                <div class="o_vphub_empty">Aucun appel récent.</div>
+                            </t>
+                            <t t-foreach="state.recentCalls" t-as="call" t-key="call.id">
+                                <button class="o_vphub_callrow"
+                                        t-att-class="state.selectedCallId === call.id ? 'o_vphub_callrow--active' : ''"
+                                        t-on-click="() => this.selectCall(call)">
+                                    <span class="o_vphub_avatar o_vphub_avatar--sm"
+                                          t-att-style="'background-color:' + call.color">
+                                        <t t-esc="call.initials"/>
+                                    </span>
+                                    <span class="o_vphub_callrow__body">
+                                        <span class="o_vphub_callrow__top">
+                                            <span class="o_vphub_callrow__name" t-esc="call.name"/>
+                                            <span class="o_vphub_callrow__time">
+                                                <t t-if="call.active">Maintenant</t>
+                                                <t t-else=""><t t-esc="call.rel_time"/></t>
+                                            </span>
+                                        </span>
+                                        <span class="o_vphub_callrow__bottom">
+                                            <span class="o_vphub_badge"
+                                                  t-att-class="callBadgeClass(call)"
+                                                  t-esc="callBadgeLabel(call)"/>
+                                            <span class="o_vphub_callrow__phone" t-esc="call.phone"/>
+                                        </span>
+                                    </span>
+                                </button>
+                            </t>
+                        </div>
+                    </aside>
+
+                    <!-- =========================================================
+                         CENTRE — Appel actif / session
+                    ========================================================== -->
+                    <section class="o_vphub_pane o_vphub_center">
+
+                        <!-- Bandeau appel actif uniquement (session = pastille top-right) -->
+                        <div class="o_vphub_center__top" t-if="isCallActive()">
+                            <span class="o_vphub_pill o_vphub_pill--live">
+                                <span class="o_vphub_pill__dot"/> Appel en cours
+                            </span>
+                        </div>
+
+                        <!-- Vue contact / appel -->
+                        <div class="o_vphub_callview">
+                            <t t-if="state.centerContact">
+                                <div class="o_vphub_avatar o_vphub_avatar--lg"
+                                     t-att-style="'background-color:' + state.centerContact.color">
+                                    <t t-esc="state.centerContact.initials"/>
+                                </div>
+                                <div class="o_vphub_callview__name" t-esc="state.centerContact.name"/>
+                                <div class="o_vphub_callview__meta">
+                                    <t t-esc="state.centerContact.phone"/>
+                                    <t t-if="state.centerContact.location">
+                                        · <t t-esc="state.centerContact.location"/>
+                                    </t>
+                                </div>
+                            </t>
+                            <t t-else="">
+                                <div class="o_vphub_avatar o_vphub_avatar--lg o_vphub_avatar--ghost">
+                                    <i class="fa fa-phone"/>
+                                </div>
+                                <div class="o_vphub_callview__name">Composer un appel</div>
+                                <div class="o_vphub_callview__meta">Sélectionnez un contact ou saisissez un numéro</div>
+                            </t>
+                            <div class="o_vphub_timer">
+                                <span class="o_vphub_timer__dot" t-if="isCallActive()"/>
+                                <t t-esc="formatTimer()"/>
+                            </div>
+                        </div>
+
+                        <!-- Rangée de contrôles d'appel -->
+                        <div class="o_vphub_controls">
+                            <button class="o_vphub_ctrl" t-on-click="onMuteCall" title="Couper le micro (téléphone intégré)">
+                                <i class="fa fa-microphone-slash"/>
+                                <span>Muet</span>
+                            </button>
+                            <button class="o_vphub_ctrl"
+                                    t-att-class="state.showDialpad ? 'o_vphub_ctrl--on' : ''"
+                                    t-on-click="toggleDialpad" title="Afficher/masquer le clavier">
+                                <i class="fa fa-th"/>
+                                <span>Clavier</span>
+                            </button>
+                            <button class="o_vphub_ctrl"
+                                    t-att-class="state.session and state.session.state === 'paused' ? 'o_vphub_ctrl--on' : ''"
+                                    t-att-disabled="!state.session"
+                                    t-on-click="onPauseControl" title="Pause / Reprise de la session">
+                                <i class="fa fa-pause"/>
+                                <span>Pause</span>
+                            </button>
+                            <button class="o_vphub_ctrl" t-on-click="onTransferCall" title="Transférer (téléphone intégré)">
+                                <i class="fa fa-random"/>
+                                <span>Transférer</span>
+                            </button>
+                            <button class="o_vphub_ctrl" t-on-click="onRecordCall" title="Enregistrement (téléphone intégré)">
+                                <i class="fa fa-dot-circle-o"/>
+                                <span>Enreg.</span>
+                            </button>
+                            <button class="o_vphub_ctrl"
+                                    t-att-class="state.showScript ? 'o_vphub_ctrl--on' : ''"
+                                    t-on-click="toggleScript" title="Script campagne">
+                                <i class="fa fa-file-text-o"/>
+                                <span>Script</span>
+                            </button>
+                        </div>
+                        <div t-if="state.showScript" class="o_vphub_script_popup">
+                            <div class="o_vphub_script_popup__header">
+                                <span>Script campagne</span>
+                                <button class="o_vphub_script_popup__close" t-on-click="toggleScript">X</button>
+                            </div>
+                            <div class="o_vphub_script_popup__body">
+                                <t t-if="state.scriptHtml"><div t-out="state.scriptHtml"/></t>
+                                <t t-else=""><p>Aucun script disponible.</p></t>
+                            </div>
+                        </div>
+
+                        <!-- Pavé numérique -->
+                        <div class="o_vphub_dialzone">
+                        <t t-if="state.showDialpad">
+                            <div class="o_vphub_alias_row" t-if="state.session">
+                                <label class="o_vphub_field__label">Numéro affiché (Caller ID)</label>
+                                <select class="o_vphub_select o_vphub_alias_select"
+                                        t-att-value="state.outboundGroupAlias"
+                                        t-on-change="onOutboundAliasChange">
+                                    <option value="">Numéro campagne</option>
+                                    <t t-foreach="state.cidAliases" t-as="alias" t-key="alias.id">
+                                        <option t-att-value="alias.id"
+                                                t-att-selected="state.outboundGroupAlias === alias.id">
+                                            <t t-esc="alias.label"/> — <t t-esc="alias.caller_id_number"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                            <div class="o_vphub_dialdisplay">
+                                <input type="tel"
+                                       class="o_vphub_dialinput"
+                                       inputmode="tel"
+                                       t-att-placeholder="manualDialPlaceholder()"
+                                       t-att-value="state.manualDialPhone"
+                                       t-on-input="onManualDialPhoneInput"
+                                       t-on-keydown="onManualDialKeydown"
+                                       t-on-focus="onManualDialPhoneFocus"
+                                       autocomplete="tel"/>
+                                <button class="o_vphub_dialdisplay__bs" t-on-click="dialBackspace" title="Effacer"
+                                        t-att-disabled="!state.manualDialPhone">
+                                    <i class="fa fa-long-arrow-left"/>
+                                </button>
+                            </div>
+                            <div class="o_vphub_dialpad">
+                                <button class="o_vphub_key" t-on-click="() => this.pressDigit('1')"><span class="o_vphub_key__num">1</span></button>
+                                <button class="o_vphub_key" t-on-click="() => this.pressDigit('2')"><span class="o_vphub_key__num">2</span><span class="o_vphub_key__sub">ABC</span></button>
+                                <button class="o_vphub_key" t-on-click="() => this.pressDigit('3')"><span class="o_vphub_key__num">3</span><span class="o_vphub_key__sub">DEF</span></button>
+                                <button class="o_vphub_key" t-on-click="() => this.pressDigit('4')"><span class="o_vphub_key__num">4</span><span class="o_vphub_key__sub">GHI</span></button>
+                                <button class="o_vphub_key" t-on-click="() => this.pressDigit('5')"><span class="o_vphub_key__num">5</span><span class="o_vphub_key__sub">JKL</span></button>
+                                <button class="o_vphub_key" t-on-click="() => this.pressDigit('6')"><span class="o_vphub_key__num">6</span><span class="o_vphub_key__sub">MNO</span></button>
+                                <button class="o_vphub_key" t-on-click="() => this.pressDigit('7')"><span class="o_vphub_key__num">7</span><span class="o_vphub_key__sub">PQRS</span></button>
+                                <button class="o_vphub_key" t-on-click="() => this.pressDigit('8')"><span class="o_vphub_key__num">8</span><span class="o_vphub_key__sub">TUV</span></button>
+                                <button class="o_vphub_key" t-on-click="() => this.pressDigit('9')"><span class="o_vphub_key__num">9</span><span class="o_vphub_key__sub">WXYZ</span></button>
+                                <button class="o_vphub_key" t-on-click="() => this.pressDigit('*')"><span class="o_vphub_key__num">*</span></button>
+                                <button class="o_vphub_key" t-on-click="() => this.pressDigit('0')"><span class="o_vphub_key__num">0</span><span class="o_vphub_key__sub">+</span></button>
+                                <button class="o_vphub_key" t-on-click="() => this.pressDigit('#')"><span class="o_vphub_key__num">#</span></button>
+                            </div>
+                        </t>
+
+                        <!-- Boutons Répondre / Raccrocher -->
+                        <div class="o_vphub_callbtns">
+                            <button class="o_vphub_callbtn o_vphub_callbtn--answer"
+                                    t-on-click="onAnswerCall">
+                                <i class="fa fa-phone"/>
+                                <span t-esc="state.manualDialPhone ? 'Appeler' : 'Répondre'"/>
+                            </button>
+                            <button class="o_vphub_callbtn o_vphub_callbtn--hangup"
+                                    t-on-click="onHangupCall">
+                                <i class="fa fa-phone" style="transform: rotate(135deg);"/>
+                                <span>Raccrocher</span>
+                            </button>
+                        </div>
+
+                        <div class="o_vphub_msgbtns">
+                            <button type="button" class="o_vphub_btn o_vphub_btn--soft-teal o_vphub_btn--sm"
+                                    t-att-disabled="!smsEnabled() || !dialPhoneAvailable()"
+                                    t-att-title="messagingTooltip('sms')"
+                                    t-on-click="() => this.openCompose('sms')">
+                                <i class="fa fa-commenting-o me-1"/> SMS
+                            </button>
+                            <button type="button" class="o_vphub_btn o_vphub_btn--soft-green o_vphub_btn--sm"
+                                    t-att-disabled="!whatsappEnabled() || !dialPhoneAvailable()"
+                                    t-att-title="messagingTooltip('whatsapp')"
+                                    t-on-click="() => this.openCompose('whatsapp')">
+                                <i class="fa fa-whatsapp me-1"/> WhatsApp
+                            </button>
+                        </div>
+
+                        <t t-if="state.compose.open">
+                            <div class="o_vphub_compose o_vphub_compose--dialer">
+                                <div class="o_vphub_compose__head">
+                                    <span>
+                                        <t t-esc="state.compose.channel === 'sms' ? 'Nouveau SMS' : 'Nouveau WhatsApp'"/>
+                                        — <t t-esc="_contactPhone()"/>
+                                    </span>
+                                    <button class="o_vphub_iconbtn o_vphub_iconbtn--sm" t-on-click="closeCompose">
+                                        <i class="fa fa-times"/>
+                                    </button>
+                                </div>
+                                <textarea class="o_vphub_textarea"
+                                          placeholder="Votre message…"
+                                          t-att-value="state.compose.body"
+                                          t-on-input="onComposeInput"/>
+                                <button class="o_vphub_btn o_vphub_btn--primary w-100 mt-2"
+                                        t-att-disabled="state.composeBusy"
+                                        t-on-click="sendMessage">
+                                    <i class="fa fa-paper-plane me-1"/> Envoyer
+                                </button>
+                            </div>
+                        </t>
+                        </div>
+
+                        <!-- Téléphone intégré (masqué par défaut, iframe hors écran pour WebRTC) -->
+                        <t t-if="state.session &amp;&amp; state.vicidialWebphoneUrl">
+                            <div t-att-class="state.showWebphone ? 'o_vphub_webphone_compact' : 'o_vphub_webphone_hidden'"
+                                 t-att-aria-hidden="!state.showWebphone">
+                                <iframe t-att-src="state.vicidialWebphoneUrl"
+                                        t-att-allow="webphoneAllow"
+                                        class="o_vphub_webphone_frame"
+                                        title="ViciPhone WebRTC"/>
+                            </div>
+                        </t>
+                    </section>
+
+                    <!-- =========================================================
+                         DROITE — Fiche contact CRM
+                    ========================================================== -->
+                    <aside class="o_vphub_pane o_vphub_right">
+                        <div class="o_vphub_pane__head">
+                            <h3 class="o_vphub_pane__title">Fiche contact</h3>
+                            <button class="o_vphub_link" t-on-click="openContactInCrm">Voir dans CRM</button>
+                        </div>
+
+                        <t t-if="state.contactLoading">
+                            <div class="o_vphub_empty"><i class="fa fa-spinner fa-spin"/></div>
+                        </t>
+                        <t t-elif="!state.contact">
+                            <div class="o_vphub_empty">Sélectionnez un appel pour afficher la fiche.</div>
+                        </t>
+                        <t t-else="">
+                            <div class="o_vphub_fiche">
+                                <div class="o_vphub_fiche__id">
+                                    <span class="o_vphub_avatar o_vphub_avatar--md"
+                                          t-att-style="'background-color:' + state.contact.color">
+                                        <t t-esc="state.contact.initials"/>
+                                    </span>
+                                    <div>
+                                        <div class="o_vphub_fiche__name" t-esc="state.contact.name"/>
+                                        <div class="o_vphub_fiche__role" t-if="state.contact.role" t-esc="state.contact.role"/>
+                                    </div>
+                                </div>
+
+                                <div class="o_vphub_tagrow" t-if="state.contact.tags.length">
+                                    <t t-foreach="state.contact.tags" t-as="tag" t-key="tag_index">
+                                        <span class="o_vphub_tag"
+                                              t-att-style="'background-color:' + tag.color + '22; color:' + tag.color + '; border-color:' + tag.color + '55'"
+                                              t-esc="tag.name"/>
+                                    </t>
+                                </div>
+
+                                <dl class="o_vphub_fields">
+                                    <t t-if="state.contact.company">
+                                        <dt>Entreprise</dt>
+                                        <dd t-esc="state.contact.company"/>
+                                    </t>
+                                    <t t-if="state.contact.email">
+                                        <dt>Courriel</dt>
+                                        <dd t-esc="state.contact.email"/>
+                                    </t>
+                                    <t t-if="state.contact.phone">
+                                        <dt>Téléphone</dt>
+                                        <dd t-esc="state.contact.phone"/>
+                                    </t>
+                                    <t t-if="state.contact.mobile">
+                                        <dt>Mobile</dt>
+                                        <dd t-esc="state.contact.mobile"/>
+                                    </t>
+                                    <t t-if="state.contact.last_interaction">
+                                        <dt>Dernière interaction</dt>
+                                        <dd t-esc="state.contact.last_interaction"/>
+                                    </t>
+                                </dl>
+
+                                <div class="o_vphub_notes">
+                                    <div class="o_vphub_notes__head">
+                                        <span class="o_vphub_field__label mb-0">Notes d'appel</span>
+                                        <button class="o_vphub_link"
+                                                t-att-disabled="state.noteSaving"
+                                                t-on-click="saveNote">+ Ajouter</button>
+                                    </div>
+                                    <textarea class="o_vphub_textarea"
+                                              placeholder="Saisir une note d'appel…"
+                                              t-att-value="state.noteText"
+                                              t-on-input="onNoteInput"/>
+                                </div>
+
+                                <div class="o_vphub_ficheactions">
+                                    <button class="o_vphub_btn o_vphub_btn--soft"
+                                            t-att-disabled="state.activityBusy"
+                                            t-on-click="createTask">Créer tâche</button>
+                                    <button class="o_vphub_btn o_vphub_btn--soft-violet"
+                                            t-att-disabled="state.activityBusy"
+                                            t-on-click="scheduleFollowup">Programmer suivi</button>
+                                    <button class="o_vphub_btn o_vphub_btn--soft-teal"
+                                            t-att-disabled="!smsEnabled()"
+                                            t-att-title="messagingTooltip('sms')"
+                                            t-on-click="() => this.openCompose('sms')">Envoyer SMS</button>
+                                    <button class="o_vphub_btn o_vphub_btn--soft-green"
+                                            t-att-disabled="!whatsappEnabled()"
+                                            t-att-title="messagingTooltip('whatsapp')"
+                                            t-on-click="() => this.openCompose('whatsapp')">
+                                        <i class="fa fa-whatsapp me-1"/> WhatsApp
+                                    </button>
+                                </div>
+
+                                <div class="o_vphub_qualif">
+                                    <div class="o_vphub_qualif__head">
+                                        <span class="o_vphub_field__label mb-0">Qualification</span>
+                                        <span t-if="state.contact.qualification_label"
+                                              class="o_vphub_qualif__current"
+                                              t-esc="state.contact.qualification_label"/>
+                                    </div>
+                                    <div class="o_vphub_qualif__grid">
+                                        <t t-foreach="state.qualificationOptions" t-as="opt" t-key="opt.code">
+                                            <button type="button"
+                                                    t-att-class="qualificationChipClass(opt)"
+                                                    t-att-disabled="state.qualificationBusy || !state.contact.lead_id"
+                                                    t-att-title="opt.crm_label"
+                                                    t-on-click="() => this.applyQualification(opt.code)">
+                                                <t t-esc="opt.label"/>
+                                            </button>
+                                        </t>
+                                    </div>
+                                </div>
+
+                                <!-- Composeur SMS / WhatsApp -->
+                                <t t-if="state.compose.open">
+                                    <div class="o_vphub_compose">
+                                        <div class="o_vphub_compose__head">
+                                            <span>
+                                                <t t-esc="state.compose.channel === 'sms' ? 'Nouveau SMS' : 'Nouveau WhatsApp'"/>
+                                                — <t t-esc="_contactPhone()"/>
+                                            </span>
+                                            <button class="o_vphub_iconbtn o_vphub_iconbtn--sm" t-on-click="closeCompose">
+                                                <i class="fa fa-times"/>
+                                            </button>
+                                        </div>
+                                        <div class="mb-1">
+                                            <button class="o_vphub_btn o_vphub_btn--ghost o_vphub_btn--sm me-1"
+                                                    t-on-click="prefillSMSDriven"
+                                                    title="Pré-remplir avec le lien Driven">
+                                                🚀 Driven
+                                            </button>
+                                        </div>
+                                        <textarea class="o_vphub_textarea"
+                                                  placeholder="Votre message…"
+                                                  t-att-value="state.compose.body"
+                                                  t-on-input="onComposeInput"/>
+                                        <button class="o_vphub_btn o_vphub_btn--primary w-100 mt-2"
+                                                t-att-disabled="state.composeBusy"
+                                                t-on-click="sendMessage">
+                                            <i class="fa fa-paper-plane me-1"/> Envoyer
+                                        </button>
+                                    </div>
+                                </t>
+                            </div>
+                        </t>
+                    </aside>
+                </div>
+
+                <!-- =========================================================
+                     Bas de page — coaching + rappels (préservé)
+                ========================================================== -->
+                <div class="o_vphub_bottom">
+                    <div class="o_vphub_pane o_vphub_card">
+                        <div class="o_vphub_pane__head">
+                            <h3 class="o_vphub_pane__title">Mon coaching</h3>
+                            <button class="o_vphub_link" t-on-click="openMyCoaching">Voir tout</button>
+                        </div>
+                        <div class="o_vphub_kpis">
+                            <div class="o_vphub_kpi">
+                                <div class="o_vphub_kpi__val" t-esc="state.coaching.avg_score || 0"/>
+                                <div class="o_vphub_kpi__lbl">Score moy.</div>
+                            </div>
+                            <div class="o_vphub_kpi">
+                                <div class="o_vphub_kpi__val" t-esc="state.coaching.total || 0"/>
+                                <div class="o_vphub_kpi__lbl">Analyses</div>
+                            </div>
+                            <div class="o_vphub_kpi">
+                                <div class="o_vphub_kpi__val o_vphub_kpi__val--warn" t-esc="state.coaching.unread || 0"/>
+                                <div class="o_vphub_kpi__lbl">À lire</div>
+                            </div>
+                        </div>
+                        <t t-if="state.coaching.last_conseil">
+                            <div class="o_vphub_kpi__lbl mt-2">Dernier conseil</div>
+                            <div class="o_vphub_excerpt" t-esc="state.coaching.last_conseil"/>
+                        </t>
+                    </div>
+
+                    <div class="o_vphub_pane o_vphub_card">
+                        <div class="o_vphub_pane__head">
+                            <h3 class="o_vphub_pane__title">Rappels à venir (7 jours)</h3>
+                            <button class="o_vphub_link" t-on-click="openCalendar">Calendrier</button>
+                        </div>
+                        <t t-if="!state.callbacks.length">
+                            <div class="o_vphub_empty">Aucun rappel planifié.</div>
+                        </t>
+                        <div class="o_vphub_cblist">
+                            <t t-foreach="state.callbacks" t-as="cb" t-key="cb.id">
+                                <div class="o_vphub_cbrow">
+                                    <div>
+                                        <div class="o_vphub_cbrow__title" t-esc="cb.summary"/>
+                                        <div class="o_vphub_cbrow__sub">
+                                            <t t-esc="cb.date"/>
+                                            <t t-if="cb.lead_name"> — <t t-esc="cb.lead_name"/></t>
+                                            <t t-if="cb.phone"> (<t t-esc="cb.phone"/>)</t>
+                                        </div>
+                                    </div>
+                                    <button t-if="cb.lead_id"
+                                            class="o_vphub_btn o_vphub_btn--ghost o_vphub_btn--sm"
+                                            t-on-click="() => this.openLead(cb.lead_id)">Ouvrir</button>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+
+                    <div class="o_vphub_pane o_vphub_card">
+                        <div class="o_vphub_pane__head">
+                            <h3 class="o_vphub_pane__title">Performances du jour</h3>
+                        </div>
+                        <div class="o_vphub_kpis o_vphub_kpis--4">
+                            <div class="o_vphub_kpi">
+                                <div class="o_vphub_kpi__val" t-esc="state.statsToday.sessions"/>
+                                <div class="o_vphub_kpi__lbl">Sessions</div>
+                            </div>
+                            <div class="o_vphub_kpi">
+                                <div class="o_vphub_kpi__val" t-esc="state.statsToday.appels"/>
+                                <div class="o_vphub_kpi__lbl">Appels</div>
+                            </div>
+                            <div class="o_vphub_kpi">
+                                <div class="o_vphub_kpi__val" t-esc="state.statsToday.qualifies"/>
+                                <div class="o_vphub_kpi__lbl">Qualifiés</div>
+                            </div>
+                            <div class="o_vphub_kpi">
+                                <div class="o_vphub_kpi__val" t-esc="formatDuration(state.statsToday.duree_totale)"/>
+                                <div class="o_vphub_kpi__lbl">Temps</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </t>
+        </div>
+    </t>
+</templates>

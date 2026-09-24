@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ===== Niveaux (rangs karma) ===== -->
+    <record id="rank_doorway_debutant" model="gamification.karma.rank">
+        <field name="name">Débutant</field>
+        <field name="karma_min">1</field>
+        <field name="description"><![CDATA[<p>Bienvenue ! Concluez vos premières ventes pour progresser.</p>]]></field>
+    </record>
+    <record id="rank_doorway_intermediaire" model="gamification.karma.rank">
+        <field name="name">Intermédiaire</field>
+        <field name="karma_min">200</field>
+        <field name="description"><![CDATA[<p>Beau parcours ! Vous montez en puissance.</p>]]></field>
+    </record>
+    <record id="rank_doorway_expert" model="gamification.karma.rank">
+        <field name="name">Expert</field>
+        <field name="karma_min">1000</field>
+        <field name="description"><![CDATA[<p>Vous faites partie de l'élite commerciale Doorway.</p>]]></field>
+    </record>
+
+    <!-- ===== Badges ===== -->
+    <record id="badge_best_seller" model="gamification.badge">
+        <field name="name">Meilleur vendeur du mois</field>
+        <field name="description">Décerné au commercial ayant gagné le plus d'opportunités sur le mois.</field>
+        <field name="rule_auth">nobody</field>
+    </record>
+    <record id="badge_lead_week" model="gamification.badge">
+        <field name="name">Lead de la semaine</field>
+        <field name="description">Pour le commercial le plus actif en génération de leads cette semaine.</field>
+        <field name="rule_auth">users</field>
+    </record>
+    <record id="badge_first_sale" model="gamification.badge">
+        <field name="name">Première vente</field>
+        <field name="description">Félicitations pour votre toute première opportunité gagnée !</field>
+        <field name="rule_auth">everyone</field>
+    </record>
+    <record id="badge_first_task" model="gamification.badge">
+        <field name="name">Première tâche</field>
+        <field name="description">Félicitations pour votre toute première tâche de projet terminée !</field>
+        <field name="rule_auth">everyone</field>
+    </record>
+    <record id="badge_task_champion" model="gamification.badge">
+        <field name="name">Champion des tâches du mois</field>
+        <field name="description">Décerné à la personne ayant terminé le plus de tâches de projet sur le mois.</field>
+        <field name="rule_auth">nobody</field>
+    </record>
+
+    <!-- ===== Tableau de classement ===== -->
+    <record id="view_doorway_leaderboard_list" model="ir.ui.view">
+        <field name="name">doorway.leaderboard.list</field>
+        <field name="model">res.users</field>
+        <field name="arch" type="xml">
+            <list string="Classement" create="false" edit="false" delete="false"
+                  default_order="karma desc">
+                <field name="name"/>
+                <field name="karma" string="Points"/>
+                <field name="rank_id" string="Niveau"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_doorway_leaderboard" model="ir.actions.act_window">
+        <field name="name">Classement</field>
+        <field name="res_model">res.users</field>
+        <field name="view_mode">list</field>
+        <field name="domain" eval="[('group_ids', 'in', [ref('renovation_conciergerie.group_doorway_equipe_interne')]), ('active', '=', True)]"/>
+        <field name="view_id" ref="view_doorway_leaderboard_list"/>
+    </record>
+
+    <menuitem id="menu_doorway_leaderboard"
+              name="Classement 🏆"
+              parent="crm.crm_menu_root"
+              action="action_doorway_leaderboard"
+              sequence="90"
+              groups="sales_team.group_sale_salesman"/>
+
+    <menuitem id="menu_doorway_leaderboard_project"
+              name="Classement 🏆"
+              parent="project.menu_main_pm"
+              action="action_doorway_leaderboard"
+              sequence="97"
+              groups="base.group_user"/>
+
+    <!-- ===== Défis (best-effort) ===== -->
+    <function model="crm.lead" name="_setup_doorway_gamification"/>
+    <function model="project.task" name="_setup_project_gamification"/>
+
+</odoo>

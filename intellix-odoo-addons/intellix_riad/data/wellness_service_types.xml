@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="wellness_type_massage" model="intellix.riad.wellness.type">
+        <field name="name">Massage</field>
+        <field name="code">massage</field>
+        <field name="css_class">massage</field>
+        <field name="sequence">10</field>
+    </record>
+    <record id="wellness_type_hammam" model="intellix.riad.wellness.type">
+        <field name="name">Hammam</field>
+        <field name="code">hammam</field>
+        <field name="css_class">hammam</field>
+        <field name="sequence">20</field>
+    </record>
+    <record id="wellness_type_esthetique" model="intellix.riad.wellness.type">
+        <field name="name">Esthétique</field>
+        <field name="code">esthetique</field>
+        <field name="css_class">ongles</field>
+        <field name="sequence">30</field>
+    </record>
+    <record id="wellness_type_brushing" model="intellix.riad.wellness.type">
+        <field name="name">Brushing</field>
+        <field name="code">brushing</field>
+        <field name="css_class">brushing</field>
+        <field name="sequence">40</field>
+    </record>
+    <record id="wellness_type_ongles" model="intellix.riad.wellness.type">
+        <field name="name">Ongles</field>
+        <field name="code">ongles</field>
+        <field name="css_class">ongles</field>
+        <field name="sequence">50</field>
+    </record>
+</odoo>

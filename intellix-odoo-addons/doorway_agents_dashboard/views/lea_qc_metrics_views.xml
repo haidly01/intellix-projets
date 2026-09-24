@@ -1,0 +1,482 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ════════════ Appels échantillon Léa-QC ════════════ -->
+    <record id="view_lea_qc_sample_call_list" model="ir.ui.view">
+        <field name="name">lea.qc.sample.call.list</field>
+        <field name="model">lea.qc.sample.call</field>
+        <field name="arch" type="xml">
+            <list string="Appels Léa-QC" create="false">
+                <field name="call_date"/>
+                <field name="phone_display" string="Téléphone"/>
+                <field name="phone" column_invisible="1"/>
+                <field name="duration_display" string="Durée"
+                       decoration-bf="duration_sec &gt; 0"
+                       decoration-success="duration_sec &gt;= 30"/>
+                <field name="call_result_category"
+                       decoration-success="call_result_category == 'positif'"
+                       decoration-danger="call_result_category == 'negatif'"
+                       decoration-warning="call_result_category == 'neutre'"
+                       decoration-muted="call_result_category == 'insucces'"/>
+                <field name="qualification_statut" optional="show"
+                       decoration-success="qualification_statut in ('qualifie','rdv','b2b_valide')"
+                       decoration-danger="qualification_statut in ('pas_interesse','dnc','locataire','deja_servi','hors_cible','faux_num')"
+                       decoration-warning="qualification_statut in ('a_rappeler','messagerie')"
+                       decoration-muted="qualification_statut == 'non_fait'"/>
+                <button name="action_open_recording" type="object"
+                        string="Écouter" icon="fa-play-circle"
+                        invisible="not has_recording"/>
+                <field name="has_recording" column_invisible="1"/>
+                <field name="duration_sec" column_invisible="1"/>
+                <field name="variant" optional="show" decoration-info="variant == 'A'" decoration-warning="variant == 'B'"/>
+                <field name="connect_outcome"
+                       optional="show"
+                       decoration-success="connect_outcome == 'connected'"
+                       decoration-muted="connect_outcome in ('no_answer','voicemail','invalid')"/>
+                <field name="qualified" optional="hide"/>
+                <field name="statut" optional="hide"/>
+                <field name="claude_comprehension_score" optional="show"/>
+                <field name="claude_variant_hint" optional="hide"/>
+                <field name="turn_count" optional="hide"/>
+                <field name="e2e_ms_p50" optional="hide"/>
+                <field name="e2e_ms_p95" optional="hide"/>
+                <field name="stt_ms_p95" optional="hide"/>
+                <field name="stt_audio_sec" optional="hide"/>
+                <field name="tts_chars" optional="hide"/>
+                <field name="cacheable_pct" optional="show" widget="percentage"/>
+                <field name="cost_total" sum="Coût total ($)" optional="show"/>
+                <field name="cost_per_min" optional="hide"/>
+                <field name="concurrency_at_start" optional="hide"/>
+                <field name="campaign" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_lea_qc_sample_call_form" model="ir.ui.view">
+        <field name="name">lea.qc.sample.call.form</field>
+        <field name="model">lea.qc.sample.call</field>
+        <field name="arch" type="xml">
+            <form string="Appel Léa-QC" create="false">
+                <header>
+                    <button name="action_open_recording" type="object"
+                            string="Écouter l'enregistrement" class="btn-primary"
+                            icon="fa-play-circle"
+                            invisible="not has_recording"/>
+                    <button name="action_analyze_claude" type="object"
+                            string="Analyser avec Claude" class="btn-secondary"
+                            invisible="claude_analyzed_at"/>
+                    <field name="connect_outcome" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" icon="fa-clock-o" disabled="1">
+                            <div class="o_stat_info">
+                                <span class="o_stat_value"><field name="duration_display" readonly="1" nolabel="1"/></span>
+                                <span class="o_stat_text">Durée</span>
+                            </div>
+                        </button>
+                        <button name="action_open_recording" type="object"
+                                class="oe_stat_button" icon="fa-play-circle"
+                                invisible="not has_recording">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Écouter</span>
+                            </div>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-check-circle" disabled="1"
+                                invisible="call_result_category != 'positif'">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Succès positif</span>
+                            </div>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-times-circle" disabled="1"
+                                invisible="call_result_category != 'negatif'">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Négatif</span>
+                            </div>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-minus-circle" disabled="1"
+                                invisible="call_result_category != 'neutre'">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Neutre</span>
+                            </div>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-phone-slash" disabled="1"
+                                invisible="call_result_category != 'insucces'">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Insuccès</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="phone_display" readonly="1"/>
+                        </h1>
+                        <h2>
+                            <field name="duration_display" readonly="1" nolabel="1"/>
+                            —
+                            <field name="call_result_category" readonly="1" nolabel="1"/>
+                        </h2>
+                    </div>
+                    <field name="has_recording" invisible="1"/>
+                    <field name="phone" invisible="1"/>
+                    <group>
+                        <group string="Appel">
+                            <field name="phone_display" readonly="1" string="Téléphone"/>
+                            <field name="call_sid"/>
+                            <field name="variant"/>
+                            <field name="prenom"/>
+                            <field name="partner_id"/>
+                            <field name="lead_id"/>
+                            <field name="campaign"/>
+                            <field name="agent_id"/>
+                        </group>
+                        <group string="Issue">
+                            <field name="connected"/>
+                            <field name="qualification_statut"/>
+                            <field name="amd_result"/>
+                            <field name="duration_sec" string="Durée (secondes)"/>
+                            <field name="qualified"/>
+                            <field name="statut"/>
+                            <field name="crm_action"/>
+                            <field name="call_result_category"/>
+                            <field name="concurrency_at_start"/>
+                        </group>
+                        <group string="Horodatage">
+                            <field name="start_at"/>
+                            <field name="call_date"/>
+                            <field name="end_at"/>
+                            <field name="turn_count"/>
+                        </group>
+                        <group string="Coûts réels ($)">
+                            <field name="cost_telecom"/>
+                            <field name="cost_stt"/>
+                            <field name="cost_tts"/>
+                            <field name="cost_llm"/>
+                            <field name="cost_total"/>
+                            <field name="cost_per_min"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Unités réelles">
+                            <field name="telecom_sec"/>
+                            <field name="stt_audio_sec"/>
+                            <field name="tts_chars"/>
+                            <field name="tts_chars_cacheable"/>
+                            <field name="cacheable_pct" widget="percentage"/>
+                            <field name="llm_tokens_in"/>
+                            <field name="llm_tokens_out"/>
+                        </group>
+                        <group string="Latence par étape (ms)">
+                            <field name="stt_ms_p50"/>
+                            <field name="stt_ms_p95"/>
+                            <field name="llm_ttft_ms_p95"/>
+                            <field name="tts_ttfb_ms_p95"/>
+                            <field name="e2e_ms_p50"/>
+                            <field name="e2e_ms_p95"/>
+                            <field name="e2e_ms_max"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Tours de parole">
+                            <field name="turn_ids">
+                                <list>
+                                    <field name="turn_index"/>
+                                    <field name="prospect_transcript"/>
+                                    <field name="bot_text"/>
+                                    <field name="stt_ms"/>
+                                    <field name="stt_audio_sec"/>
+                                    <field name="llm_ttft_ms"/>
+                                    <field name="tts_ttfb_ms"/>
+                                    <field name="tts_chars"/>
+                                    <field name="tts_is_scripted"/>
+                                    <field name="tts_cache_hit"/>
+                                    <field name="e2e_ms"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Transcript">
+                            <field name="transcript"/>
+                        </page>
+                        <page string="Analyse Claude">
+                            <group>
+                                <field name="claude_analyzed_at"/>
+                                <field name="claude_comprehension_score"/>
+                                <field name="claude_variant_hint"/>
+                            </group>
+                            <field name="claude_analysis" widget="json"/>
+                        </page>
+                        <page string="Enregistrement">
+                            <group>
+                                <field name="recording_url" widget="url" string="URL enregistrement"/>
+                                <button name="action_open_recording" type="object"
+                                        string="Écouter" icon="fa-play-circle"
+                                        invisible="not has_recording"/>
+                            </group>
+                        </page>
+                        <page string="Payload brut">
+                            <field name="raw_payload"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_lea_qc_sample_call_search" model="ir.ui.view">
+        <field name="name">lea.qc.sample.call.search</field>
+        <field name="model">lea.qc.sample.call</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="phone"/>
+                <field name="call_sid"/>
+                <field name="prenom"/>
+                <field name="campaign"/>
+                <field name="variant"/>
+                <field name="statut"/>
+                <field name="qualification_statut"/>
+                <field name="duration_display"/>
+                <separator/>
+                <filter name="result_positif" string="Succès positif"
+                        domain="[('call_result_category','=','positif')]"/>
+                <filter name="result_negatif" string="Négatif"
+                        domain="[('call_result_category','=','negatif')]"/>
+                <filter name="result_neutre" string="Neutre"
+                        domain="[('call_result_category','=','neutre')]"/>
+                <filter name="result_insucces" string="Insuccès"
+                        domain="[('call_result_category','=','insucces')]"/>
+                <separator/>
+                <filter name="qual_non_fait" string="Pas encore qualifié"
+                        domain="[('qualification_statut','=','non_fait')]"/>
+                <filter name="qual_qualifie" string="Qualifié — lead chaud"
+                        domain="[('qualification_statut','=','qualifie')]"/>
+                <filter name="qual_a_rappeler" string="Rappel"
+                        domain="[('qualification_statut','=','a_rappeler')]"/>
+                <filter name="qual_rdv" string="RDV planifié"
+                        domain="[('qualification_statut','=','rdv')]"/>
+                <filter name="qual_pas_interesse" string="Pas intéressé"
+                        domain="[('qualification_statut','=','pas_interesse')]"/>
+                <filter name="qual_deja_servi" string="Déjà servi"
+                        domain="[('qualification_statut','=','deja_servi')]"/>
+                <filter name="qual_locataire" string="Locataire"
+                        domain="[('qualification_statut','=','locataire')]"/>
+                <filter name="qual_dnc" string="DNC — Ne plus appeler"
+                        domain="[('qualification_statut','=','dnc')]"/>
+                <filter name="qual_messagerie" string="Boîte vocale"
+                        domain="[('qualification_statut','=','messagerie')]"/>
+                <filter name="qual_hors_cible" string="Hors cible"
+                        domain="[('qualification_statut','=','hors_cible')]"/>
+                <filter name="qual_faux_num" string="Faux numéro"
+                        domain="[('qualification_statut','=','faux_num')]"/>
+                <filter name="qual_b2b_valide" string="B2B validé pour Karine"
+                        domain="[('qualification_statut','=','b2b_valide')]"/>
+                <separator/>
+                <filter name="has_recording" string="Avec enregistrement"
+                        domain="[('has_recording','=',True)]"/>
+                <filter name="no_recording" string="Sans enregistrement"
+                        domain="[('has_recording','=',False)]"/>
+                <separator/>
+                <filter name="connected" string="Connectés" domain="[('connected','=',True)]"/>
+                <filter name="qualified" string="Qualifiés" domain="[('qualified','=',True)]"/>
+                <filter name="voicemail" string="Messagerie" domain="[('connect_outcome','=','voicemail')]"/>
+                <filter name="no_answer" string="Pas de réponse" domain="[('connect_outcome','=','no_answer')]"/>
+                <filter name="busy" string="Occupé" domain="[('connect_outcome','=','busy')]"/>
+                <separator/>
+                <filter name="variant_a" string="Variante A" domain="[('variant','=','A')]"/>
+                <filter name="variant_b" string="Variante B" domain="[('variant','=','B')]"/>
+                <filter name="claude_pending" string="Claude en attente"
+                        domain="[('claude_analyzed_at','=',False),('connect_outcome','=','connected')]"/>
+                <filter name="claude_done" string="Claude analysé"
+                        domain="[('claude_analyzed_at','!=',False)]"/>
+                <separator/>
+                <filter name="today" string="Aujourd'hui"
+                        domain="[('call_date','>=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)))]"/>
+                <separator/>
+                <filter name="g_result" string="Résultat appel" context="{'group_by':'call_result_category'}"/>
+                <filter name="g_qualification" string="Qualification VICIdial"
+                        context="{'group_by':'qualification_statut'}"/>
+                <filter name="g_variant" string="Variante A/B" context="{'group_by':'variant'}"/>
+                <filter name="g_outcome" string="Issue connexion" context="{'group_by':'connect_outcome'}"/>
+                <filter name="g_campaign" string="Campagne" context="{'group_by':'campaign'}"/>
+                <filter name="g_date" string="Jour" context="{'group_by':'call_date:day'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_lea_qc_sample_call_pivot" model="ir.ui.view">
+        <field name="name">lea.qc.sample.call.pivot</field>
+        <field name="model">lea.qc.sample.call</field>
+        <field name="arch" type="xml">
+            <pivot string="Léa-QC — Synthèse">
+                <field name="variant" type="row"/>
+                <field name="connect_outcome" type="col"/>
+                <field name="duration_sec" type="measure"/>
+                <field name="cost_total" type="measure"/>
+                <field name="cost_per_min" type="measure"/>
+                <field name="e2e_ms_p95" type="measure"/>
+                <field name="stt_audio_sec" type="measure"/>
+                <field name="tts_chars" type="measure"/>
+                <field name="cacheable_pct" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- ════════════ Pivot dédié A/B (coût par lead qualifié) ════════════ -->
+    <record id="view_lea_qc_ab_pivot" model="ir.ui.view">
+        <field name="name">lea.qc.sample.call.ab.pivot</field>
+        <field name="model">lea.qc.sample.call</field>
+        <field name="arch" type="xml">
+            <pivot string="Léa-QC — A/B (coût/lead qualifié)">
+                <field name="variant" type="row"/>
+                <field name="cost_total" type="measure"/>
+                <field name="duration_sec" type="measure"/>
+                <field name="cost_per_min" type="measure"/>
+                <field name="claude_comprehension_score" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_lea_qc_ab" model="ir.actions.act_window">
+        <field name="name">Léa-QC — Comparaison A/B</field>
+        <field name="res_model">lea.qc.sample.call</field>
+        <field name="view_mode">pivot,list,graph</field>
+        <field name="view_id" ref="view_lea_qc_ab_pivot"/>
+        <field name="search_view_id" ref="view_lea_qc_sample_call_search"/>
+        <field name="context">{'search_default_g_variant': 1, 'search_default_connected': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiley_face">Comparaison des bras A/B.</p>
+            <p>Le chiffre clé est le <b>coût par lead positif (qualifié)</b> par bras.
+            Pour le calcul exact (taux de qualif, IC95, z-test, gagnant), lancez
+            « Imprimer la comparaison A/B ».</p>
+        </field>
+    </record>
+
+    <!-- Action serveur : notification de la comparaison A/B chiffrée -->
+    <record id="action_lea_qc_ab_print" model="ir.actions.server">
+        <field name="name">Léa-QC — Imprimer la comparaison A/B</field>
+        <field name="model_id" ref="model_lea_qc_sample_call"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_ab_comparison()</field>
+    </record>
+
+    <!-- Action serveur : batch analyse Claude -->
+    <record id="action_lea_qc_claude_batch" model="ir.actions.server">
+        <field name="name">Léa-QC — Analyser appels avec Claude (batch)</field>
+        <field name="model_id" ref="model_lea_qc_sample_call"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_batch_analyze_claude(limit=50)</field>
+    </record>
+
+    <record id="view_lea_qc_sample_call_graph" model="ir.ui.view">
+        <field name="name">lea.qc.sample.call.graph</field>
+        <field name="model">lea.qc.sample.call</field>
+        <field name="arch" type="xml">
+            <graph string="Léa-QC — Coût/latence" type="bar">
+                <field name="connect_outcome"/>
+                <field name="cost_total" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_lea_qc_sample_call" model="ir.actions.act_window">
+        <field name="name">Léa-QC — Appels mesurés</field>
+        <field name="res_model">lea.qc.sample.call</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+        <field name="search_view_id" ref="view_lea_qc_sample_call_search"/>
+        <field name="context">{'search_default_today': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiley_face">Aucun appel Léa mesuré pour l'instant.</p>
+            <p>Chaque appel Léa-QC terminé crée une ligne ici (issue, durée,
+            qualification, latence par étape, unités réelles &amp; coût, % cacheable).</p>
+        </field>
+    </record>
+
+    <!-- ════════════ Tours de parole (brut) ════════════ -->
+    <record id="view_lea_qc_turn_list" model="ir.ui.view">
+        <field name="name">lea.qc.turn.list</field>
+        <field name="model">lea.qc.turn</field>
+        <field name="arch" type="xml">
+            <list string="Tours Léa-QC" create="false">
+                <field name="call_sid"/>
+                <field name="turn_index"/>
+                <field name="ts"/>
+                <field name="prospect_transcript"/>
+                <field name="bot_text"/>
+                <field name="stt_ms"/>
+                <field name="stt_audio_sec"/>
+                <field name="stt_confidence"/>
+                <field name="llm_ttft_ms"/>
+                <field name="llm_tokens_in"/>
+                <field name="llm_tokens_out"/>
+                <field name="tts_ttfb_ms"/>
+                <field name="tts_total_ms"/>
+                <field name="tts_chars"/>
+                <field name="tts_is_scripted"/>
+                <field name="tts_cache_hit"/>
+                <field name="e2e_ms"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_lea_qc_turn_pivot" model="ir.ui.view">
+        <field name="name">lea.qc.turn.pivot</field>
+        <field name="model">lea.qc.turn</field>
+        <field name="arch" type="xml">
+            <pivot string="Tours — latence/unités">
+                <field name="stt_ms" type="measure"/>
+                <field name="tts_ttfb_ms" type="measure"/>
+                <field name="e2e_ms" type="measure"/>
+                <field name="tts_chars" type="measure"/>
+                <field name="stt_audio_sec" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_lea_qc_turn" model="ir.actions.act_window">
+        <field name="name">Léa-QC — Tours (brut)</field>
+        <field name="res_model">lea.qc.turn</field>
+        <field name="view_mode">list,pivot</field>
+    </record>
+
+    <!-- ════════════ Catalogue répliques fixes ════════════ -->
+    <record id="view_lea_qc_scripted_line_list" model="ir.ui.view">
+        <field name="name">lea.qc.scripted.line.list</field>
+        <field name="model">lea.qc.scripted.line</field>
+        <field name="arch" type="xml">
+            <list string="Répliques scriptées Léa" editable="bottom">
+                <field name="key"/>
+                <field name="text"/>
+                <field name="text_hash"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_lea_qc_scripted_line" model="ir.actions.act_window">
+        <field name="name">Léa-QC — Répliques fixes</field>
+        <field name="res_model">lea.qc.scripted.line</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <!-- ════════════ Monitoring live IA (Sofia FR + Léa QC) ════════════ -->
+    <record id="action_ia_agents_live_dashboard" model="ir.actions.client">
+        <field name="name">Monitoring live IA</field>
+        <field name="tag">doorway_ia_agents_live_dashboard</field>
+    </record>
+
+    <!-- ════════════ Menu (masqué du menu apps — outils accessibles via actions techniques) ════════════ -->
+    <menuitem id="menu_lea_qc_root" name="Léa-QC Mesure" sequence="46" active="False"/>
+    <menuitem id="menu_ia_agents_live" name="Monitoring live IA"
+              parent="menu_lea_qc_root" action="action_ia_agents_live_dashboard" sequence="0" active="False"/>
+    <menuitem id="menu_lea_qc_calls" name="Appels mesurés"
+              parent="menu_lea_qc_root" action="action_lea_qc_sample_call" sequence="1" active="False"/>
+    <menuitem id="menu_lea_qc_ab" name="Comparaison A/B"
+              parent="menu_lea_qc_root" action="action_lea_qc_ab" sequence="2" active="False"/>
+    <menuitem id="menu_lea_qc_ab_print" name="Imprimer comparaison A/B"
+              parent="menu_lea_qc_root" action="action_lea_qc_ab_print" sequence="3" active="False"/>
+    <menuitem id="menu_lea_qc_claude_batch" name="Analyser avec Claude (batch)"
+              parent="menu_lea_qc_root" action="action_lea_qc_claude_batch" sequence="4" active="False"/>
+    <menuitem id="menu_lea_qc_turns" name="Tours (brut)"
+              parent="menu_lea_qc_root" action="action_lea_qc_turn" sequence="5" active="False"/>
+    <menuitem id="menu_lea_qc_scripted" name="Répliques fixes"
+              parent="menu_lea_qc_root" action="action_lea_qc_scripted_line" sequence="6" active="False"/>
+
+</odoo>

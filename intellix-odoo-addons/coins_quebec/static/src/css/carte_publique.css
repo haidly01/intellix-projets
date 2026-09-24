@@ -1,0 +1,29 @@
+html, body { margin: 0; height: 100%; background: #e9e2d0; font-family: Jost, sans-serif; color: #211d18; }
+.cq-map-wrap { display: grid; grid-template-columns: 320px 1fr; height: 100vh; }
+.cq-map-side {
+  background: #122822;
+  color: #f2e8d5;
+  padding: 22px 18px;
+  overflow: auto;
+}
+.cq-map-side h1 {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 28px;
+  margin: 0 0 8px;
+}
+.cq-map-side p { font-size: 13px; opacity: 0.8; }
+.cq-map-side a { color: #e8b364; }
+#cq-map { min-height: 100vh; }
+.cq-pin-list { list-style: none; padding: 0; margin: 18px 0 0; }
+.cq-pin-list li {
+  background: rgba(255,255,255,0.06);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+}
+.cq-pin-list b { display: block; font-family: "Cormorant Garamond", Georgia, serif; font-size: 17px; }
+.leaflet-popup-content { font-family: Jost, sans-serif; }
+@media (max-width: 800px) {
+  .cq-map-wrap { grid-template-columns: 1fr; }
+  #cq-map { min-height: 55vh; }
+}

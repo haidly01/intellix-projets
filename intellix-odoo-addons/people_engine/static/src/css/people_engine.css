@@ -1,0 +1,526 @@
+/*
+ * RH (people_engine) — thème CLAIR pour les vues standard pe.*
+ * Aligné sur le hub RH (pe_rh_hub) : fond clair #f4f5f7, cartes blanches
+ * arrondies à ombre douce, texte sombre #111827, accents violet/indigo.
+ * Le backend Intellix force des tokens sombres (--ix-bg #0a0a1a) sur tout
+ * le web client ; ici on rétablit un fond clair UNIQUEMENT sur les vues
+ * portant la classe .pe-rh-theme (ajoutée par pe_rh_theme_patch.js).
+ */
+
+:root {
+    /* Variables de design RH — sourcées sur les tokens globaux du thème
+     * (clair/sombre sélectionnable). Les littéraux servent de repli clair. */
+    --pe-rh-text: var(--ix-text, #111827);
+    --pe-rh-muted: var(--ix-text-muted, #6b7280);
+    --pe-rh-surface: var(--ix-surface, #ffffff);
+    --pe-rh-bg: var(--ix-bg, #f4f5f7);
+    --pe-rh-border: var(--ix-border, #e5e7eb);
+    --pe-rh-line: var(--ix-border, #eceef2);
+    --pe-rh-link: var(--ix-primary-light, #6d28d9);
+    --pe-rh-primary: var(--ix-purple, #7c3aed);
+    --pe-rh-accent: rgba(124, 58, 237, 0.10);
+    --pe-rh-accent-strong: rgba(124, 58, 237, 0.16);
+    --pe-rh-shadow: var(--ix-shadow-md, 0 1px 2px rgba(16, 24, 40, 0.06), 0 8px 24px rgba(16, 24, 40, 0.06));
+}
+
+/* ════════════════════════════════════════════════════════════════════
+ * THÈME RH — suit désormais le thème backend sélectionnable (clair/sombre).
+ * ────────────────────────────────────────────────────────────────────
+ * Auparavant ce bloc REMAPPAIT les tokens --ix-* vers des valeurs CLAIRES
+ * fixes pour contrer le backend forcé en sombre. Le backend étant maintenant
+ * piloté par les tokens (classe body o_doorway_light / o_doorway_dark), on ne
+ * force plus le clair : on laisse les tokens globaux circuler et on aligne les
+ * ponts Bootstrap / ListRenderer / Kanban sur ces tokens. Résultat : les vues
+ * RH (.pe-rh-theme) sont CLAIRES en thème clair et SOMBRES en thème sombre,
+ * sans guerre de spécificité ni texte illisible.
+ * ════════════════════════════════════════════════════════════════════ */
+.o_action_manager:has(.pe-rh-theme),
+.pe-rh-theme,
+.o_form_view.pe-rh-theme,
+.o_list_view.pe-rh-theme,
+.o_kanban_view.pe-rh-theme,
+.o_graph_view.pe-rh-theme,
+.o_pivot_view.pe-rh-theme,
+.modal:has(.pe-rh-theme) .modal-content {
+    /* Pont Bootstrap → tokens du thème */
+    --bs-body-bg: var(--ix-bg);
+    --bs-body-color: var(--ix-text);
+    --bs-emphasis-color: var(--ix-text);
+    --bs-heading-color: var(--ix-text);
+    --bs-secondary-color: var(--ix-text-muted);
+    --bs-tertiary-bg: var(--ix-surface);
+    --bs-tertiary-color: var(--ix-text-muted);
+    --bs-border-color: var(--ix-border);
+    --bs-card-bg: var(--ix-surface);
+    --bs-card-color: var(--ix-text);
+    --bs-modal-bg: var(--ix-surface);
+    --bs-modal-color: var(--ix-text);
+    --bs-dropdown-bg: var(--ix-surface);
+    --bs-dropdown-color: var(--ix-text);
+    --bs-dropdown-link-color: var(--ix-text);
+    --bs-table-bg: var(--ix-surface);
+    --bs-table-color: var(--ix-text);
+    --bs-table-striped-bg: var(--ix-surface-elevated);
+    --bs-table-border-color: var(--ix-border);
+    --bs-table-hover-bg: rgba(124, 58, 237, 0.06);
+    --bs-table-hover-color: var(--ix-text);
+
+    /* Variables internes ListRenderer/Kanban Odoo → tokens */
+    --ListRenderer-thead-bg-color: var(--ix-surface);
+    --ListRenderer-thead-color: var(--ix-text-muted);
+    --table-bg: var(--ix-surface);
+    --table-color: var(--ix-text);
+    --Kanban-background: var(--ix-bg);
+    --KanbanGroup-background: var(--ix-bg);
+}
+
+/* ── Fond clair de la zone d'action quand une vue RH est affichée ── */
+.o_action_manager:has(.pe-rh-theme) {
+    background-color: var(--pe-rh-bg) !important;
+}
+
+.o_form_view.pe-rh-theme,
+.o_list_view.pe-rh-theme,
+.o_kanban_view.pe-rh-theme {
+    background-color: var(--pe-rh-bg) !important;
+    color: var(--pe-rh-text) !important;
+    --table-color: var(--pe-rh-text);
+}
+
+.o_form_view.pe-rh-theme .o_content,
+.o_list_view.pe-rh-theme .o_content,
+.o_kanban_view.pe-rh-theme .o_content,
+.o_kanban_view.pe-rh-theme .o_kanban_renderer,
+.o_kanban_view.pe-rh-theme .o_renderer {
+    background-color: var(--pe-rh-bg) !important;
+    color: var(--pe-rh-text) !important;
+}
+
+/* ── Control panel / barre du haut / fil d'ariane ── */
+.o_form_view.pe-rh-theme .o_control_panel,
+.o_list_view.pe-rh-theme .o_control_panel,
+.o_kanban_view.pe-rh-theme .o_control_panel {
+    background-color: var(--pe-rh-bg) !important;
+    color: var(--pe-rh-text) !important;
+    border-bottom: 1px solid var(--pe-rh-line) !important;
+}
+
+.o_form_view.pe-rh-theme .o_control_panel .o_breadcrumb,
+.o_form_view.pe-rh-theme .o_control_panel .o_last_breadcrumb_item,
+.o_form_view.pe-rh-theme .o_control_panel .o_cp_action_menus,
+.o_list_view.pe-rh-theme .o_control_panel .o_breadcrumb,
+.o_list_view.pe-rh-theme .o_control_panel .o_last_breadcrumb_item,
+.o_list_view.pe-rh-theme .o_control_panel .o_cp_action_menus,
+.o_kanban_view.pe-rh-theme .o_control_panel .o_breadcrumb,
+.o_kanban_view.pe-rh-theme .o_control_panel .o_last_breadcrumb_item,
+.o_kanban_view.pe-rh-theme .o_control_panel .o_cp_action_menus {
+    color: var(--pe-rh-text) !important;
+}
+
+/* Barre / facettes de recherche */
+.o_form_view.pe-rh-theme .o_searchview,
+.o_list_view.pe-rh-theme .o_searchview,
+.o_kanban_view.pe-rh-theme .o_searchview,
+.o_form_view.pe-rh-theme .o_searchview_input,
+.o_list_view.pe-rh-theme .o_searchview_input,
+.o_kanban_view.pe-rh-theme .o_searchview_input {
+    color: var(--pe-rh-text) !important;
+}
+.o_list_view.pe-rh-theme .o_searchview,
+.o_kanban_view.pe-rh-theme .o_searchview,
+.o_form_view.pe-rh-theme .o_searchview {
+    background-color: var(--pe-rh-surface) !important;
+    border: 1px solid var(--pe-rh-border) !important;
+    border-radius: 999px !important;
+}
+.o_list_view.pe-rh-theme .o_searchview_facet,
+.o_kanban_view.pe-rh-theme .o_searchview_facet,
+.o_form_view.pe-rh-theme .o_searchview_facet {
+    color: var(--pe-rh-text) !important;
+}
+
+/* ── Kanban pe.* — cartes blanches arrondies ── */
+.o_kanban_view.pe-rh-theme .o_kanban_record {
+    background: var(--pe-rh-surface) !important;
+    border: 1px solid var(--pe-rh-border) !important;
+    border-radius: 14px !important;
+    box-shadow: var(--pe-rh-shadow) !important;
+    color: var(--pe-rh-text) !important;
+}
+
+.o_kanban_view.pe-rh-theme .o_kanban_record strong,
+.o_kanban_view.pe-rh-theme .o_kanban_record div,
+.o_kanban_view.pe-rh-theme .o_kanban_record span,
+.o_kanban_view.pe-rh-theme .o_kanban_record a {
+    color: var(--pe-rh-text) !important;
+}
+
+.o_kanban_view.pe-rh-theme .o_kanban_header_title,
+.o_kanban_view.pe-rh-theme .o_column_title,
+.o_kanban_view.pe-rh-theme .o_kanban_group_header,
+.o_kanban_view.pe-rh-theme .o_kanban_counter {
+    color: var(--pe-rh-text) !important;
+}
+
+.o_kanban_view.pe-rh-theme .o_kanban_group {
+    background: transparent !important;
+}
+
+/* ── Listes pe.* ── */
+.o_list_view.pe-rh-theme .o_list_renderer,
+.o_list_view.pe-rh-theme .o_list_table {
+    background-color: var(--pe-rh-surface) !important;
+    border-radius: 14px;
+    box-shadow: var(--pe-rh-shadow);
+}
+
+.o_list_view.pe-rh-theme .o_list_table thead th {
+    color: var(--pe-rh-muted) !important;
+    background-color: var(--pe-rh-surface) !important;
+    border-color: var(--pe-rh-line) !important;
+}
+
+.o_list_view.pe-rh-theme .o_list_table tbody td,
+.o_list_view.pe-rh-theme .o_list_table tbody th {
+    color: var(--pe-rh-text) !important;
+    background-color: var(--pe-rh-surface) !important;
+    border-color: var(--pe-rh-line) !important;
+}
+
+.o_list_view.pe-rh-theme .o_group_header,
+.o_list_view.pe-rh-theme .o_group_header .o_group_name {
+    color: var(--pe-rh-text) !important;
+    background: var(--pe-rh-accent) !important;
+}
+
+.o_list_view.pe-rh-theme a.o_form_uri,
+.o_list_view.pe-rh-theme .o_field_many2one a {
+    color: var(--pe-rh-link) !important;
+    font-weight: 600;
+}
+
+.o_list_view.pe-rh-theme .o_progressbar .o_progress {
+    background: var(--ix-surface-hover, #eef0f4);
+}
+
+/* Panneau de recherche latéral */
+.o_list_view.pe-rh-theme .o_search_panel,
+.o_kanban_view.pe-rh-theme .o_search_panel {
+    background: var(--pe-rh-surface) !important;
+    color: var(--pe-rh-text) !important;
+    border-color: var(--pe-rh-border) !important;
+}
+
+.o_list_view.pe-rh-theme .o_search_panel .o_search_panel_section_header,
+.o_list_view.pe-rh-theme .o_search_panel .list-group-item,
+.o_list_view.pe-rh-theme .o_search_panel .o_search_panel_category_value,
+.o_kanban_view.pe-rh-theme .o_search_panel .list-group-item {
+    color: var(--pe-rh-text) !important;
+}
+
+.o_list_view.pe-rh-theme .o_search_panel .list-group-item.active,
+.o_list_view.pe-rh-theme .o_search_panel .o_search_panel_category_value.active,
+.o_kanban_view.pe-rh-theme .o_search_panel .list-group-item.active {
+    background: var(--pe-rh-accent-strong) !important;
+    color: var(--pe-rh-link) !important;
+}
+
+/* ── Formulaires pe.* ── */
+.o_form_view.pe-rh-theme {
+    color: var(--pe-rh-text) !important;
+    --bs-body-color: var(--pe-rh-text);
+    --body-color: var(--pe-rh-text);
+}
+
+.o_form_view.pe-rh-theme .o_form_sheet_bg {
+    background-color: var(--pe-rh-bg) !important;
+}
+
+.o_form_view.pe-rh-theme .o_form_sheet {
+    background-color: var(--pe-rh-surface) !important;
+    color: var(--pe-rh-text) !important;
+    border: 1px solid var(--pe-rh-border) !important;
+    border-radius: 16px !important;
+    box-shadow: var(--pe-rh-shadow) !important;
+}
+
+.o_form_view.pe-rh-theme h1,
+.o_form_view.pe-rh-theme h2,
+.o_form_view.pe-rh-theme h3,
+.o_form_view.pe-rh-theme h4,
+.o_form_view.pe-rh-theme h5,
+.o_form_view.pe-rh-theme p,
+.o_form_view.pe-rh-theme label,
+.o_form_view.pe-rh-theme legend,
+.o_form_view.pe-rh-theme strong,
+.o_form_view.pe-rh-theme .o_form_label,
+.o_form_view.pe-rh-theme .o_field_widget,
+.o_form_view.pe-rh-theme .o_field_widget span,
+.o_form_view.pe-rh-theme .oe_title h1,
+.o_form_view.pe-rh-theme .o_horizontal_separator,
+.o_form_view.pe-rh-theme .o_inner_group label,
+.o_form_view.pe-rh-theme .o_form_renderer,
+.o_form_view.pe-rh-theme .o_form_nosheet,
+.o_form_view.pe-rh-theme .text-900,
+.o_form_view.pe-rh-theme .text-body,
+.o_form_view.pe-rh-theme .text-dark {
+    color: var(--pe-rh-text) !important;
+}
+
+.o_form_view.pe-rh-theme .text-muted,
+.o_form_view.pe-rh-theme .o_form_label.o_form_label_empty {
+    color: var(--pe-rh-muted) !important;
+}
+
+.o_form_view.pe-rh-theme .o_horizontal_separator {
+    border-color: var(--pe-rh-line) !important;
+}
+
+/* Champs de saisie */
+.o_form_view.pe-rh-theme .o_field_widget input,
+.o_form_view.pe-rh-theme .o_field_widget select,
+.o_form_view.pe-rh-theme .o_field_widget textarea,
+.o_form_view.pe-rh-theme .o_field_widget .o_input,
+.o_form_view.pe-rh-theme .o_datetime_input {
+    color: var(--pe-rh-text) !important;
+    background-color: var(--pe-rh-surface) !important;
+    border-color: var(--pe-rh-border) !important;
+    -webkit-text-fill-color: var(--pe-rh-text);
+    caret-color: var(--pe-rh-text);
+}
+
+.o_form_view.pe-rh-theme select option {
+    color: var(--pe-rh-text) !important;
+    background-color: var(--pe-rh-surface) !important;
+}
+
+.o_form_view.pe-rh-theme .o_form_uri,
+.o_form_view.pe-rh-theme .o_field_many2one a,
+.o_form_view.pe-rh-theme a.o_field_widget,
+.o_form_view.pe-rh-theme .oe_title a {
+    color: var(--pe-rh-link) !important;
+}
+
+/* Onglets (notebook) */
+.o_form_view.pe-rh-theme .o_notebook .nav-link {
+    color: var(--pe-rh-muted) !important;
+}
+
+.o_form_view.pe-rh-theme .o_notebook .nav-link.active {
+    color: var(--pe-rh-link) !important;
+    background-color: transparent !important;
+    border-color: var(--pe-rh-border) var(--pe-rh-border) var(--pe-rh-surface) !important;
+}
+
+/* Boutons statistiques */
+.o_form_view.pe-rh-theme .oe_button_box .o_stat_info,
+.o_form_view.pe-rh-theme .oe_button_box .o_stat_value,
+.o_form_view.pe-rh-theme .oe_button_box .o_stat_text {
+    color: var(--pe-rh-text) !important;
+}
+
+/* Alertes */
+.o_form_view.pe-rh-theme .alert {
+    color: var(--pe-rh-text) !important;
+}
+
+.o_form_view.pe-rh-theme .alert-info,
+.o_form_view.pe-rh-theme .alert-warning,
+.o_form_view.pe-rh-theme .alert-success,
+.o_form_view.pe-rh-theme .alert-danger {
+    background: var(--pe-rh-accent) !important;
+    border-color: rgba(124, 58, 237, 0.30) !important;
+    color: var(--pe-rh-text) !important;
+}
+
+/* Listes imbriquées dans les formulaires */
+.o_form_view.pe-rh-theme .o_list_renderer {
+    --ListRenderer-thead-color: var(--pe-rh-muted);
+    --table-color: var(--pe-rh-text);
+    box-shadow: none;
+}
+
+.o_form_view.pe-rh-theme .o_list_renderer .o_list_table thead th,
+.o_form_view.pe-rh-theme .o_list_renderer .o_list_table tbody td {
+    color: var(--pe-rh-text) !important;
+    background-color: transparent !important;
+    border-color: var(--pe-rh-line) !important;
+}
+
+/* Chatter */
+.o_form_view.pe-rh-theme .o_mail_thread,
+.o_form_view.pe-rh-theme .o_chatter,
+.o_form_view.pe-rh-theme .o_chatter .o_chatter_topbar {
+    color: var(--pe-rh-text) !important;
+}
+
+/* Champs date/heure */
+.o_form_view.pe-rh-theme .o_field_date,
+.o_form_view.pe-rh-theme .o_field_datetime,
+.modal:has(.pe-rh-theme) .o_field_date,
+.modal:has(.pe-rh-theme) .o_field_datetime {
+    color: var(--pe-rh-text) !important;
+}
+
+.o_form_view.pe-rh-theme .o_datetime_input::placeholder {
+    color: var(--pe-rh-muted) !important;
+    -webkit-text-fill-color: var(--pe-rh-muted) !important;
+    opacity: 1 !important;
+}
+
+/* ── Graph / Pivot pe.* ── */
+.o_graph_view.pe-rh-theme,
+.o_pivot_view.pe-rh-theme,
+.o_graph_view.pe-rh-theme .o_graph_renderer,
+.o_pivot_view.pe-rh-theme .o_pivot_renderer {
+    background-color: var(--pe-rh-bg) !important;
+    color: var(--pe-rh-text) !important;
+}
+
+/* ── Assistants (modales) pe.* ── */
+.modal .o_form_view.pe-rh-theme,
+.modal:has(.pe-rh-theme) .modal-content,
+.modal:has(.pe-rh-theme) .modal-header,
+.modal:has(.pe-rh-theme) .modal-body,
+.modal:has(.pe-rh-theme) .modal-footer {
+    background: var(--pe-rh-surface) !important;
+    color: var(--pe-rh-text) !important;
+    border-color: var(--pe-rh-border) !important;
+}
+
+.modal:has(.pe-rh-theme) .modal-title {
+    color: var(--pe-rh-text) !important;
+}
+
+/* ── Onboarding RH (wizard doorway) ── */
+.o_pe_onboarding_wizard,
+.o_pe_onboarding_wizard .o_form_sheet {
+    color: var(--pe-rh-text) !important;
+    background: var(--pe-rh-surface) !important;
+}
+
+.o_pe_onboarding_wizard .pe-onboarding-title,
+.o_pe_onboarding_wizard h2,
+.o_pe_onboarding_wizard h3,
+.o_pe_onboarding_wizard p,
+.o_pe_onboarding_wizard label,
+.o_pe_onboarding_wizard strong,
+.o_pe_onboarding_wizard .o_form_label,
+.o_pe_onboarding_wizard .o_field_widget {
+    color: var(--pe-rh-text) !important;
+}
+
+.o_pe_onboarding_wizard .text-muted {
+    color: var(--pe-rh-muted) !important;
+}
+
+.o_pe_onboarding_wizard .pe-badge-showcase .pe-badge-card {
+    background: var(--pe-rh-surface) !important;
+    border-color: var(--pe-rh-border) !important;
+    color: var(--pe-rh-text) !important;
+    box-shadow: var(--pe-rh-shadow) !important;
+}
+
+.o_pe_onboarding_wizard .pe-badge-showcase .pe-badge-card.pe-rarity-uncommon,
+.o_pe_onboarding_wizard .pe-badge-showcase .pe-badge-card.pe-rarity-rare,
+.o_pe_onboarding_wizard .pe-badge-showcase .pe-badge-card.pe-rarity-epic,
+.o_pe_onboarding_wizard .pe-badge-showcase .pe-badge-card.pe-rarity-legendary {
+    background: linear-gradient(180deg, rgba(124, 58, 237, 0.10), var(--pe-rh-surface)) !important;
+}
+
+.o_pe_onboarding_wizard .pe-badge-card .pe-badge-name-field input,
+.o_pe_onboarding_wizard .pe-badge-card .pe-badge-icon-field input {
+    color: var(--pe-rh-text) !important;
+}
+
+/* ── Popover calendrier (clair) ── */
+.o_web_client .o_popover.popover .o_datetime_picker,
+.o_web_client .popover.o_popover .o_datetime_picker {
+    background: #ffffff !important;
+    color: #111827 !important;
+}
+
+.o_web_client .o_popover.popover .o_datetime_picker .o_datetime_button,
+.o_web_client .o_popover.popover .o_datetime_picker .o_zoom_out,
+.o_web_client .o_popover.popover .o_datetime_picker .o_header_part,
+.o_web_client .o_popover.popover .o_datetime_picker .o_day_of_week_cell,
+.o_web_client .o_popover.popover .o_datetime_picker .o_week_number_cell,
+.o_web_client .o_popover.popover .o_datetime_picker .o_date_item_cell,
+.o_web_client .o_popover.popover .o_datetime_picker .o_datetime_button > div {
+    color: #111827 !important;
+    opacity: 1 !important;
+}
+
+.o_web_client .o_popover.popover .o_datetime_picker .o_datetime_button.o_selected,
+.o_web_client .o_popover.popover .o_datetime_picker .o_selected {
+    color: #ffffff !important;
+    background: var(--pe-rh-primary) !important;
+}
+
+.o_web_client .o_popover.popover .o_datetime_picker .o_today > div {
+    color: #4f46e5 !important;
+    background: rgba(124, 58, 237, 0.18) !important;
+}
+
+/* ── Permissions Doorway / pipelines — tags many2many lisibles (clair + sombre) ── */
+.o_form_view.pe-rh-theme .o_field_many2many_tags .badge,
+.o_form_view.pe-rh-theme .o_field_many2many_tags .o_tag,
+.o_form_view.pe-rh-theme .o_field_many2many_tags .o_tag_badge_text {
+    color: var(--pe-rh-text) !important;
+    background-color: var(--pe-rh-accent-strong) !important;
+    border: 1px solid rgba(124, 58, 237, 0.35) !important;
+    -webkit-text-fill-color: var(--pe-rh-text) !important;
+    font-weight: 600;
+}
+
+.o_web_client.o_doorway_dark .o_form_view.pe-rh-theme .o_field_many2many_tags .badge,
+.o_web_client.o_doorway_dark .o_form_view.pe-rh-theme .o_field_many2many_tags .o_tag,
+.o_web_client.o_doorway_dark .o_form_view.pe-rh-theme .o_field_many2many_tags .o_tag_badge_text {
+    color: #f1f5f9 !important;
+    background-color: rgba(124, 58, 237, 0.28) !important;
+    border-color: rgba(167, 139, 250, 0.5) !important;
+    -webkit-text-fill-color: #f1f5f9 !important;
+}
+
+/* ── Groupes RH (résumé texte) ── */
+.o_form_view.pe-rh-theme .pe-rh-groups-summary .o_field_widget {
+    display: block;
+    padding: 10px 14px;
+    background: var(--pe-rh-accent);
+    border: 1px solid var(--pe-rh-border);
+    border-radius: 10px;
+    color: var(--pe-rh-text) !important;
+    line-height: 1.65;
+    font-size: 0.92rem;
+    font-weight: 500;
+    -webkit-text-fill-color: var(--pe-rh-text);
+}
+
+.o_web_client.o_doorway_dark .o_form_view.pe-rh-theme .pe-rh-groups-summary .o_field_widget {
+    background: rgba(124, 58, 237, 0.14);
+    border-color: rgba(167, 139, 250, 0.35);
+    color: #f1f5f9 !important;
+    -webkit-text-fill-color: #f1f5f9;
+}
+
+/* Renfort badges Bootstrap (text-bg-*) — évite texte blanc sur fond clair */
+.o_form_view.pe-rh-theme .o_field_many2many_tags .badge[class*="text-bg-"],
+.o_form_view.pe-rh-theme .o_field_many2many_tags .badge .o_badge_text,
+.o_form_view.pe-rh-theme .o_field_many2many_tags .badge .o_tag_badge_text {
+    color: var(--pe-rh-text) !important;
+    -webkit-text-fill-color: var(--pe-rh-text) !important;
+}
+
+.o_form_view.pe-rh-theme .o_field_many2many_tags .badge[class*="text-bg-"] {
+    background-color: var(--pe-rh-accent-strong) !important;
+    border: 1px solid rgba(124, 58, 237, 0.35) !important;
+}
+
+.o_web_client.o_doorway_dark .o_form_view.pe-rh-theme .o_field_many2many_tags .badge[class*="text-bg-"],
+.o_web_client.o_doorway_dark .o_form_view.pe-rh-theme .o_field_many2many_tags .badge .o_badge_text,
+.o_web_client.o_doorway_dark .o_form_view.pe-rh-theme .o_field_many2many_tags .badge .o_tag_badge_text {
+    color: #f1f5f9 !important;
+    -webkit-text-fill-color: #f1f5f9 !important;
+    background-color: rgba(124, 58, 237, 0.28) !important;
+    border-color: rgba(167, 139, 250, 0.5) !important;
+}

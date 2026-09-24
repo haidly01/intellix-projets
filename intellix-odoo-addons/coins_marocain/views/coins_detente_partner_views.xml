@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_coins_detente_partner_kanban" model="ir.ui.view">
+        <field name="name">coins.detente_partner.kanban</field>
+        <field name="model">coins.detente_partner</field>
+        <field name="type">kanban</field>
+        <field name="arch" type="xml"><kanban default_group_by="verdict" class="o_kanban_mobile" sample="1">
+                <field name="name"/>
+                <field name="partner_type"/>
+                <field name="neighborhood"/>
+                <field name="quality_score"/>
+                <field name="verdict"/>
+                <field name="has_pool"/>
+                <field name="has_hammam"/>
+                <field name="has_massage"/>
+                <field name="has_restaurant"/>
+                <field name="has_bbq_chef"/>
+                <field name="has_cours_cuisine"/>
+                <field name="has_sortie_soiree"/>
+                <field name="has_fermette_camping"/>
+                <field name="has_dj_soiree"/>
+                <field name="is_chef_multi_service"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="o_kanban_record_top mb-1">
+                                <strong><field name="name"/></strong>
+                                <span class="badge text-bg-secondary float-end">
+                                    <field name="quality_score"/>/10
+                                </span>
+                            </div>
+                            <div class="text-muted">
+                                <field name="partner_type"/>
+                                <t t-if="record.neighborhood.raw_value">
+                                    · <field name="neighborhood"/>
+                                </t>
+                            </div>
+                            <div class="mt-2">
+                                <span t-if="record.has_pool.raw_value" class="badge text-bg-info me-1">Piscine</span>
+                                <span t-if="record.has_hammam.raw_value" class="badge text-bg-primary me-1">Hammam</span>
+                                <span t-if="record.has_massage.raw_value" class="badge text-bg-success me-1">Massage</span>
+                                <span t-if="record.has_restaurant.raw_value" class="badge text-bg-warning me-1">Resto</span>
+                                <span t-if="record.has_bbq_chef.raw_value" class="badge text-bg-danger me-1">BBQ</span>
+                                <span t-if="record.has_cours_cuisine.raw_value" class="badge text-bg-dark me-1">Cuisine</span>
+                                <span t-if="record.has_sortie_soiree.raw_value" class="badge text-bg-secondary me-1">Soirée</span>
+                                <span t-if="record.has_fermette_camping.raw_value" class="badge text-bg-success me-1">Fermette</span>
+                                <span t-if="record.has_dj_soiree.raw_value" class="badge text-bg-info me-1">DJ</span>
+                                <span t-if="record.is_chef_multi_service.raw_value" class="badge text-bg-primary me-1">Chef multi</span>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban></field>
+    </record>
+
+    <record id="view_coins_detente_partner_list" model="ir.ui.view">
+        <field name="name">coins.detente_partner.list</field>
+        <field name="model">coins.detente_partner</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml"><list>
+                <field name="name"/>
+                <field name="partner_type"/>
+                <field name="neighborhood"/>
+                <field name="quality_score"/>
+                <field name="verdict" widget="badge" decoration-success="verdict == 'prioritaire'" decoration-warning="verdict == 'backup'" decoration-danger="verdict == 'ecarte'"/>
+                <field name="is_chef_multi_service" optional="show"/>
+                <field name="partner_price_pool" optional="hide"/>
+                <field name="partner_price_hammam_massage" optional="hide"/>
+                <field name="partner_price_bbq_chef" optional="hide"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list></field>
+    </record>
+
+    <record id="view_coins_detente_partner_search" model="ir.ui.view">
+        <field name="name">coins.detente_partner.search</field>
+        <field name="model">coins.detente_partner</field>
+        <field name="type">search</field>
+        <field name="arch" type="xml"><search>
+                <field name="name"/>
+                <field name="neighborhood"/>
+                <filter name="prioritaire" string="Prioritaires" domain="[('verdict', '=', 'prioritaire')]"/>
+                <filter name="backup" string="Backup" domain="[('verdict', '=', 'backup')]"/>
+                <filter name="pool" string="Piscine" domain="[('has_pool', '=', True)]"/>
+                <filter name="hammam" string="Hammam" domain="[('has_hammam', '=', True)]"/>
+                <filter name="bbq" string="BBQ / chef" domain="[('has_bbq_chef', '=', True)]"/>
+                <filter name="cuisine" string="Cours cuisine" domain="[('has_cours_cuisine', '=', True)]"/>
+                <filter name="chef_multi" string="Chef multi-service" domain="[('is_chef_multi_service', '=', True)]"/>
+                <filter name="fermette" string="Fermette" domain="[('has_fermette_camping', '=', True)]"/>
+                <filter name="direct_rental" string="Location directe" domain="[('available_for_direct_rental', '=', True)]"/>
+                <separator/>
+                <filter name="archived" string="Archivés" domain="[('active', '=', False)]"/>
+                <group>
+                    <filter name="group_verdict" string="Verdict" context="{'group_by': 'verdict'}"/>
+                    <filter name="group_type" string="Type" context="{'group_by': 'partner_type'}"/>
+                    <filter name="group_quartier" string="Quartier" context="{'group_by': 'neighborhood'}"/>
+                </group>
+            </search></field>
+    </record>
+
+</odoo>

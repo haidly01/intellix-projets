@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="badge_onboarding_explorer" model="pe.badge">
+        <field name="name">Explorateur People Engine</field>
+        <field name="code">pe_onboarding_explorer</field>
+        <field name="icon">🚀</field>
+        <field name="category">special</field>
+        <field name="criterion_type">manual</field>
+        <field name="auto_award" eval="False"/>
+        <field name="requires_manager_approval" eval="False"/>
+        <field name="points_value">50</field>
+        <field name="karma_bonus">25</field>
+        <field name="rarity">uncommon</field>
+        <field name="description">Attribué après la visite guidée People Engine.</field>
+    </record>
+</odoo>

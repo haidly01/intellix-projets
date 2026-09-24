@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="carte_publique" name="Carte publique Coins Québec">
+        <html lang="fr">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <title>Carte — Coins Québec</title>
+                <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&amp;family=Jost:wght@400;500&amp;display=swap" rel="stylesheet"/>
+                <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+                <link rel="stylesheet" href="/coins_quebec/static/src/css/carte_publique.css"/>
+            </head>
+            <body>
+                <div class="cq-map-wrap">
+                    <aside class="cq-map-side">
+                        <h1>Carte Coins Québec</h1>
+                        <p>Pins issus des fiches <strong>publiées</strong> (Odoo). Compteurs honnêtes — 0 s’il n’y a pas encore de tracking.</p>
+                        <p><a href="/mon-coin/login">Espace commerçant</a></p>
+                        <ul class="cq-pin-list">
+                            <t t-foreach="listings" t-as="item">
+                                <li>
+                                    <b t-out="item.get('name')"/>
+                                    <span t-out="item.get('region')"/>
+                                    · <t t-out="(item.get('stats') or {}).get('views') or 0"/> vues
+                                </li>
+                            </t>
+                            <t t-if="not listings">
+                                <li>Aucune fiche publiée pour l’instant.</li>
+                            </t>
+                        </ul>
+                    </aside>
+                    <div id="cq-map" t-att-data-listings="listings_json"></div>
+                </div>
+                <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+                <script src="/coins_quebec/static/src/js/carte_publique.js"></script>
+            </body>
+        </html>
+    </template>
+
+    <template id="carte_fiche_publique" name="Fiche publique commerçant">
+        <html lang="fr">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <title t-out="fiche.name"/>
+                <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&amp;family=Jost:wght@400;500&amp;display=swap" rel="stylesheet"/>
+                <link rel="stylesheet" href="/coins_quebec/static/src/css/mon_coin.css"/>
+            </head>
+            <body>
+                <div class="mc-login" style="max-width:640px">
+                    <div class="kicker">Coins Québec</div>
+                    <h1 t-out="fiche.name"/>
+                    <p t-out="listing.get('address')"/>
+                    <p t-out="fiche.description or ''"/>
+                    <t t-if="fiche.video_url">
+                        <p><a t-att-href="fiche.video_url" target="_blank">Vidéo</a></p>
+                    </t>
+                    <ul>
+                        <t t-foreach="fiche.service_ids" t-as="s">
+                            <li><t t-out="s.name"/> — <t t-out="s.price"/> $</li>
+                        </t>
+                    </ul>
+                    <p><a class="btn" href="/carte">Retour à la carte</a></p>
+                </div>
+            </body>
+        </html>
+    </template>
+</odoo>

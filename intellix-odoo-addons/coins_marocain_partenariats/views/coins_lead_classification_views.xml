@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_coins_lead_classification_form" model="ir.ui.view">
+        <field name="name">coins.lead.classification.form</field>
+        <field name="model">coins.lead.classification</field>
+        <field name="arch" type="xml">
+            <form string="Classification pipelines Coins">
+                <sheet>
+                    <div class="alert alert-info" role="alert">
+                        Rapport seulement — aucune fiche n’est déplacée tant que Karine Barmaki n’a pas validé.
+                    </div>
+                    <field name="note" nolabel="1"/>
+                    <group>
+                        <group>
+                            <field name="count_etablissement"/>
+                            <field name="count_voyageur"/>
+                        </group>
+                        <group>
+                            <field name="count_manuel"/>
+                            <field name="count_evenement"/>
+                            <field name="count_ignore"/>
+                        </group>
+                    </group>
+                    <field name="line_ids" nolabel="1">
+                        <list>
+                            <field name="lead_id"/>
+                            <field name="lead_name"/>
+                            <field name="active_lead"/>
+                            <field name="current_team"/>
+                            <field name="current_type"/>
+                            <field name="proposed" widget="badge"/>
+                            <field name="motif"/>
+                            <field name="phone"/>
+                            <field name="tags"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

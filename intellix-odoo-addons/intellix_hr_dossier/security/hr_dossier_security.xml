@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_groups_privilege_hr_dossier" model="res.groups.privilege">
+        <field name="name">Dossier RH Maroc</field>
+        <field name="sequence">11</field>
+        <field name="category_id" ref="base.module_category_human_resources"/>
+    </record>
+
+    <record id="group_medical_data" model="res.groups">
+        <field name="name">Accès Dossier Médical RH</field>
+        <field name="sequence">15</field>
+        <field name="privilege_id" ref="res_groups_privilege_hr_dossier"/>
+        <field name="comment">Accès aux données médicales du dossier administratif employé.</field>
+    </record>
+</odoo>

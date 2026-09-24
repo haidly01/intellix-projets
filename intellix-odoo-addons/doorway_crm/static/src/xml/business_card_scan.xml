@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+    <t t-name="doorway_crm.BusinessCardScan">
+        <div class="o_action o_intellix_client_action o_doorway_bcard_scan">
+            <div class="o_doorway_bcard_scan__inner">
+                <header class="o_doorway_bcard_scan__head">
+                    <h2>Carte de visite</h2>
+                    <p class="text-muted mb-0">
+                        Photographiez ou importez une carte — l'IA remplit le contact.
+                    </p>
+                </header>
+
+                <t t-if="state.step === 'capture'">
+                    <div class="o_doorway_bcard_scan__preview" t-if="state.previewUrl">
+                        <img t-att-src="state.previewUrl" alt="Aperçu carte"/>
+                    </div>
+                    <div class="o_doorway_bcard_scan__actions">
+                        <button type="button" class="btn btn-primary btn-lg w-100"
+                                t-on-click="openCamera">
+                            <i class="fa fa-camera me-2"/>Prendre une photo
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary btn-lg w-100"
+                                t-on-click="openGallery">
+                            <i class="fa fa-image me-2"/>Choisir une image
+                        </button>
+                    </div>
+                    <input type="file" class="d-none" accept="image/*" capture="environment"
+                           t-ref="cameraInput" t-on-change="onFileSelected"/>
+                    <input type="file" class="d-none" accept="image/*"
+                           t-ref="galleryInput" t-on-change="onFileSelected"/>
+                </t>
+
+                <t t-if="state.step === 'processing'">
+                    <div class="o_doorway_bcard_scan__loading">
+                        <i class="fa fa-spinner fa-spin fa-2x"/>
+                        <p>Lecture de la carte…</p>
+                    </div>
+                </t>
+
+                <t t-if="state.step === 'review'">
+                    <div class="o_doorway_bcard_scan__preview" t-if="state.previewUrl">
+                        <img t-att-src="state.previewUrl" alt="Carte scannée"/>
+                    </div>
+                    <div class="o_doorway_bcard_scan__form">
+                        <label>Nom complet</label>
+                        <input class="form-control" t-att-value="state.fields.full_name"
+                               t-on-input="(ev) => this.setField('full_name', ev.target.value)"/>
+                        <label>Entreprise</label>
+                        <input class="form-control" t-att-value="state.fields.company"
+                               t-on-input="(ev) => this.setField('company', ev.target.value)"/>
+                        <label>Poste</label>
+                        <input class="form-control" t-att-value="state.fields.job_title"
+                               t-on-input="(ev) => this.setField('job_title', ev.target.value)"/>
+                        <label>Téléphone</label>
+                        <input class="form-control" type="tel" t-att-value="state.fields.phone"
+                               t-on-input="(ev) => this.setField('phone', ev.target.value)"/>
+                        <label>Mobile</label>
+                        <input class="form-control" type="tel" t-att-value="state.fields.mobile"
+                               t-on-input="(ev) => this.setField('mobile', ev.target.value)"/>
+                        <label>Email</label>
+                        <input class="form-control" type="email" t-att-value="state.fields.email"
+                               t-on-input="(ev) => this.setField('email', ev.target.value)"/>
+                        <label>Site web</label>
+                        <input class="form-control" t-att-value="state.fields.website"
+                               t-on-input="(ev) => this.setField('website', ev.target.value)"/>
+                        <label>Ville</label>
+                        <input class="form-control" t-att-value="state.fields.city"
+                               t-on-input="(ev) => this.setField('city', ev.target.value)"/>
+                    </div>
+                    <div class="o_doorway_bcard_scan__actions">
+                        <button type="button" class="btn btn-success btn-lg w-100"
+                                t-att-disabled="state.saving"
+                                t-on-click="confirmCreate">
+                            <t t-if="state.saving"><i class="fa fa-spinner fa-spin me-1"/></t>
+                            <t t-esc="confirmLabel"/>
+                        </button>
+                        <button type="button" class="btn btn-link w-100"
+                                t-on-click="retake">Reprendre la photo</button>
+                    </div>
+                </t>
+            </div>
+        </div>
+    </t>
+</templates>

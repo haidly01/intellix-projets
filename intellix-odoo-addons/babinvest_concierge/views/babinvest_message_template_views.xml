@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_babinvest_message_template_list" model="ir.ui.view">
+        <field name="name">babinvest.concierge.message.template.list</field>
+        <field name="model">babinvest.concierge.message.template</field>
+        <field name="arch" type="xml">
+            <list string="Gabarits de relance" default_group_by="persona">
+                <field name="persona"/>
+                <field name="step_label"/>
+                <field name="channel"/>
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_babinvest_message_template_form" model="ir.ui.view">
+        <field name="name">babinvest.concierge.message.template.form</field>
+        <field name="model">babinvest.concierge.message.template</field>
+        <field name="arch" type="xml">
+            <form string="Gabarit de relance">
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <field name="persona"/>
+                        <field name="step_label"/>
+                        <field name="channel"/>
+                        <field name="sequence"/>
+                    </group>
+                    <field name="content" placeholder="Contenu du message, variables entre {{ }}..."/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_babinvest_message_template" model="ir.actions.act_window">
+        <field name="name">Gabarits de relance</field>
+        <field name="res_model">babinvest.concierge.message.template</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="doorway_crm_lost_reason_not_qualified" model="crm.lost.reason">
+        <field name="name">Pas qualifié</field>
+        <field name="active">True</field>
+    </record>
+</odoo>

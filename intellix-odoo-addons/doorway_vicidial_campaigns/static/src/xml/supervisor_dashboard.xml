@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="doorway_vicidial_campaigns.SupervisorDashboard">
+        <div class="o_supervisor_dashboard o_action o_intellix_client_action p-3">
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <div>
+                    <h2 class="mb-0">Superviseurs</h2>
+                    <div class="text-muted small">Vue globale — campagnes, agents, qualifications &amp; coaching</div>
+                </div>
+                <div class="d-flex gap-2 flex-wrap align-items-center">
+                    <span class="text-muted small" t-if="state.refreshedAt">
+                        <i class="fa fa-circle text-success" t-if="!state.silentRefresh"/>
+                        <i class="fa fa-spinner fa-spin" t-if="state.silentRefresh"/>
+                        <t t-esc="formatRefreshedAt(state.refreshedAt)"/>
+                    </span>
+                    <button class="btn btn-outline-primary btn-sm" t-on-click="openDashboardGlobal">Dashboard global</button>
+                    <button class="btn btn-outline-secondary btn-sm" t-on-click="openMonitoring">Monitoring live</button>
+                    <button class="btn btn-outline-secondary btn-sm" t-on-click="() => this.load()">
+                        <i class="fa fa-refresh"/> Actualiser
+                    </button>
+                </div>
+            </div>
+
+            <div class="card mb-3 p-3">
+                <div class="row g-2 align-items-end">
+                    <div class="col-md-2">
+                        <label class="form-label small">Date début</label>
+                        <input type="date" class="form-control" t-att-value="state.dateFrom" t-on-change="onDateFromChange"/>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small">Date fin</label>
+                        <input type="date" class="form-control" t-att-value="state.dateTo" t-on-change="onDateToChange"/>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small">Campagne</label>
+                        <select class="form-select form-select-sm" t-on-change="onCampaignChange">
+                            <option value="all" t-att-selected="state.activeCampaign === 'all'">Toutes les campagnes</option>
+                            <t t-foreach="state.campaignOptions" t-as="camp" t-key="camp.id">
+                                <option t-att-value="camp.vicidial_id"
+                                        t-att-selected="state.activeCampaign === camp.vicidial_id"
+                                        t-esc="camp.name + (camp.vicidial_id ? ' (' + camp.vicidial_id + ')' : '')"/>
+                            </t>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small">Statut campagne</label>
+                        <select class="form-select form-select-sm" t-on-change="onCampaignStateChange">
+                            <option value="all" t-att-selected="state.activeCampaignState === 'all'">Tous les statuts</option>
+                            <t t-foreach="state.campaignStates" t-as="st" t-key="st.id">
+                                <option t-att-value="st.id"
+                                        t-att-selected="state.activeCampaignState === st.id"
+                                        t-esc="st.label"/>
+                            </t>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <t t-if="state.loading">
+                <div class="text-center text-muted py-5"><i class="fa fa-spinner fa-spin fa-2x"/></div>
+            </t>
+            <t t-else="">
+                <div class="row g-2 mb-3">
+                    <div class="col-md-2"><div class="card p-3 text-center o_sup_kpi"><div class="small text-muted">Campagnes actives</div><div class="fs-4 fw-bold" t-esc="state.kpis.active_campaigns || 0"/></div></div>
+                    <div class="col-md-2"><div class="card p-3 text-center o_sup_kpi"><div class="small text-muted">Agents live</div><div class="fs-4 fw-bold text-success" t-esc="state.kpis.live_agents || 0"/></div></div>
+                    <div class="col-md-2"><div class="card p-3 text-center o_sup_kpi"><div class="small text-muted">Appels période</div><div class="fs-4 fw-bold" t-esc="state.kpis.calls_period || 0"/></div></div>
+                    <div class="col-md-2"><div class="card p-3 text-center o_sup_kpi"><div class="small text-muted">Qualifiés</div><div class="fs-4 fw-bold text-primary" t-esc="state.kpis.qualifies || 0"/></div></div>
+                    <div class="col-md-2"><div class="card p-3 text-center o_sup_kpi"><div class="small text-muted">Score coaching moy.</div><div class="fs-4 fw-bold" t-esc="state.kpis.coaching_avg || 0"/></div></div>
+                    <div class="col-md-2"><div class="card p-3 text-center o_sup_kpi"><div class="small text-muted">Sessions actives</div><div class="fs-4 fw-bold text-warning" t-esc="state.kpis.active_sessions || 0"/></div></div>
+                </div>
+                <div class="row g-2 mb-3">
+                    <div class="col-md-2"><div class="card p-2 text-center"><div class="small text-muted">RDV</div><div class="fw-bold" t-esc="state.kpis.rdv || 0"/></div></div>
+                    <div class="col-md-2"><div class="card p-2 text-center"><div class="small text-muted">Rappels</div><div class="fw-bold" t-esc="state.kpis.rappels || 0"/></div></div>
+                    <div class="col-md-2"><div class="card p-2 text-center"><div class="small text-muted">Analyses IA</div><div class="fw-bold" t-esc="state.kpis.coaching_analysed || 0"/></div></div>
+                    <div class="col-md-2"><div class="card p-2 text-center"><div class="small text-muted">Coaching à lire</div><div class="fw-bold" t-esc="state.kpis.coaching_unread || 0"/></div></div>
+                    <div class="col-md-2"><div class="card p-2 text-center"><div class="small text-muted">AMD humain</div><div class="fw-bold" t-esc="state.kpis.amd_human || 0"/></div></div>
+                    <div class="col-md-2"><div class="card p-2 text-center"><div class="small text-muted">Rappels CRM 7j</div><div class="fw-bold" t-esc="state.kpis.pending_callbacks || 0"/></div></div>
+                </div>
+
+                <div class="card mb-3" t-if="state.activeSessions.length">
+                    <div class="card-header fw-bold">Sessions en cours</div>
+                    <div class="table-responsive">
+                        <table class="table table-sm mb-0">
+                            <thead><tr><th>Agent</th><th>Campagne</th><th>État</th><th>Appels</th><th>Qualifiés</th><th>Durée</th></tr></thead>
+                            <tbody>
+                                <t t-foreach="state.activeSessions" t-as="sess" t-key="sess.id">
+                                    <tr>
+                                        <td><t t-esc="sess.agent"/> <span class="text-muted small" t-esc="sess.vicidial_user"/></td>
+                                        <td t-esc="sess.campaign"/>
+                                        <td><span class="badge" t-att-class="stateBadge(sess.state)" t-esc="sess.state"/></td>
+                                        <td t-esc="sess.nb_appels"/>
+                                        <td t-esc="sess.nb_qualifies"/>
+                                        <td t-esc="formatDuration(sess.duree_secondes)"/>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-header fw-bold">Agents — période</div>
+                            <div class="table-responsive">
+                                <table class="table table-sm mb-0">
+                                    <thead><tr><th>Agent</th><th>Sessions</th><th>Appels</th><th>Qualifiés</th><th>Durée</th><th>Live</th></tr></thead>
+                                    <tbody>
+                                        <t t-foreach="state.agents" t-as="ag" t-key="ag.id">
+                                            <tr>
+                                                <td><t t-esc="ag.name"/><div class="small text-muted" t-esc="ag.vicidial_user"/></td>
+                                                <td t-esc="ag.sessions"/>
+                                                <td t-esc="ag.appels"/>
+                                                <td t-esc="ag.qualifies"/>
+                                                <td t-esc="formatDuration(ag.duree_secondes)"/>
+                                                <td><span t-if="ag.session_state" class="badge" t-att-class="stateBadge(ag.session_state)" t-esc="ag.session_state"/><span t-else="" class="text-muted">—</span></td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-header fw-bold">Campagnes</div>
+                            <div class="table-responsive">
+                                <table class="table table-sm mb-0">
+                                    <thead><tr><th>Campagne</th><th>ID VICIdial</th><th>Statut</th><th>Appels</th><th>Live</th></tr></thead>
+                                    <tbody>
+                                        <t t-foreach="state.campaigns" t-as="camp" t-key="camp.id">
+                                            <tr>
+                                                <td t-esc="camp.name"/>
+                                                <td class="text-muted small" t-esc="camp.vicidial_campaign_id || '—'"/>
+                                                <td><span class="badge" t-att-class="stateBadge(camp.state)" t-esc="camp.state_label || camp.state"/></td>
+                                                <td t-esc="camp.calls_today || 0"/>
+                                                <td t-esc="camp.live_agents || 0"/>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mt-3">
+                    <div class="card-header fw-bold">Derniers appels / qualifications</div>
+                    <div class="table-responsive">
+                        <table class="table table-sm mb-0">
+                            <thead><tr><th>Date</th><th>Agent</th><th>Lead</th><th>Campagne</th><th>Statut</th><th>Qualification</th><th>Score</th></tr></thead>
+                            <tbody>
+                                <t t-foreach="state.recentCalls" t-as="call" t-key="call.id">
+                                    <tr t-att-class="call.live ? 'table-warning' : ''">
+                                        <td t-esc="formatDate(call.date_appel)"/>
+                                        <td t-esc="call.employee"/>
+                                        <td>
+                                            <button class="btn btn-link btn-sm p-0" t-if="call.lead_id" t-on-click="() => this.openLead(call.lead_id)" t-esc="call.lead_name"/>
+                                            <span t-else="" t-esc="call.lead_name"/>
+                                            <span t-if="call.live" class="badge text-bg-danger ms-1">LIVE</span>
+                                        </td>
+                                        <td t-esc="call.campagne_name || call.campagne || '—'"/>
+                                        <td>
+                                            <span t-if="call.campagne_state"
+                                                  t-att-class="'badge ' + stateBadge(call.campagne_state)"
+                                                  t-esc="call.campagne_state_label"/>
+                                            <span t-else="" class="text-muted">—</span>
+                                        </td>
+                                        <td><span class="badge text-bg-secondary" t-esc="call.qualification_label"/></td>
+                                        <td t-esc="call.score_global || '—'"/>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </t>
+        </div>
+    </t>
+</templates>

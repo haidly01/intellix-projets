@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_doorway_videoconf_root"
+              name="Vidéoconférence"
+              parent="calendar.mail_menu_calendar"
+              sequence="2"
+              groups="base.group_user"/>
+
+    <menuitem id="menu_doorway_videoconf_instant"
+              name="Réunion instantanée"
+              parent="menu_doorway_videoconf_root"
+              action="action_doorway_instant_videocall"
+              sequence="1"/>
+
+    <menuitem id="menu_doorway_videoconf_schedule"
+              name="Planifier une visio"
+              parent="menu_doorway_videoconf_root"
+              action="action_doorway_schedule_videoconf"
+              sequence="2"/>
+
+    <menuitem id="menu_doorway_videoconf_wizard"
+              name="Créer un lien visio"
+              parent="menu_doorway_videoconf_root"
+              action="action_doorway_videoconf_wizard"
+              sequence="3"/>
+</odoo>

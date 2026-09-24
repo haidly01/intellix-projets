@@ -1,0 +1,59 @@
+{
+  "name": "renov-aides — 05 Google Sheets Writer",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "renov/sheets",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "gs-wh",
+      "name": "Webhook Sheets",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        300
+      ],
+      "webhookId": "renov-sheets-writer"
+    },
+    {
+      "parameters": {
+        "jsCode": "const b = $input.first().json.body || $input.first().json;\nconst now = new Date().toISOString();\nconst telefono = (b.telefono || b.telephone || b.to || '').toString();\nif (!telefono) {\n  return [{ json: { ok: false, error: 'telefono requis' } }];\n}\nconst nombre = b.nombre || b.nom_contact || '';\nconst qualified = !!b.qualified || b.statut === 'qualifie';\nconst transcript = b.transcript || b.transcripcion || '';\nconst webhook = $env.GOOGLE_SHEETS_WEBHOOK_URL;\nif (!webhook) throw new Error('GOOGLE_SHEETS_WEBHOOK_URL requis');\n\nconst tab = b.sheet_name || $env.GOOGLE_SHEETS_TAB || 'Leads_Sofia_Test';\nconst campaign = b.campaign_id || b.lead_id || $env.CAMPAIGN_ID || '';\n\nlet body;\nif (tab === 'Leads_Sofia_Test' || tab === 'Leads_Sofia') {\n  body = {\n    sheet_name: tab,\n    row: [\n      now,\n      campaign,\n      b.provider || 'twilio',\n      telefono,\n      nombre,\n      b.statut || (qualified ? 'qualifie' : 'non_qualifie'),\n      b.proprietaire === true ? 'SI' : (b.proprietaire === false ? 'NO' : ''),\n      b.type_logement || '',\n      b.code_postal || '',\n      b.combles === true ? 'SI' : (b.combles === false ? 'NO' : ''),\n      b.acces_combles === true ? 'SI' : (b.acces_combles === false ? 'NO' : ''),\n      b.creneau_rappel || '',\n      b.duree_sec || 0,\n      b.recording_url || b.url_enregistrement || '',\n      b.call_sid || '',\n      transcript,\n    ],\n  };\n} else {\n  body = {\n    date: now,\n    nombre,\n    telefono,\n    qualified,\n    transcript,\n    recording_url: b.recording_url || b.url_enregistrement || '',\n    call_sid: b.call_sid || '',\n    provider: b.provider || 'twilio',\n    lead_id: campaign,\n    statut: b.statut || (qualified ? 'qualifie' : 'non_qualifie'),\n    sheet_name: tab,\n  };\n}\n\nawait this.helpers.httpRequest({\n  method: 'POST',\n  url: webhook,\n  body,\n  json: true,\n});\nreturn [{ json: { ok: true, mode: 'webhook', telefono, qualified, transcript_len: transcript.length } }];"
+      },
+      "id": "gs-write",
+      "name": "Append Row",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Sheets": {
+      "main": [
+        [
+          {
+            "node": "Append Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [
+    {
+      "name": "renov-aides"
+    },
+    {
+      "name": "google-sheets"
+    }
+  ]
+}

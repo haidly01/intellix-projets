@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="people_engine.TeamListView" t-inherit="web.ListView" t-inherit-mode="primary">
+        <xpath expr="//div[@t-ref='root']" position="attributes">
+            <attribute name="class" add="o_pe_team_dashboard ix-fullscreen-dashboard" separator=" "/>
+        </xpath>
+
+        <xpath expr="//div[@t-ref='root']/Layout" position="before">
+            <div class="pe-team-kpi-row" t-if="teamDash.loaded">
+                <div class="pe-team-kpi-card">
+                    <div class="pe-team-kpi-label">Total employés</div>
+                    <div class="pe-team-kpi-val pe-team-color-indigo" t-esc="teamDash.data.kpis.total_employees"/>
+                    <div class="pe-team-kpi-trend pe-team-trend-up" t-esc="teamDash.data.kpis.total_trend"/>
+                    <div class="pe-team-kpi-bar"><div class="pe-team-kpi-bar-fill" style="width:100%;background:#6366f1"/></div>
+                </div>
+                <div class="pe-team-kpi-card">
+                    <div class="pe-team-kpi-label">Score moyen équipe</div>
+                    <div class="pe-team-kpi-val pe-team-color-amber" t-esc="teamDash.data.kpis.avg_score"/>
+                    <div class="pe-team-kpi-trend" t-att-class="teamDash.data.kpis.avg_score_trend_class" t-esc="teamDash.data.kpis.avg_score_trend"/>
+                    <div class="pe-team-kpi-bar"><div class="pe-team-kpi-bar-fill" t-attf-style="width:#{teamDash.data.kpis.avg_score}%;background:#f59e0b"/></div>
+                </div>
+                <div class="pe-team-kpi-card">
+                    <div class="pe-team-kpi-label">En surveillance</div>
+                    <div class="pe-team-kpi-val pe-team-color-yellow" t-esc="teamDash.data.kpis.monitoring_count"/>
+                    <div class="pe-team-kpi-trend pe-team-trend-neutral" t-esc="teamDash.data.kpis.monitoring_trend"/>
+                    <div class="pe-team-kpi-bar"><div class="pe-team-kpi-bar-fill" t-attf-style="width:#{teamDash.data.kpis.monitoring_pct}%;background:#f59e0b"/></div>
+                </div>
+                <div class="pe-team-kpi-card">
+                    <div class="pe-team-kpi-label">Taux qualification moy.</div>
+                    <div class="pe-team-kpi-val pe-team-color-green">
+                        <t t-esc="teamDash.data.kpis.avg_qual_rate"/><span class="pe-team-kpi-unit">%</span>
+                    </div>
+                    <div class="pe-team-kpi-trend pe-team-trend-up" t-esc="teamDash.data.kpis.avg_qual_trend"/>
+                    <div class="pe-team-kpi-bar"><div class="pe-team-kpi-bar-fill" t-attf-style="width:#{teamDash.data.kpis.avg_qual_rate}%;background:#10b981"/></div>
+                </div>
+                <div class="pe-team-kpi-card">
+                    <div class="pe-team-kpi-label">Primes à verser</div>
+                    <div class="pe-team-kpi-val pe-team-color-cyan" t-esc="teamDash.data.kpis.primes_pending"/>
+                    <div class="pe-team-kpi-trend pe-team-trend-neutral" t-esc="teamDash.data.kpis.primes_period"/>
+                    <div class="pe-team-kpi-bar"><div class="pe-team-kpi-bar-fill" t-attf-style="width:#{teamDash.data.kpis.primes_pct}%;background:#06b6d4"/></div>
+                </div>
+                <div class="pe-team-kpi-card">
+                    <div class="pe-team-kpi-label">Onboarding en cours</div>
+                    <div class="pe-team-kpi-val pe-team-color-violet" t-esc="teamDash.data.kpis.onboarding_count"/>
+                    <div class="pe-team-kpi-trend pe-team-trend-neutral">Étapes actives</div>
+                    <div class="pe-team-kpi-bar"><div class="pe-team-kpi-bar-fill" t-attf-style="width:#{teamDash.data.kpis.onboarding_pct}%;background:#8b5cf6"/></div>
+                </div>
+            </div>
+
+            <div class="pe-team-create-help alert alert-info mb-2 mx-2" t-if="teamDash.loaded" role="status">
+                Pour ajouter un collaborateur, cliquez sur
+                <button type="button" class="btn btn-link btn-sm p-0 align-baseline" t-on-click="onNewEmployee">
+                    Inviter un collaborateur
+                </button>
+                (RH → Équipe). La création directe depuis cette liste est désactivée.
+            </div>
+
+            <div class="pe-team-subbar" t-if="teamDash.loaded">
+                <button type="button" class="pe-team-btn-primary" t-on-click="onNewEmployee">
+                    Inviter un collaborateur
+                </button>
+                <button type="button" class="pe-team-btn-ghost" t-on-click="onCoachingTeam">🤖 Coaching IA équipe</button>
+                <button type="button" class="pe-team-btn-ghost" t-on-click="onRefreshScores">📊 Actualiser scores</button>
+                <button type="button" class="pe-team-btn-ghost" t-on-click="onRefreshDashboard">↻ Actualiser</button>
+                <button type="button" class="pe-team-btn-ghost" t-on-click="onExport">⬇ Export CSV</button>
+                <div class="pe-team-filter-chips">
+                    <span class="pe-team-filter-label">Statut :</span>
+                    <button type="button" t-att-class="chipClass('all')" data-filter="all" t-on-click="onFilterChip">
+                        Tous (<t t-esc="teamDash.data.filter_counts.all"/>)
+                    </button>
+                    <button type="button" t-att-class="chipClass('monitoring')" data-filter="monitoring" t-on-click="onFilterChip">
+                        Surveillance (<t t-esc="teamDash.data.filter_counts.monitoring"/>)
+                    </button>
+                    <button type="button" t-att-class="chipClass('essai')" data-filter="essai" t-on-click="onFilterChip">
+                        Essai (<t t-esc="teamDash.data.filter_counts.probation"/>)
+                    </button>
+                    <button type="button" t-att-class="chipClass('inactif')" data-filter="inactif" t-on-click="onFilterChip">
+                        Inactif (<t t-esc="teamDash.data.filter_counts.inactive"/>)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Kanban 3 colonnes par bande de score -->
+            <div class="ix-team-dashboard" t-if="teamDash.kanbanLoaded">
+                <div class="ix-stat-row">
+                    <div class="ix-stat-card">
+                        <div class="ix-stat-label">Membres actifs</div>
+                        <div class="ix-stat-val indigo" t-esc="kanbanStats.total"/>
+                    </div>
+                    <div class="ix-stat-card">
+                        <div class="ix-stat-label">Score moyen</div>
+                        <div t-att-class="'ix-stat-val ' + (kanbanStats.avg >= 70 ? 'green' : kanbanStats.avg >= 50 ? 'amber' : 'red')">
+                            <t t-esc="kanbanStats.avg"/><span class="ix-stat-denom">/100</span>
+                        </div>
+                    </div>
+                    <div class="ix-stat-card">
+                        <div class="ix-stat-label">À surveiller</div>
+                        <div t-att-class="'ix-stat-val ' + (kanbanStats.watch > 0 ? 'red' : 'green')" t-esc="kanbanStats.watch"/>
+                        <div class="ix-stat-sub">Score &lt; 60</div>
+                    </div>
+                    <div class="ix-stat-card">
+                        <div class="ix-stat-label">Alertes ouvertes</div>
+                        <div t-att-class="'ix-stat-val ' + (kanbanStats.alerts > 0 ? 'red' : 'green')" t-esc="kanbanStats.alerts"/>
+                    </div>
+                </div>
+                <div class="ix-kanban-cols">
+                    <t t-foreach="bandDefs" t-as="bandDef" t-key="bandDef.key">
+                        <div class="ix-k-col">
+                            <div class="ix-k-col-head">
+                                <span class="ix-k-col-title" t-esc="bandDef.title"/>
+                                <span class="ix-k-col-count" t-esc="kanbanBands[bandDef.key].length"/>
+                            </div>
+                            <t t-foreach="kanbanBands[bandDef.key]" t-as="emp" t-key="emp.id">
+                                <div t-att-class="'ix-k-card ' + (bandDef.key === 'top' ? 'top' : '')"
+                                     t-on-click="() => this.onKanbanEmployeeClick(emp)">
+                                    <div class="ix-k-card-top">
+                                        <div class="ix-k-avatar"
+                                             t-att-style="'background:' + avatarColor(emp.id)"
+                                             t-esc="initials(emp.name)"/>
+                                        <div>
+                                            <div class="ix-k-name" t-esc="emp.name"/>
+                                            <div class="ix-k-role" t-esc="emp.job_title || '—'"/>
+                                        </div>
+                                    </div>
+                                    <div class="ix-k-score-row">
+                                        <span class="ix-k-score-label">Score</span>
+                                        <div class="ix-k-score-bar">
+                                            <div class="ix-k-score-fill"
+                                                 t-att-style="'width:' + (emp.people_score || 0) + '%;background:' + scoreColor(emp.people_score)"/>
+                                        </div>
+                                        <span class="ix-k-score-num"
+                                              t-att-style="'color:' + scoreColor(emp.people_score)"
+                                              t-esc="formatScore(emp.people_score)"/>
+                                    </div>
+                                    <div class="ix-k-tags">
+                                        <t t-if="emp.people_alerts_count > 0">
+                                            <span class="ix-k-tag alert">
+                                                <i class="fa fa-exclamation-triangle"/>
+                                                <t t-esc="emp.people_alerts_count"/> alerte(s)
+                                            </span>
+                                        </t>
+                                        <span t-att-class="'ix-k-tag ' + trendClass(emp.people_score_trend)"
+                                              t-esc="trendLabel(emp.people_score_trend)"/>
+                                    </div>
+                                </div>
+                            </t>
+                            <t t-if="!kanbanBands[bandDef.key].length">
+                                <div class="ix-k-empty" t-esc="bandDef.empty"/>
+                            </t>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </xpath>
+
+        <xpath expr="//t[@t-component='props.Renderer']" position="replace">
+            <div class="pe-team-main-grid" t-if="teamDash.loaded">
+                <div class="pe-team-panel pe-team-panel-table">
+                    <div class="pe-team-panel-header">
+                        <div>
+                            <div class="pe-team-panel-title">🧑‍💼 Tableau de bord équipe</div>
+                            <div class="pe-team-panel-sub">
+                                <t t-esc="teamDash.data.kpis.total_employees"/> employés · Période <t t-esc="teamDash.data.period_label"/> · Clic sur ligne → fiche employé
+                            </div>
+                        </div>
+                        <div class="pe-team-panel-actions">
+                            <div class="pe-team-period-btns">
+                                <button type="button" t-att-class="periodBtnClass(7)" data-period="7" t-on-click="onPeriodChange">7j</button>
+                                <button type="button" t-att-class="periodBtnClass(30)" data-period="30" t-on-click="onPeriodChange">30j</button>
+                                <button type="button" t-att-class="periodBtnClass(90)" data-period="90" t-on-click="onPeriodChange">90j</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pe-team-table-wrap">
+                        <t t-component="props.Renderer" t-if="model.isReady"
+                            list="model.root"
+                            activeActions="activeActions"
+                            archInfo="archInfo"
+                            allowSelectors="props.allowSelectors"
+                            editable="editable"
+                            onOpenFormView="onOpenFormView"
+                            hasOpenFormViewButton="hasOpenFormViewButton"
+                            openRecord.bind="openRecord"
+                            noContentHelp="props.info.noContentHelp"
+                            onAdd.bind="createRecord"
+                            optionalActiveFields="optionalActiveFields"
+                            readonly="props.readonly"
+                        />
+                    </div>
+                </div>
+
+                <div class="pe-team-right-panels">
+                    <div class="pe-team-panel">
+                        <div class="pe-team-panel-header">
+                            <div class="pe-team-panel-title">🏆 Top performers</div>
+                            <span class="pe-team-panel-meta"><t t-esc="teamDash.data.period_label"/></span>
+                        </div>
+                        <div class="pe-team-leader-list">
+                            <t t-foreach="teamDash.data.leaderboard" t-as="leader" t-key="leader.rank">
+                                <div class="pe-team-leader-row" t-on-click="() => this.onLeaderClick(leader)">
+                                    <span class="pe-team-leader-rank" t-esc="leader.rank"/>
+                                    <span class="pe-team-leader-avatar pe-team-mini-avatar" t-att-style="leader.avatar_style" t-esc="leader.initials"/>
+                                    <span class="pe-team-leader-name" t-esc="leader.name"/>
+                                    <span class="pe-team-leader-score" t-att-style="'color:' + leader.score_color" t-esc="leader.score"/>
+                                    <span class="pe-team-leader-badge" t-if="leader.badge" t-esc="leader.badge"/>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+
+                    <div class="pe-team-panel">
+                        <div class="pe-team-panel-header">
+                            <div class="pe-team-panel-title">🔔 Alertes RH</div>
+                        </div>
+                        <div class="pe-team-alert-list">
+                            <t t-foreach="teamDash.data.alerts" t-as="alert" t-key="alert_index">
+                                <div t-att-class="'pe-team-alert-item pe-team-alert-' + alert.type" t-on-click="() => this.onAlertClick(alert)">
+                                    <span class="pe-team-alert-icon" t-esc="alert.icon"/>
+                                    <div class="pe-team-alert-content">
+                                        <div class="pe-team-alert-title" t-esc="alert.title"/>
+                                        <div class="pe-team-alert-text" t-esc="alert.text"/>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+
+                    <div class="pe-team-panel">
+                        <div class="pe-team-panel-header">
+                            <div class="pe-team-panel-title">📊 Répartition statuts</div>
+                        </div>
+                        <div class="pe-team-distrib-list">
+                            <t t-foreach="teamDash.data.status_distrib" t-as="row" t-key="row.key">
+                                <div class="pe-team-distrib-row">
+                                    <span class="pe-team-distrib-label" t-att-style="'color:' + row.color" t-esc="row.label"/>
+                                    <div class="pe-team-distrib-bar">
+                                        <div class="pe-team-distrib-fill" t-attf-style="width:#{row.pct}%;background:#{row.color}"/>
+                                    </div>
+                                    <span class="pe-team-distrib-count" t-att-style="'color:' + row.color" t-esc="row.count"/>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pe-team-bottom-grid" t-if="teamDash.loaded">
+                <div class="pe-team-panel">
+                    <div class="pe-team-panel-header">
+                        <div class="pe-team-panel-title">🚀 Pipeline onboarding</div>
+                        <span class="pe-team-panel-meta"><t t-esc="teamDash.data.kpis.onboarding_count"/> en cours</span>
+                    </div>
+                    <div class="pe-team-onboard-steps">
+                        <t t-foreach="teamDash.data.onboarding_pipeline" t-as="pipe" t-key="pipe.employee">
+                            <div class="pe-team-onboard-employee" t-esc="pipe.employee"/>
+                            <t t-foreach="pipe.steps" t-as="step" t-key="step_index">
+                                <div class="pe-team-onboard-step">
+                                    <div t-att-class="'pe-team-onboard-step-num pe-team-step-' + step.state" t-esc="step.num"/>
+                                    <div t-att-class="'pe-team-onboard-step-name pe-team-step-name-' + step.state" t-esc="step.label"/>
+                                </div>
+                            </t>
+                        </t>
+                    </div>
+                </div>
+
+                <div class="pe-team-panel">
+                    <div class="pe-team-panel-header">
+                        <div class="pe-team-panel-title">💰 Primes à verser — <t t-esc="teamDash.data.kpis.primes_period"/></div>
+                        <span class="pe-team-panel-meta"><t t-esc="teamDash.data.kpis.primes_pending"/> agents éligibles</span>
+                    </div>
+                    <div class="pe-team-primes-list">
+                        <t t-foreach="teamDash.data.primes_due" t-as="prime" t-key="prime_index">
+                            <div class="pe-team-prime-row">
+                                <span class="pe-team-prime-avatar pe-team-mini-avatar" t-att-style="prime.avatar_style" t-esc="prime.initials"/>
+                                <div class="pe-team-prime-info">
+                                    <div class="pe-team-prime-name" t-esc="prime.name"/>
+                                    <div class="pe-team-prime-meta" t-esc="prime.meta"/>
+                                </div>
+                                <div class="pe-team-prime-amount">
+                                    <div class="pe-team-prime-pct" t-esc="prime.amount_label"/>
+                                    <div class="pe-team-prime-sub">variable</div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+
+                <div class="pe-team-panel">
+                    <div class="pe-team-panel-header">
+                        <div class="pe-team-panel-title">📈 Score moyen équipe</div>
+                        <span class="pe-team-panel-meta"><t t-esc="teamDash.data.chart_label"/></span>
+                    </div>
+                    <div class="pe-team-chart">
+                        <t t-foreach="teamDash.data.score_chart" t-as="point" t-key="point.label">
+                            <div class="pe-team-chart-col">
+                                <div class="pe-team-chart-bar-wrap">
+                                    <div class="pe-team-chart-bar" t-attf-style="height:#{point.pct}%;background:#{point.color}"/>
+                                </div>
+                                <div class="pe-team-chart-val" t-esc="point.value"/>
+                                <div class="pe-team-chart-label" t-esc="point.label"/>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+    </t>
+
+</templates>

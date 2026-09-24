@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_finance_dashboard" model="ir.actions.client">
+        <field name="name">Finance — ITEX / Driven / Growth Capital</field>
+        <field name="tag">intellix_finance_dashboard</field>
+        <field name="path">fin-dashboard</field>
+    </record>
+
+    <!-- Maquette portail ITEX (OWL dark) — sous Finance, pas Coins Québec. -->
+    <record id="action_finance_itex_partenaires_dashboard" model="ir.actions.client">
+        <field name="name">Dashboard ITEX</field>
+        <field name="tag">coins_partenaires_dashboard</field>
+        <field name="path">fin-itex-dash</field>
+    </record>
+
+    <record id="action_finance_driven_dashboard" model="ir.actions.client">
+        <field name="name">Dashboard Driven</field>
+        <field name="tag">intellix_finance_driven_dashboard</field>
+        <field name="path">fin-driven-dash</field>
+    </record>
+</odoo>

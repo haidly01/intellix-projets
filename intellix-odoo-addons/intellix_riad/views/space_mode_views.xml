@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_riad_space_mode_list" model="ir.ui.view">
+        <field name="name">intellix.riad.space.mode.list</field>
+        <field name="model">intellix.riad.space.mode</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="establishment_id"/>
+                <field name="is_template"/>
+                <field name="weekday"/>
+                <field name="date"/>
+                <field name="wellness_start" widget="float_time"/>
+                <field name="wellness_end" widget="float_time"/>
+                <field name="restaurant_start" widget="float_time"/>
+                <field name="restaurant_end" widget="float_time"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_riad_space_mode" model="ir.actions.act_window">
+        <field name="name">Modes terrasse</field>
+        <field name="res_model">intellix.riad.space.mode</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

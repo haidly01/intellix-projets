@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_product_template_mon_coin_form" model="ir.ui.view">
+        <field name="name">product.template.form.mon.coin</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Mon Coin" name="mon_coin" invisible="not mon_coin_kind">
+                    <group>
+                        <group string="Catalogue">
+                            <field name="mon_coin_kind"/>
+                            <field name="mon_coin_recurrence"/>
+                            <field name="mon_coin_fee_trigger"/>
+                        </group>
+                        <group string="ITEX / argent">
+                            <field name="mon_coin_itex_split_required"/>
+                            <field name="mon_coin_itex_amount"/>
+                            <field name="mon_coin_cash_amount"/>
+                        </group>
+                    </group>
+                    <div class="text-muted" colspan="2">
+                        Frais 500$ et 1000$ Boutique sont exclusifs : le 1000$ remplace le 500$, il ne s’ajoute pas.
+                        Split ITEX = deux lignes de devis (pas un second wallet).
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_cq_partenariat_form_catalog" model="ir.ui.view">
+        <field name="name">coins.quebec.partenariat.form.catalog</field>
+        <field name="model">coins.quebec.partenariat</field>
+        <field name="inherit_id" ref="view_cq_partenariat_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='cq_notes']" position="before">
+                <page string="Paliers &amp; frais" name="mon_coin_paliers">
+                    <group>
+                        <group string="Palier">
+                            <field name="mon_coin_palier"/>
+                            <field name="mon_coin_boutique_activated"/>
+                        </group>
+                        <group string="Frais de démarrage (exclusifs)">
+                            <field name="mon_coin_startup_fee_kind"/>
+                            <field name="mon_coin_startup_fee_invoiced"/>
+                        </group>
+                    </group>
+                    <div class="text-muted">
+                        500$ = 1re souscription palier payant sans Boutique.
+                        1000$ = activation Boutique (canaux), à la place du 500$ — jamais les deux.
+                        Complet sans canal activé = pas de 1000$.
+                    </div>
+                    <div class="oe_button_box" name="mon_coin_fee_buttons">
+                        <button name="action_create_palier_quotation"
+                                type="object"
+                                class="btn-primary"
+                                string="Créer le devis palier"
+                                invisible="mon_coin_palier in ('none', False)"/>
+                        <button name="action_activate_boutique"
+                                type="object"
+                                class="btn-secondary"
+                                string="Activer Boutique (canaux)"
+                                invisible="mon_coin_boutique_activated"/>
+                    </div>
+                    <field name="mon_coin_sale_order_ids">
+                        <list>
+                            <field name="name"/>
+                            <field name="date_order"/>
+                            <field name="state"/>
+                            <field name="amount_total"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

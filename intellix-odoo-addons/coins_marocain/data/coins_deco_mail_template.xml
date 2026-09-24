@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="mail_template_lien_deco_prestataire_onboarding" model="mail.template">
+        <field name="name">Coins — Lien fiche prestataire déco (/prestataire-deco)</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="subject">Complétez votre fiche décoration {{ object.coins_deco_prestataire_id.name or object.name }} — Coins Marocain</field>
+        <field name="email_from">Zakaria &lt;zakaria@coinsmarocain.com&gt;</field>
+        <field name="email_to">{{ object.email_from }}</field>
+        <field name="use_default_to" eval="False"/>
+        <field name="auto_delete" eval="False"/>
+        <field name="description">Lien tokenisé d'onboarding prestataire déco. Distinct du lien /partenaire/ (biens).</field>
+        <field name="body_html" type="html">
+<div style="margin:0;background:#faf6ee;font-family:Jost,Segoe UI,sans-serif;color:#262220;">
+  <div style="max-width:600px;margin:0 auto;background:#fffdf8;border:1px solid #e6ddcc;">
+    <div style="background:linear-gradient(135deg,#e6b876,#b5732f);padding:28px 32px;color:#fffdf8;">
+      <div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;">Coins Marocain</div>
+      <div style="font-family:'Cormorant Garamond',Georgia,serif;font-size:28px;margin-top:6px;">Votre fiche décoration</div>
+    </div>
+    <div style="padding:28px 32px;">
+      <p>Bonjour <strong><t t-out="object.contact_name or 'bonjour'"/></strong>,</p>
+      <p>
+        Complétez la fiche de
+        <strong><t t-out="object.coins_deco_prestataire_id.name or object.name"/></strong>
+        — types de service, thèmes, tarifs et photos.
+        Au moins trois photos par thème coché. Rien n'est publié sans validation de notre équipe.
+      </p>
+      <p style="text-align:center;margin:28px 0;">
+        <a t-att-href="object.coins_deco_lien"
+           style="background:linear-gradient(135deg,#e6b876,#b5732f);color:#fff;padding:12px 22px;text-decoration:none;border-radius:8px;font-weight:600;">
+          Ouvrir ma fiche déco
+        </a>
+      </p>
+      <p style="font-size:13px;color:#8a8172;">
+        Lien personnel (ne pas transmettre) :<br/>
+        <a t-att-href="object.coins_deco_lien" style="color:#b5732f;"><t t-out="object.coins_deco_lien or ''"/></a>
+      </p>
+      <p>À bientôt,<br/>Zakaria — Coins Marocain</p>
+    </div>
+  </div>
+</div>
+        </field>
+    </record>
+</odoo>

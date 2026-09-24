@@ -1,0 +1,1020 @@
+/* ═══ Intellix Support — Kanban dark theme (Écran 1 maquette) ═══ */
+
+.intellix-support-scope {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.intellix-support-scope .o_control_panel {
+    background: #0e0c22 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+.intellix-support-scope .o_control_panel .o_searchview,
+.intellix-support-scope .o_control_panel .o_searchview_input {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-color: rgba(255, 255, 255, 0.09) !important;
+    color: #f0f0fa !important;
+}
+
+.intellix-support-scope .o_control_panel .o_cp_buttons .btn-primary,
+.intellix-support-scope .o_control_panel .o-kanban-button-new {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6) !important;
+    border: none !important;
+    border-radius: 7px !important;
+    font-weight: 700 !important;
+}
+
+.intellix-support-kpi-bar {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1px;
+    background: #0a0a18;
+    padding: 12px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.intellix-support-kpi-item {
+    padding: 8px 16px;
+    text-align: center;
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.intellix-support-kpi-item:last-child { border-right: none; }
+
+.intellix-support-kpi-val {
+    font-family: "Space Grotesk", "Inter", sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 3px;
+}
+
+.intellix-support-kpi-val.text-indigo { color: #6366f1; }
+.intellix-support-kpi-val.text-danger { color: #ef4444; }
+.intellix-support-kpi-val.text-warning { color: #f59e0b; }
+.intellix-support-kpi-val.text-success { color: #10b981; }
+.intellix-support-kpi-val.text-purple { color: #8b5cf6; }
+
+.intellix-support-kpi-lbl {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #5a5a7a;
+}
+
+.intellix-support-scope .o_content,
+.intellix-support-scope .o_kanban_view,
+.intellix-support-scope .o_kanban_renderer {
+    background: #0a0a12 !important;
+}
+
+.intellix-support-kanban.o_kanban_renderer {
+    --Kanban-background: #0a0a12;
+    --KanbanGroup-background: #0a0a12;
+    padding: 16px 20px !important;
+}
+
+.intellix-support-kanban.o_kanban_renderer.o_kanban_grouped .o_kanban_group {
+    background: rgba(255, 255, 255, 0.02) !important;
+    border-radius: 10px !important;
+    overflow: hidden;
+    border: none !important;
+}
+
+.intellix-support-kanban .o_kanban_group:nth-child(1) .o_kanban_header { border-top: 2px solid #6366f1; }
+.intellix-support-kanban .o_kanban_group:nth-child(2) .o_kanban_header { border-top: 2px solid #f59e0b; }
+.intellix-support-kanban .o_kanban_group:nth-child(3) .o_kanban_header { border-top: 2px solid #06b6d4; }
+.intellix-support-kanban .o_kanban_group:nth-child(4) .o_kanban_header { border-top: 2px solid #10b981; }
+.intellix-support-kanban .o_kanban_group:nth-child(5) .o_kanban_header { border-top: 2px solid #5a5a7a; }
+
+.intellix-support-kanban .o_kanban_header {
+    background: transparent !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+.intellix-support-kanban .o_kanban_header .o_column_title,
+.intellix-support-kanban .o_kanban_header .fw-bold {
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.1em !important;
+}
+
+.intellix-support-kanban .o_kanban_group:nth-child(1) .o_column_title { color: #818cf8 !important; }
+.intellix-support-kanban .o_kanban_group:nth-child(2) .o_column_title { color: #fbbf24 !important; }
+.intellix-support-kanban .o_kanban_group:nth-child(3) .o_column_title { color: #22d3ee !important; }
+.intellix-support-kanban .o_kanban_group:nth-child(4) .o_column_title { color: #34d399 !important; }
+.intellix-support-kanban .o_kanban_group:nth-child(5) .o_column_title { color: #5a5a7a !important; }
+
+.intellix-support-kanban .o_kanban_record:not(.o_kanban_ghost):not(.o-kanban-button-new) {
+    background: #0f0f1e !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 10px !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin-bottom: 8px !important;
+}
+
+.intellix-support-kanban .o_kanban_record:not(.o_kanban_ghost):hover {
+    border-color: rgba(139, 92, 246, 0.3) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3) !important;
+}
+
+.intellix-support-ticket-card {
+    position: relative;
+    padding: 12px;
+    overflow: hidden;
+}
+
+.intellix-support-ticket-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+}
+
+.intellix-support-ticket-card.p-critical::before { background: #ef4444; }
+.intellix-support-ticket-card.p-high::before { background: #f59e0b; }
+.intellix-support-ticket-card.p-medium::before { background: #6366f1; }
+.intellix-support-ticket-card.p-low::before { background: #10b981; }
+.intellix-support-ticket-card.is-closed { opacity: 0.7; }
+
+.intellix-support-ai-flag {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 16px;
+    height: 16px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    z-index: 1;
+}
+
+.intellix-support-ticket-id {
+    font-size: 9px;
+    font-weight: 700;
+    color: #5a5a7a;
+    letter-spacing: 0.1em;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+}
+
+.intellix-support-ticket-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #f0f0fa;
+    margin-bottom: 5px;
+    line-height: 1.4;
+}
+
+.intellix-support-ticket-client {
+    font-size: 11px;
+    color: #9898b8;
+    margin-bottom: 8px;
+}
+
+.intellix-support-ticket-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 8px;
+}
+
+.intellix-support-tag {
+    font-size: 9px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.intellix-support-tag.tag-bug { background: rgba(239, 68, 68, 0.12); color: #f87171; }
+.intellix-support-tag.tag-config { background: rgba(99, 102, 241, 0.12); color: #818cf8; }
+.intellix-support-tag.tag-onboard { background: rgba(6, 182, 212, 0.12); color: #22d3ee; }
+.intellix-support-tag.tag-billing { background: rgba(245, 158, 11, 0.12); color: #fbbf24; }
+.intellix-support-tag.tag-ai { background: rgba(139, 92, 246, 0.12); color: #a78bfa; }
+.intellix-support-tag.tag-urgent {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+.intellix-support-sla {
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+}
+
+.intellix-support-sla-ok { background: rgba(16, 185, 129, 0.1); color: #34d399; }
+.intellix-support-sla-warn { background: rgba(245, 158, 11, 0.1); color: #fbbf24; }
+.intellix-support-sla-breach { background: rgba(239, 68, 68, 0.1); color: #f87171; }
+
+.intellix-support-ticket-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.intellix-support-ticket-time {
+    font-size: 10px;
+    color: #5a5a7a;
+}
+
+.intellix-support-kanban-play {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #818cf8 0%, #6366f1 100%);
+    color: #fff;
+    border: none;
+    line-height: 1;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.intellix-support-kanban-play:hover {
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    color: #fff;
+}
+
+@media (max-width: 1200px) {
+    .intellix-support-kpi-bar { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 768px) {
+    .intellix-support-kpi-bar { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ═══ Écran 2 — Ticket détail + Copilot ═══ */
+.o_intellix_support_ticket_form .o_form_sheet_bg {
+    background: transparent;
+}
+
+.o_intellix_support_ticket_form .o_form_statusbar {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    padding: 8px 16px;
+}
+
+.o_intellix_support_form_layout {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    align-items: stretch;
+    min-height: calc(100vh - 120px);
+    background: #050508;
+}
+
+.o_intellix_support_form_main {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    background: #0a0a12;
+    color: #e5e7eb;
+}
+
+.intellix-ticket-subbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: #0a0a12;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    font-size: 12px;
+    color: #9898b8;
+}
+
+.intellix-ticket-breadcrumb {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: default;
+}
+
+.intellix-ticket-breadcrumb-sep {
+    color: #9ca3af;
+}
+
+.intellix-ticket-breadcrumb-ref span,
+.intellix-ticket-breadcrumb-ref {
+    font-weight: 600;
+    color: #f0f0fa;
+}
+
+.intellix-ticket-sheet {
+    background: #0a0a12;
+    margin: 0;
+    padding: 24px;
+    box-shadow: none;
+    border: none;
+}
+
+.intellix-ticket-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.intellix-ticket-ref-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.intellix-ticket-ref span,
+.intellix-ticket-ref {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #9898b8;
+    text-transform: uppercase;
+}
+
+.intellix-ticket-tag {
+    font-size: 9px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.intellix-tag-category span {
+    background: rgba(99, 102, 241, 0.12);
+    color: #6366f1;
+    font-size: 9px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.intellix-tag-client {
+    background: rgba(6, 182, 212, 0.12);
+    color: #0891b2;
+}
+
+.intellix-tag-platform {
+    background: rgba(245, 158, 11, 0.12);
+    color: #d97706;
+}
+
+.intellix-ticket-sla span,
+.intellix-ticket-sla {
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: rgba(245, 158, 11, 0.12);
+    color: #d97706;
+}
+
+.intellix-ticket-title {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin: 0;
+    color: #f9fafb;
+}
+
+.intellix-ticket-title input,
+.intellix-ticket-title textarea {
+    font-size: 22px;
+    font-weight: 700;
+    border: none;
+    background: transparent;
+    padding: 0;
+}
+
+.intellix-btn-ghost {
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.intellix-btn-resolve {
+    border-radius: 7px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    border: none;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Pipeline statusbar */
+.o_intellix_support_ticket_form .intellix-ticket-pipeline .o_statusbar_status {
+    border-radius: 7px;
+    margin-right: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    background: rgba(0, 0, 0, 0.03);
+}
+
+.o_intellix_support_ticket_form .intellix-ticket-pipeline .o_arrow_button_current {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6) !important;
+    border-color: transparent !important;
+    color: #fff !important;
+}
+
+.o_intellix_support_ticket_form .intellix-ticket-pipeline .o_arrow_button:not(.o_arrow_button_current) {
+    color: #374151;
+}
+
+/* Form grid */
+.intellix-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.intellix-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.intellix-form-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #9898b8;
+    margin: 0;
+}
+
+.intellix-form-group .o_field_widget {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 7px;
+    padding: 6px 10px;
+    min-height: 36px;
+    color: #e5e7eb;
+}
+
+.intellix-form-placeholder {
+    color: #9ca3af;
+    font-size: 12px;
+    padding: 8px 12px;
+}
+
+/* Tabs */
+.o_intellix_support_ticket_form .intellix-ticket-tabs .nav-link {
+    font-size: 12px;
+    font-weight: 600;
+    color: #9898b8;
+    padding: 8px 18px;
+}
+
+.o_intellix_support_ticket_form .intellix-ticket-tabs .nav-link.active {
+    color: #a78bfa;
+    border-bottom-color: #8b5cf6;
+}
+
+.intellix-desc-area .odoo-editor-editable,
+.intellix-desc-area textarea {
+    min-height: 80px;
+    font-size: 13px;
+    line-height: 1.6;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 14px;
+    color: #e5e7eb;
+}
+
+/* Chatter / activité — thème sombre maquette */
+.o_intellix_support_ticket_form .intellix-ticket-chatter {
+    background: #0a0a12;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 0 16px 16px;
+}
+
+.o_intellix_support_ticket_form .intellix-ticket-chatter .o-mail-Chatter-top {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.o_intellix_support_ticket_form .intellix-ticket-chatter .o-mail-Message {
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.03);
+    margin-bottom: 8px;
+    padding: 8px 12px;
+}
+
+.o_intellix_support_ticket_form .intellix-ticket-chatter .o-mail-Composer {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+}
+
+/* ═══ Copilot sidebar (400px, thème sombre maquette) ═══ */
+.intellix-support-copilot-sidebar {
+    background: #0c0b1e;
+    color: #f0f0fa;
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    border-left: 1px solid rgba(139, 92, 246, 0.15);
+}
+
+.intellix-copilot-header {
+    padding: 16px 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.intellix-copilot-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+}
+
+.intellix-copilot-heading {
+    flex: 1;
+    min-width: 0;
+}
+
+.intellix-copilot-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #f0f0fa;
+}
+
+.intellix-copilot-sub {
+    font-size: 10px;
+    color: #9898b8;
+}
+
+.intellix-copilot-ref span {
+    color: #a78bfa;
+    font-weight: 600;
+}
+
+.intellix-copilot-refresh {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #9898b8 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.intellix-copilot-notebook {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.intellix-copilot-notebook .nav-tabs {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    padding: 0;
+}
+
+.intellix-copilot-notebook .nav-link {
+    flex: 1;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: #9898b8;
+    border: none;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+    padding: 8px 4px;
+    background: transparent;
+}
+
+.intellix-copilot-notebook .nav-link.active {
+    color: #a78bfa;
+    border-bottom-color: #8b5cf6;
+    background: transparent;
+}
+
+.intellix-copilot-notebook .tab-content {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.intellix-copilot-body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.intellix-support-copilot-empty {
+    text-align: center;
+    color: #9898b8;
+    padding: 2rem 1rem;
+    font-size: 12px;
+}
+
+/* Diagnostic cards — maquette */
+.intellix-copilot-body .diag-card {
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+.intellix-copilot-body .diag-card-header {
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.intellix-copilot-body .diag-icon {
+    font-size: 14px;
+}
+
+.intellix-copilot-body .diag-card-title {
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.intellix-copilot-body .diag-card-sub {
+    font-size: 10px;
+    margin-top: 1px;
+}
+
+.intellix-copilot-body .diag-card-body {
+    padding: 10px 14px 12px;
+}
+
+.intellix-copilot-body .diag-card-text {
+    font-size: 11px;
+    line-height: 1.65;
+    margin-bottom: 10px;
+    color: #c4c4e0;
+}
+
+.intellix-copilot-body .diag-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.intellix-copilot-body .diag-btn {
+    border-radius: 6px;
+    padding: 7px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    width: 100%;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+}
+
+.intellix-copilot-body a.diag-btn:hover {
+    filter: brightness(1.08);
+}
+
+.intellix-copilot-body .diag-summary {
+    background: rgba(99, 102, 241, 0.08);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+.intellix-copilot-body .diag-summary .diag-card-header {
+    background: rgba(99, 102, 241, 0.12);
+}
+
+.intellix-copilot-body .diag-summary .diag-card-title {
+    color: #818cf8;
+}
+
+.intellix-copilot-body .diag-summary .diag-card-sub {
+    color: rgba(129, 140, 248, 0.7);
+}
+
+.intellix-copilot-body .diag-summary .diag-btn-primary {
+    background: #6366f1;
+    color: #fff;
+    border: none;
+}
+
+.intellix-copilot-body .diag-summary .diag-btn-ghost {
+    background: rgba(255, 255, 255, 0.04);
+    color: #9898b8;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.intellix-copilot-body .diag-odoo {
+    background: rgba(139, 92, 246, 0.07);
+    border: 1px solid rgba(139, 92, 246, 0.18);
+}
+
+.intellix-copilot-body .diag-odoo .diag-card-header {
+    background: rgba(139, 92, 246, 0.1);
+}
+
+.intellix-copilot-body .diag-odoo .diag-card-title {
+    color: #a78bfa;
+}
+
+.intellix-copilot-body .diag-odoo .diag-btn-primary {
+    background: #8b5cf6;
+    color: #fff;
+    border: none;
+}
+
+.intellix-copilot-body .diag-campaigns {
+    background: rgba(6, 182, 212, 0.06);
+    border: 1px solid rgba(6, 182, 212, 0.16);
+}
+
+.intellix-copilot-body .diag-campaigns .diag-card-header {
+    background: rgba(6, 182, 212, 0.08);
+}
+
+.intellix-copilot-body .diag-campaigns .diag-card-title {
+    color: #22d3ee;
+}
+
+.intellix-copilot-body .diag-campaigns .diag-btn-primary {
+    background: #06b6d4;
+    color: #fff;
+    border: none;
+}
+
+.intellix-copilot-body .diag-credits {
+    background: rgba(245, 158, 11, 0.06);
+    border: 1px solid rgba(245, 158, 11, 0.15);
+}
+
+.intellix-copilot-body .diag-credits .diag-card-header {
+    background: rgba(245, 158, 11, 0.08);
+}
+
+.intellix-copilot-body .diag-credits .diag-card-title {
+    color: #fbbf24;
+}
+
+.intellix-copilot-body .diag-credits .diag-btn-primary {
+    background: #f59e0b;
+    color: #fff;
+    border: none;
+}
+
+.intellix-copilot-body .diag-anydesk {
+    background: rgba(99, 102, 241, 0.06);
+    border: 1px solid rgba(99, 102, 241, 0.15);
+}
+
+.intellix-copilot-body .diag-anydesk .diag-card-header {
+    background: rgba(99, 102, 241, 0.08);
+}
+
+.intellix-copilot-body .diag-anydesk .diag-card-title {
+    color: #a5b4fc;
+}
+
+.intellix-copilot-body .diag-anydesk .diag-btn-primary {
+    background: #6366f1;
+    color: #fff;
+    border: none;
+}
+
+.intellix-copilot-body .diag-btn-ghost {
+    background: rgba(255, 255, 255, 0.04);
+    color: #9898b8;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Réponses suggérées */
+.suggest-replies-section {
+    padding: 0;
+}
+
+.suggest-replies-title {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #5a5a7a;
+    margin-bottom: 8px;
+}
+
+.suggest-replies {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.suggest-reply {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-size: 11px;
+    color: #c4c4e0;
+    line-height: 1.5;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.suggest-reply:hover,
+.suggest-reply:focus {
+    background: rgba(139, 92, 246, 0.12);
+    border-color: rgba(139, 92, 246, 0.35);
+    outline: none;
+}
+
+.suggest-reply-icon {
+    font-size: 12px;
+    flex-shrink: 0;
+}
+
+.suggest-reply-use {
+    margin-left: auto;
+    font-size: 10px;
+    color: #8b5cf6;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* Résumé tab */
+.intellix-copilot-summary-block {
+    padding: 4px 0;
+}
+
+.intellix-copilot-summary-side {
+    font-size: 11px;
+    font-weight: 700;
+    color: #a78bfa;
+    margin-bottom: 8px;
+}
+
+.intellix-copilot-summary-text {
+    font-size: 12px;
+    line-height: 1.65;
+    color: #c4c4e0;
+    white-space: pre-wrap;
+}
+
+/* Copilot footer */
+.intellix-copilot-footer {
+    padding: 12px 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    display: flex;
+    gap: 8px;
+    margin-top: auto;
+}
+
+.intellix-copilot-input {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 7px;
+    padding: 7px 10px;
+    font-size: 11px;
+    color: #f0f0fa;
+}
+
+.intellix-copilot-input-active::placeholder {
+    color: #9898b8;
+}
+
+.intellix-copilot-input-active:focus {
+    outline: none;
+    border-color: rgba(139, 92, 246, 0.5);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
+}
+
+/* Historique chat Copilot */
+.intellix-copilot-chat-scroll {
+    max-height: 220px;
+    overflow-y: auto;
+    margin-top: 12px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.copilot-chat-entry {
+    margin-bottom: 12px;
+}
+
+.copilot-chat-q,
+.copilot-chat-a {
+    font-size: 11px;
+    line-height: 1.55;
+    color: #c4c4e0;
+    margin-bottom: 6px;
+}
+
+.copilot-chat-q strong,
+.copilot-chat-a strong {
+    color: #a78bfa;
+    display: block;
+    margin-bottom: 4px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.intellix-copilot-notebook .nav-link {
+    cursor: pointer;
+}
+
+.intellix-copilot-send {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6) !important;
+    border: none !important;
+    border-radius: 7px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* Flux création ticket — ordre Organisation → Portée → Module */
+.intellix-form-grid-create {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem 1.5rem;
+}
+
+.intellix-form-grid-create .intellix-form-span-2 {
+    grid-column: 1 / -1;
+}
+
+.intellix-form-step .o_field_widget[name="user_scope"],
+.intellix-form-step .o_field_widget[name="ticket_type"] {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.intellix-attachment-hint {
+    font-size: 12px;
+    margin-top: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: rgba(99, 102, 241, 0.06);
+    border-radius: 6px;
+    border-left: 3px solid #6366f1;
+}
+
+.intellix-support-create-wizard .intellix-wizard-intro {
+    padding: 0.75rem 1rem;
+    background: #f8fafc;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.intellix-desc-inline {
+    min-height: 120px;
+}
+
+.intellix-copilot-send.intellix-copilot-loading {
+    opacity: 0.65;
+    cursor: wait;
+}
+
+.intellix-copilot-input:disabled {
+    opacity: 0.7;
+}
+
+@media (max-width: 1280px) {
+    .o_intellix_support_form_layout {
+        grid-template-columns: 1fr;
+    }
+
+    .intellix-support-copilot-sidebar {
+        border-left: none;
+        border-top: 1px solid rgba(139, 92, 246, 0.15);
+    }
+
+    .intellix-form-grid {
+        grid-template-columns: 1fr;
+    }
+}

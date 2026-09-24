@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <function model="intellix.riad.establishment" name="seed_coins_partner_listing">
+        <value eval="'coins.riadanna.property_id'"/>
+    </function>
+</odoo>

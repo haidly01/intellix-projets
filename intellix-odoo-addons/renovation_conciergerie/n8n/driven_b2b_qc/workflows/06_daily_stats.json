@@ -1,0 +1,57 @@
+{
+  "name": "driven-b2b-qc — 06 Stats Quotidiennes",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 18 * * *"
+            }
+          ]
+        }
+      },
+      "name": "Cron 18h",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const today = new Date().toISOString().slice(0, 10);\nconst odooUrl = ($env.ODOO_URL || 'https://intellixcrm.com').replace(/\\/$/, '');\n\nlet stats = { date: today, calls: 0, hot_leads: 0, disqualified: 0 };\ntry {\n  const res = await this.helpers.httpRequest({\n    method: 'POST',\n    url: odooUrl + '/doorway/api/driven-b2b/daily-stats',\n    body: {\n      jsonrpc: '2.0',\n      method: 'call',\n      params: { tenant_api_key: $env.DOORWAY_TENANT_API_KEY, date: today },\n      id: Date.now(),\n    },\n    json: true,\n  });\n  stats = { ...stats, ...(res.result || res) };\n} catch (_e) { /* optional */ }\n\nconst pct = stats.calls ? Math.round((stats.hot_leads / stats.calls) * 100) : 0;\nconst body =\n  `Rapport Alex Driven B2B — ${today}\\n` +\n  `📞 Appels : ${stats.calls}\\n` +\n  `🔥 Leads chauds : ${stats.hot_leads} (${pct}%)\\n` +\n  `❌ Disqualifiés : ${stats.disqualified}`;\n\nreturn [{ json: { ok: true, stats, report: body } }];"
+      },
+      "name": "Daily Stats",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Cron 18h": {
+      "main": [
+        [
+          {
+            "node": "Daily Stats",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [
+    {
+      "name": "driven-b2b-qc"
+    }
+  ]
+}

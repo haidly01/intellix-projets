@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Restaurer la hiérarchie Ventes (menus orphelins en racine) -->
+    <record id="sale.menu_sale_quotations" model="ir.ui.menu">
+        <field name="parent_id" ref="sale.sale_order_menu"/>
+        <field name="sequence" eval="10"/>
+    </record>
+    <record id="sale.menu_sale_order" model="ir.ui.menu">
+        <field name="parent_id" ref="sale.sale_order_menu"/>
+        <field name="sequence" eval="20"/>
+    </record>
+    <record id="sale.res_partner_menu" model="ir.ui.menu">
+        <field name="parent_id" ref="sale.sale_order_menu"/>
+        <field name="sequence" eval="40"/>
+    </record>
+    <record id="sale.menu_sale_invoicing" model="ir.ui.menu">
+        <field name="parent_id" ref="sale.sale_menu_root"/>
+        <field name="sequence" eval="20"/>
+    </record>
+    <record id="sale.menu_sale_order_invoice" model="ir.ui.menu">
+        <field name="parent_id" ref="sale.menu_sale_invoicing"/>
+        <field name="sequence" eval="10"/>
+    </record>
+    <record id="sale.menu_sale_order_upselling" model="ir.ui.menu">
+        <field name="parent_id" ref="sale.menu_sale_invoicing"/>
+        <field name="sequence" eval="20"/>
+    </record>
+    <record id="sale.product_menu_catalog" model="ir.ui.menu">
+        <field name="parent_id" ref="sale.sale_menu_root"/>
+        <field name="sequence" eval="30"/>
+    </record>
+    <record id="sale.menu_product_template_action" model="ir.ui.menu">
+        <field name="parent_id" ref="sale.product_menu_catalog"/>
+        <field name="sequence" eval="10"/>
+    </record>
+
+    <!-- Libellés français -->
+    <record id="sale.sale_menu_root" model="ir.ui.menu">
+        <field name="name">Ventes</field>
+    </record>
+    <record id="sale.sale_order_menu" model="ir.ui.menu">
+        <field name="name">Commandes</field>
+    </record>
+    <record id="sale.menu_sale_quotations" model="ir.ui.menu">
+        <field name="name">Soumissions</field>
+    </record>
+    <record id="sale.menu_sale_order" model="ir.ui.menu">
+        <field name="name">Commandes</field>
+    </record>
+    <record id="sale.product_menu_catalog" model="ir.ui.menu">
+        <field name="name">Produits</field>
+    </record>
+    <record id="sale.menu_sale_invoicing" model="ir.ui.menu">
+        <field name="name">À facturer</field>
+    </record>
+    <record id="sale.menu_sale_order_invoice" model="ir.ui.menu">
+        <field name="name">Commandes à facturer</field>
+    </record>
+    <record id="sale.menu_sale_order_upselling" model="ir.ui.menu">
+        <field name="name">Opportunités de vente</field>
+    </record>
+    <record id="sale.res_partner_menu" model="ir.ui.menu">
+        <field name="name">Clients</field>
+    </record>
+    <record id="sale.menu_product_template_action" model="ir.ui.menu">
+        <field name="name">Modèles de produits</field>
+    </record>
+
+    <!-- To-do sous Projet (plus d'icône racine) -->
+    <record id="project_todo.menu_todo_todos" model="ir.ui.menu">
+        <field name="name">To-do</field>
+        <field name="parent_id" ref="project.menu_main_pm"/>
+        <field name="sequence" eval="5"/>
+        <field name="web_icon" eval="False"/>
+    </record>
+
+    <!-- Rénovation → Partenaires (menu admin partenaires) -->
+    <record id="renovation_conciergerie.menu_renovation_root" model="ir.ui.menu">
+        <field name="name">Partenaires</field>
+    </record>
+
+</odoo>

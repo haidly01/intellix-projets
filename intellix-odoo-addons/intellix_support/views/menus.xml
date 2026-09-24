@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_intellix_support_root"
+              name="Support"
+              action="action_intellix_support_ticket"
+              sequence="90"
+              groups="intellix_support.group_intellix_support_user"/>
+
+    <menuitem id="menu_intellix_support_tickets"
+              name="Tickets"
+              parent="menu_intellix_support_root"
+              action="action_intellix_support_ticket"
+              sequence="10"/>
+
+    <menuitem id="menu_intellix_support_new_ticket"
+              name="Nouveau ticket"
+              parent="menu_intellix_support_root"
+              action="action_intellix_support_ticket_user_create"
+              sequence="5"
+              groups="intellix_support.group_intellix_support_user"/>
+
+    <menuitem id="menu_intellix_support_command_center"
+              name="Command Center"
+              parent="menu_intellix_support_root"
+              action="action_intellix_support_command_center"
+              sequence="20"
+              groups="intellix_support.group_intellix_support_manager"/>
+
+    <menuitem id="menu_intellix_support_sla"
+              name="SLA &amp; Priorités"
+              parent="menu_intellix_support_root"
+              action="action_intellix_support_ticket"
+              sequence="30"/>
+
+    <menuitem id="menu_intellix_support_config"
+              name="Configuration"
+              parent="menu_intellix_support_root"
+              sequence="90"
+              groups="intellix_support.group_intellix_support_manager"/>
+
+    <menuitem id="menu_intellix_support_runbooks"
+              name="Runbooks"
+              parent="menu_intellix_support_config"
+              action="action_intellix_support_runbook"
+              sequence="10"/>
+
+    <menuitem id="menu_intellix_support_categories"
+              name="Catégories"
+              parent="menu_intellix_support_config"
+              action="action_intellix_support_category"
+              sequence="20"/>
+
+    <menuitem id="menu_intellix_support_stages"
+              name="Étapes"
+              parent="menu_intellix_support_config"
+              action="action_intellix_support_stage"
+              sequence="30"/>
+</odoo>

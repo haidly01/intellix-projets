@@ -1,0 +1,232 @@
+/* IntelliX — Espace Partenaire ITEX (portail + backend) */
+.ix-itex-dash{
+  --bg:#0a0a12;
+  --panel:#131320;
+  --panel-2:#191927;
+  --border:rgba(255,255,255,0.08);
+  --border-2:rgba(255,255,255,0.16);
+  --text:#f4f4f8;
+  --dim:rgba(244,244,248,0.58);
+  --dim-2:rgba(244,244,248,0.38);
+  --indigo:#6366f1;
+  --violet:#8b5cf6;
+  --cyan:#06b6d4;
+  --green:#34d399;
+  --amber:#fbbf24;
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Inter',system-ui,sans-serif;
+  font-size:14px;
+  -webkit-font-smoothing:antialiased;
+  min-height:100%;
+  height:auto;
+  color-scheme:dark;
+}
+.ix-itex-dash *{box-sizing:border-box;}
+.ix-itex-dash .mono{font-family:'IBM Plex Mono',monospace;}
+.ix-itex-dash a{color:inherit;text-decoration:none;}
+
+.ix-itex-dash .shell{display:grid;grid-template-columns:216px 1fr;min-height:100%;align-items:start;}
+@media(max-width:860px){
+  .ix-itex-dash .shell{grid-template-columns:1fr;}
+  .ix-itex-dash .sidebar{display:none;}
+}
+
+.ix-itex-dash .sidebar{
+  background:#08080f;border-right:1px solid var(--border);
+  padding:20px 14px;display:flex;flex-direction:column;gap:24px;
+}
+.ix-itex-dash .brand{display:flex;align-items:center;gap:9px;padding:0 6px;}
+.ix-itex-dash .brand-mark{
+  width:26px;height:26px;border-radius:7px;
+  background:linear-gradient(135deg,var(--indigo),var(--violet) 55%,var(--cyan));
+  flex-shrink:0;
+}
+.ix-itex-dash .brand-name{font-weight:700;font-size:15px;letter-spacing:-0.01em;}
+.ix-itex-dash .brand-sub{
+  font-size:10.5px;color:var(--dim-2);
+  font-family:'IBM Plex Mono',monospace;margin-top:1px;
+}
+
+.ix-itex-dash .navlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px;}
+.ix-itex-dash .navlist a{
+  display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:7px;
+  font-size:13.5px;color:var(--dim);font-weight:500;
+}
+.ix-itex-dash .navlist a.active{
+  background:var(--panel-2);color:var(--text);box-shadow:inset 2px 0 0 var(--violet);
+}
+.ix-itex-dash .navlist svg{width:16px;height:16px;opacity:0.8;flex-shrink:0;}
+
+.ix-itex-dash .sidebar-foot{
+  margin-top:auto;padding:12px;border:1px solid var(--border);border-radius:9px;
+  font-size:11px;color:var(--dim-2);line-height:1.6;
+}
+.ix-itex-dash .sidebar-foot strong{color:var(--dim);display:block;font-size:12px;margin-bottom:3px;}
+
+.ix-itex-dash main.ix-main{padding:24px 30px 50px;}
+.ix-itex-dash .topbar{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  margin-bottom:24px;flex-wrap:wrap;gap:14px;
+}
+.ix-itex-dash .topbar h1{font-size:20px;margin:0 0 4px;font-weight:700;}
+.ix-itex-dash .topbar .sub{color:var(--dim);font-size:12.5px;}
+.ix-itex-dash .partner-pill{
+  display:flex;align-items:center;gap:10px;background:var(--panel);
+  border:1px solid var(--border);border-radius:9px;padding:8px 14px;
+}
+.ix-itex-dash .partner-pill .avatar{
+  width:28px;height:28px;border-radius:6px;
+  background:linear-gradient(135deg,var(--cyan),var(--violet));
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;color:#0a0a12;
+}
+.ix-itex-dash .partner-pill .name{font-size:13px;font-weight:600;}
+.ix-itex-dash .partner-pill .role{font-size:10.5px;color:var(--dim-2);}
+
+.ix-itex-dash .period-tabs{display:flex;gap:6px;margin-bottom:20px;}
+.ix-itex-dash .period-tabs a,
+.ix-itex-dash .period-tabs button{
+  background:var(--panel);border:1px solid var(--border);color:var(--dim);
+  padding:6px 14px;border-radius:20px;font-size:12px;
+  font-family:'IBM Plex Mono',monospace;cursor:pointer;
+}
+.ix-itex-dash .period-tabs a.active,
+.ix-itex-dash .period-tabs button.active{
+  background:var(--panel-2);color:var(--text);border-color:var(--border-2);
+}
+
+.ix-itex-dash .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
+@media(max-width:820px){.ix-itex-dash .kpis{grid-template-columns:repeat(2,1fr);}}
+.ix-itex-dash .kpi{
+  background:var(--panel);border:1px solid var(--border);border-radius:11px;padding:16px 18px;
+}
+.ix-itex-dash .kpi .label{font-size:11px;color:var(--dim);}
+.ix-itex-dash .kpi .val{
+  font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:600;margin-top:8px;
+}
+.ix-itex-dash .kpi .delta{
+  font-size:11px;margin-top:5px;font-family:'IBM Plex Mono',monospace;color:#c4c4d4;
+}
+
+.ix-itex-dash .grid{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;align-items:start;}
+@media(max-width:1000px){.ix-itex-dash .grid{grid-template-columns:1fr;}}
+
+.ix-itex-dash .card,
+.ix-itex-dash .ix-panel{
+  background:#131320 !important;
+  border:1px solid rgba(255,255,255,0.10) !important;
+  border-radius:12px;padding:20px;
+  color:#f4f4f8 !important;
+}
+.ix-itex-dash .card-head{
+  display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;
+}
+.ix-itex-dash .card-head h2{font-size:14.5px;font-weight:700;margin:0;color:#f4f4f8;}
+.ix-itex-dash .card-head .hint{font-size:11px;color:#c4c4d4;margin-top:3px;}
+.ix-itex-dash .badge{
+  font-size:10.5px;font-family:'IBM Plex Mono',monospace;padding:3px 9px;border-radius:20px;
+}
+.ix-itex-dash .badge.live{
+  background:rgba(52,211,153,0.12);color:var(--green);border:1px solid rgba(52,211,153,0.3);
+}
+
+.ix-itex-dash .cat-list{display:flex;flex-direction:column;gap:10px;}
+.ix-itex-dash .cat-row{display:flex;align-items:center;gap:10px;}
+.ix-itex-dash .cat-row .cat-name{
+  width:150px;font-size:12.5px;color:#e4e4ee !important;flex-shrink:0;
+}
+.ix-itex-dash .cat-bar-track{
+  flex:1;height:8px;border-radius:5px;background:#2a2a3a;overflow:hidden;
+}
+.ix-itex-dash .cat-bar-fill{
+  height:100%;border-radius:5px;background:linear-gradient(90deg,var(--indigo),var(--violet));
+}
+.ix-itex-dash .cat-row .cat-n{
+  width:28px;text-align:right;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#e4e4ee !important;
+}
+
+.ix-itex-dash table{
+  width:100%;border-collapse:collapse;font-size:12.5px;
+  background:transparent !important;color:#e8e8f0 !important;
+}
+.ix-itex-dash thead,.ix-itex-dash tbody,.ix-itex-dash tr{
+  background:transparent !important;
+}
+.ix-itex-dash thead th{
+  text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;
+  color:#c4c4d4 !important;font-weight:600;padding:0 10px 10px;
+  border-bottom:1px solid rgba(255,255,255,0.10);
+  background:transparent !important;
+}
+.ix-itex-dash tbody td{
+  padding:11px 10px;border-bottom:1px solid rgba(255,255,255,0.08);
+  color:#e8e8f0 !important;background:transparent !important;
+}
+.ix-itex-dash tbody tr:last-child td{border-bottom:none;}
+.ix-itex-dash tbody tr:hover td{background:#191927 !important;}
+.ix-itex-dash .t-name{color:#ffffff !important;font-weight:600;}
+.ix-itex-dash .status-tag{
+  font-size:10px;font-family:'IBM Plex Mono',monospace;padding:3px 8px;border-radius:5px;
+  display:inline-block;font-weight:600;
+  background:#3d3420 !important;color:#f5d76e !important;border:1px solid #c9a227;
+}
+.ix-itex-dash .status-tag.active{
+  background:rgba(52,211,153,0.16) !important;color:#6ee7b7 !important;border-color:#34d399;
+}
+.ix-itex-dash .status-tag.renew{
+  background:#3d3420 !important;color:#fbbf24 !important;border-color:#c9a227;
+}
+.ix-itex-dash .status-tag.nouveau{
+  background:#2a3355 !important;color:#c7d2fe !important;border-color:#818cf8;
+}
+
+.ix-itex-dash .empty{text-align:center;padding:50px 20px;color:#c4c4d4;background:transparent;}
+.ix-itex-dash .empty svg{width:44px;height:44px;opacity:0.55;margin-bottom:14px;}
+.ix-itex-dash .empty .t{color:#f4f4f8;font-size:13.5px;font-weight:600;margin-bottom:6px;}
+.ix-itex-dash .empty .s{font-size:12px;line-height:1.6;max-width:280px;margin:0 auto;color:#c4c4d4;}
+.ix-itex-dash .readiness-note{font-size:11.5px;color:#c4c4d4;line-height:1.6;margin-top:12px;}
+
+/* Backend OWL: plein cadre sombre + isolation vs tables/cards Odoo claires */
+.o_coins_part_backend_dash.ix-itex-dash{
+  margin:-16px;
+  min-height:100%;
+  height:auto;
+  overflow:visible;
+}
+.o_coins_part_backend_dash.ix-itex-dash .card,
+.o_coins_part_backend_dash.ix-itex-dash .ix-panel,
+.o_coins_part_backend_dash.ix-itex-dash table,
+.o_coins_part_backend_dash.ix-itex-dash thead,
+.o_coins_part_backend_dash.ix-itex-dash tbody,
+.o_coins_part_backend_dash.ix-itex-dash tr,
+.o_coins_part_backend_dash.ix-itex-dash th,
+.o_coins_part_backend_dash.ix-itex-dash td{
+  background-color:#131320 !important;
+  color:#f4f4f8 !important;
+}
+.o_coins_part_backend_dash.ix-itex-dash th,
+.o_coins_part_backend_dash.ix-itex-dash td{
+  background-color:transparent !important;
+}
+.o_coins_part_backend_dash.ix-itex-dash td{
+  color:#e8e8f0 !important;
+}
+.o_coins_part_backend_dash.ix-itex-dash .t-name{
+  color:#ffffff !important;
+}
+
+/* Client action Odoo : overflow:hidden + 100vh coupaient le bas (ITEX / Driven). */
+.o_action_manager:has(.ix-itex-dash),
+.o_action:has(.ix-itex-dash),
+.o_view_controller:has(.ix-itex-dash),
+.o_content:has(.ix-itex-dash){
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+}
+.o_action:has(.ix-itex-dash),
+.o_content:has(.ix-itex-dash){
+  height:auto !important;
+  min-height:100%;
+}

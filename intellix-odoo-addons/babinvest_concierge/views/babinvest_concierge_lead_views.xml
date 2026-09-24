@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_babinvest_concierge_lead_kanban" model="ir.ui.view">
+        <field name="name">babinvest.concierge.lead.kanban</field>
+        <field name="model">babinvest.concierge.lead</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="stage_id" class="o_kanban_small_column" records_draggable="1">
+                <field name="stage_id" options="{'group_by_tooltip': {'name': 'Étape'}}"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click">
+                            <strong><field name="name"/></strong>
+                            <div>
+                                <field name="persona"/> — <field name="market_id"/>
+                            </div>
+                            <div>
+                                <field name="budget_declared" widget="monetary"/>
+                            </div>
+                            <div class="d-flex justify-content-between mt-1">
+                                <span class="badge text-bg-light">Score <field name="score"/></span>
+                                <field name="assigned_to" widget="many2one_avatar_user"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_babinvest_concierge_lead_list" model="ir.ui.view">
+        <field name="name">babinvest.concierge.lead.list</field>
+        <field name="model">babinvest.concierge.lead</field>
+        <field name="arch" type="xml">
+            <list string="Leads Bab Invest">
+                <field name="name"/>
+                <field name="persona"/>
+                <field name="market_id"/>
+                <field name="stage_id"/>
+                <field name="budget_declared" widget="monetary"/>
+                <field name="score"/>
+                <field name="assigned_to"/>
+                <field name="next_followup_date"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_babinvest_concierge_lead_form" model="ir.ui.view">
+        <field name="name">babinvest.concierge.lead.form</field>
+        <field name="model">babinvest.concierge.lead</field>
+        <field name="arch" type="xml">
+            <form string="Lead Bab Invest">
+                <header>
+                    <field name="stage_id" widget="statusbar" options="{'clickable': '1'}"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Nom complet du prospect"/></h1>
+                    </div>
+                    <group>
+                        <group string="Coordonnées">
+                            <field name="phone"/>
+                            <field name="email"/>
+                            <field name="whatsapp"/>
+                            <field name="city"/>
+                            <field name="source_id"/>
+                        </group>
+                        <group string="Qualification">
+                            <field name="persona"/>
+                            <field name="market_id"/>
+                            <field name="project_ids" widget="many2many_tags"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="budget_declared" widget="monetary"/>
+                            <field name="financing_mode"/>
+                            <field name="purchase_horizon"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Suivi">
+                            <field name="assigned_to"/>
+                            <field name="score"/>
+                            <field name="last_contact_date"/>
+                            <field name="next_followup_date" readonly="1"/>
+                            <field name="reservation_deadline"/>
+                        </group>
+                        <group string="Issue" invisible="not is_lost">
+                            <field name="lost_reason_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Visites">
+                            <field name="visit_ids">
+                                <list editable="bottom">
+                                    <field name="project_id"/>
+                                    <field name="scheduled_date"/>
+                                    <field name="mode"/>
+                                    <field name="status"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Interactions / relances">
+                            <field name="interaction_ids">
+                                <list editable="bottom">
+                                    <field name="channel"/>
+                                    <field name="template_used"/>
+                                    <field name="sent_date"/>
+                                    <field name="response_received"/>
+                                    <field name="response_date"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_babinvest_concierge_lead" model="ir.actions.act_window">
+        <field name="name">Leads Bab Invest</field>
+        <field name="res_model">babinvest.concierge.lead</field>
+        <field name="view_mode">kanban,list,form</field>
+    </record>
+</odoo>

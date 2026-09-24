@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_veille_config_sources_tiktok" model="ir.ui.view">
+        <field name="name">doorway.veille.config.sources.tiktok</field>
+        <field name="model">doorway.veille.config</field>
+        <field name="inherit_id" ref="doorway_veille_sociale.view_veille_config_sources"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_connect_tiktok_publish" type="object"
+                        string="Connecter TikTok" class="btn-primary"/>
+                <button name="action_open_tiktok_accounts" type="object"
+                        string="Comptes TikTok" class="btn-secondary"/>
+            </xpath>
+            <xpath expr="//page[@name='meta']" position="before">
+                <page string="TikTok" name="tiktok">
+                    <div class="alert alert-info" role="status">
+                        <p class="mb-2">
+                            <strong>TikTok sert à publier des vidéos</strong> (Content Posting API),
+                            pas à écouter les commentaires comme Facebook / Reddit.
+                        </p>
+                        <p class="mb-0">
+                            Une autorisation OAuth par marque (Coins Marocain, Coins Québec).
+                            Redirect URI à coller dans l'app TikTok Intellix :
+                            <code>https://intellixcrm.com/doorway/publication/tiktok/oauth/callback</code>
+                        </p>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        <button name="action_connect_tiktok_publish" type="object"
+                                string="Connecter un compte TikTok" class="btn-primary"/>
+                        <button name="action_open_tiktok_accounts" type="object"
+                                string="Voir les comptes TikTok" class="btn-secondary"/>
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

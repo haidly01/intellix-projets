@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_veille_config_dashboard" model="ir.ui.view">
+        <field name="name">doorway.veille.config.dashboard</field>
+        <field name="model">doorway.veille.config</field>
+        <field name="arch" type="xml">
+            <form string="Tableau de bord veille" create="0" delete="0" class="o_doorway_veille_dashboard_form">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>VEILLE RÉNOVATION — Tableau de bord</h1>
+                    </div>
+                    <group string="Connexions actives" col="4" class="mb-3">
+                        <field name="connexion_meta_ok" widget="boolean"/>
+                        <field name="connexion_google_ok" widget="boolean"/>
+                        <field name="connexion_webhook_ok" widget="boolean"/>
+                        <field name="meta_last_check"/>
+                    </group>
+                    <div class="d-flex flex-wrap gap-2 mb-4">
+                        <button name="action_open_sources_from_dashboard" type="object"
+                                string="Connexions &amp; sources" class="btn-outline-primary"/>
+                        <button name="action_test_meta_connection" type="object"
+                                string="Tester Meta" class="btn-outline-secondary"
+                                groups="doorway_veille_sociale.group_veille_settings,base.group_system"/>
+                        <button name="action_test_webhook" type="object"
+                                string="Tester webhook" class="btn-outline-secondary"/>
+                    </div>
+                    <div class="row g-3 mb-4 o_doorway_veille_stats">
+                        <div class="col-md-3 col-lg">
+                            <div class="ix-veille-stat ix-veille-hot p-3 mb-0 text-center">
+                                <strong>🔥 Hot</strong>
+                                <div class="ix-veille-stat-value"><field name="count_hot" readonly="1" nolabel="1"/></div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-lg">
+                            <div class="ix-veille-stat ix-veille-warm p-3 mb-0 text-center">
+                                <strong>🌡 Warm</strong>
+                                <div class="ix-veille-stat-value"><field name="count_warm" readonly="1" nolabel="1"/></div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-lg">
+                            <div class="ix-veille-stat ix-veille-cold p-3 mb-0 text-center">
+                                <strong>❄ Cold</strong>
+                                <div class="ix-veille-stat-value"><field name="count_cold" readonly="1" nolabel="1"/></div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-lg">
+                            <div class="ix-veille-stat ix-veille-pending p-3 mb-0 text-center">
+                                <strong>Total en attente</strong>
+                                <div class="ix-veille-stat-value"><field name="count_en_attente" readonly="1" nolabel="1"/></div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-lg">
+                            <div class="ix-veille-stat ix-veille-reactivation p-3 mb-0 text-center">
+                                <strong>♻ Réactivation douce</strong>
+                                <div class="ix-veille-stat-value"><field name="count_reactivation" readonly="1" nolabel="1"/></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h3>Signaux en attente</h3>
+                            <p class="text-muted">Filtres rapides et actions sur les signaux détectés.</p>
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                <button type="action" name="%(action_veille_signal_hot)d"
+                                        class="btn btn-danger">🔥 Hot en attente</button>
+                                <button type="action" name="%(action_veille_signal_all)d"
+                                        class="btn btn-primary">Tous les signaux</button>
+                                <button type="action" name="%(action_veille_signal_created)d"
+                                        class="btn btn-secondary">Leads créés</button>
+                                <button type="action" name="%(action_veille_signal_reactivation)d"
+                                        class="btn btn-outline-primary">♻ Réactivation douce</button>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h3>Calendrier communauté</h3>
+                            <p class="text-muted">Planification des publications et réponses.</p>
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                <button type="action" name="%(action_community_post_calendar)d"
+                                        class="btn btn-primary">Calendrier</button>
+                                <button type="action" name="%(action_community_post_new)d"
+                                        class="btn btn-secondary">Nouveau post</button>
+                            </div>
+                        </div>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_veille_dashboard" model="ir.actions.server">
+        <field name="name">Tableau de bord</field>
+        <field name="model_id" ref="model_doorway_veille_config"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_dashboard()</field>
+    </record>
+
+    <record id="action_veille_config_open" model="ir.actions.server">
+        <field name="name">Paramètres veille</field>
+        <field name="model_id" ref="model_doorway_veille_config"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_settings()</field>
+    </record>
+
+    <record id="action_veille_dashboard_client" model="ir.actions.client">
+        <field name="name">Tableau de bord (temps réel)</field>
+        <field name="tag">doorway_veille_dashboard</field>
+    </record>
+
+    <!-- Option : menu secondaire vers le client action OWL -->
+</odoo>

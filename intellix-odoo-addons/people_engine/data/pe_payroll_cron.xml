@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="cron_pe_payroll_bulletins" model="ir.cron">
+        <field name="name">PE — Bulletins paie période courante</field>
+        <field name="model_id" ref="model_pe_payroll_bulletin"/>
+        <field name="state">code</field>
+        <field name="code">model.sudo().generer_bulletins_periode_courante()</field>
+        <field name="interval_number">6</field>
+        <field name="interval_type">hours</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <record id="cron_pe_timesheet_bridge" model="ir.cron">
+        <field name="name">PE — Sync sessions → timesheet</field>
+        <field name="model_id" ref="model_pe_timesheet_bridge_service"/>
+        <field name="state">code</field>
+        <field name="code">model.sudo().sync_ended_sessions()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <record id="cron_pe_cdd_expiry" model="ir.cron">
+        <field name="name">PE — Alertes CDD expirant</field>
+        <field name="model_id" ref="model_pe_employment_contract"/>
+        <field name="state">code</field>
+        <field name="code">model.sudo().cron_check_cdd_expiry()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <record id="cron_pe_freelance_invoices" model="ir.cron">
+        <field name="name">PE — Factures freelance période courante</field>
+        <field name="model_id" ref="model_pe_freelance_invoice"/>
+        <field name="state">code</field>
+        <field name="code">model.sudo().generer_factures_periode_courante()</field>
+        <field name="interval_number">6</field>
+        <field name="interval_type">hours</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <record id="cron_pe_freelance_alerts" model="ir.cron">
+        <field name="name">PE — Alertes factures freelance</field>
+        <field name="model_id" ref="model_pe_freelance_invoice"/>
+        <field name="state">code</field>
+        <field name="code">model.sudo().cron_check_freelance_alerts()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

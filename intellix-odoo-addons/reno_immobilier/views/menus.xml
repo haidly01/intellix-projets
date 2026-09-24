@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <function model="ir.ui.menu" name="_reno_align_app_menu_order"/>
+
+    <menuitem id="menu_reno_immobilier_root"
+              name="Réno Immobilier"
+              sequence="4"
+              action="action_reno_immobilier_leads"
+              web_icon="reno_immobilier,static/description/icon.png"
+              groups="base.group_user,sales_team.group_sale_salesman,sales_team.group_sale_manager"/>
+
+    <menuitem id="menu_reno_immobilier_partenaires"
+              name="Partenaires"
+              parent="menu_reno_immobilier_root"
+              action="action_reno_immobilier_partenaires"
+              sequence="10"/>
+
+    <menuitem id="menu_reno_immobilier_forfaits"
+              name="Forfaits partenaires"
+              parent="menu_reno_immobilier_root"
+              action="action_reno_immobilier_forfaits"
+              sequence="15"/>
+
+    <menuitem id="menu_reno_immobilier_leads"
+              name="Leads Gestion"
+              parent="menu_reno_immobilier_root"
+              action="action_reno_immobilier_leads"
+              sequence="20"/>
+
+    <record id="menu_reno_immobilier_leads_jour" model="ir.ui.menu">
+        <field name="name">Leads du jour</field>
+        <field name="parent_id" ref="menu_reno_immobilier_root"/>
+        <field name="action" ref="action_reno_immobilier_leads_du_jour"/>
+        <field name="active" eval="False"/>
+    </record>
+
+    <menuitem id="menu_reno_immobilier_dashboard"
+              name="Tableau de bord"
+              parent="menu_reno_immobilier_root"
+              action="action_reno_immobilier_dashboard_client"
+              sequence="5"/>
+</odoo>

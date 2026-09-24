@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_coins_detente_booking_calendar" model="ir.ui.view">
+        <field name="name">coins.detente_booking.calendar</field>
+        <field name="model">coins.detente_booking</field>
+        <field name="type">calendar</field>
+        <field name="arch" type="xml"><calendar string="Réservations détente" date_start="service_date" color="calendar_color" mode="month" event_open_popup="true" quick_create="0" create="0">
+                <field name="name"/>
+                <field name="customer_id"/>
+                <field name="package_id"/>
+                <field name="participant_count"/>
+                <field name="status"/>
+                <field name="primary_partner_id"/>
+                <field name="calendar_color"/>
+            </calendar></field>
+    </record>
+
+    <record id="view_coins_detente_booking_calendar_partner" model="ir.ui.view">
+        <field name="name">coins.detente_booking.calendar.partner</field>
+        <field name="model">coins.detente_booking</field>
+        <field name="type">calendar</field>
+        <field name="arch" type="xml"><calendar string="Planning partenaires" date_start="service_date" color="primary_partner_id" mode="week" event_open_popup="true" quick_create="0" create="0">
+                <field name="name"/>
+                <field name="primary_partner_id"/>
+                <field name="customer_id"/>
+                <field name="package_id"/>
+                <field name="status"/>
+            </calendar></field>
+    </record>
+
+    <record id="view_coins_detente_booking_form" model="ir.ui.view">
+        <field name="name">coins.detente_booking.form</field>
+        <field name="model">coins.detente_booking</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml"><form string="Réservation détente">
+                <header>
+                    <button name="action_deposit" type="object" string="Dépôt reçu" invisible="status != 'prospect'" class="btn-secondary"/>
+                    <button name="action_confirm" type="object" string="Confirmer" invisible="status not in ('prospect', 'depot_recu')" class="oe_highlight"/>
+                    <button name="action_mark_cross_sell" type="object" string="Marquer cross-sell" invisible="cross_sell_added or status not in ('confirme', 'prospect', 'depot_recu')" class="btn-secondary"/>
+                    <button name="action_resend_confirmation" type="object" string="Renvoyer confirmation" invisible="status != 'confirme'" class="btn-secondary"/>
+                    <button name="action_realize" type="object" string="Réalisé" invisible="status != 'confirme'" class="oe_highlight"/>
+                    <button name="action_cancel" type="object" string="Annuler" invisible="status in ('annule', 'realise')"/>
+                    <button name="action_reset_prospect" type="object" string="Remettre prospect" invisible="status == 'prospect'"/>
+                    <field name="status" widget="statusbar" statusbar_visible="prospect,depot_recu,confirme,realise"/>
+                </header>
+                <div class="alert alert-danger" role="alert" invisible="not below_min_participants">
+                    <strong>Seuil participants non atteint</strong> —
+                    <field name="participant_count" class="oe_inline"/> /
+                    <field name="min_participants" class="oe_inline"/> minimum requis.
+                    Confirmation bloquée tant que le seuil de rentabilité n'est pas atteint.
+                </div>
+                <div class="alert alert-warning" role="alert" invisible="not cross_sell_reminder">
+                    <strong>Cross-sell manquant</strong> —
+                    Proposez le resto / spectacle / sortie soirée avant le service.
+                    <button name="action_mark_cross_sell" type="object" string="C'est fait" class="btn btn-sm btn-primary ms-2"/>
+                </div>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_calendar_event" type="object" class="oe_stat_button" icon="fa-calendar" invisible="not calendar_event_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Calendrier</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="customer_id"/>
+                            <field name="lead_id"/>
+                            <field name="package_id"/>
+                            <field name="source"/>
+                            <field name="primary_partner_id" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="booking_date"/>
+                            <field name="service_date"/>
+                            <field name="service_time" widget="float_time"/>
+                            <field name="participant_count"/>
+                            <field name="min_participants"/>
+                            <field name="below_min_participants" invisible="1"/>
+                            <field name="driver_id"/>
+                            <field name="trip_status"/>
+                            <field name="pickup_address"/>
+                            <field name="dropoff_address"/>
+                            <field name="cross_sell_added"/>
+                            <field name="cross_sell_amount" invisible="not cross_sell_added" required="cross_sell_added"/>
+                            <field name="cross_sell_reminder" invisible="1"/>
+                            <field name="confirmation_sent" readonly="1"/>
+                            <field name="confirmation_sent_at" readonly="1"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="calendar_event_id" invisible="1"/>
+                            <field name="calendar_color" invisible="1"/>
+                        </group>
+                    </group>
+                    <group string="Rentabilité">
+                        <group>
+                            <field name="package_sale_price"/>
+                            <field name="package_cost"/>
+                        </group>
+                        <group>
+                            <field name="total_sale_price"/>
+                            <field name="total_cost"/>
+                            <field name="total_margin" decoration-success="total_margin &gt; 0" decoration-danger="total_margin &lt; 0"/>
+                            <field name="margin_percent" widget="progressbar"/>
+                        </group>
+                    </group>
+                    <group string="Paiement">
+                        <group>
+                            <field name="payment_method"/>
+                            <field name="payment_status"/>
+                            <field name="payment_reference" invisible="not payment_method"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Notes" name="notes">
+                            <field name="notes" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form></field>
+    </record>
+
+    <record id="view_coins_detente_booking_graph" model="ir.ui.view">
+        <field name="name">coins.detente_booking.graph</field>
+        <field name="model">coins.detente_booking</field>
+        <field name="type">graph</field>
+        <field name="arch" type="xml"><graph string="Marge détente" type="bar" sample="1">
+                <field name="service_date" interval="month"/>
+                <field name="total_margin" type="measure"/>
+            </graph></field>
+    </record>
+
+    <record id="view_coins_detente_booking_list" model="ir.ui.view">
+        <field name="name">coins.detente_booking.list</field>
+        <field name="model">coins.detente_booking</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml"><list decoration-warning="cross_sell_reminder or below_min_participants" decoration-muted="status == 'annule'">
+                <field name="name"/>
+                <field name="customer_id"/>
+                <field name="package_id"/>
+                <field name="service_date"/>
+                <field name="participant_count"/>
+                <field name="min_participants" optional="hide"/>
+                <field name="source"/>
+                <field name="cross_sell_added"/>
+                <field name="cross_sell_reminder" column_invisible="1"/>
+                <field name="below_min_participants" column_invisible="1"/>
+                <field name="total_sale_price"/>
+                <field name="total_margin"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="status" widget="badge" decoration-info="status == 'prospect'" decoration-primary="status == 'depot_recu'" decoration-warning="status == 'confirme'" decoration-success="status == 'realise'" decoration-danger="status == 'annule'"/>
+            </list></field>
+    </record>
+
+    <record id="view_coins_detente_booking_pivot" model="ir.ui.view">
+        <field name="name">coins.detente_booking.pivot</field>
+        <field name="model">coins.detente_booking</field>
+        <field name="type">pivot</field>
+        <field name="arch" type="xml"><pivot string="Rentabilité détente" sample="1">
+                <field name="service_date" type="row" interval="week"/>
+                <field name="cross_sell_added" type="col"/>
+                <field name="source" type="col"/>
+                <field name="total_margin" type="measure"/>
+                <field name="total_sale_price" type="measure"/>
+                <field name="cross_sell_amount" type="measure"/>
+                <field name="participant_count" type="measure"/>
+            </pivot></field>
+    </record>
+
+    <record id="view_coins_detente_booking_search" model="ir.ui.view">
+        <field name="name">coins.detente_booking.search</field>
+        <field name="model">coins.detente_booking</field>
+        <field name="type">search</field>
+        <field name="arch" type="xml"><search>
+                <field name="name"/>
+                <field name="customer_id"/>
+                <field name="package_id"/>
+                <filter name="depot" string="Dépôt reçu" domain="[('status', '=', 'depot_recu')]"/>
+                <filter name="confirme" string="Confirmés" domain="[('status', '=', 'confirme')]"/>
+                <filter name="below_min" string="Sous seuil participants" domain="[('below_min_participants', '=', True)]"/>
+                <filter name="xs_missing" string="Cross-sell manquant" domain="[('status', '=', 'confirme'), ('cross_sell_added', '=', False)]"/>
+                <filter name="with_xs" string="Avec cross-sell" domain="[('cross_sell_added', '=', True)]"/>
+                <group>
+                    <filter name="group_status" string="Statut" context="{'group_by': 'status'}"/>
+                    <filter name="group_source" string="Source" context="{'group_by': 'source'}"/>
+                    <filter name="group_package" string="Forfait" context="{'group_by': 'package_id'}"/>
+                    <filter name="group_week" string="Semaine service" context="{'group_by': 'service_date:week'}"/>
+                    <filter name="group_month" string="Mois service" context="{'group_by': 'service_date:month'}"/>
+                </group>
+            </search></field>
+    </record>
+
+</odoo>

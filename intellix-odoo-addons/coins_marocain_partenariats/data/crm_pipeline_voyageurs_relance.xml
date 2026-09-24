@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="crm_stage_voy_incomplet" model="crm.stage">
+        <field name="name">Coordonnées incomplètes</field>
+        <field name="sequence">15</field>
+        <field name="fold" eval="True"/>
+        <field name="team_ids" eval="[(5, 0, 0)]"/>
+    </record>
+</odoo>

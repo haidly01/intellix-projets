@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_doorway_call_log_list" model="ir.ui.view">
+        <field name="name">doorway.call.log.list</field>
+        <field name="model">doorway.call.log</field>
+        <field name="arch" type="xml">
+            <list decoration-success="amd_result == 'human'"
+                  decoration-warning="amd_result in ('answering_machine', 'amd_hangup')"
+                  decoration-muted="amd_result == 'no_answer'">
+                <field name="call_date"/>
+                <field name="campaign_id"/>
+                <field name="phone_number"/>
+                <field name="duration"/>
+                <field name="amd_result"/>
+                <field name="disposition"/>
+                <field name="agent_name"/>
+                <field name="human_agent_id" optional="hide"/>
+                <field name="recording_url" widget="url" optional="show"/>
+                <field name="consent_captured" optional="hide"/>
+                <field name="recording_legal_hold" optional="hide"/>
+                <field name="vicidial_call_id" optional="hide"/>
+                <button name="action_open_recording" type="object"
+                        string="Écouter" icon="fa-play"
+                        invisible="not recording_url"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_doorway_call_log_form" model="ir.ui.view">
+        <field name="name">doorway.call.log.form</field>
+        <field name="model">doorway.call.log</field>
+        <field name="arch" type="xml">
+            <form string="Log appel">
+                <header>
+                    <button name="action_open_recording" type="object"
+                            string="Écouter l'enregistrement" class="btn-primary"
+                            invisible="not recording_url"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="campaign_id"/>
+                            <field name="vicidial_call_id"/>
+                            <field name="call_date"/>
+                            <field name="phone_number"/>
+                            <field name="duration"/>
+                        </group>
+                        <group>
+                            <field name="amd_result"/>
+                            <field name="disposition"/>
+                            <field name="agent_name"/>
+                            <field name="recording_url" widget="url"/>
+                        </group>
+                    </group>
+                    <group string="Consentement et conservation"
+                           invisible="not recording_legal_hold and not consent_captured">
+                        <field name="consent_captured"/>
+                        <field name="consent_notes"/>
+                        <field name="recording_retention_until"/>
+                        <field name="recording_legal_hold"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_doorway_call_log_search" model="ir.ui.view">
+        <field name="name">doorway.call.log.search</field>
+        <field name="model">doorway.call.log</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="phone_number"/>
+                <field name="agent_name"/>
+                <field name="human_agent_id"/>
+                <field name="campaign_id"/>
+                <filter name="my_recordings" string="Mes enregistrements"
+                        domain="[('human_agent_id.user_id', '=', uid)]"/>
+                <filter name="human_agents" string="Agents humains"
+                        domain="[('human_agent_id', '!=', False)]"/>
+                <filter name="human" string="Humain" domain="[('amd_result', '=', 'human')]"/>
+                <filter name="amd" string="Répondeur"
+                        domain="[('amd_result', 'in', ('answering_machine', 'amd_hangup'))]"/>
+                <filter name="has_recording" string="Avec enregistrement"
+                        domain="[('recording_url', '!=', False)]"/>
+                <filter name="sofia_fr" string="Sofia FR (DW_FRB2C)"
+                        domain="[('campaign_id.vicidial_campaign_id', '=', 'DW_FRB2C')]"/>
+                <filter name="today" string="Aujourd'hui"
+                        domain="[('call_date', '&gt;=', (context_today()).strftime('%Y-%m-%d 00:00:00'))]"/>
+                <filter name="last_7_days" string="7 derniers jours"
+                        domain="[('call_date', '&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d 00:00:00'))]"/>
+                <group>
+                    <filter name="group_campaign" string="Campagne" context="{'group_by': 'campaign_id'}"/>
+                    <filter name="group_amd" string="AMD" context="{'group_by': 'amd_result'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+</odoo>

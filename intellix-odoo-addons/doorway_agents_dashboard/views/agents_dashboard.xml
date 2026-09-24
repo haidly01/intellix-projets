@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Action -->
+    <record id="action_agents_dashboard" model="ir.actions.client">
+        <field name="name">Tableau de bord Agents IA</field>
+        <field name="tag">agents_dashboard_action</field>
+    </record>
+
+    <record id="action_agent_web_call" model="ir.actions.client">
+        <field name="name">Test agent web</field>
+        <field name="tag">agent_web_call_action</field>
+    </record>
+
+    <!-- Menu racine application -->
+    <menuitem id="menu_agents_root"
+              name="Agents IA"
+              sequence="94"/>
+
+    <menuitem id="menu_agents_dashboard"
+              name="Dashboard"
+              parent="menu_agents_root"
+              action="action_agents_dashboard"
+              sequence="1"/>
+
+</odoo>

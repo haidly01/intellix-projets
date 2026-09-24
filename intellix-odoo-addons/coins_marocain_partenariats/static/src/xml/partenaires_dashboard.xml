@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="coins_marocain_partenariats.PartenairesDashboard">
+        <div class="o_coins_part_backend_dash ix-itex-dash">
+            <div class="shell">
+                <aside class="sidebar">
+                    <div class="brand">
+                        <div class="brand-mark"/>
+                        <div>
+                            <div class="brand-name">Finance</div>
+                            <div class="brand-sub">ITEX · Espace Partenaire</div>
+                        </div>
+                    </div>
+                    <ul class="navlist">
+                        <li><a class="active" href="/odoo/fin-itex-dash">Tableau de bord</a></li>
+                        <li><a href="/odoo/fin-itex">Mes leads</a></li>
+                        <li><a href="/odoo/calendar">Mes visites</a></li>
+                        <li><a href="/odoo/sales">Devis &amp; ventes</a></li>
+                    </ul>
+                    <div class="sidebar-foot">
+                        <strong>Réseau ITEX</strong>
+                        Live · lecture seule
+                    </div>
+                </aside>
+                <main class="ix-main">
+                    <div class="topbar">
+                        <div>
+                            <h1>Tableau de bord partenaires</h1>
+                            <div class="sub">
+                                <t t-esc="state.stats.members_source or '—'"/>
+                                · <t t-esc="state.stats.as_of or '—'"/>
+                            </div>
+                        </div>
+                        <div class="partner-pill">
+                            <div class="avatar">IX</div>
+                            <div>
+                                <div class="name">ITEX Québec</div>
+                                <div class="role">Accès partenaire · lecture seule</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="period-tabs">
+                        <button t-att-class="state.period === 7 ? 'active' : ''" t-on-click="() => this.setPeriod(7)">7 jours</button>
+                        <button t-att-class="state.period === 30 ? 'active' : ''" t-on-click="() => this.setPeriod(30)">30 jours</button>
+                        <button t-att-class="state.period === 90 ? 'active' : ''" t-on-click="() => this.setPeriod(90)">90 jours</button>
+                        <button t-on-click="refresh">Rafraîchir</button>
+                    </div>
+
+                    <t t-if="state.error">
+                        <div class="card" style="margin-bottom:16px;color:var(--amber);" t-esc="state.error"/>
+                    </t>
+                    <t t-elif="state.loading">
+                        <div class="sub">Chargement…</div>
+                    </t>
+                    <t t-else="">
+                        <div class="kpis">
+                            <div class="kpi">
+                                <div class="label">Membres actifs</div>
+                                <div class="val" t-esc="state.stats.members_active ?? 0"/>
+                                <div class="delta">période <t t-esc="state.period"/> j</div>
+                            </div>
+                            <div class="kpi">
+                                <div class="label">À renouveler</div>
+                                <div class="val" t-esc="state.stats.members_renew ?? 0"/>
+                                <div class="delta">ententes</div>
+                            </div>
+                            <div class="kpi">
+                                <div class="label">Opportunités CRM</div>
+                                <div class="val" t-esc="state.stats.crm_opportunities ?? 0"/>
+                                <div class="delta">sur la période</div>
+                            </div>
+                            <div class="kpi">
+                                <div class="label">Devis générés</div>
+                                <div class="val" t-esc="state.stats.sale_orders ?? 0"/>
+                                <div class="delta">sur la période</div>
+                            </div>
+                        </div>
+
+                        <div class="grid">
+                            <div class="ix-panel card">
+                                <div class="card-head">
+                                    <div>
+                                        <h2>Mes leads</h2>
+                                        <div class="hint">Opportunités récentes</div>
+                                    </div>
+                                    <span class="badge live">● Temps réel</span>
+                                </div>
+                                <t t-if="!(state.stats.recent_leads || []).length">
+                                    <div class="empty">
+                                        <div class="t">Aucun lead sur la période</div>
+                                    </div>
+                                </t>
+                                <table t-else="">
+                                    <thead>
+                                        <tr>
+                                            <th>Opportunité</th>
+                                            <th>Services</th>
+                                            <th>Ville</th>
+                                            <th>Statut</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="state.stats.recent_leads || []" t-as="lead" t-key="lead_index">
+                                            <tr>
+                                                <td class="t-name" t-esc="lead.name || '—'"/>
+                                                <td t-esc="lead.services || '—'"/>
+                                                <td t-esc="lead.city || '—'"/>
+                                                <td>
+                                                    <span t-att-class="'status-tag ' + (lead.status_kind || 'renew')"
+                                                          t-esc="lead.status || '—'"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="ix-panel card">
+                                <div class="card-head">
+                                    <div>
+                                        <h2>Membres par catégorie</h2>
+                                        <div class="hint">Répartition du réseau</div>
+                                    </div>
+                                </div>
+                                <div class="cat-list">
+                                    <t t-foreach="state.stats.categories || []" t-as="cat" t-key="cat.code">
+                                        <div class="cat-row">
+                                            <span class="cat-name" t-esc="cat.label || '—'"/>
+                                            <div class="cat-bar-track">
+                                                <div class="cat-bar-fill" t-att-style="'width:' + (cat.pct || 0) + '%'"/>
+                                            </div>
+                                            <span class="cat-n" t-esc="cat.count ?? 0"/>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ix-panel card" style="margin-top:16px;">
+                            <div class="card-head">
+                                <div>
+                                    <h2>Mes visites</h2>
+                                    <div class="hint">Rendez-vous planifiés</div>
+                                </div>
+                            </div>
+                            <div class="empty">
+                                <div class="t">Aucune visite planifiée</div>
+                                <div class="s">Les visites confirmées apparaîtront ici automatiquement.</div>
+                            </div>
+                        </div>
+                    </t>
+                </main>
+            </div>
+        </div>
+    </t>
+</templates>

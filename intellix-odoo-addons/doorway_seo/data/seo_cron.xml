@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Rafraîchissement quotidien du suivi de positionnement.
+         Dégrade proprement si Bright Data SERP n'est pas configuré (no-op). -->
+    <record id="ir_cron_seo_rank_refresh" model="ir.cron">
+        <field name="name">SEO IA — Suivi de positionnement (quotidien)</field>
+        <field name="model_id" ref="model_doorway_seo_tracked_keyword"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_refresh_all()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

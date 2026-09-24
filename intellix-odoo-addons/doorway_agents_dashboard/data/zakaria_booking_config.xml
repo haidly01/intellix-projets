@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="icp_booking_demo_user" model="ir.config_parameter">
+        <field name="key">doorway_agents_dashboard.booking_demo_user_login</field>
+        <field name="value">zakaria@agencedoorway.com</field>
+    </record>
+    <record id="icp_booking_demo_url" model="ir.config_parameter">
+        <field name="key">doorway_agents_dashboard.booking_demo_url</field>
+        <field name="value">https://intellixcrm.com/intellix/rdv/zakaria</field>
+    </record>
+</odoo>

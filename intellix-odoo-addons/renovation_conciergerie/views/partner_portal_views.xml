@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_crm_lead_tree_partner" model="ir.ui.view">
+        <field name="name">crm.lead.tree.partner.renovation</field>
+        <field name="model">crm.lead</field>
+        <field name="arch" type="xml">
+            <list string="Mes leads" create="false" delete="false" edit="false">
+                <field name="name" string="Opportunité"/>
+                <field name="service_category_ids" string="Services demandés" widget="many2many_tags"/>
+                <field name="city" string="Ville"/>
+                <field name="stage_id" string="Statut"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_crm_lead_form_partner" model="ir.ui.view">
+        <field name="name">crm.lead.form.partner.renovation</field>
+        <field name="model">crm.lead</field>
+        <field name="arch" type="xml">
+            <form string="Lead partenaire" create="false" delete="false">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="service_category_ids" widget="many2many_tags" readonly="1"/>
+                            <field name="stage_id" readonly="1"/>
+                        </group>
+                        <group string="Adresse">
+                            <field name="street" readonly="1"/>
+                            <field name="city" readonly="1"/>
+                            <field name="zip" readonly="1"/>
+                            <field name="state_id" readonly="1"/>
+                            <field name="country_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <button name="action_schedule_meeting" type="object" string="Planifier une visite" class="btn-primary"/>
+                    </group>
+                    <notebook>
+                        <page string="Détail services">
+                            <field name="service_assignment_ids" nolabel="1">
+                                <list editable="bottom" create="false" delete="false">
+                                    <field name="service_category_id" readonly="1"/>
+                                    <field name="status" readonly="1"/>
+                                    <field name="contact_attempt_1_date"/>
+                                    <field name="contact_attempt_1_method"/>
+                                    <field name="contact_attempt_2_date"/>
+                                    <field name="contact_attempt_2_method"/>
+                                    <field name="contact_attempt_3_date"/>
+                                    <field name="contact_attempt_3_method"/>
+                                    <field name="refusal_reason"/>
+                                    <button name="action_accept"
+                                            type="object"
+                                            string="Accepter"
+                                            class="btn-primary"
+                                            invisible="status in ('accepted', 'credit_requested', 'credited')"/>
+                                    <button name="action_request_credit"
+                                            type="object"
+                                            string="Demander un crédit"
+                                            class="btn-warning"
+                                            invisible="status in ('credit_requested', 'credited')"/>
+                                    <button name="action_postpone"
+                                            type="object"
+                                            string="Reporter"
+                                            class="btn-secondary"
+                                            invisible="status in ('postponed', 'credit_requested', 'credited')"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes">
+                            <field name="description" readonly="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Accueil = dashboard ITEX live (réutilise /my/coins-partenaires, sans duplication) -->
+    <record id="action_partner_dashboard_home" model="ir.actions.act_url">
+        <field name="name">Tableau de bord</field>
+        <field name="url">/my/coins-partenaires</field>
+        <field name="target">self</field>
+    </record>
+
+    <record id="action_crm_lead_partner" model="ir.actions.act_window">
+        <field name="name">Mes leads</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_crm_lead_tree_partner"/>
+        <field name="search_view_id" ref="crm.view_crm_case_leads_filter"/>
+        <field name="context">{'create': 0, 'edit': 0, 'delete': 0, 'default_type': 'lead'}</field>
+    </record>
+
+    <record id="view_calendar_event_tree_partner" model="ir.ui.view">
+        <field name="name">calendar.event.tree.partner</field>
+        <field name="model">calendar.event</field>
+        <field name="arch" type="xml">
+            <list string="Mes visites" create="false" delete="false" edit="false">
+                <field name="name" string="Visite"/>
+                <field name="start" string="Début"/>
+                <field name="stop" string="Fin"/>
+                <field name="partner_ids" string="Participants" widget="many2many_tags"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_calendar_event_partner" model="ir.actions.act_window">
+        <field name="name">Mes visites</field>
+        <field name="res_model">calendar.event</field>
+        <field name="view_mode">list,calendar,form</field>
+        <field name="view_id" ref="view_calendar_event_tree_partner"/>
+        <field name="domain">[('user_id', '=', uid)]</field>
+        <field name="context">{'create': 0, 'edit': 0, 'delete': 0, 'default_res_model': 'crm.lead'}</field>
+    </record>
+
+    <record id="view_sale_order_tree_partner" model="ir.ui.view">
+        <field name="name">sale.order.tree.partner.readonly</field>
+        <field name="model">sale.order</field>
+        <field name="arch" type="xml">
+            <list string="Devis &amp; ventes" create="false" delete="false" edit="false">
+                <field name="name" string="Référence"/>
+                <field name="partner_id" string="Client"/>
+                <field name="date_order" string="Date"/>
+                <field name="amount_total" string="Montant"/>
+                <field name="state" string="Statut"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_sale_order_partner" model="ir.actions.act_window">
+        <field name="name">Devis &amp; ventes</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_sale_order_tree_partner"/>
+        <field name="context">{'create': 0, 'edit': 0, 'delete': 0}</field>
+    </record>
+
+    <record id="action_crm_dashboard_partner" model="ir.actions.act_window">
+        <field name="name">Analyse leads</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">graph,pivot,list</field>
+        <field name="context">{'search_default_my_activities': 1, 'create': 0}</field>
+    </record>
+
+    <record id="action_account_move_partner" model="ir.actions.act_window">
+        <field name="name">Mes factures</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('move_type', 'in', ['out_invoice', 'out_refund'])]</field>
+        <field name="context">{'create': 0}</field>
+    </record>
+
+    <menuitem id="menu_partner_root"
+              name="IntelliX — Espace Partenaire"
+              sequence="60"
+              groups="renovation_conciergerie.group_renovation_partner"/>
+
+    <menuitem id="menu_partner_home"
+              name="Tableau de bord"
+              parent="menu_partner_root"
+              action="action_partner_dashboard_home"
+              sequence="5"
+              groups="renovation_conciergerie.group_renovation_partner"/>
+
+    <menuitem id="menu_partner_leads"
+              name="Mes leads"
+              parent="menu_partner_root"
+              action="action_crm_lead_partner"
+              sequence="10"
+              groups="renovation_conciergerie.group_renovation_partner"/>
+
+    <menuitem id="menu_partner_visits"
+              name="Mes visites"
+              parent="menu_partner_root"
+              action="action_calendar_event_partner"
+              sequence="20"
+              groups="renovation_conciergerie.group_renovation_partner"/>
+
+    <menuitem id="menu_partner_orders"
+              name="Devis &amp; ventes"
+              parent="menu_partner_root"
+              action="action_sale_order_partner"
+              sequence="30"
+              groups="renovation_conciergerie.group_renovation_partner"/>
+
+    <menuitem id="menu_partner_dashboard"
+              name="Analyse leads"
+              parent="menu_partner_root"
+              action="action_crm_dashboard_partner"
+              sequence="90"
+              groups="base.group_system"/>
+
+    <menuitem id="menu_partner_invoices"
+              name="Factures"
+              parent="menu_partner_root"
+              action="action_account_move_partner"
+              sequence="100"
+              groups="base.group_system"/>
+
+    <record id="menu_partner_root" model="ir.ui.menu">
+        <field name="name">IntelliX — Espace Partenaire</field>
+        <field name="group_ids" eval="[(6, 0, [ref('renovation_conciergerie.group_renovation_partner')])]"/>
+    </record>
+    <record id="menu_partner_home" model="ir.ui.menu">
+        <field name="group_ids" eval="[(6, 0, [ref('renovation_conciergerie.group_renovation_partner')])]"/>
+    </record>
+    <record id="menu_partner_leads" model="ir.ui.menu">
+        <field name="group_ids" eval="[(6, 0, [ref('renovation_conciergerie.group_renovation_partner')])]"/>
+    </record>
+    <record id="menu_partner_visits" model="ir.ui.menu">
+        <field name="group_ids" eval="[(6, 0, [ref('renovation_conciergerie.group_renovation_partner')])]"/>
+    </record>
+    <record id="menu_partner_orders" model="ir.ui.menu">
+        <field name="name">Devis &amp; ventes</field>
+        <field name="group_ids" eval="[(6, 0, [ref('renovation_conciergerie.group_renovation_partner')])]"/>
+    </record>
+    <record id="menu_partner_dashboard" model="ir.ui.menu">
+        <field name="group_ids" eval="[(6, 0, [ref('base.group_system')])]"/>
+    </record>
+    <record id="menu_partner_invoices" model="ir.ui.menu">
+        <field name="group_ids" eval="[(6, 0, [ref('base.group_system')])]"/>
+    </record>
+</odoo>

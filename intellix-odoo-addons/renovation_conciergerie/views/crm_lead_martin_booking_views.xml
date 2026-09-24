@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="crm_lead_view_form_reno_martin_rdv" model="ir.ui.view">
+        <field name="name">crm.lead.form.reno.martin.rdv</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="priority">50</field>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <field name="reno_martin_rdv_ok" invisible="1"/>
+                <button name="action_reno_book_martin"
+                        type="object"
+                        string="Assigner un RDV à Martin"
+                        class="btn-primary"
+                        invisible="not reno_martin_rdv_ok"
+                        groups="renovation_conciergerie.group_doorway_pipeline_assigned,sales_team.group_sale_salesman"/>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_reno_meeting_stat" type="object"
+                        class="oe_stat_button" icon="fa-calendar"
+                        invisible="not reno_martin_rdv_ok"
+                        groups="renovation_conciergerie.group_doorway_pipeline_assigned,sales_team.group_sale_salesman">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text"><field name="reno_rdv_meeting_label"/></span>
+                        <field name="reno_rdv_slot_display" class="o_stat_value"
+                               invisible="not reno_rdv_slot_display"/>
+                        <span class="o_stat_text" invisible="not reno_rdv_booked_display">
+                            <field name="reno_rdv_booked_display"/>
+                        </span>
+                    </div>
+                </button>
+            </xpath>
+            <xpath expr="//notebook" position="before">
+                <group string="Rendez-vous Martin (heure du Canada)"
+                       invisible="not reno_martin_rdv_ok or not reno_rdv_slot_display">
+                    <group>
+                        <field name="reno_rdv_slot_display" readonly="1"/>
+                        <field name="reno_rdv_booked_display" readonly="1"/>
+                        <field name="reno_rdv_event_id" readonly="1"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

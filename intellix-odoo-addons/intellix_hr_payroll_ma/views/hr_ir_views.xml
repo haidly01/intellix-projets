@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hr_ir_config_form" model="ir.ui.view">
+        <field name="name">hr.ir.config.form</field>
+        <field name="model">hr.ir.config</field>
+        <field name="arch" type="xml">
+            <form string="Configuration IR Maroc">
+                <sheet>
+                    <group>
+                        <field name="company_id"/>
+                        <field name="active"/>
+                    </group>
+                    <group string="Frais professionnels">
+                        <field name="professional_expense_rate"/>
+                        <field name="professional_expense_annual_cap"/>
+                    </group>
+                    <group string="Déductions familiales">
+                        <field name="family_deduction_annual"/>
+                        <field name="max_dependents"/>
+                        <field name="include_spouse"/>
+                    </group>
+                    <field name="note" placeholder="Notes sur la mise à jour annuelle des barèmes…"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_hr_ir_config_list" model="ir.ui.view">
+        <field name="name">hr.ir.config.list</field>
+        <field name="model">hr.ir.config</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="company_id"/>
+                <field name="professional_expense_rate"/>
+                <field name="family_deduction_annual"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_hr_ir_bracket_list" model="ir.ui.view">
+        <field name="name">hr.ir.bracket.list</field>
+        <field name="model">hr.ir.bracket</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="company_id"/>
+                <field name="min_amount"/>
+                <field name="max_amount"/>
+                <field name="rate"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_hr_ir_config" model="ir.actions.act_window">
+        <field name="name">Configuration IR</field>
+        <field name="res_model">hr.ir.config</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_hr_ir_bracket" model="ir.actions.act_window">
+        <field name="name">Tranches IR</field>
+        <field name="res_model">hr.ir.bracket</field>
+        <field name="view_mode">list</field>
+    </record>
+</odoo>

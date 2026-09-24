@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_attestation_wizard_form" model="ir.ui.view">
+        <field name="name">intellix_hr_dossier.attestation.wizard.form</field>
+        <field name="model">intellix_hr_dossier.attestation.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Attestation / certificat">
+                <group>
+                    <field name="employee_id" readonly="1"/>
+                    <field name="report_type"/>
+                    <field name="document_date"/>
+                </group>
+                <group string="Paramètres du document">
+                    <field name="attestation_usage"
+                           invisible="report_type not in ('work', 'salary', 'cnss')"/>
+                    <field name="leave_reason"
+                           invisible="report_type != 'termination'"
+                           required="report_type == 'termination'"/>
+                    <field name="internship_id"
+                           invisible="report_type != 'internship'"/>
+                    <field name="establishment"
+                           invisible="report_type != 'internship'"/>
+                </group>
+                <group string="Signataire &amp; lieu">
+                    <field name="signatory_name" placeholder="Par défaut : société"/>
+                    <field name="signatory_title" placeholder="Par défaut : société"/>
+                    <field name="city" placeholder="Par défaut : ville société"/>
+                </group>
+                <footer>
+                    <button name="action_print" type="object" string="Imprimer" class="btn-primary"/>
+                    <button string="Annuler" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_attestation_wizard" model="ir.actions.act_window">
+        <field name="name">Attestations RH</field>
+        <field name="res_model">intellix_hr_dossier.attestation.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="hr.model_hr_employee"/>
+        <field name="binding_view_types">form</field>
+    </record>
+</odoo>

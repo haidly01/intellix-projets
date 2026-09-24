@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_coins_evenement_list" model="ir.ui.view">
+        <field name="name">coins.evenement.list</field>
+        <field name="model">coins.evenement</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="event_type"/>
+                <field name="date_start"/>
+                <field name="state"/>
+                <field name="payment_status"/>
+                <field name="invite_confirmed_count"/>
+                <field name="profit_loss"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_coins_evenement_form" model="ir.ui.view">
+        <field name="name">coins.evenement.form</field>
+        <field name="model">coins.evenement</field>
+        <field name="arch" type="xml">
+            <form string="Événement">
+                <header>
+                    <button name="action_send_quote" type="object" string="Devis envoyé"
+                            invisible="state != 'draft'"/>
+                    <button name="action_confirm" type="object" string="Confirmer"
+                            class="btn-primary" invisible="state not in ('draft','quote_sent')"/>
+                    <button name="action_deposit_received" type="object" string="Acompte reçu"
+                            invisible="state != 'confirmed'"/>
+                    <button name="action_day_j" type="object" string="Jour-J"
+                            invisible="state not in ('confirmed','deposit_received')"/>
+                    <button name="action_done" type="object" string="Terminer"
+                            invisible="state not in ('day_j','deposit_received','confirmed')"/>
+                    <button name="action_invoiced" type="object" string="Facturé / Soldé"
+                            invisible="state != 'done'"/>
+                    <button name="action_cancel" type="object" string="Annuler"
+                            invisible="state in ('cancelled','invoiced')"/>
+                    <button name="action_reset_draft" type="object" string="Remettre en brouillon"
+                            invisible="state != 'cancelled'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,quote_sent,confirmed,deposit_received,day_j,done,invoiced"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Nom de l'événement"/></h1>
+                        <h3><field name="reference" readonly="1"/></h3>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="event_type"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="property_id"
+                                   help="À la confirmation : calendrier local fermé + file Channex (dispo 0 sur les OTA)."/>
+                            <field name="partner_activity_id"/>
+                            <field name="capacity_planned"/>
+                            <field name="audience_target"/>
+                        </group>
+                        <group>
+                            <field name="payment_status"/>
+                            <field name="currency_id"/>
+                            <field name="ticketing_enabled"/>
+                            <field name="ticket_price" invisible="not ticketing_enabled"/>
+                            <field name="total_cost"/>
+                            <field name="total_revenue"/>
+                            <field name="profit_loss"/>
+                            <field name="breakeven_tickets" invisible="not ticketing_enabled"/>
+                            <field name="calendar_event_id"/>
+                            <button name="action_open_calendar_event" type="object"
+                                    string="Ouvrir calendrier" invisible="not calendar_event_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Prestataires" name="prestataires">
+                            <field name="prestataire_ids">
+                                <list editable="bottom">
+                                    <field name="category"/>
+                                    <field name="partner_activity_id"/>
+                                    <field name="detente_partner_id"/>
+                                    <field name="partner_id"/>
+                                    <field name="cost_planned"/>
+                                    <field name="cost_actual"/>
+                                    <field name="commission_pct"/>
+                                    <field name="confirmation_state"/>
+                                    <field name="quote_requested_date"/>
+                                    <field name="notes"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Invités / RSVP" name="invites">
+                            <group>
+                                <field name="invite_confirmed_count"/>
+                                <field name="invite_present_count"/>
+                            </group>
+                            <field name="invite_ids">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="phone"/>
+                                    <field name="email"/>
+                                    <field name="source"/>
+                                    <field name="rsvp_state"/>
+                                    <field name="ticket_amount"/>
+                                    <field name="payment_status"/>
+                                    <field name="invitation_sent"/>
+                                    <field name="reminder_sent"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="internal_notes"/>
+                            <field name="active"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_coins_evenement" model="ir.actions.act_window">
+        <field name="name">Événements</field>
+        <field name="res_model">coins.evenement</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

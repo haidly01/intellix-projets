@@ -1,0 +1,85 @@
+// Modèles de devis — mise en évidence Ventes
+.o_web_client.o_intellix_branded {
+    .ix-quotation-templates {
+        .o_kanban_record {
+            width: 320px;
+            min-height: 200px;
+        }
+    }
+
+    .ix-qt-card {
+        background: var(--ix-surface-elevated, #1e1e32);
+        border: 1px solid var(--ix-border, #334155);
+        border-left: 4px solid var(--ix-accent, #6366f1);
+        border-radius: 10px;
+        padding: 14px 16px;
+        min-height: 190px;
+        display: flex;
+        flex-direction: column;
+        color: var(--ix-text, #f1f5f9);
+    }
+
+    .ix-qt-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+        gap: 8px;
+    }
+
+    .ix-qt-badge {
+        background: var(--ix-accent, #6366f1);
+        color: #fff;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        padding: 3px 10px;
+        border-radius: 999px;
+    }
+
+    .ix-qt-validity {
+        font-size: 11px;
+        color: var(--ix-text-muted, #94a3b8);
+    }
+
+    .ix-qt-title {
+        font-size: 16px;
+        line-height: 1.3;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .ix-qt-meta {
+        font-size: 12px;
+        color: var(--ix-text-muted, #94a3b8);
+        margin-bottom: 6px;
+    }
+
+    .ix-qt-summary {
+        font-size: 12px;
+        color: var(--ix-text-muted, #b8c5d6);
+        flex: 1;
+        margin-bottom: 12px;
+        line-height: 1.4;
+    }
+
+    .ix-qt-actions {
+        margin-top: auto;
+    }
+
+    .ix-sale-template-banner {
+        background: rgba(99, 102, 241, 0.12) !important;
+        border: 1px solid var(--ix-accent, #6366f1) !important;
+        color: var(--ix-text, #f1f5f9) !important;
+        border-radius: 8px;
+    }
+
+    .ix-sale-template-banner .text-muted {
+        color: var(--ix-text-muted, #94a3b8) !important;
+    }
+
+    .ix-sale-template-field .o_field_widget {
+        max-width: 480px;
+    }
+}

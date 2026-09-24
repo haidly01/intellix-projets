@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_site_brief_user,site brief user,model_doorway_site_brief,base.group_user,1,1,1,0
+access_site_brief_manager,site brief manager,model_doorway_site_brief,base.group_system,1,1,1,1
+access_site_chat_message_user,site chat message user,model_doorway_site_chat_message,base.group_user,1,1,1,0
+access_site_chat_message_manager,site chat message manager,model_doorway_site_chat_message,base.group_system,1,1,1,1

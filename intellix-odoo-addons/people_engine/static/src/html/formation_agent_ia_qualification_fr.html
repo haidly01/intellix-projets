@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Formation Agent IA de Qualification — Marché France</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a14;
+    --bg2: #111120;
+    --bg3: #16162a;
+    --card: #1a1a2e;
+    --card2: #1e1e35;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --indigo: #6366f1;
+    --indigo-light: #a5b4fc;
+    --violet: #8b5cf6;
+    --cyan: #06b6d4;
+    --cyan-light: #67e8f9;
+    --green: #4ade80;
+    --amber: #fbbf24;
+    --red: #f87171;
+    --text: #f0f0ff;
+    --text2: #a0a0c0;
+    --text3: #6060a0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, #0a0a14 0%, #111128 50%, #0d0d20 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 0;
+  }
+  .header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem 0;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(99,102,241,0.15);
+    border: 1px solid rgba(99,102,241,0.3);
+    border-radius: 100px;
+    padding: 4px 14px;
+    font-size: 12px;
+    color: var(--indigo-light);
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+  .badge::before { content: "●"; font-size: 8px; }
+  h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(28px, 4vw, 48px);
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #fff 0%, var(--indigo-light) 50%, var(--cyan-light) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .subtitle {
+    color: var(--text2);
+    font-size: 17px;
+    line-height: 1.6;
+    max-width: 680px;
+    margin-bottom: 2rem;
+  }
+  .stats-row {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--border);
+  }
+  .stat { display: flex; flex-direction: column; }
+  .stat-val { font-size: 22px; font-weight: 700; color: var(--indigo-light); font-family: 'Space Grotesk', sans-serif; }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 2px; }
+
+  /* NAV */
+  .nav-wrap {
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav-btn {
+    background: none;
+    border: none;
+    color: var(--text2);
+    padding: 14px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .nav-btn:hover { color: var(--text); }
+  .nav-btn.active { color: var(--indigo-light); border-bottom-color: var(--indigo); }
+  .nav-num {
+    background: rgba(99,102,241,0.2);
+    color: var(--indigo-light);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .nav-btn.active .nav-num { background: rgba(99,102,241,0.35); }
+
+  /* CONTENT */
+  .content { max-width: 1200px; margin: 0 auto; padding: 2.5rem 2rem; }
+  .module { display: none; }
+  .module.active { display: block; }
+
+  /* MODULE HEADER */
+  .module-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .module-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    flex-shrink: 0;
+  }
+  .module-title h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .module-title p { color: var(--text2); font-size: 15px; line-height: 1.6; }
+
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .card:hover { border-color: var(--border2); }
+  .card h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--indigo-light);
+    margin: 1.2rem 0 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .card p { color: var(--text2); font-size: 14px; line-height: 1.7; margin-bottom: 0.8rem; }
+  .card p:last-child { margin-bottom: 0; }
+
+  /* GRID */
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1.5rem; }
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+
+  /* SCRIPT BLOCK */
+  .script-block {
+    background: #0d0d1e;
+    border: 1px solid rgba(99,102,241,0.2);
+    border-left: 3px solid var(--indigo);
+    border-radius: 10px;
+    padding: 1.25rem 1.5rem;
+    margin: 1rem 0;
+    position: relative;
+  }
+  .script-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--indigo-light);
+    margin-bottom: 8px;
+  }
+  .script-text {
+    color: #c8c8ff;
+    font-size: 14px;
+    line-height: 1.75;
+    font-style: italic;
+  }
+  .script-text strong { color: #fff; font-style: normal; font-weight: 600; }
+  .script-note {
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--text3);
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .script-note::before { content: "→"; color: var(--cyan); flex-shrink: 0; }
+
+  /* BAD / GOOD */
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+  .bad-block {
+    background: rgba(248,113,113,0.05);
+    border: 1px solid rgba(248,113,113,0.2);
+    border-radius: 10px;
+    padding: 1rem;
+  }
+  .good-block {
+    background: rgba(74,222,128,0.05);
+    border: 1px solid rgba(74,222,128,0.2);
+    border-radius: 10px;
+    padding: 1rem;
+  }
+  .bad-block .label { color: var(--red); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+  .good-block .label { color: var(--green); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+  .bad-block p, .good-block p { font-size: 13px; color: var(--text2); line-height: 1.6; font-style: italic; }
+
+  /* STEPS */
+  .steps { counter-reset: step; }
+  .step {
+    display: flex;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+  }
+  .step:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 19px;
+    top: 40px;
+    bottom: -20px;
+    width: 2px;
+    background: var(--border);
+  }
+  .step-num {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(99,102,241,0.15);
+    border: 1px solid rgba(99,102,241,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--indigo-light);
+    flex-shrink: 0;
+    counter-increment: step;
+  }
+  .step-num::after { content: counter(step); }
+  .step-content h4 { font-size: 15px; font-weight: 600; margin-bottom: 6px; color: var(--text); }
+  .step-content p { font-size: 13px; color: var(--text2); line-height: 1.65; }
+
+  /* METRICS */
+  .metrics-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+  .metric-card {
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.1rem;
+    text-align: center;
+  }
+  .metric-val { font-size: 26px; font-weight: 700; font-family: 'Space Grotesk', sans-serif; }
+  .metric-label { font-size: 11px; color: var(--text3); margin-top: 4px; line-height: 1.4; }
+  .metric-card.indigo .metric-val { color: var(--indigo-light); }
+  .metric-card.green .metric-val { color: var(--green); }
+  .metric-card.cyan .metric-val { color: var(--cyan); }
+  .metric-card.amber .metric-val { color: var(--amber); }
+
+  /* TAGS */
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 500;
+    margin: 3px;
+  }
+  .tag-indigo { background: rgba(99,102,241,0.15); color: var(--indigo-light); border: 1px solid rgba(99,102,241,0.25); }
+  .tag-cyan { background: rgba(6,182,212,0.1); color: var(--cyan-light); border: 1px solid rgba(6,182,212,0.2); }
+  .tag-green { background: rgba(74,222,128,0.1); color: var(--green); border: 1px solid rgba(74,222,128,0.2); }
+  .tag-amber { background: rgba(251,191,36,0.1); color: var(--amber); border: 1px solid rgba(251,191,36,0.2); }
+  .tag-red { background: rgba(248,113,113,0.1); color: var(--red); border: 1px solid rgba(248,113,113,0.2); }
+
+  /* HIGHLIGHT BOX */
+  .highlight {
+    background: rgba(99,102,241,0.08);
+    border: 1px solid rgba(99,102,241,0.2);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.2rem 0;
+  }
+  .highlight-title { font-weight: 600; font-size: 14px; color: var(--indigo-light); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .highlight p { font-size: 13px; color: var(--text2); line-height: 1.7; }
+
+  .warn-box {
+    background: rgba(251,191,36,0.06);
+    border: 1px solid rgba(251,191,36,0.2);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.2rem 0;
+  }
+  .warn-box p { font-size: 13px; color: rgba(251,191,36,0.85); line-height: 1.7; }
+  .warn-title { font-weight: 600; font-size: 14px; color: var(--amber); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+
+  /* TABLE */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .data-table th {
+    text-align: left;
+    padding: 10px 14px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text3);
+    border-bottom: 1px solid var(--border);
+    font-weight: 600;
+  }
+  .data-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text2);
+    vertical-align: top;
+    line-height: 1.55;
+  }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* SECTION TITLE */
+  .section-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin: 2.5rem 0 1.2rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-title span { font-size: 22px; }
+
+  /* PROGRESS TIMELINE */
+  .timeline { position: relative; padding-left: 2rem; }
+  .timeline-item { position: relative; margin-bottom: 2rem; }
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -2rem;
+    top: 6px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--indigo);
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 0 2px var(--indigo);
+  }
+  .timeline-item::after {
+    content: '';
+    position: absolute;
+    left: -1.6rem;
+    top: 20px;
+    bottom: -22px;
+    width: 2px;
+    background: var(--border);
+  }
+  .timeline-item:last-child::after { display: none; }
+  .timeline-time { font-size: 11px; font-weight: 700; color: var(--cyan); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
+  .timeline-item h4 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+  .timeline-item p { font-size: 13px; color: var(--text2); line-height: 1.65; }
+
+  /* CHECKLIST */
+  .checklist { list-style: none; }
+  .checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.55;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .check { color: var(--green); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .cross { color: var(--red); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+  /* FOOTER */
+  .page-footer {
+    max-width: 1200px;
+    margin: 3rem auto 0;
+    padding: 2rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    color: var(--text3);
+  }
+
+  @media (max-width: 700px) {
+    .compare-row { grid-template-columns: 1fr; }
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .content { padding: 1.5rem 1rem; }
+    .header-inner { padding: 1.5rem 1rem 0; }
+    .nav { padding: 0 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="badge">IntelliX Academy · Formation Agent IA</div>
+    <h1>Agent IA de Qualification<br>Marché France — Secteur Assurance</h1>
+    <p class="subtitle">Formation complète en 6 modules : script, voix, conformité RGPD, automations n8n, et optimisation continue de votre agent IA de qualification.</p>
+    <div class="stats-row">
+      <div class="stat"><span class="stat-val">6</span><span class="stat-label">Modules de formation</span></div>
+      <div class="stat"><span class="stat-val">40+</span><span class="stat-label">Bonnes pratiques documentées</span></div>
+      <div class="stat"><span class="stat-val">France</span><span class="stat-label">Conformité RGPD + Bloctel</span></div>
+      <div class="stat"><span class="stat-val">n8n + ElevenLabs</span><span class="stat-label">Stack recommandée</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="nav-wrap">
+  <div class="nav">
+    <button class="nav-btn active" onclick="switchModule(0)"><span class="nav-num">01</span> Script & Structure</button>
+    <button class="nav-btn" onclick="switchModule(1)"><span class="nav-num">02</span> Voix & Prosodie</button>
+    <button class="nav-btn" onclick="switchModule(2)"><span class="nav-num">03</span> Conformité FR</button>
+    <button class="nav-btn" onclick="switchModule(3)"><span class="nav-num">04</span> Automations n8n</button>
+    <button class="nav-btn" onclick="switchModule(4)"><span class="nav-num">05</span> Optimisation & KPIs</button>
+    <button class="nav-btn" onclick="switchModule(5)"><span class="nav-num">06</span> Cas Pratiques</button>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- MODULE 01 — SCRIPT & STRUCTURE -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="module active" id="mod0">
+  <div class="module-header">
+    <div class="module-icon" style="background: rgba(99,102,241,0.15);">📝</div>
+    <div class="module-title">
+      <h2>Script & Structure de la Conversation</h2>
+      <p>Concevoir un script IA qui obtient des réponses honnêtes, maintient l'engagement et collecte les données de qualification en moins de 3 minutes.</p>
+    </div>
+  </div>
+
+  <div class="section-title"><span>🏗️</span> Architecture en 5 actes</div>
+  <div class="card">
+    <p style="color:var(--text2); font-size:14px; margin-bottom:1.5rem;">Un appel de qualification IA performant suit une structure narrative précise. Chaque acte a un objectif unique — ne pas brûler les étapes.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-content">
+          <h4>Accroche & Légitimation (0–20 sec)</h4>
+          <p>Se nommer, nommer le motif exact de l'appel, créer un cadre de confiance. L'objectif est que le prospect comprenne en moins de 10 mots pourquoi il devrait écouter.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-content">
+          <h4>Validation du contexte (20–60 sec)</h4>
+          <p>1 question de contexte : confirmez-vous que vous êtes bien le titulaire du contrat ? Avez-vous déjà une assurance habitation en cours ? Cela permet la bascule vers la bonne branche de qualification.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-content">
+          <h4>Questions de qualification (60–150 sec)</h4>
+          <p>Maximum 4 questions fermées ou à choix limité. Chaque question a une logique de routage : réponse A → segment 1, réponse B → segment 2. Ne jamais poser 2 questions consécutives sur le même thème.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-content">
+          <h4>Signal d'intérêt ou détection d'objection (150–180 sec)</h4>
+          <p>Identifier si le prospect est chaud (curiosité, projet, budget), tiède (écoute passive) ou froid (irrité, pas le bon moment). Cette classification déclenche le bon flux de transfert ou de nurturing.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-content">
+          <h4>Clôture & Étape suivante (180 sec+)</h4>
+          <p>Confirmer l'action : transfert immédiat, rappel planifié, envoi de documentation. Remercier, annoncer le suivi. Ne jamais raccrocher sans avoir fixé une étape concrète.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title"><span>🎯</span> Scripts commentés — Assurance Habitation France</div>
+  
+  <div class="grid-2">
+    <div class="card">
+      <h3>🟢 Accroche recommandée</h3>
+      <div class="script-block">
+        <div class="script-label">Agent IA — Ouverture</div>
+        <div class="script-text">"Bonjour, je suis <strong>Sofia</strong>, assistante de la plateforme AssurCompare. Je vous contacte suite à votre demande de comparaison d'assurance habitation déposée ce matin sur notre site. Je voulais simplement m'assurer que vous aviez bien reçu nos propositions — cela prend <strong>deux minutes</strong>, c'est tout."</div>
+        <div class="script-note">La référence à une action concrète du prospect ("votre demande de ce matin") ancre la légitimité de l'appel. Le chiffrage du temps réduit la résistance initiale.</div>
+      </div>
+      <div class="compare-row">
+        <div class="bad-block">
+          <div class="label">❌ À éviter</div>
+          <p>"Bonjour, je suis une assistante virtuelle qui appelle de la part de..."</p>
+        </div>
+        <div class="good-block">
+          <div class="label">✅ Efficace</div>
+          <p>"Je vous contacte suite à votre demande de ce matin sur AssurCompare."</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>🏠 Questions de qualification habitation</h3>
+      <div class="script-block">
+        <div class="script-label">Question 1 — Type de bien</div>
+        <div class="script-text">"Votre logement est une <strong>maison ou un appartement</strong> ?"</div>
+        <div class="script-note">Question binaire = taux de réponse maximal. Stocké comme champ qualification_type_bien dans le CRM.</div>
+      </div>
+      <div class="script-block">
+        <div class="script-label">Question 2 — Situation contractuelle</div>
+        <div class="script-text">"Vous êtes actuellement <strong>propriétaire ou locataire</strong> ?"</div>
+        <div class="script-note">Détermine les garanties pertinentes à proposer (PNO vs MRH locataire).</div>
+      </div>
+      <div class="script-block">
+        <div class="script-label">Question 3 — Urgence / déclencheur</div>
+        <div class="script-text">"Est-ce que votre contrat actuel arrive à échéance <strong>dans les 3 prochains mois</strong>, ou vous cherchez à changer maintenant ?"</div>
+        <div class="script-note">Permet de scorer l'urgence. "Dans les 3 mois" = lead chaud, transfert direct. "Plus tard" = séquence email nurturing.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title"><span>🔀</span> Arbre de routage dynamique</div>
+  <div class="card">
+    <h3>🗺️ Logique de branches — Assurance</h3>
+    <div class="metrics-row" style="margin-bottom:1.5rem;">
+      <div class="metric-card indigo"><div class="metric-val">4</div><div class="metric-label">questions max par appel</div></div>
+      <div class="metric-card green"><div class="metric-val">3</div><div class="metric-label">niveaux de chaleur</div></div>
+      <div class="metric-card cyan"><div class="metric-val">180s</div><div class="metric-label">durée idéale call</div></div>
+      <div class="metric-card amber"><div class="metric-val">2</div><div class="metric-label">branches max par question</div></div>
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Signal détecté</th>
+          <th>Classification</th>
+          <th>Action automatique</th>
+          <th>Priorité CRM</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>"Je cherche à changer maintenant" + propriétaire</td>
+          <td><span class="tag tag-green">🔥 Chaud</span></td>
+          <td>Transfert direct conseiller humain</td>
+          <td>P1 — dans l'heure</td>
+        </tr>
+        <tr>
+          <td>Écoute sans objection + "dans 3 mois"</td>
+          <td><span class="tag tag-amber">🌡️ Tiède</span></td>
+          <td>Envoi devis PDF + rappel J+3</td>
+          <td>P2 — dans la semaine</td>
+        </tr>
+        <tr>
+          <td>"Je suis déjà couvert, pas intéressé"</td>
+          <td><span class="tag tag-indigo">❄️ Froid</span></td>
+          <td>Note CRM + séquence email J+30</td>
+          <td>P3 — nurturing long terme</td>
+        </tr>
+        <tr>
+          <td>Interruption / raccroche avant Q3</td>
+          <td><span class="tag tag-red">🚫 Injoignable</span></td>
+          <td>Rappel automatique H+4 max 2 tentatives</td>
+          <td>Hors priorité après 3 essais</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title"><span>🚫</span> Gestion des objections classiques</div>
+  <div class="grid-2">
+    <div class="card">
+      <h3>💬 "Je n'ai pas le temps maintenant"</h3>
+      <div class="script-block">
+        <div class="script-label">Réponse IA recommandée</div>
+        <div class="script-text">"Aucun problème, je comprends tout à fait. <strong>Je vous rappelle quand ça vous convient le mieux</strong> — cet après-midi, ou demain matin ?"</div>
+        <div class="script-note">Proposer 2 créneaux concrets force un choix positif plutôt qu'un refus. Le rappel est planifié automatiquement dans n8n.</div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>💬 "C'est quoi comme robot ça ?"</h3>
+      <div class="script-block">
+        <div class="script-label">Réponse IA — Transparence</div>
+        <div class="script-text">"Je suis effectivement un assistant intelligent — vous pouvez me poser des questions directement, je transmettrai à un conseiller humain tout de suite si vous préférez. <strong>Qu'est-ce qui vous convient le mieux ?</strong>"</div>
+        <div class="script-note">La transparence augmente la confiance. En France, la CNIL exige que l'agent IA puisse se déclarer non-humain si demandé explicitement.</div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>💬 "Ça va coûter combien ?"</h3>
+      <div class="script-block">
+        <div class="script-label">Réponse IA — Ancrage valeur</div>
+        <div class="script-text">"C'est exactement ce que je vais vous préparer — pour ça j'ai juste besoin de connaître <strong>la superficie de votre logement</strong>. Vous êtes à peu près combien de mètres carrés ?"</div>
+        <div class="script-note">Répondre à une question par une question de qualification = collecte de donnée tout en avançant. Ne jamais donner de prix sans avoir collecté les données.</div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>💬 "Vous avez mon numéro comment ?"</h3>
+      <div class="script-block">
+        <div class="script-label">Réponse IA — RGPD obligatoire</div>
+        <div class="script-text">"Votre numéro nous a été transmis suite à votre demande de devis sur notre site le [date]. <strong>Vous pouvez bien sûr vous désinscrire</strong> à tout moment — souhaitez-vous que je retire vos coordonnées de notre liste ?"</div>
+        <div class="script-note">Mentionner la source d'acquisition est obligatoire en France (art. 13 RGPD). L'opt-out doit être proposé activement.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- MODULE 02 — VOIX & PROSODIE -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="module" id="mod1">
+  <div class="module-header">
+    <div class="module-icon" style="background: rgba(6,182,212,0.12);">🎙️</div>
+    <div class="module-title">
+      <h2>Voix, Prosodie & Paramétrage ElevenLabs</h2>
+      <p>Configurer une voix IA qui inspire confiance sur le marché français. Paramètres techniques, choix de voix, gestion des silences et des intonations.</p>
+    </div>
+  </div>
+
+  <div class="section-title"><span>🗣️</span> Principes phonétiques pour le marché français</div>
+  <div class="grid-2">
+    <div class="card">
+      <h3>🇫🇷 Spécificités de l'oreille française</h3>
+      <p>Le locuteur français est particulièrement sensible à :</p>
+      <ul class="checklist">
+        <li><span class="check">✓</span> Le débit : 150–170 mots/min (vs 180+ perçu comme stressant ou commercial)</li>
+        <li><span class="check">✓</span> La prononciation des liaisons (/z/, /n/) — erreur = méfiance immédiate</li>
+        <li><span class="check">✓</span> Le ton neutre et professionnel — ni trop familier, ni trop robotique</li>
+        <li><span class="check">✓</span> Les pauses après les questions (800ms minimum avant de répéter)</li>
+        <li><span class="cross">✗</span> L'accent québécois ou nord-américain sur un marché France = friction</li>
+        <li><span class="cross">✗</span> Le vouvoiement systématique uniquement — certains secteurs (mutuelle santé jeunes) tolèrent le tutoiement</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>🎚️ Paramètres ElevenLabs recommandés</h3>
+      <table class="data-table">
+        <thead><tr><th>Paramètre</th><th>Valeur</th><th>Impact</th></tr></thead>
+        <tbody>
+          <tr><td>Stability</td><td><strong style="color:var(--green)">0.70–0.75</strong></td><td>Voix stable, pas robotique</td></tr>
+          <tr><td>Similarity Boost</td><td><strong style="color:var(--green)">0.85</strong></td><td>Préserve le caractère de la voix</td></tr>
+          <tr><td>Style</td><td><strong style="color:var(--amber)">0.10–0.20</strong></td><td>Légère expressivité sans théâtralité</td></tr>
+          <tr><td>Speaker Boost</td><td><strong style="color:var(--green)">Activé</strong></td><td>Clarté sur lignes compressées</td></tr>
+          <tr><td>Modèle</td><td><strong style="color:var(--cyan)">turbo v2.5</strong></td><td>Latence &lt;400ms</td></tr>
+        </tbody>
+      </table>
+      <div class="highlight">
+        <div class="highlight-title">💡 Pour le marché France spécifiquement</div>
+        <p>Éviter les voix clonées avec accent régional (méridional, alsacien) sauf si la campagne cible cette région. Le français standard parisien est le référentiel de confiance maximum.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title"><span>⏸️</span> Gestion des silences et de la latence</div>
+  <div class="card">
+    <h3>⚡ Architecture temporelle d'un appel réussi</h3>
+    <div class="metrics-row">
+      <div class="metric-card cyan"><div class="metric-val">&lt;800ms</div><div class="metric-label">Latence STT→TTS max acceptable</div></div>
+      <div class="metric-card indigo"><div class="metric-val">800ms</div><div class="metric-label">Silence après question posée</div></div>
+      <div class="metric-card amber"><div class="metric-val">3s</div><div class="metric-label">Délai avant répétition si pas de réponse</div></div>
+      <div class="metric-card green"><div class="metric-val">200ms</div><div class="metric-label">Pause inter-phrases (respiration)</div></div>
+    </div>
+    <div class="warn-box">
+      <div class="warn-title">⚠️ Problème fréquent : barge-in trop agressif</div>
+      <p>Si l'agent IA coupe le prospect dès qu'il s'arrête de parler (fin de souffle), il est perçu comme impoli. Configurer un end-of-speech delay d'au minimum 600ms avec Deepgram Nova-2 fr-CA. Paramètre : <code style="background:rgba(0,0,0,0.3);padding:2px 6px;border-radius:4px;font-family:monospace">endpointing: 600</code></p>
+    </div>
+    <h4>Phrases de remplissage — maintenir le lien</h4>
+    <p>Quand l'agent traite une donnée (2–4 secondes), insérer une phrase de liaison pour éviter le silence mort :</p>
+    <div class="script-block">
+      <div class="script-label">Phrases de liaison recommandées</div>
+      <div class="script-text">
+        "Très bien, je note ça..." <br>
+        "D'accord, une petite seconde..." <br>
+        "Parfait, je prépare votre dossier..." <br>
+        "Je regarde ça pour vous immédiatement..."
+      </div>
+      <div class="script-note">Ces phrases sont injectées automatiquement en TTS pendant que n8n fait l'appel API vers le CRM. Durée cible : 2–3 secondes.</div>
+    </div>
+  </div>
+
+  <div class="section-title"><span>🧠</span> SSML & formatage phonétique</div>
+  <div class="grid-2">
+    <div class="card">
+      <h3>📋 Balises SSML utiles (ElevenLabs)</h3>
+      <table class="data-table">
+        <thead><tr><th>Balise</th><th>Usage</th><th>Exemple</th></tr></thead>
+        <tbody>
+          <tr><td><code style="color:var(--cyan-light)">&lt;break time="500ms"/&gt;</code></td><td>Pause naturelle</td><td>Après une question</td></tr>
+          <tr><td><code style="color:var(--cyan-light)">&lt;emphasis&gt;</code></td><td>Accentuer un mot clé</td><td>"c'est <em>gratuit</em>"</td></tr>
+          <tr><td><code style="color:var(--cyan-light)">&lt;prosody rate="slow"&gt;</code></td><td>Ralentir pour clarté</td><td>Numéros de dossier</td></tr>
+          <tr><td><code style="color:var(--cyan-light)">&lt;say-as interpret-as="digits"&gt;</code></td><td>Épeler les chiffres</td><td>Codes postaux</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <h3>🔤 Corrections phonétiques clés</h3>
+      <p style="margin-bottom:1rem;">Certains termes du secteur assurance sont mal prononcés par les TTS. Les pré-corriger dans le texte :</p>
+      <table class="data-table">
+        <thead><tr><th>Terme problème</th><th>Écriture phonétique TTS</th></tr></thead>
+        <tbody>
+          <tr><td>MRH (contrat)</td><td>"M R H" ou "assurance habitation"</td></tr>
+          <tr><td>PNO</td><td>"P N O" ou "propriétaire non occupant"</td></tr>
+          <tr><td>MAIF, MAAF</td><td>Écrire tel quel, bien prononcé</td></tr>
+          <tr><td>éco-PTZ</td><td>"éco P T Z"</td></tr>
+          <tr><td>Bloctel</td><td>"Bloc-tel" (tiret oral)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section-title"><span>🎭</span> Persona vocale : construire la confiance</div>
+  <div class="card">
+    <h3>👤 Les 4 dimensions d'une voix IA de confiance (marché FR)</h3>
+    <div class="grid-3">
+      <div style="background:var(--card2);border-radius:12px;padding:1.2rem;border:1px solid var(--border);">
+        <div style="font-size:24px;margin-bottom:8px;">🎯</div>
+        <strong style="font-size:14px;display:block;margin-bottom:6px;">Précision lexicale</strong>
+        <p>Utiliser le vocabulaire exact du secteur. "Échéance de contrat", "résiliation loi Hamon", "franchise", "sinistre". Le jargon approprié = expertise perçue.</p>
+      </div>
+      <div style="background:var(--card2);border-radius:12px;padding:1.2rem;border:1px solid var(--border);">
+        <div style="font-size:24px;margin-bottom:8px;">🤝</div>
+        <strong style="font-size:14px;display:block;margin-bottom:6px;">Empathie calibrée</strong>
+        <p>Reconnaître les situations difficiles ("je comprends que changer d'assureur c'est une démarche") sans excès de chaleur qui paraît artificiel.</p>
+      </div>
+      <div style="background:var(--card2);border-radius:12px;padding:1.2rem;border:1px solid var(--border);">
+        <div style="font-size:24px;margin-bottom:8px;">⚖️</div>
+        <strong style="font-size:14px;display:block;margin-bottom:6px;">Neutralité informative</strong>
+        <p>Ne pas sur-vendre. "Je vous présente les options disponibles" plutôt que "j'ai LA meilleure offre pour vous". La pression crée de la méfiance en France.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- MODULE 03 — CONFORMITÉ FRANCE -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="module" id="mod2">
+  <div class="module-header">
+    <div class="module-icon" style="background: rgba(251,191,36,0.12);">⚖️</div>
+    <div class="module-title">
+      <h2>Conformité France : RGPD, Bloctel & ACPR</h2>
+      <p>Les règles légales impératives pour appeler des prospects en France. Non-conformité = amende CNIL jusqu'à 20M€ ou 4% du CA mondial.</p>
+    </div>
+  </div>
+
+  <div class="warn-box" style="margin-bottom:1.5rem;">
+    <div class="warn-title">⚠️ Attention critique pour le secteur assurance</div>
+    <p>Le secteur assurance est doublement réglementé en France : par la CNIL (RGPD, données personnelles) et par l'ACPR (Autorité de Contrôle Prudentiel et de Résolution). Une campagne d'appels IA dans l'assurance doit respecter les deux cadres simultanément.</p>
+  </div>
+
+  <div class="section-title"><span>📋</span> Checklist conformité avant toute campagne</div>
+  <div class="grid-2">
+    <div class="card">
+      <h3>✅ Vérifications RGPD obligatoires</h3>
+      <ul class="checklist">
+        <li><span class="check">✓</span> <strong>Consentement traçable :</strong> source d'opt-in horodatée, type de formulaire, version du CGU au moment du consentement</li>
+        <li><span class="check">✓</span> <strong>Finalité déclarée :</strong> le prospect a coché "être contacté par téléphone pour une offre assurance" — pas juste "newsletter"</li>
+        <li><span class="check">✓</span> <strong>Durée de conservation :</strong> 3 ans maximum après dernier contact actif (recommandation CNIL)</li>
+        <li><span class="check">✓</span> <strong>Droit d'effacement :</strong> processus d'opt-out immédiatement opérationnel — l'agent IA doit pouvoir déclencher la suppression en live</li>
+        <li><span class="check">✓</span> <strong>Registre des traitements :</strong> document Article 30 RGPD à jour avec ce traitement d'appels automatisés</li>
+        <li><span class="cross">✗</span> <strong>À ne PAS faire :</strong> appeler un prospect dont le consentement date de plus de 3 ans sans renouvellement</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>📞 Règles Bloctel</h3>
+      <div class="highlight">
+        <div class="highlight-title">📌 Qu'est-ce que Bloctel ?</div>
+        <p>Liste d'opposition au démarchage téléphonique obligatoire en France depuis 2016. Appeler un numéro inscrit = amende 75 000€/personne morale.</p>
+      </div>
+      <ul class="checklist">
+        <li><span class="check">✓</span> Filtrer votre base sur Bloctel avant chaque campagne (API ou fichier téléchargé)</li>
+        <li><span class="check">✓</span> Vérification à renouveler tous les 30 jours maximum</li>
+        <li><span class="check">✓</span> Garder une trace des vérifications effectuées (date, volume filtré)</li>
+        <li><span class="check">✓</span> Exclure : numéros en liste rouge + numéros portables si consentement non-explicite</li>
+        <li><span class="cross">✗</span> Exception invalide : "le prospect a rempli un formulaire" ne suffit PAS si le numéro est inscrit à Bloctel</li>
+      </ul>
+      <div class="script-block" style="margin-top:1rem;">
+        <div class="script-label">Automation n8n recommandée</div>
+        <div class="script-text">Avant chaque chargement de liste → webhook vers API Bloctel → filtrage automatique → leads non-Bloctel uniquement dans la file d'appel VICIdial/Africa-Con</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title"><span>🏦</span> Spécificités ACPR — Assurance</div>
+  <div class="card">
+    <h3>📜 Règles de distribution d'assurance (DDA — Directive Distribution Assurance)</h3>
+    <table class="data-table">
+      <thead>
+        <tr><th>Obligation DDA</th><th>Traduction en pratique IA</th><th>Qui est responsable</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Information précontractuelle (IPID)</td>
+          <td>L'agent IA ne peut pas "conclure" une vente — il qualifie et transfère. La DIP/IPID est remise par le conseiller humain.</td>
+          <td>Partenaire assureur</td>
+        </tr>
+        <tr>
+          <td>Analyse des besoins</td>
+          <td>L'IA doit poser des questions de besoin (type logement, situation) avant toute mention de prix</td>
+          <td>Agence + IA script</td>
+        </tr>
+        <tr>
+          <td>Enregistrement des appels</td>
+          <td>Tous les appels doivent être enregistrables et archivables 5 ans minimum</td>
+          <td>Infrastructure (Africa-Con)</td>
+        </tr>
+        <tr>
+          <td>Déclaration agent IA</td>
+          <td>Si le prospect demande "est-ce un robot ?", l'agent DOIT répondre oui</td>
+          <td>Script IA obligatoire</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title"><span>🕐</span> Créneaux d'appel légaux en France</div>
+  <div class="card">
+    <h3>📅 Horaires autorisés pour le démarchage téléphonique</h3>
+    <div class="metrics-row">
+      <div class="metric-card green"><div class="metric-val">9h–20h</div><div class="metric-label">Lundi–Vendredi</div></div>
+      <div class="metric-card amber"><div class="metric-val">10h–18h</div><div class="metric-label">Samedi uniquement</div></div>
+      <div class="metric-card" style="background:rgba(248,113,113,0.08);border-color:rgba(248,113,113,0.2);"><div class="metric-val" style="color:var(--red)">Interdit</div><div class="metric-label">Dimanche & jours fériés</div></div>
+      <div class="metric-card" style="background:rgba(248,113,113,0.08);border-color:rgba(248,113,113,0.2);"><div class="metric-val" style="color:var(--red)">Max 4x</div><div class="metric-label">Appels/mois par prospect</div></div>
+    </div>
+    <div class="warn-box">
+      <div class="warn-title">⚠️ Nouveau décret démarchage (2023)</div>
+      <p>Depuis le décret du 13 mars 2023, la limite est de 4 tentatives par prospect sur 30 jours glissants. Après 4 échecs, attendre 60 jours minimum. Cette règle doit être implémentée dans votre CRM et votre orchestrateur n8n.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- MODULE 04 — AUTOMATIONS N8N -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="module" id="mod3">
+  <div class="module-header">
+    <div class="module-icon" style="background: rgba(74,222,128,0.1);">⚙️</div>
+    <div class="module-title">
+      <h2>Automations n8n : Architecture & Workflows</h2>
+      <p>Les workflows n8n qui font fonctionner un agent IA de qualification de bout en bout, de la génération du lead jusqu'au compte-rendu dans le CRM.</p>
+    </div>
+  </div>
+
+  <div class="section-title"><span>🏗️</span> Architecture globale des workflows</div>
+  <div class="card">
+    <h3>🔄 Les 5 workflows essentiels</h3>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-time">WORKFLOW 1</div>
+        <h4>Ingestion & Qualification Lead (Déclencheur : nouveau lead)</h4>
+        <p>Webhook réception lead → Vérification Bloctel API → Déduplication CRM → Score d'éligibilité (type, source, heure) → Ajout en file d'attente Africa-Con avec priorité → Notification Slack superviseur si P1</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-time">WORKFLOW 2</div>
+        <h4>Orchestration Appel IA (Déclencheur : début appel)</h4>
+        <p>Récupération données prospect depuis Odoo → Injection dans prompt Sofia/Alex → STT Deepgram fr-FR → Claude scoring → TTS ElevenLabs → Suivi SSML et gestion silences → Log transcript complet</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-time">WORKFLOW 3</div>
+        <h4>Post-Call Processing (Déclencheur : fin appel)</h4>
+        <p>Transcript → Claude analyse sentiment + extraction données → Mise à jour lead CRM (score, classification, notes) → Déclenchement action selon segment (transfert / email / rappel) → Mise à jour compteur Bloctel</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-time">WORKFLOW 4</div>
+        <h4>Séquence Nurturing Tiède (Déclencheur : classification = tiède)</h4>
+        <p>J+0 : Email de bienvenue + devis PDF → J+3 : SMS de rappel → J+7 : Deuxième appel IA → J+14 : Email relance → J+30 : Archivage si toujours inactif</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-time">WORKFLOW 5</div>
+        <h4>Reporting Daily (Déclencheur : Cron 20h00)</h4>
+        <p>Agrégation des KPIs du jour → Calcul taux conversion par campagne → Rapport Slack superviseur → Mise à jour dashboard Odoo → Alertes si KPIs hors seuil</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title"><span>🧩</span> Nœuds n8n clés — Configuration détaillée</div>
+  <div class="grid-2">
+    <div class="card">
+      <h3>🎯 Nœud Claude Scoring</h3>
+      <h4>Prompt système recommandé</h4>
+      <div class="script-block">
+        <div class="script-label">System prompt — Claude scoring lead</div>
+        <div class="script-text">
+          "Tu es un expert en qualification de leads assurance habitation France. <br><br>
+          Analyse ce transcript d'appel et retourne UNIQUEMENT un JSON avec :<br>
+          - score (0-100)<br>
+          - classification (chaud/tiède/froid)<br>
+          - intent_detected (achat_immediat / comparaison / information / refus)<br>
+          - données_collectées (objet avec les champs remplis)<br>
+          - action_recommandée<br>
+          - raison_brève (max 20 mots)<br><br>
+          Pas de texte hors JSON."
+        </div>
+      </div>
+      <div class="highlight">
+        <div class="highlight-title">💡 Modèle recommandé</div>
+        <p>claude-haiku-4-5 pour le scoring en temps réel (latence &lt;1s, coût &lt;0.001$/call). Claude Sonnet uniquement pour les analyses complexes post-call.</p>
+      </div>
+    </div>
+    <div class="card">
+      <h3>📊 Nœud Odoo XML-RPC</h3>
+      <h4>Configuration mise à jour lead</h4>
+      <div class="script-block">
+        <div class="script-label">Appel XML-RPC n8n → Odoo</div>
+        <div class="script-text">
+          Méthode : <strong>write</strong> sur crm.lead<br>
+          Champs : priority (0/1/2/3)<br>
+          tag_ids : selon classification<br>
+          stage_id : selon action<br>
+          description : transcript résumé<br>
+          date_action : prochain rappel
+        </div>
+      </div>
+      <h4>Mapping score → priorité Odoo</h4>
+      <table class="data-table">
+        <thead><tr><th>Score Claude</th><th>Priorité Odoo</th><th>Stage</th></tr></thead>
+        <tbody>
+          <tr><td>75–100</td><td>⭐⭐⭐ (3)</td><td>Transfert Conseiller</td></tr>
+          <tr><td>40–74</td><td>⭐⭐ (2)</td><td>Nurturing Actif</td></tr>
+          <tr><td>10–39</td><td>⭐ (1)</td><td>Suivi Long Terme</td></tr>
+          <tr><td>0–9</td><td>☆ (0)</td><td>Archivé</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section-title"><span>📱</span> Intégrations Twilio — SMS & WhatsApp France</div>
+  <div class="card">
+    <h3>💬 Séquence SMS post-qualification</h3>
+    <div class="grid-2">
+      <div>
+        <h4>SMS Chaud — Envoi immédiat post-call</h4>
+        <div class="script-block">
+          <div class="script-label">SMS J+0 (après transfert réussi)</div>
+          <div class="script-text">"Bonjour [Prénom], suite à notre échange, votre conseiller <strong>[Nom]</strong> vous a bien noté. Il vous rappelle dans les 30 min. Votre numéro de dossier : <strong>[REF]</strong>. — AssurCompare"</div>
+        </div>
+      </div>
+      <div>
+        <h4>SMS Tiède — Relance J+3</h4>
+        <div class="script-block">
+          <div class="script-label">SMS J+3 (prospect tiède)</div>
+          <div class="script-text">"Bonjour [Prénom], votre devis habitation est prêt. Tarif estimé à partir de <strong>[PRIX]€/mois</strong>. Cliquez pour consulter : [LIEN]. Répondez STOP pour ne plus être contacté."</div>
+          <div class="script-note">Le mention STOP est obligatoire en France pour tout SMS commercial.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- MODULE 05 — OPTIMISATION & KPIs -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="module" id="mod4">
+  <div class="module-header">
+    <div class="module-icon" style="background: rgba(139,92,246,0.12);">📈</div>
+    <div class="module-title">
+      <h2>Optimisation Continue & KPIs de Performance</h2>
+      <p>Mesurer, analyser et améliorer en continu votre agent IA. Les métriques qui comptent, les leviers d'optimisation et le cycle d'amélioration hebdomadaire.</p>
+    </div>
+  </div>
+
+  <div class="section-title"><span>📊</span> Tableau de bord KPIs essentiels</div>
+  <div class="card">
+    <h3>🎯 KPIs de niveau 1 — Monitorer quotidiennement</h3>
+    <div class="metrics-row">
+      <div class="metric-card indigo"><div class="metric-val">taux de joignabilité</div><div class="metric-label">Cible France habitation : 35–45%</div></div>
+      <div class="metric-card green"><div class="metric-val">taux de qualification</div><div class="metric-label">Leads qualifiés / appels aboutis. Cible : 25–35%</div></div>
+      <div class="metric-card cyan"><div class="metric-val">taux de transfert</div><div class="metric-label">Transferts acceptés / chauds. Cible : &gt;60%</div></div>
+      <div class="metric-card amber"><div class="metric-val">durée moyenne</div><div class="metric-label">Cible : 90–150 secondes</div></div>
+    </div>
+    <table class="data-table" style="margin-top:1rem;">
+      <thead>
+        <tr><th>KPI</th><th>Mauvais</th><th>Acceptable</th><th>Excellent</th><th>Levier si mauvais</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Taux raccrochage &lt;10s</strong></td>
+          <td style="color:var(--red)">&gt;30%</td>
+          <td style="color:var(--amber)">15–30%</td>
+          <td style="color:var(--green)">&lt;15%</td>
+          <td>Retravailler les 10 premières secondes du script</td>
+        </tr>
+        <tr>
+          <td><strong>Taux opt-out (STOP)</strong></td>
+          <td style="color:var(--red)">&gt;5%</td>
+          <td style="color:var(--amber)">2–5%</td>
+          <td style="color:var(--green)">&lt;2%</td>
+          <td>Affiner le ciblage, vérifier la source des leads</td>
+        </tr>
+        <tr>
+          <td><strong>Score satisfaction (CSAT)</strong></td>
+          <td style="color:var(--red)">&lt;3.5/5</td>
+          <td style="color:var(--amber)">3.5–4.0</td>
+          <td style="color:var(--green)">&gt;4.0</td>
+          <td>Améliorer la naturalité de la voix et les pauses</td>
+        </tr>
+        <tr>
+          <td><strong>Coût par lead qualifié</strong></td>
+          <td style="color:var(--red)">&gt;25€</td>
+          <td style="color:var(--amber)">15–25€</td>
+          <td style="color:var(--green)">&lt;15€</td>
+          <td>Optimiser joignabilité (créneaux) + taux qualification</td>
+        </tr>
+        <tr>
+          <td><strong>Taux conversion lead → vente</strong></td>
+          <td style="color:var(--red)">&lt;8%</td>
+          <td style="color:var(--amber)">8–15%</td>
+          <td style="color:var(--green)">&gt;15%</td>
+          <td>Améliorer qualification (mieux cibler les chauds) + nurturing</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title"><span>🔬</span> A/B Testing — Protocole</div>
+  <div class="grid-2">
+    <div class="card">
+      <h3>🧪 Ce qu'on peut tester (variables isolées)</h3>
+      <ul class="checklist">
+        <li><span class="check">✓</span> <strong>Accroche A vs B :</strong> version avec mention durée ("2 minutes") vs sans. Mesurer : taux de raccrochage &lt;10s</li>
+        <li><span class="check">✓</span> <strong>Voix A vs B :</strong> même script, deux voix ElevenLabs différentes. Mesurer : durée moyenne + taux qualification</li>
+        <li><span class="check">✓</span> <strong>Heure d'appel :</strong> 10h–12h vs 17h–19h. Mesurer : joignabilité + taux qualification</li>
+        <li><span class="check">✓</span> <strong>Nombre de questions :</strong> 3 vs 4 questions. Mesurer : durée + taux complétion</li>
+        <li><span class="check">✓</span> <strong>Objection handling :</strong> version directe vs version empathique. Mesurer : taux conversion froid→tiède</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>📐 Règles statistiques du A/B test</h3>
+      <div class="highlight">
+        <div class="highlight-title">⚠️ Règle des 100 appels minimum</div>
+        <p>Ne jamais tirer de conclusions avant 100 appels par variante. En dessous, le bruit statistique est supérieur au signal. Paramètre Sofia configuré : 50/50 automatique via n8n avec bascule à 100 appels.</p>
+      </div>
+      <table class="data-table">
+        <thead><tr><th>Volume test</th><th>Confiance stat.</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td>&lt;50 appels</td><td>Insuffisant</td><td>Continuer à collecter</td></tr>
+          <tr><td>50–100 appels</td><td>Indicatif</td><td>Identifier la tendance</td></tr>
+          <tr><td>100–200 appels</td><td>80–90%</td><td>Décision possible si écart &gt;5pts</td></tr>
+          <tr><td>&gt;200 appels</td><td>&gt;95%</td><td>Décision sûre, déployer gagnant</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section-title"><span>🔄</span> Cycle d'amélioration hebdomadaire</div>
+  <div class="card">
+    <h3>📅 Ritual hebdomadaire — 45 minutes</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-content">
+          <h4>Lundi matin — Review des KPIs semaine N-1 (10 min)</h4>
+          <p>Comparer les 5 KPIs principaux vs la semaine précédente. Identifier les 1–2 métriques les plus éloignées de la cible. Formulation de 1 hypothèse d'amélioration.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-content">
+          <h4>Mardi — Écoute de 10 transcripts (15 min)</h4>
+          <p>Sélectionner aléatoirement 5 calls chauds et 5 calls froids. Identifier les patterns : à quel moment le prospect décroche-t-il ? Quelle question crée une hésitation ? Quelles formulations fonctionnent.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-content">
+          <h4>Mercredi — Modification du script ou des paramètres (10 min)</h4>
+          <p>Appliquer 1 modification concrète basée sur l'écoute. Ne jamais changer plusieurs variables en même temps. Documenter la modification dans le changelog du prompt.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-content">
+          <h4>Vendredi — Bilan du test en cours (10 min)</h4>
+          <p>Vérifier si la modification a eu un impact mesurable. Si oui : déployer définitivement. Si non : revenir à la version précédente. Planifier le prochain test.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- MODULE 06 — CAS PRATIQUES -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="module" id="mod5">
+  <div class="module-header">
+    <div class="module-icon" style="background: rgba(6,182,212,0.1);">🎬</div>
+    <div class="module-title">
+      <h2>Cas Pratiques & Scénarios Complets</h2>
+      <p>Trois scénarios complets avec scripts annotés, logique de routage, et exemples de calls réels analysés.</p>
+    </div>
+  </div>
+
+  <div class="section-title"><span>🏠</span> Cas 1 — Assurance Habitation MRH</div>
+  <div class="card">
+    <h3>📞 Call complet annoté — Prospect propriétaire chaud</h3>
+    
+    <div class="script-block">
+      <div class="script-label">Agent Sofia — Ouverture [0:00–0:18]</div>
+      <div class="script-text">"Bonjour, je suis Sofia de la plateforme AssurCompare. Je vous contacte suite à votre demande de comparaison d'assurance habitation déposée hier sur notre site. Je voulais m'assurer que vous aviez bien reçu nos propositions — c'est rapide, deux minutes maximum."</div>
+      <div class="script-note">Légitimation via action récente du prospect. Chiffrage du temps pour réduire la résistance.</div>
+    </div>
+
+    <div class="script-block">
+      <div class="script-label">Prospect — Réponse [0:18–0:25]</div>
+      <div class="script-text">"Oui, j'ai vu ça, je n'ai pas encore eu le temps de regarder."</div>
+    </div>
+
+    <div class="script-block">
+      <div class="script-label">Agent Sofia — Question 1 [0:25–0:38]</div>
+      <div class="script-text">"Tout à fait, c'est pour ça que j'appelle — pour vous aider à aller à l'essentiel. Votre logement, c'est une <strong>maison ou un appartement</strong> ?"</div>
+      <div class="script-note">Pivot naturel vers la question. Formulation "pour vous aider" avant la question = perception d'utilité.</div>
+    </div>
+
+    <div class="script-block">
+      <div class="script-label">Prospect [0:38–0:42]</div>
+      <div class="script-text">"Une maison, on vient d'acheter."</div>
+      <div class="script-note" style="color:var(--green);">🎯 SIGNAL FORT : "on vient d'acheter" = besoin immédiat. Classification automatique provisoire : CHAUD.</div>
+    </div>
+
+    <div class="script-block">
+      <div class="script-label">Agent Sofia — Question 2 [0:42–0:58]</div>
+      <div class="script-text">"Félicitations pour l'achat ! Et vous avez déjà une assurance en cours ou c'est un premier contrat à souscrire ?"</div>
+      <div class="script-note">La félicitation crée une micro-relation positive. La question distingue souscription directe (urgent) vs résiliation-souscription.</div>
+    </div>
+
+    <div class="script-block">
+      <div class="script-label">Prospect [0:58–1:05]</div>
+      <div class="script-text">"Pas encore, le notaire nous a dit qu'il fallait être assuré avant la signature définitive dans 3 semaines."</div>
+      <div class="script-note" style="color:var(--green);">🎯 URGENCE CONFIRMÉE : deadline 3 semaines. Scoring Claude → 88/100. Action : transfert immédiat.</div>
+    </div>
+
+    <div class="script-block">
+      <div class="script-label">Agent Sofia — Question 3 + Clôture [1:05–1:35]</div>
+      <div class="script-text">"Très bien, trois semaines c'est parfait pour avoir le temps de bien choisir. Dernière information pour qu'un conseiller vous prépare le meilleur devis : la superficie de la maison, approximativement ?"</div>
+    </div>
+
+    <div class="script-block">
+      <div class="script-label">Agent Sofia — Transfert [1:55–2:10]</div>
+      <div class="script-text">"Parfait. Je transmets tout ça à notre conseiller spécialisé maison individuelle. Il vous rappelle dans les <strong>30 minutes</strong> sur ce numéro. Votre référence dossier est le <strong>[REF]</strong>. Bonne continuation pour votre installation !"</div>
+      <div class="script-note">Mention de la référence = professionnalisme + traçabilité. Délai précis (30 min) = engagement mesurable.</div>
+    </div>
+
+    <div class="metrics-row">
+      <div class="metric-card green"><div class="metric-val">2:10</div><div class="metric-label">Durée totale call</div></div>
+      <div class="metric-card indigo"><div class="metric-val">88/100</div><div class="metric-label">Score Claude</div></div>
+      <div class="metric-card cyan"><div class="metric-val">4</div><div class="metric-label">Données collectées</div></div>
+      <div class="metric-card amber"><div class="metric-val">Chaud</div><div class="metric-label">Classification finale</div></div>
+    </div>
+  </div>
+
+  <div class="section-title"><span>🚗</span> Cas 2 — Assurance Auto Résiliation Loi Hamon</div>
+  <div class="card">
+    <h3>📞 Script spécialisé — Détection résiliation Hamon</h3>
+    <div class="highlight">
+      <div class="highlight-title">📌 Contexte Loi Hamon</div>
+      <p>Depuis 2015, tout assuré auto peut résilier son contrat à tout moment après la première année, sans pénalité. Ce déclencheur est l'un des plus puissants pour générer des leads assurance auto chauds en France.</p>
+    </div>
+    <div class="script-block">
+      <div class="script-label">Question de qualification — Détection Hamon</div>
+      <div class="script-text">"Votre contrat auto, il date de plus d'un an ? Dans ce cas vous avez le droit de changer quand vous voulez — je voulais juste vous en informer."</div>
+      <div class="script-note">La formulation informationnelle ("je voulais juste vous en informer") positionne l'agent comme service, pas comme vendeur. Taux de réponse positive : 73% en test.</div>
+    </div>
+    <div class="script-block">
+      <div class="script-label">Si prospect dit "je savais pas" — Rebond</div>
+      <div class="script-text">"C'est souvent peu connu, oui. Et ça signifie qu'on peut vous trouver une meilleure couverture au même tarif ou moins cher, sans démarche de votre côté — on s'occupe de la résiliation. Votre véhicule, c'est quel type ? Citadine, berline ou autre ?"</div>
+    </div>
+  </div>
+
+  <div class="section-title"><span>🏥</span> Cas 3 — Mutuelle Santé TNS/Indépendants</div>
+  <div class="card">
+    <h3>📞 Script ciblé — Travailleurs Non Salariés</h3>
+    <div class="highlight">
+      <div class="highlight-title">📌 Spécificités du segment TNS</div>
+      <p>Les TNS (artisans, commerçants, professions libérales) ont une mutuelle obligatoire via leur régime (SSI) mais avec des niveaux de remboursement très variables. Ce segment est très réceptif à l'argument économique.</p>
+    </div>
+    <div class="script-block">
+      <div class="script-label">Accroche spécialisée TNS</div>
+      <div class="script-text">"Bonjour, je suis Sofia d'OptimSanté. Je contacte les indépendants de votre secteur suite à la réforme de la protection sociale des TNS de 2024 — certains ont droit à des remboursements revalorisés. <strong>Vous êtes bien indépendant ou chef d'entreprise ?</strong>"</div>
+      <div class="script-note">La mention d'une réforme récente crée une urgence perçue et une légitimité d'appel. La question de confirmation ouvre le dialogue sur l'identité professionnelle.</div>
+    </div>
+    <div class="script-block">
+      <div class="script-label">Question économique — TNS</div>
+      <div class="script-text">"Votre mutuelle actuelle, vous savez à peu près combien vous cotisez par mois ? On constate souvent que les TNS paient entre 15 et 40% trop cher par rapport aux garanties."</div>
+      <div class="script-note">L'ancrage chiffré (15–40%) crée une curiosité concrète. L'agent ne promet pas un gain — il pose une hypothèse vérifiable.</div>
+    </div>
+  </div>
+
+  <div class="section-title"><span>🎓</span> Les 10 commandements de l'agent IA de qualification</div>
+  <div class="card">
+    <h3>📜 Règles d'or — Synthèse de la formation</h3>
+    <div class="grid-2">
+      <ul class="checklist">
+        <li><span class="check">1.</span> <strong>Tu te légitimeras toujours</strong> par une action concrète du prospect (formulaire, demande, clic)</li>
+        <li><span class="check">2.</span> <strong>Tu poseras maximum 4 questions</strong> par appel — pas une de plus</li>
+        <li><span class="check">3.</span> <strong>Tu nommeras le temps</strong> ("deux minutes") pour réduire la résistance initiale</li>
+        <li><span class="check">4.</span> <strong>Tu déclareras être IA</strong> si le prospect le demande explicitement — c'est la loi</li>
+        <li><span class="check">5.</span> <strong>Tu vérifieras Bloctel</strong> avant chaque campagne, résultats tracés et archivés</li>
+      </ul>
+      <ul class="checklist">
+        <li><span class="check">6.</span> <strong>Tu ne vendras pas</strong> — tu qualifies et tu transfères. La vente reste humaine</li>
+        <li><span class="check">7.</span> <strong>Tu mesureras 5 KPIs</strong> quotidiennement et tu en amélioreras 1 par semaine</li>
+        <li><span class="check">8.</span> <strong>Tu testeras en binôme</strong> (A/B) avec minimum 100 appels avant de conclure</li>
+        <li><span class="check">9.</span> <strong>Tu proposeras le STOP</strong> activement à chaque SMS commercial</li>
+        <li><span class="check">10.</span> <strong>Tu archiveras les transcripts</strong> 5 ans minimum (obligation ACPR assurance)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+</div><!-- /content -->
+
+<div class="page-footer">
+  <span>IntelliX CRM — Formation Agent IA Qualification · Marché France & Assurance · 2025</span>
+  <span>intellixcrm.com</span>
+</div>
+
+<script>
+  function switchModule(idx) {
+    document.querySelectorAll('.module').forEach((m, i) => {
+      m.classList.toggle('active', i === idx);
+    });
+    document.querySelectorAll('.nav-btn').forEach((b, i) => {
+      b.classList.toggle('active', i === idx);
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="source_tunisie_annonce_tn" model="doorway.source.registry">
+        <field name="name">Tunisie-Annonce.com</field>
+        <field name="code">tunisie_annonce_tn</field>
+        <field name="pays">tunisie</field>
+        <field name="type_source">classees</field>
+        <field name="credit_par_page">0.0020</field>
+        <field name="nb_leads_moy">25</field>
+        <field name="taux_tel">45</field>
+        <field name="rating_stars">2</field>
+        <field name="actif" eval="True"/>
+    </record>
+    <record id="source_keejob_tn" model="doorway.source.registry">
+        <field name="name">Keejob.com</field>
+        <field name="code">keejob_tn</field>
+        <field name="pays">tunisie</field>
+        <field name="type_source">jobboard</field>
+        <field name="credit_par_page">0.0020</field>
+        <field name="nb_leads_moy">30</field>
+        <field name="taux_tel">40</field>
+        <field name="rating_stars">2</field>
+        <field name="actif" eval="True"/>
+    </record>
+    <record id="source_google_maps_tn" model="doorway.source.registry">
+        <field name="name">Google Maps Tunisie</field>
+        <field name="code">google_maps_tn</field>
+        <field name="pays">tunisie</field>
+        <field name="type_source">gmaps</field>
+        <field name="credit_par_page">0.0100</field>
+        <field name="nb_leads_moy">40</field>
+        <field name="taux_tel">70</field>
+        <field name="rating_stars">3</field>
+        <field name="actif" eval="True"/>
+    </record>
+</odoo>

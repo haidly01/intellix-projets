@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pe_apply_objective_template_wizard_form" model="ir.ui.view">
+        <field name="name">pe.apply.objective.template.wizard.form</field>
+        <field name="model">pe.apply.objective.template.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Appliquer modèle d'objectifs">
+                <group>
+                    <field name="template_id"/>
+                    <field name="target"/>
+                    <field name="contract_id" invisible="target == 'profile'"/>
+                    <field name="profile_id"/>
+                    <field name="replace_existing"/>
+                    <field name="activate"/>
+                </group>
+                <footer>
+                    <button name="action_apply" type="object"
+                            string="Appliquer" class="btn-primary"/>
+                    <button string="Annuler" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_pe_apply_objective_template_wizard" model="ir.actions.act_window">
+        <field name="name">Appliquer modèle d'objectifs</field>
+        <field name="res_model">pe.apply.objective.template.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

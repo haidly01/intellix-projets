@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Client action : configurateur OWL 4 étapes -->
+    <record id="action_extracteur_configurateur" model="ir.actions.client">
+        <field name="name">Configurateur de campagne</field>
+        <field name="tag">extracteur_configurateur_action</field>
+    </record>
+
+    <record id="view_extracteur_campaign_list" model="ir.ui.view">
+        <field name="name">doorway.extracteur.campaign.list</field>
+        <field name="model">doorway.extracteur.campaign</field>
+        <field name="arch" type="xml">
+            <list string="Campagnes configurées">
+                <field name="name"/>
+                <field name="pays"/>
+                <field name="secteur"/>
+                <field name="zone"/>
+                <field name="objectif_leads"/>
+                <field name="cout_estime_par_lead"/>
+                <field name="n8n_workflow_id"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'deployed'"
+                       decoration-info="state == 'advised'"
+                       decoration-danger="state == 'error'"/>
+                <field name="create_date"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_extracteur_campaign_form" model="ir.ui.view">
+        <field name="name">doorway.extracteur.campaign.form</field>
+        <field name="model">doorway.extracteur.campaign</field>
+        <field name="arch" type="xml">
+            <form string="Campagne configurée">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Nom de la campagne"/></h1>
+                    </div>
+                    <group>
+                        <group string="Ciblage">
+                            <field name="pays"/>
+                            <field name="secteur"/>
+                            <field name="zone"/>
+                            <field name="cible"/>
+                            <field name="signal_intention"/>
+                        </group>
+                        <group string="Paramètres">
+                            <field name="objectif_leads"/>
+                            <field name="budget_mensuel"/>
+                            <field name="frequence_heures"/>
+                            <field name="cout_estime_par_lead"/>
+                            <field name="state"/>
+                        </group>
+                    </group>
+                    <group string="Sources sélectionnées">
+                        <field name="source_ids" nolabel="1" widget="many2many_tags"/>
+                    </group>
+                    <group string="Workflow n8n">
+                        <field name="n8n_workflow_id"/>
+                        <field name="n8n_workflow_name"/>
+                        <field name="n8n_url" widget="url"/>
+                        <field name="error_message" invisible="state != 'error'"/>
+                    </group>
+                    <group string="Notes &amp; Recommandation IA">
+                        <field name="notes_client"/>
+                        <field name="claude_advice"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_extracteur_campaign_list" model="ir.actions.act_window">
+        <field name="name">Campagnes configurées</field>
+        <field name="res_model">doorway.extracteur.campaign</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucune campagne configurée</p>
+            <p>Utilisez le Configurateur de campagne pour générer un workflow n8n d'extraction.</p>
+        </field>
+    </record>
+</odoo>

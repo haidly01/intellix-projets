@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_coins_devis_entente_wizard" model="ir.ui.view">
+        <field name="name">coins.devis.entente.wizard.form</field>
+        <field name="model">coins.devis.entente.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Modèle de devis partenaire">
+                <group>
+                    <field name="lead_id" invisible="1"/>
+                    <field name="allowed_template_ids" invisible="1"/>
+                    <field name="type_etablissement"/>
+                    <field name="marche"/>
+                    <field name="recommandation"/>
+                    <field name="template_id" options="{'no_create': True}"/>
+                </group>
+                <footer>
+                    <button name="action_create_quote" type="object"
+                            string="Créer le devis" class="btn-primary"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

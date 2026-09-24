@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_whatsapp_send_wizard_form" model="ir.ui.view">
+        <field name="name">doorway.whatsapp.send.wizard.form</field>
+        <field name="model">doorway.whatsapp.send.wizard</field>
+        <field name="arch" type="xml">
+            <form string="WhatsApp" js_class="whatsapp_wizard_form" class="o_whatsapp_wizard_dialog">
+                <field name="lead_id" invisible="1"/>
+                <field name="partner_id" invisible="1"/>
+                <field name="partner_ids" invisible="1"/>
+                <field name="phone" invisible="1"/>
+                <field name="message" invisible="1"/>
+                <field name="wa_message" invisible="1"/>
+                <field name="sms_message" invisible="1"/>
+                <field name="email_body" invisible="1"/>
+                <field name="timing" invisible="1"/>
+                <field name="log_crm" invisible="1"/>
+                <field name="relance_auto" invisible="1"/>
+                <field name="use_n8n" invisible="1"/>
+                <field name="fallback_twilio" invisible="1"/>
+                <div class="wa-wizard-mount"/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_whatsapp_send_wizard" model="ir.actions.act_window">
+        <field name="name">WhatsApp</field>
+        <field name="res_model">doorway.whatsapp.send.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="action_send_whatsapp_from_leads" model="ir.actions.act_window">
+        <field name="name">WhatsApp</field>
+        <field name="res_model">doorway.whatsapp.send.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="crm.model_crm_lead"/>
+        <field name="binding_view_types">list</field>
+    </record>
+</odoo>

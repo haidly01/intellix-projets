@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="seq_cq_reservation" model="ir.sequence">
+        <field name="name">Réservation Coins Québec</field>
+        <field name="code">coins.quebec.reservation</field>
+        <field name="prefix">CQ-RES/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_cq_evenement" model="ir.sequence">
+        <field name="name">Événement Coins Québec</field>
+        <field name="code">coins.quebec.evenement</field>
+        <field name="prefix">CQ-EVT/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="staff_role_reception" model="intellix.riad.staff.role">
+        <field name="name">Réception</field>
+        <field name="code">reception</field>
+        <field name="sequence">10</field>
+        <field name="legacy_role">reception</field>
+    </record>
+    <record id="staff_role_menage" model="intellix.riad.staff.role">
+        <field name="name">Ménage</field>
+        <field name="code">menage</field>
+        <field name="sequence">20</field>
+        <field name="legacy_role">menage</field>
+    </record>
+    <record id="staff_role_cuisine" model="intellix.riad.staff.role">
+        <field name="name">Cuisine</field>
+        <field name="code">cuisine</field>
+        <field name="sequence">30</field>
+        <field name="legacy_role">cuisine</field>
+    </record>
+    <record id="staff_role_restaurant" model="intellix.riad.staff.role">
+        <field name="name">Service restaurant</field>
+        <field name="code">restaurant</field>
+        <field name="sequence">40</field>
+        <field name="legacy_role">restaurant</field>
+    </record>
+    <record id="staff_role_massage" model="intellix.riad.staff.role">
+        <field name="name">Bien-être — massage</field>
+        <field name="code">wellness_massage</field>
+        <field name="sequence">50</field>
+        <field name="legacy_role">wellness</field>
+        <field name="wellness_type_code">massage</field>
+    </record>
+    <record id="staff_role_esthetique" model="intellix.riad.staff.role">
+        <field name="name">Bien-être — esthétique</field>
+        <field name="code">wellness_esthetique</field>
+        <field name="sequence">60</field>
+        <field name="legacy_role">wellness</field>
+        <field name="wellness_type_code">esthetique</field>
+    </record>
+    <record id="staff_role_brushing" model="intellix.riad.staff.role">
+        <field name="name">Bien-être — brushing</field>
+        <field name="code">wellness_brushing</field>
+        <field name="sequence">70</field>
+        <field name="legacy_role">wellness</field>
+        <field name="wellness_type_code">brushing</field>
+    </record>
+
+    <function model="pe.employee.profile" name="riad_migrate_legacy_roles"/>
+</odoo>

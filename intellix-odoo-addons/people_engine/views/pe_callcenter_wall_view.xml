@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_pe_callcenter_wall" model="ir.actions.client">
+        <field name="name">Écran mural Call Center</field>
+        <field name="tag">pe_callcenter_wall_action</field>
+    </record>
+
+    <menuitem id="menu_pe_callcenter_wall"
+              name="Écran mural Call Center"
+              parent="people_engine.menu_pe_departments"
+              action="action_pe_callcenter_wall"
+              groups="people_engine.group_manager"
+              sequence="30"/>
+
+    <menuitem id="menu_pe_call_log"
+              name="Journal appels CC"
+              parent="people_engine.menu_pe_departments"
+              action="action_pe_call_log"
+              groups="people_engine.group_manager"
+              sequence="35"/>
+
+    <menuitem id="menu_pe_cc_campaign"
+              name="Campagnes CC"
+              parent="people_engine.menu_pe_departments"
+              action="action_pe_cc_campaign"
+              groups="people_engine.group_manager"
+              sequence="40"/>
+</odoo>

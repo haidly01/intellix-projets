@@ -1,0 +1,492 @@
+/* Réno Immobilier lead form — maquette Karine Barmaki (#EC6A2B / #1B2430) */
+
+.o_form_view:has(.o_reno_lead_form) {
+    --reno-slate: #1B2430;
+    --reno-slate-800: #28323F;
+    --reno-accent: #EC6A2B;
+    --reno-accent-deep: #C6551F;
+    --reno-accent-soft: #FDE9DD;
+    --reno-ok: #3B8256;
+    --reno-ok-soft: #E6F3EB;
+    --reno-line: #E4E7EB;
+    --o-community-color: #EC6A2B;
+    --o-brand: #1B2430;
+    --o-brand-primary: #EC6A2B;
+    --primary: #EC6A2B;
+    --o-color-primary: #EC6A2B;
+    --o-cc1-btn-primary: #EC6A2B;
+}
+
+.o_form_view:has(.o_reno_lead_form) .o_form_statusbar,
+.o_form_view:has(.o_reno_lead_form) .o_statusbar_status .o_arrow_button.o_arrow_button_current:not(:hover) {
+    --o-statusbar-bg: #1B2430;
+    --o-community-color: #1B2430;
+}
+
+.o_form_view:has(.o_reno_lead_form) header .btn-primary.o_reno_btn_primary,
+.o_form_view:has(.o_reno_lead_form) .o_statusbar_buttons .btn-primary.o_reno_btn_primary {
+    background: #EC6A2B !important;
+    border-color: #EC6A2B !important;
+    color: #fff !important;
+}
+
+.o_form_view:has(.o_reno_lead_form) header .btn-secondary.o_reno_btn_primary {
+    background: #1B2430 !important;
+    border-color: #1B2430 !important;
+    color: #fff !important;
+}
+
+.o_form_view:has(.o_reno_lead_form) header .btn-success.o_reno_btn_primary {
+    background: #E6F3EB !important;
+    border-color: transparent !important;
+    color: #3B8256 !important;
+}
+
+.o_form_view:has(.o_reno_lead_form) .o_form_sheet {
+    display: flex;
+    flex-direction: column;
+}
+
+.o_reno_lead_form {
+    width: 100%;
+    margin: 0 0 8px;
+    order: -1;
+}
+
+.o_form_view:has(.o_reno_lead_form) .oe_title {
+    order: -2;
+}
+
+/* Ancien Revenu attendu (deux $ + placeholder Mens...) */
+.o_form_view:has(.o_reno_lead_form) .oe_title h2,
+.o_form_view:has(.o_reno_lead_form) .oe_title .o_reno_hide_old_revenue,
+.o_form_view:has(.o_reno_lead_form) .oe_title .o_row {
+    display: none !important;
+}
+
+/* Gagné / Perdu / Appeler hérités — une seule barre */
+.o_form_view:has(.o_reno_lead_form) header button[name="action_set_won_rainbowman"],
+.o_form_view:has(.o_reno_lead_form) header button[data-hotkey="w"]:not(.o_reno_btn_primary),
+.o_form_view:has(.o_reno_lead_form) header button[data-hotkey="l"]:not(.o_reno_btn_primary),
+.o_form_view:has(.o_reno_lead_form) header button[name="action_call_contact_via_agent_ia"] {
+    display: none !important;
+}
+
+.o_reno_top_grid {
+    display: grid;
+    grid-template-columns: minmax(280px, 1fr) minmax(280px, 1fr);
+    gap: 16px;
+    padding: 8px 4px 16px;
+    align-items: start;
+}
+
+.o_reno_contact_card {
+    background: #fff;
+    border: 1px solid #E4E7EB;
+    border-radius: 12px;
+    padding: 18px 20px 16px;
+    box-shadow: 0 8px 18px rgba(27, 36, 48, 0.04);
+}
+
+.o_reno_contact_title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #8B94A0;
+    margin-bottom: 10px;
+}
+
+.o_reno_contact_actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.o_reno_contact_btn {
+    background: #fff !important;
+    border: 1px solid #E4E7EB !important;
+    color: #1B2430 !important;
+    font-weight: 600;
+}
+
+.o_reno_enrich_badge {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 10px;
+}
+
+.o_reno_enrich_ok {
+    background: #E6F3EB;
+    color: #3B8256;
+}
+
+.o_reno_enrich_warn {
+    background: #FFF4E5;
+    color: #C6551F;
+}
+
+.o_reno_cs_checklist {
+    margin: 8px 0 14px;
+    padding: 12px 14px;
+    background: #F8F6F4;
+    border: 1px solid #E4E7EB;
+    border-radius: 10px;
+}
+
+.o_reno_cs_checklist_title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #8B94A0;
+    margin-bottom: 8px;
+}
+
+.o_reno_revenue_row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+    padding: 16px 4px 18px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #E4E7EB;
+}
+
+.o_reno_revenue_field label,
+.o_reno_revenue_field .o_form_label {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #8B94A0;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.o_reno_revenue_value,
+.o_reno_revenue_field .o_field_widget {
+    font-size: 19px;
+    font-weight: 700;
+    color: #1B2430;
+}
+
+.o_reno_prob_pill {
+    display: inline-flex;
+    align-items: center;
+    background: #FDE9DD;
+    color: #C6551F;
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 12px;
+    margin-top: 4px;
+}
+
+.o_reno_form_grid {
+    margin-top: 8px;
+    padding: 8px 4px 18px;
+    border-bottom: 1px solid #E4E7EB;
+}
+
+.o_reno_partner_stack {
+    margin: 0 0 16px;
+}
+
+.o_reno_partner_select {
+    display: flex;
+    gap: 8px;
+    max-width: 420px;
+    margin: 0 auto;
+    align-items: center;
+    text-align: left;
+}
+
+.o_reno_partner_select .o_field_widget {
+    flex: 1;
+    max-width: none;
+    margin: 0;
+}
+
+.o_reno_suggest_btn {
+    background: #1B2430 !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 7px;
+    padding: 9px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.o_reno_change_partner {
+    margin-top: 14px;
+    font-size: 12px;
+    color: #C9CFD6;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.o_reno_status_badge,
+.o_reno_status_badge .o_field_widget {
+    display: inline-flex;
+    margin-top: 6px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #F3D2B8 !important;
+}
+
+.o_reno_service_partners {
+    margin-top: -6px;
+    padding: 16px 18px 14px;
+    background: #fff;
+    border: 1px solid #E4E7EB;
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 8px 18px rgba(27, 36, 48, 0.04);
+}
+
+.o_reno_partner_stack .o_reno_partner_card,
+.o_reno_partner_stack .o_reno_partner_empty {
+    margin-bottom: 0;
+    border-radius: 12px 12px 0 0;
+}
+
+.o_reno_service_title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #8B94A0;
+    margin-bottom: 10px;
+}
+.o_reno_service_hint {
+    font-size: 12.5px;
+    color: #5B564A;
+    margin: 0 0 10px;
+    line-height: 1.45;
+}
+
+.o_reno_assign_tab_link {
+    padding: 4px 0 12px;
+}
+
+.o_reno_focus_partner_btn,
+.o_reno_focus_partner_btn:hover {
+    color: #EC6A2B !important;
+    font-weight: 600;
+}
+
+.o_reno_partner_focus {
+    outline: 2px solid #EC6A2B;
+    outline-offset: 3px;
+}
+
+/* Sections parallèles héritées — masquées sur fiche Réno */
+.o_form_view:has(.o_reno_lead_form) .o_group:has(button[name="action_assign_partner"]),
+.o_form_view:has(.o_reno_lead_form) .o_inner_group:has(button[name="action_assign_partner"]),
+.o_form_view:has(.o_reno_lead_form) .o_field_widget[name="assigned_partner_id"] {
+    display: none !important;
+}
+
+.o_form_view:has(.o_reno_lead_form) header .o_reno_btn_lost {
+    background: #fff !important;
+    border: 1px solid #E4E7EB !important;
+    color: #5B6572 !important;
+}
+
+/* Scoped to the lead form so Partenaires kanban can keep its own card CSS. */
+.o_form_view .o_reno_partner_card {
+    background: linear-gradient(135deg, #1B2430, #28323F);
+    border-radius: 12px;
+    padding: 22px 24px;
+    color: #fff;
+}
+
+.o_form_view .o_reno_partner_header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.o_form_view .o_reno_partner_avatar,
+.o_form_view .o_reno_partner_avatar .o_field_widget {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: #EC6A2B;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 15px;
+    color: #fff !important;
+    flex-shrink: 0;
+}
+
+.o_form_view .o_reno_partner_name,
+.o_form_view .o_reno_partner_name .o_field_widget,
+.o_form_view .o_reno_partner_name a {
+    font-size: 15.5px;
+    font-weight: 700;
+    color: #fff !important;
+}
+
+.o_form_view .o_reno_partner_role,
+.o_form_view .o_reno_partner_role .o_field_widget {
+    font-size: 12px;
+    color: #A9B2BE !important;
+}
+
+.o_reno_match_badge {
+    display: inline-flex;
+    background: rgba(59, 130, 86, 0.22);
+    color: #7FD9A0;
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 11px;
+    margin-top: 6px;
+}
+
+.o_form_view .o_reno_partner_meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.o_reno_m_label {
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: #8B94A0;
+    margin-bottom: 3px;
+}
+
+.o_reno_m_val,
+.o_reno_m_val .o_field_widget {
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff !important;
+}
+
+.o_reno_partner_empty {
+    background: #FFF8F0;
+    border: 1.5px solid #EC6A2B;
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+}
+
+.o_reno_partner_empty_icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #FDE9DD;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 12px;
+    color: #C6551F;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.o_reno_partner_empty h4 {
+    font-size: 13.5px;
+    color: #28323F;
+    margin-bottom: 5px;
+}
+
+.o_reno_partner_empty p {
+    font-size: 12.5px;
+    color: #5B6572;
+    margin-bottom: 14px;
+}
+
+.o_reno_partner_empty .o_field_widget {
+    max-width: 360px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.o_form_view:has(.o_reno_lead_form) .oe_title .o_row {
+    display: none;
+}
+
+.o_form_view:has(.o_reno_lead_form) .o_field_CopyClipboardChar button.o_clipboard_button,
+.o_form_view:has(.o_reno_lead_form) button[title*="dicter" i],
+.o_form_view:has(.o_reno_lead_form) button[title*="dictée" i],
+.o_form_view:has(.o_reno_lead_form) .o_field_widget .fa-microphone {
+    opacity: 0.35;
+}
+
+.o_form_view:has(.o_reno_lead_form) .o_notebook_headers .nav-link.active {
+    color: #EC6A2B;
+    border-bottom-color: #EC6A2B;
+}
+
+.o_reno_plus_menu {
+    position: relative;
+    display: inline-block;
+}
+
+.o_reno_plus_menu > button {
+    background: #fff;
+    border: 1px solid #E4E7EB;
+    color: #5B6572;
+    border-radius: 7px;
+    padding: 9px 16px;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.o_reno_plus_menu .o_reno_plus_list {
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    background: #fff;
+    border: 1px solid #E4E7EB;
+    border-radius: 9px;
+    box-shadow: 0 12px 28px rgba(27, 36, 48, 0.12);
+    width: 220px;
+    padding: 6px;
+    z-index: 20;
+}
+
+.o_reno_plus_menu:hover .o_reno_plus_list,
+.o_reno_plus_menu.open .o_reno_plus_list {
+    display: block;
+}
+
+.o_reno_plus_list button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    padding: 9px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #28323F;
+}
+
+.o_reno_plus_list button:hover {
+    background: #F3F4F6;
+}
+
+@media (max-width: 768px) {
+    .o_reno_top_grid,
+    .o_reno_revenue_row,
+    .o_form_view .o_reno_partner_meta {
+        grid-template-columns: 1fr;
+    }
+}

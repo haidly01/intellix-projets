@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_coins_send_fiche_wizard" model="ir.ui.view">
+        <field name="name">coins.send.fiche.wizard.form</field>
+        <field name="model">coins.send.fiche.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Envoyer la fiche">
+                <div class="alert alert-warning" role="alert" invisible="not test_mode">
+                    Test interne : le courriel part vers doorwaydigital1@gmail.com — pas vers la partenaire.
+                </div>
+                <group>
+                    <group>
+                        <field name="lead_id" invisible="1"/>
+                        <field name="test_mode" invisible="1"/>
+                        <field name="email_to"/>
+                        <field name="partner_email"/>
+                    </group>
+                    <group>
+                        <field name="subject"/>
+                        <field name="lien_fiche" widget="url"/>
+                    </group>
+                </group>
+                <separator string="Courriel"/>
+                <field name="body_html" nolabel="1" colspan="2"/>
+                <separator string="Maquette — Complétez votre fiche"/>
+                <field name="maquette_html" nolabel="1" colspan="2"/>
+                <footer>
+                    <button name="action_send" type="object"
+                            string="Envoyer la fiche"
+                            class="btn-primary o_coins_btn_envoyer_fiche"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

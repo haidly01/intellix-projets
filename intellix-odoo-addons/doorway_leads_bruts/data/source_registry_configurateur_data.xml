@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Sources du Configurateur de Campagnes (INTLX-EXT).
+        Portage de SOURCES_DB (brief). Une source peut apparaître dans
+        plusieurs secteurs : on crée un enregistrement par couple
+        (source, secteur) avec un `code` unique et un `ext_source_id`
+        métier (réutilisé tel quel par Claude / l'auto-sélection).
+    -->
+
+    <!-- ================= FRANCE — ASSURANCE ================= -->
+    <record id="ext_src_pages_jaunes_fr_assurance" model="doorway.source.registry">
+        <field name="name">Pages Jaunes France</field>
+        <field name="code">ext_pages_jaunes_fr_assurance</field>
+        <field name="ext_source_id">pages_jaunes_fr</field>
+        <field name="pays">france</field>
+        <field name="secteur">assurance</field>
+        <field name="type_source">annuaire</field>
+        <field name="description">Particuliers et professionnels avec coordonnées</field>
+        <field name="types_leads">particuliers,artisans,TPE</field>
+        <field name="filtres_dispo">departement,ville,code_postal</field>
+        <field name="cout_estime">INTLX-EXT-BRUT</field>
+        <field name="qualite">3</field>
+        <field name="rating_stars">3</field>
+        <field name="url_pattern">https://www.pagesjaunes.fr/pagesblanches/recherche?quoi={secteur}&amp;ou={zone}</field>
+    </record>
+    <record id="ext_src_leboncoin_immo_fr_assurance" model="doorway.source.registry">
+        <field name="name">LeBonCoin — Annonces Immobilières</field>
+        <field name="code">ext_leboncoin_immo_fr_assurance</field>
+        <field name="ext_source_id">leboncoin_immo_fr</field>
+        <field name="pays">france</field>
+        <field name="secteur">assurance</field>
+        <field name="type_source">classees</field>
+        <field name="description">Acheteurs immobilier = besoin assurance prêt + habitation</field>
+        <field name="types_leads">primo_accedants,investisseurs</field>
+        <field name="filtres_dispo">departement,ville,budget,type_bien</field>
+        <field name="cout_estime">INTLX-EXT-IA</field>
+        <field name="qualite">5</field>
+        <field name="rating_stars">3</field>
+        <field name="signal_intention">achat_immobilier</field>
+        <field name="url_pattern">https://www.leboncoin.fr/recherche?category=9&amp;locations={zone}</field>
+    </record>
+    <record id="ext_src_seloger_fr" model="doorway.source.registry">
+        <field name="name">SeLoger — Acheteurs actifs</field>
+        <field name="code">ext_seloger_fr</field>
+        <field name="ext_source_id">seloger_fr</field>
+        <field name="pays">france</field>
+        <field name="secteur">assurance</field>
+        <field name="type_source">classees</field>
+        <field name="description">Acheteurs qualifiés avec budget déclaré</field>
+        <field name="types_leads">primo_accedants,familles</field>
+        <field name="filtres_dispo">departement,budget_min,budget_max,nb_pieces</field>
+        <field name="cout_estime">INTLX-EXT-IA</field>
+        <field name="qualite">5</field>
+        <field name="rating_stars">3</field>
+        <field name="signal_intention">achat_immobilier</field>
+    </record>
+    <record id="ext_src_infogreffe_fr" model="doorway.source.registry">
+        <field name="name">Infogreffe — Nouvelles immatriculations</field>
+        <field name="code">ext_infogreffe_fr</field>
+        <field name="ext_source_id">infogreffe_fr</field>
+        <field name="pays">france</field>
+        <field name="secteur">assurance</field>
+        <field name="type_source">annuaire</field>
+        <field name="description">Créateurs d'entreprise = besoin RC Pro + multirisque</field>
+        <field name="types_leads">dirigeants,auto_entrepreneurs</field>
+        <field name="filtres_dispo">departement,forme_juridique,secteur_activite,date_creation</field>
+        <field name="cout_estime">INTLX-EXT-VER</field>
+        <field name="qualite">4</field>
+        <field name="rating_stars">3</field>
+        <field name="signal_intention">creation_entreprise</field>
+    </record>
+    <record id="ext_src_societe_com_fr_assurance" model="doorway.source.registry">
+        <field name="name">Societe.com — Dirigeants PME</field>
+        <field name="code">ext_societe_com_fr_assurance</field>
+        <field name="ext_source_id">societe_com_fr</field>
+        <field name="pays">france</field>
+        <field name="secteur">assurance</field>
+        <field name="type_source">annuaire</field>
+        <field name="description">Dirigeants avec coordonnées directes</field>
+        <field name="types_leads">dirigeants_pme,gerants</field>
+        <field name="filtres_dispo">departement,ca_min,ca_max,nb_salaries,secteur</field>
+        <field name="cout_estime">INTLX-EXT-VER</field>
+        <field name="qualite">4</field>
+        <field name="rating_stars">3</field>
+    </record>
+    <record id="ext_src_insee_fr" model="doorway.source.registry">
+        <field name="name">Fichiers INSEE (open data)</field>
+        <field name="code">ext_insee_fr</field>
+        <field name="ext_source_id">insee_fr</field>
+        <field name="pays">france</field>
+        <field name="secteur">assurance</field>
+        <field name="type_source">autre</field>
+        <field name="description">Base légale exhaustive, gratuite</field>
+        <field name="types_leads">entreprises,etablissements</field>
+        <field name="filtres_dispo">departement,code_naf,tranche_effectif</field>
+        <field name="cout_estime">INTLX-EXT-BRUT</field>
+        <field name="qualite">2</field>
+        <field name="rating_stars">2</field>
+        <field name="gratuit" eval="True"/>
+    </record>
+
+    <!-- ================= FRANCE — RÉNOVATION ================= -->
+    <record id="ext_src_maprimereno_fr" model="doorway.source.registry">
+        <field name="name">Propriétaires éligibles MaPrimeRénov</field>
+        <field name="code">ext_maprimereno_fr</field>
+        <field name="ext_source_id">maprimereno_fr</field>
+        <field name="pays">france</field>
+        <field name="secteur">renovation</field>
+        <field name="type_source">autre</field>
+        <field name="description">Propriétaires maisons individuelles zones éligibles</field>
+        <field name="types_leads">proprietaires,bailleurs</field>
+        <field name="filtres_dispo">departement,type_logement,annee_construction</field>
+        <field name="cout_estime">INTLX-EXT-IA</field>
+        <field name="qualite">5</field>
+        <field name="rating_stars">3</field>
+        <field name="signal_intention">renovation_energetique</field>
+    </record>
+    <record id="ext_src_pages_jaunes_fr_renovation" model="doorway.source.registry">
+        <field name="name">Pages Jaunes France</field>
+        <field name="code">ext_pages_jaunes_fr_renovation</field>
+        <field name="ext_source_id">pages_jaunes_fr</field>
+        <field name="pays">france</field>
+        <field name="secteur">renovation</field>
+        <field name="type_source">annuaire</field>
+        <field name="description">Particuliers avec maisons individuelles</field>
+        <field name="types_leads">particuliers</field>
+        <field name="filtres_dispo">departement,ville</field>
+        <field name="cout_estime">INTLX-EXT-BRUT</field>
+        <field name="qualite">2</field>
+        <field name="rating_stars">2</field>
+        <field name="url_pattern">https://www.pagesjaunes.fr/pagesblanches/recherche?quoi={secteur}&amp;ou={zone}</field>
+    </record>
+
+    <!-- ================= FRANCE — IMMOBILIER ================= -->
+    <record id="ext_src_leboncoin_immo_fr_immobilier" model="doorway.source.registry">
+        <field name="name">LeBonCoin Immobilier</field>
+        <field name="code">ext_leboncoin_immo_fr_immobilier</field>
+        <field name="ext_source_id">leboncoin_immo_fr</field>
+        <field name="pays">france</field>
+        <field name="secteur">immobilier</field>
+        <field name="type_source">classees</field>
+        <field name="description">Vendeurs et acheteurs actifs</field>
+        <field name="types_leads">vendeurs,acheteurs</field>
+        <field name="filtres_dispo">departement,ville,type_bien,budget</field>
+        <field name="cout_estime">INTLX-EXT-IA</field>
+        <field name="qualite">5</field>
+        <field name="rating_stars">3</field>
+        <field name="url_pattern">https://www.leboncoin.fr/recherche?category=9&amp;locations={zone}</field>
+    </record>
+
+    <!-- ================= FRANCE — TÉLÉCOM ================= -->
+    <record id="ext_src_pages_jaunes_fr_telecom" model="doorway.source.registry">
+        <field name="name">Pages Jaunes — PME</field>
+        <field name="code">ext_pages_jaunes_fr_telecom</field>
+        <field name="ext_source_id">pages_jaunes_fr</field>
+        <field name="pays">france</field>
+        <field name="secteur">telecom</field>
+        <field name="type_source">annuaire</field>
+        <field name="description">PME multi-sites = besoins télécom professionnels</field>
+        <field name="types_leads">pme,tpe</field>
+        <field name="filtres_dispo">departement,nb_salaries,secteur</field>
+        <field name="cout_estime">INTLX-EXT-VER</field>
+        <field name="qualite">3</field>
+        <field name="rating_stars">3</field>
+    </record>
+    <record id="ext_src_societe_com_fr_telecom" model="doorway.source.registry">
+        <field name="name">Societe.com</field>
+        <field name="code">ext_societe_com_fr_telecom</field>
+        <field name="ext_source_id">societe_com_fr</field>
+        <field name="pays">france</field>
+        <field name="secteur">telecom</field>
+        <field name="type_source">annuaire</field>
+        <field name="description">Dirigeants de PME avec données financières</field>
+        <field name="types_leads">dirigeants_pme</field>
+        <field name="filtres_dispo">departement,ca_min,nb_salaries</field>
+        <field name="cout_estime">INTLX-EXT-VER</field>
+        <field name="qualite">4</field>
+        <field name="rating_stars">3</field>
+    </record>
+
+    <!-- ================= CANADA — ASSURANCE ================= -->
+    <record id="ext_src_kijiji_immo_ca" model="doorway.source.registry">
+        <field name="name">Kijiji — Immobilier Québec</field>
+        <field name="code">ext_kijiji_immo_ca</field>
+        <field name="ext_source_id">kijiji_immo_ca</field>
+        <field name="pays">canada</field>
+        <field name="secteur">assurance</field>
+        <field name="type_source">classees</field>
+        <field name="description">Acheteurs actifs = assurance prêt + habitation</field>
+        <field name="types_leads">acheteurs,locataires</field>
+        <field name="filtres_dispo">region,ville,budget</field>
+        <field name="cout_estime">INTLX-EXT-IA</field>
+        <field name="qualite">4</field>
+        <field name="rating_stars">3</field>
+    </record>
+
+    <record id="ext_src_lespac_immo_ca" model="doorway.source.registry">
+        <field name="name">LesPAC - Immobilier Quebec</field>
+        <field name="code">ext_lespac_immo_ca</field>
+        <field name="ext_source_id">lespac_immo_ca</field>
+        <field name="pays">canada</field>
+        <field name="secteur">immobilier</field>
+        <field name="type_source">classees</field>
+        <field name="description">Annonces FSBO - telephones via Bright Data</field>
+        <field name="types_leads">vendeurs,proprietaires</field>
+        <field name="filtres_dispo">region,ville</field>
+        <field name="cout_estime">INTLX-EXT-IA</field>
+        <field name="qualite">3</field>
+        <field name="rating_stars">3</field>
+    </record>
+    <record id="ext_src_craigslist_immo_qc" model="doorway.source.registry">
+        <field name="name">Craigslist - Immobilier QC</field>
+        <field name="code">ext_craigslist_immo_qc</field>
+        <field name="ext_source_id">craigslist_immo_qc</field>
+        <field name="pays">canada</field>
+        <field name="secteur">immobilier</field>
+        <field name="type_source">classees</field>
+        <field name="description">Petites annonces immo Quebec / Montreal</field>
+        <field name="types_leads">vendeurs,proprietaires</field>
+        <field name="filtres_dispo">region</field>
+        <field name="cout_estime">INTLX-EXT-IA</field>
+        <field name="qualite">2</field>
+        <field name="rating_stars">2</field>
+    </record>
+    <record id="ext_src_registraire_qc" model="doorway.source.registry">
+        <field name="name">Registraire des entreprises QC</field>
+        <field name="code">ext_registraire_qc</field>
+        <field name="ext_source_id">registraire_qc</field>
+        <field name="pays">canada</field>
+        <field name="secteur">assurance</field>
+        <field name="type_source">annuaire</field>
+        <field name="description">Nouvelles entreprises = assurance commerciale</field>
+        <field name="types_leads">dirigeants,entrepreneurs</field>
+        <field name="filtres_dispo">region,type_entreprise,date_creation</field>
+        <field name="cout_estime">INTLX-EXT-VER</field>
+        <field name="qualite">4</field>
+        <field name="rating_stars">3</field>
+    </record>
+
+    <!-- ================= CANADA — RÉNOVATION ================= -->
+    <record id="ext_src_soumission_entrepreneurs_ca" model="doorway.source.registry">
+        <field name="name">Soumission Entrepreneurs</field>
+        <field name="code">ext_soumission_entrepreneurs_ca</field>
+        <field name="ext_source_id">soumission_entrepreneurs_ca</field>
+        <field name="pays">canada</field>
+        <field name="secteur">renovation</field>
+        <field name="type_source">classees</field>
+        <field name="description">Propriétaires cherchant des entrepreneurs = leads chauds</field>
+        <field name="types_leads">proprietaires</field>
+        <field name="filtres_dispo">region,type_travaux,budget</field>
+        <field name="cout_estime">INTLX-EXT-IA</field>
+        <field name="qualite">5</field>
+        <field name="rating_stars">3</field>
+        <field name="signal_intention">renovation_active</field>
+    </record>
+
+    <!-- ================= MAROC — CENTRES D'APPELS ================= -->
+    <record id="ext_src_maroc_annuaire" model="doorway.source.registry">
+        <field name="name">Annuaire Maroc — Entreprises</field>
+        <field name="code">ext_maroc_annuaire</field>
+        <field name="ext_source_id">maroc_annuaire</field>
+        <field name="pays">maroc</field>
+        <field name="secteur">centres_appels</field>
+        <field name="type_source">annuaire</field>
+        <field name="description">Directeurs de call centers marocains</field>
+        <field name="types_leads">dirigeants,directeurs_operations</field>
+        <field name="filtres_dispo">ville,secteur,taille</field>
+        <field name="cout_estime">INTLX-EXT-VER</field>
+        <field name="qualite">3</field>
+        <field name="rating_stars">3</field>
+    </record>
+    <record id="ext_src_linkedin_maroc" model="doorway.source.registry">
+        <field name="name">LinkedIn — Décideurs call center Maroc</field>
+        <field name="code">ext_linkedin_maroc</field>
+        <field name="ext_source_id">linkedin_maroc</field>
+        <field name="pays">maroc</field>
+        <field name="secteur">centres_appels</field>
+        <field name="type_source">linkedin</field>
+        <field name="description">DG, Directeurs Ops, Responsables RH de call centers</field>
+        <field name="types_leads">decideurs</field>
+        <field name="filtres_dispo">ville,poste,secteur</field>
+        <field name="cout_estime">INTLX-EXT-IA</field>
+        <field name="qualite">5</field>
+        <field name="rating_stars">3</field>
+    </record>
+</odoo>

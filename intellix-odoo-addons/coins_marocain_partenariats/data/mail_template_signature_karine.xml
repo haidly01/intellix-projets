@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="mail_template_cm_signature_karine" model="mail.template">
+        <field name="name">Coins Marocain — Envoyer pour signature (Karine)</field>
+        <field name="model_id" ref="model_coins_entente"/>
+        <field name="subject">Bienvenue chez Coins Marocain — votre entente de partenariat</field>
+        <field name="email_from">Karine Barmaki — Coins Marocain &lt;karine@agencedoorway.com&gt;</field>
+        <field name="email_to">{{ object.partner_id.email or object.contact_partenaire }}</field>
+        <field name="auto_delete" eval="False"/>
+        <field name="description">Envoi automatique depuis le bouton Envoyer pour signature. Corps = data/emails/email_signature_karine.html. Lien /sign/contract. Signature Karine Barmaki. Ne pas utiliser pour Riad Djemanna / S00021.</field>
+        <field name="body_html" type="html"><div>Voir data/emails/email_signature_karine.html</div></field>
+    </record>
+</odoo>

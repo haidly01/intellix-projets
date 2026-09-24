@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="mail_template_support_alert" model="mail.template">
+        <field name="name">Support Intellix — Alerte ticket</field>
+        <field name="model_id" ref="model_intellix_support_ticket"/>
+        <field name="subject">Alerte support — {{ object.name }} {{ object.subject }}</field>
+        <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+        <field name="use_default_to" eval="False"/>
+        <field name="email_to">{{ ','.join(filter(None, env.ref('intellix_support.group_intellix_support_manager').user_ids.mapped('partner_id.email'))) }}</field>
+        <field name="body_html" type="html">
+            <div>
+                <p>Alerte ticket <strong><t t-out="object.name"/></strong></p>
+                <p><strong>Sujet :</strong> <t t-out="object.subject or ''"/></p>
+                <p><strong>Priorité :</strong> <t t-out="object.priority"/></p>
+                <p><strong>SLA :</strong> <t t-out="object.sla_label or object.sla_state"/></p>
+                <p><strong>Origine :</strong> <t t-out="object.side_origin"/></p>
+                <p t-if="object.copilot_summary"><strong>Diagnostic :</strong><br/>
+                    <t t-out="object.copilot_summary"/></p>
+                <p>
+                    <a t-attf-href="/web#id={{ object.id }}&amp;model=intellix.support.ticket&amp;view_type=form">
+                        Ouvrir le ticket
+                    </a>
+                </p>
+            </div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <record id="mail_template_support_karine_product" model="mail.template">
+        <field name="name">Support Intellix — Alerte produit Karine</field>
+        <field name="model_id" ref="model_intellix_support_ticket"/>
+        <field name="subject">Demande produit — {{ object.name }} {{ object.subject }}</field>
+        <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+        <field name="use_default_to" eval="False"/>
+        <field name="email_to">{{ env['ir.config_parameter'].sudo().get_param('intellix_support.karine_alert_email') or (env['res.users'].sudo().search([('partner_id.name', 'ilike', 'Karine%Barmaki%')], limit=1).partner_id.email or '') }}</field>
+        <field name="body_html" type="html">
+            <div>
+                <p>Demande <strong><t t-out="dict(object._fields['ticket_type'].selection).get(object.ticket_type, object.ticket_type)"/></strong>
+                   — ticket <strong><t t-out="object.name"/></strong></p>
+                <p><strong>Organisation :</strong> <t t-out="object.partner_id.display_name or '—'"/></p>
+                <p><strong>Module :</strong> <t t-out="object.category_id.name or '—'"/></p>
+                <p><strong>Portée :</strong> <t t-out="dict(object._fields['user_scope'].selection).get(object.user_scope, object.user_scope)"/></p>
+                <p><strong>Sujet :</strong> <t t-out="object.subject or ''"/></p>
+                <p t-if="object.description"><strong>Description :</strong><br/>
+                    <t t-out="object.description"/></p>
+                <p>
+                    <a t-attf-href="/web#id={{ object.id }}&amp;model=intellix.support.ticket&amp;view_type=form">
+                        Ouvrir le ticket
+                    </a>
+                </p>
+            </div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+</odoo>

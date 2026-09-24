@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_agent_ia_user,doorway.agent.ia.user,model_doorway_agent_ia,base.group_user,1,0,0,0
+access_agent_ia_sales,doorway.agent.ia.sales,model_doorway_agent_ia,sales_team.group_sale_salesman,1,1,0,0
+access_agent_ia_manager,doorway.agent.ia.manager,model_doorway_agent_ia,sales_team.group_sale_manager,1,1,1,1
+access_call_session_user,doorway.call.session.user,model_doorway_call_session,base.group_user,1,1,1,0
+access_call_session_manager,doorway.call.session.manager,model_doorway_call_session,sales_team.group_sale_manager,1,1,1,1
+access_call_report_user,doorway.call.report.user,model_doorway_call_report,base.group_user,1,0,0,0
+access_call_report_manager,doorway.call.report.manager,model_doorway_call_report,sales_team.group_sale_manager,1,1,1,1
+access_coaching_wizard,doorway.call.coaching.wizard,model_doorway_call_coaching_wizard,base.group_user,1,1,1,1

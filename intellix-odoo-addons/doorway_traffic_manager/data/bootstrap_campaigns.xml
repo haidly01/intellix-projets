@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <function model="doorway.portfolio.knowledge" name="bootstrap_campaigns_from_portfolios"/>
+</odoo>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_coins_prestataire_list" model="ir.ui.view">
+        <field name="name">coins.prestataire.list</field>
+        <field name="model">coins.prestataire</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="category"/>
+                <field name="zone_couverture"/>
+                <field name="disponibilite"/>
+                <field name="specialite_tag_ids" widget="many2many_tags" optional="show"/>
+                <field name="partner_id" optional="hide"/>
+                <field name="active" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_coins_prestataire_form" model="ir.ui.view">
+        <field name="name">coins.prestataire.form</field>
+        <field name="model">coins.prestataire</field>
+        <field name="arch" type="xml">
+            <form string="Prestataire">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Nom du prestataire"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="category"/>
+                            <field name="disponibilite"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="zone_couverture"/>
+                            <field name="partner_id"/>
+                        </group>
+                    </group>
+                    <group string="Spécialités">
+                        <field name="specialite_tag_ids" widget="many2many_tags" nolabel="1"/>
+                    </group>
+                    <group string="Notes">
+                        <field name="notes" nolabel="1" colspan="2"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_coins_prestataire_tag_list" model="ir.ui.view">
+        <field name="name">coins.prestataire.tag.list</field>
+        <field name="model">coins.prestataire.tag</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_coins_prestataire" model="ir.actions.act_window">
+        <field name="name">Prestataires événements</field>
+        <field name="res_model">coins.prestataire</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Ajoutez un prestataire au catalogue CRM événements.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_coins_prestataire_tag" model="ir.actions.act_window">
+        <field name="name">Tags prestataires</field>
+        <field name="res_model">coins.prestataire.tag</field>
+        <field name="view_mode">list</field>
+    </record>
+</odoo>

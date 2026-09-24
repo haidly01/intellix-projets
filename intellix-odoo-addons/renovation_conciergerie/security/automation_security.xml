@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Clients SaaS / équipe : créer des règles d'automatisation sans mode développeur -->
+    <record id="group_automation_configurator" model="res.groups">
+        <field name="name">Configurateur d'automatisations</field>
+        <field name="comment">Crée et modifie les règles d'automatisation (CRM, contacts, tâches, etc.) depuis l'interface, sans accès technique Odoo.</field>
+        <field name="implied_ids" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
+    </record>
+
+    <record id="group_agence_doorway_crm" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('group_automation_configurator'))]"/>
+    </record>
+
+    <record id="group_pipeline_supervisor" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('group_automation_configurator'))]"/>
+    </record>
+</odoo>

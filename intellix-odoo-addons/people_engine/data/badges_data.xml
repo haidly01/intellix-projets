@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="badge_first_win" model="pe.badge">
+        <field name="name">Premier closing</field>
+        <field name="code">pe_first_win</field>
+        <field name="icon">🎯</field>
+        <field name="category">milestone</field>
+        <field name="criterion_type">crm_conversion</field>
+        <field name="criterion_value">1</field>
+        <field name="points_value">25</field>
+        <field name="karma_bonus">10</field>
+        <field name="rarity">common</field>
+        <field name="requires_manager_approval" eval="True"/>
+    </record>
+    <record id="badge_conversion_master" model="pe.badge">
+        <field name="name">Maître de la conversion</field>
+        <field name="code">pe_conversion_70</field>
+        <field name="icon">🏆</field>
+        <field name="category">performance</field>
+        <field name="criterion_type">crm_conversion</field>
+        <field name="criterion_value">70</field>
+        <field name="points_value">100</field>
+        <field name="karma_bonus">50</field>
+        <field name="rarity">epic</field>
+        <field name="description">Taux de conversion CRM supérieur à 70%</field>
+    </record>
+    <record id="badge_ontime_hero" model="pe.badge">
+        <field name="name">Héros des délais</field>
+        <field name="code">pe_ontime_95</field>
+        <field name="icon">⏰</field>
+        <field name="category">consistency</field>
+        <field name="criterion_type">project_ontime</field>
+        <field name="criterion_value">95</field>
+        <field name="points_value">75</field>
+        <field name="karma_bonus">25</field>
+        <field name="rarity">rare</field>
+    </record>
+    <record id="badge_score_80" model="pe.badge">
+        <field name="name">Performer confirmé</field>
+        <field name="code">pe_score_80</field>
+        <field name="icon">⭐</field>
+        <field name="category">performance</field>
+        <field name="criterion_type">score_above</field>
+        <field name="criterion_value">80</field>
+        <field name="points_value">50</field>
+        <field name="karma_bonus">30</field>
+        <field name="rarity">uncommon</field>
+    </record>
+    <record id="badge_score_95" model="pe.badge">
+        <field name="name">Excellence absolue</field>
+        <field name="code">pe_score_95</field>
+        <field name="icon">🌟</field>
+        <field name="category">performance</field>
+        <field name="criterion_type">score_above</field>
+        <field name="criterion_value">95</field>
+        <field name="points_value">200</field>
+        <field name="karma_bonus">100</field>
+        <field name="rarity">legendary</field>
+    </record>
+    <record id="badge_ia_quality" model="pe.badge">
+        <field name="name">Voix d'or</field>
+        <field name="code">pe_ia_quality_9</field>
+        <field name="icon">🎙️</field>
+        <field name="category">performance</field>
+        <field name="criterion_type">ia_quality</field>
+        <field name="criterion_value">9</field>
+        <field name="points_value">75</field>
+        <field name="karma_bonus">25</field>
+        <field name="rarity">rare</field>
+    </record>
+    <record id="badge_team_player" model="pe.badge">
+        <field name="name">Joueur d'équipe</field>
+        <field name="code">pe_team_player_v2</field>
+        <field name="icon">🤝</field>
+        <field name="category">teamwork</field>
+        <field name="criterion_type">manual</field>
+        <field name="auto_award" eval="False"/>
+        <field name="points_value">15</field>
+        <field name="rarity">common</field>
+    </record>
+</odoo>

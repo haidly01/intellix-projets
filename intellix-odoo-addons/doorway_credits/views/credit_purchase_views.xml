@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============ PURCHASE ============ -->
+    <record id="view_credit_purchase_list" model="ir.ui.view">
+        <field name="name">doorway.credit.purchase.list</field>
+        <field name="model">doorway.credit.purchase</field>
+        <field name="arch" type="xml">
+            <list string="Achats de crédits" decoration-success="state == 'paid'"
+                  decoration-warning="state == 'pending'" decoration-muted="state == 'cancelled'">
+                <field name="name"/>
+                <field name="create_date"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="partner_id"/>
+                <field name="pack_id"/>
+                <field name="amount"/>
+                <field name="credits"/>
+                <field name="payment_method"/>
+                <field name="state"/>
+                <field name="credits_granted"/>
+                <button name="action_confirm_payment" type="object" string="Confirmer réception"
+                        icon="fa-check" class="btn-success"
+                        invisible="state != 'pending' or payment_method == 'stripe'"
+                        groups="doorway_credits.group_doorway_credits_admin"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_credit_purchase_form" model="ir.ui.view">
+        <field name="name">doorway.credit.purchase.form</field>
+        <field name="model">doorway.credit.purchase</field>
+        <field name="arch" type="xml">
+            <form string="Achat de crédits">
+                <header>
+                    <button name="action_pay" type="object" string="Procéder au paiement"
+                            class="btn-primary" invisible="state not in ('draft', 'pending')"/>
+                    <button name="action_confirm_payment" type="object"
+                            string="Confirmer réception du paiement" class="btn-success"
+                            invisible="state != 'pending' or payment_method == 'stripe'"
+                            groups="doorway_credits.group_doorway_credits_admin"/>
+                    <button name="action_cancel" type="object" string="Annuler"
+                            invisible="state in ('paid', 'cancelled')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,pending,paid"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="pack_id"/>
+                            <field name="payment_method"/>
+                            <field name="amount"/>
+                            <field name="credits"/>
+                            <field name="currency_id" groups="base.group_no_one"/>
+                        </group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="credits_granted"/>
+                            <field name="transaction_id"/>
+                            <field name="stripe_payment_id" groups="base.group_no_one"/>
+                            <field name="date_paid"/>
+                        </group>
+                    </group>
+                    <group string="Instructions de paiement"
+                           invisible="payment_method == 'stripe'">
+                        <field name="payment_instructions" nolabel="1" readonly="1"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_credit_purchases" model="ir.actions.act_window">
+        <field name="name">Mes achats de crédits</field>
+        <field name="res_model">doorway.credit.purchase</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_credit_purchases_pending" model="ir.actions.act_window">
+        <field name="name">Paiements à confirmer</field>
+        <field name="res_model">doorway.credit.purchase</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state', '=', 'pending'), ('payment_method', '!=', 'stripe')]</field>
+        <field name="context">{'search_default_pending': 1}</field>
+    </record>
+
+    <!-- ============ PAYWALL WIZARD ============ -->
+    <record id="view_credit_paywall_form" model="ir.ui.view">
+        <field name="name">doorway.credit.paywall.form</field>
+        <field name="model">doorway.credit.paywall</field>
+        <field name="arch" type="xml">
+            <form string="Crédits">
+                <field name="message" nolabel="1" readonly="1"/>
+                <group>
+                    <field name="pack_id" options="{'no_create': True}"/>
+                    <field name="payment_method"/>
+                    <field name="balance_credits" readonly="1"/>
+                    <field name="required_credits" readonly="1" invisible="required_credits == 0"/>
+                    <field name="available_methods" invisible="1"/>
+                    <field name="company_id" invisible="1"/>
+                </group>
+                <footer>
+                    <button name="action_buy" type="object" string="Acheter ce pack"
+                            class="btn-primary"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_open_paywall_buy" model="ir.actions.act_window">
+        <field name="name">Acheter des crédits</field>
+        <field name="res_model">doorway.credit.paywall</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

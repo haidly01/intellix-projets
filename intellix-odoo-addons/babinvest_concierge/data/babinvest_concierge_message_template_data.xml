@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- Investisseur locatif pur -->
+    <record id="tpl_locatif_pur_qualification" model="babinvest.concierge.message.template">
+        <field name="name">Locatif pur — Qualification</field>
+        <field name="persona">locatif_pur</field>
+        <field name="step_label">Qualification (J+0)</field>
+        <field name="channel">whatsapp</field>
+        <field name="sequence">10</field>
+        <field name="content">Bonjour {{prenom}}, merci pour votre intérêt pour {{projet}}. Pour vous envoyer les chiffres de rendement locatif adaptés, quel budget et quel horizon d'achat envisagez-vous ?</field>
+    </record>
+    <record id="tpl_locatif_pur_relance_j3" model="babinvest.concierge.message.template">
+        <field name="name">Locatif pur — Relance J+3</field>
+        <field name="persona">locatif_pur</field>
+        <field name="step_label">Relance J+3</field>
+        <field name="channel">whatsapp</field>
+        <field name="sequence">20</field>
+        <field name="content">{{prenom}}, le projet {{projet}} affiche un rendement locatif historique de {{rendement}}% sur des biens comparables. Je vous partage le dossier complet si vous voulez creuser.</field>
+    </record>
+    <record id="tpl_locatif_pur_rappel_visite" model="babinvest.concierge.message.template">
+        <field name="name">Locatif pur — Rappel visite J-1</field>
+        <field name="persona">locatif_pur</field>
+        <field name="step_label">Rappel visite J-1</field>
+        <field name="channel">whatsapp</field>
+        <field name="sequence">30</field>
+        <field name="content">Rappel : visite de {{projet}} demain à {{heure}}. RDV sur place, {{lieu}}. Besoin d'un chauffeur ?</field>
+    </record>
+    <record id="tpl_locatif_pur_post_visite" model="babinvest.concierge.message.template">
+        <field name="name">Locatif pur — Post-visite J+2</field>
+        <field name="persona">locatif_pur</field>
+        <field name="step_label">Post-visite J+2</field>
+        <field name="channel">whatsapp</field>
+        <field name="sequence">40</field>
+        <field name="content">{{prenom}}, qu'avez-vous pensé de {{projet}} ? Je peux vous détailler le plan de paiement échelonné si c'est ce qui reste à clarifier.</field>
+    </record>
+
+    <!-- Résidence secondaire / lifestyle -->
+    <record id="tpl_residence_secondaire_qualification" model="babinvest.concierge.message.template">
+        <field name="name">Résidence secondaire — Qualification</field>
+        <field name="persona">residence_secondaire</field>
+        <field name="step_label">Qualification (J+0)</field>
+        <field name="channel">whatsapp</field>
+        <field name="sequence">10</field>
+        <field name="content">Bonjour {{prenom}}, ravie de votre intérêt pour {{projet}}. Vous cherchez plutôt un pied-à-terre pour les vacances ou une résidence à usage plus régulier ?</field>
+    </record>
+    <record id="tpl_residence_secondaire_relance_j3" model="babinvest.concierge.message.template">
+        <field name="name">Résidence secondaire — Relance J+3</field>
+        <field name="persona">residence_secondaire</field>
+        <field name="step_label">Relance J+3</field>
+        <field name="channel">whatsapp</field>
+        <field name="sequence">20</field>
+        <field name="content">{{prenom}}, j'ai pensé à vous — {{projet}} a une villa témoin qui se visite en ce moment. Ça vous dit de venir voir sur place ?</field>
+    </record>
+    <record id="tpl_residence_secondaire_rappel_visite" model="babinvest.concierge.message.template">
+        <field name="name">Résidence secondaire — Rappel visite J-1</field>
+        <field name="persona">residence_secondaire</field>
+        <field name="step_label">Rappel visite J-1</field>
+        <field name="channel">whatsapp</field>
+        <field name="sequence">30</field>
+        <field name="content">À demain pour la visite de {{projet}} à {{heure}} ! On vous montrera aussi le quartier et les commerces à proximité.</field>
+    </record>
+    <record id="tpl_residence_secondaire_post_visite" model="babinvest.concierge.message.template">
+        <field name="name">Résidence secondaire — Post-visite J+2</field>
+        <field name="persona">residence_secondaire</field>
+        <field name="step_label">Post-visite J+2</field>
+        <field name="channel">whatsapp</field>
+        <field name="sequence">40</field>
+        <field name="content">{{prenom}}, comment avez-vous trouvé {{projet}} ? N'hésitez pas à partager vos commentaires par rapport à l'endroit.</field>
+    </record>
+
+    <!-- Retraité étranger -->
+    <record id="tpl_retraite_etranger_qualification" model="babinvest.concierge.message.template">
+        <field name="name">Retraité étranger — Qualification</field>
+        <field name="persona">retraite_etranger</field>
+        <field name="step_label">Qualification (J+0)</field>
+        <field name="channel">whatsapp</field>
+        <field name="sequence">10</field>
+        <field name="content">Bonjour {{prenom}}, merci pour votre message. Pour bien vous orienter : envisagez-vous une installation permanente à Marrakech ou un usage saisonnier ?</field>
+    </record>
+    <record id="tpl_retraite_etranger_relance_j7" model="babinvest.concierge.message.template">
+        <field name="name">Retraité étranger — Relance J+7 (email)</field>
+        <field name="persona">retraite_etranger</field>
+        <field name="step_label">Relance J+7 (email, plus formel)</field>
+        <field name="channel">email</field>
+        <field name="sequence">20</field>
+        <field name="content">Dossier complet + FAQ fiscalité/résidence pour étrangers, garanties promoteur, témoignages d'autres retraités installés.</field>
+    </record>
+    <record id="tpl_retraite_etranger_visio" model="babinvest.concierge.message.template">
+        <field name="name">Retraité étranger — Visio proposée</field>
+        <field name="persona">retraite_etranger</field>
+        <field name="step_label">Visio proposée</field>
+        <field name="channel">whatsapp</field>
+        <field name="sequence">30</field>
+        <field name="content">{{prenom}}, avant un éventuel déplacement, je peux vous faire une présentation en visio de {{projet}} — voici un lien : {{visio_link}}.</field>
+    </record>
+    <record id="tpl_retraite_etranger_post_visio" model="babinvest.concierge.message.template">
+        <field name="name">Retraité étranger — Post-visite/visio J+7</field>
+        <field name="persona">retraite_etranger</field>
+        <field name="step_label">Post-visite/visio J+7</field>
+        <field name="channel">whatsapp</field>
+        <field name="sequence">40</field>
+        <field name="content">{{prenom}}, si un déplacement à Marrakech vous intéresse, on peut organiser votre venue avec transport aéroport-villa inclus.</field>
+    </record>
+
+    <!-- MRE -->
+    <record id="tpl_mre_qualification" model="babinvest.concierge.message.template">
+        <field name="name">MRE — Qualification</field>
+        <field name="persona">mre</field>
+        <field name="step_label">Qualification (J+0)</field>
+        <field name="channel">whatsapp</field>
+        <field name="sequence">10</field>
+        <field name="content">Bonjour {{prenom}}, bienvenue ! Vous prévoyez un prochain séjour au Maroc, ou plutôt un achat à distance dans un premier temps ?</field>
+    </record>
+    <record id="tpl_mre_relance_j3" model="babinvest.concierge.message.template">
+        <field name="name">MRE — Relance J+3</field>
+        <field name="persona">mre</field>
+        <field name="step_label">Relance J+3</field>
+        <field name="channel">whatsapp</field>
+        <field name="sequence">20</field>
+        <field name="content">{{prenom}}, {{projet}} a des unités qui partent vite en ce moment. Je vous envoie le dossier pour que vous puissiez en discuter en famille.</field>
+    </record>
+    <record id="tpl_mre_visio" model="babinvest.concierge.message.template">
+        <field name="name">MRE — Visio proposée</field>
+        <field name="persona">mre</field>
+        <field name="step_label">Visio proposée</field>
+        <field name="channel">whatsapp</field>
+        <field name="sequence">30</field>
+        <field name="content">On peut faire une visite virtuelle de {{projet}} en visio si un déplacement n'est pas prévu tout de suite : {{visio_link}}.</field>
+    </record>
+    <record id="tpl_mre_post_contact_j14" model="babinvest.concierge.message.template">
+        <field name="name">MRE — Post-contact J+14</field>
+        <field name="persona">mre</field>
+        <field name="step_label">Post-contact J+14</field>
+        <field name="channel">whatsapp</field>
+        <field name="sequence">40</field>
+        <field name="content">{{prenom}}, si vous passez au Maroc prochainement, on peut caler une visite sur place — transport depuis l'aéroport organisé de notre côté.</field>
+    </record>
+
+    <!-- Investisseur multi-lots -->
+    <record id="tpl_multi_lots_qualification" model="babinvest.concierge.message.template">
+        <field name="name">Investisseur multi-lots — Qualification</field>
+        <field name="persona">investisseur_multi_lots</field>
+        <field name="step_label">Qualification (J+0)</field>
+        <field name="channel">whatsapp</field>
+        <field name="sequence">10</field>
+        <field name="content">Bonjour {{prenom}}, merci pour votre intérêt. Vous envisagez un lot ou plusieurs unités sur {{projet}} ? Je peux vous préparer une simulation multi-lots.</field>
+    </record>
+    <record id="tpl_multi_lots_relance_j3" model="babinvest.concierge.message.template">
+        <field name="name">Investisseur multi-lots — Relance J+3</field>
+        <field name="persona">investisseur_multi_lots</field>
+        <field name="step_label">Relance J+3</field>
+        <field name="channel">whatsapp</field>
+        <field name="sequence">20</field>
+        <field name="content">{{prenom}}, voici la simulation de rendement pour {{nb_lots}} unités sur {{projet}}, avec la dégressivité de prix applicable au volume.</field>
+    </record>
+    <record id="tpl_multi_lots_rappel_visite" model="babinvest.concierge.message.template">
+        <field name="name">Investisseur multi-lots — Rappel visite J-1</field>
+        <field name="persona">investisseur_multi_lots</field>
+        <field name="step_label">Rappel visite J-1</field>
+        <field name="channel">whatsapp</field>
+        <field name="sequence">30</field>
+        <field name="content">Confirmé pour demain {{heure}} — on prévoit le temps de faire le tour de plusieurs unités disponibles sur {{projet}}.</field>
+    </record>
+    <record id="tpl_multi_lots_post_visite" model="babinvest.concierge.message.template">
+        <field name="name">Investisseur multi-lots — Post-visite J+2</field>
+        <field name="persona">investisseur_multi_lots</field>
+        <field name="step_label">Post-visite J+2</field>
+        <field name="channel">whatsapp</field>
+        <field name="sequence">40</field>
+        <field name="content">{{prenom}}, pour sécuriser plusieurs lots avant la fin de la phase de lancement, on peut avancer sur une réservation groupée si ça vous intéresse.</field>
+    </record>
+
+</odoo>

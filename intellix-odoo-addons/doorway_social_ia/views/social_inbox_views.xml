@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_social_inbox_list" model="ir.ui.view">
+        <field name="name">doorway.social.inbox.list</field>
+        <field name="model">doorway.social.inbox</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="inbox_source"/>
+                <field name="external_name"/>
+                <field name="external_phone"/>
+                <field name="last_message"/>
+                <field name="last_message_date"/>
+                <field name="unread_count"/>
+                <field name="state"/>
+                <field name="crm_lead_id"/>
+                <field name="ai_auto_reply" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_social_inbox_form" model="ir.ui.view">
+        <field name="name">doorway.social.inbox.form</field>
+        <field name="model">doorway.social.inbox</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_mark_read" type="object" string="Marquer lu"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="inbox_source"/>
+                        <field name="external_name"/>
+                        <field name="external_phone"/>
+                        <field name="external_id"/>
+                        <field name="crm_lead_id"/>
+                        <field name="ai_auto_reply"/>
+                        <field name="account_id"/>
+                        <field name="last_message"/>
+                        <field name="last_message_date"/>
+                        <field name="unread_count"/>
+                    </group>
+                    <notebook>
+                        <page string="Messages" name="messages">
+                            <field name="message_line_ids">
+                                <list>
+                                    <field name="create_date"/>
+                                    <field name="direction"/>
+                                    <field name="content"/>
+                                    <field name="author_id"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Commentaires" name="comments">
+                            <field name="comment_line_ids">
+                                <list>
+                                    <field name="create_date"/>
+                                    <field name="author_name"/>
+                                    <field name="content"/>
+                                    <field name="is_replied"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_social_inbox_unified" model="ir.actions.client">
+        <field name="name">Messages</field>
+        <field name="tag">social_inbox_unified_action</field>
+    </record>
+
+    <record id="action_social_inbox" model="ir.actions.act_window">
+        <field name="name">Messages (liste)</field>
+        <field name="res_model">doorway.social.inbox</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

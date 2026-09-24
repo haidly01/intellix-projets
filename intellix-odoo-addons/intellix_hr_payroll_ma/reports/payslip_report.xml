@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_hr_payslip_ma" model="ir.actions.report">
+        <field name="name">Bulletin de paie Maroc</field>
+        <field name="model">hr.payslip.ma</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">intellix_hr_payroll_ma.report_payslip_ma</field>
+        <field name="report_file">intellix_hr_payroll_ma.report_payslip_ma</field>
+        <field name="print_report_name">'Bulletin_%s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_hr_payslip_ma"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

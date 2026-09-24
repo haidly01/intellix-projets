@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="tour_lead_automation" model="doorway.onboarding.tour">
+        <field name="name">Lead Automation Hub</field>
+        <field name="code">lead_automation_hub</field>
+        <field name="sequence">50</field>
+        <field name="quest_label">Quête Lead Automation</field>
+        <field name="home_action_xmlid">lead_automation_hub.action_lead_automation_hub_dashboard</field>
+        <field name="badge_icon">🤖</field>
+        <field name="badge_name">Automatiseur</field>
+        <field name="reward_points">30</field>
+    </record>
+    <record id="tour_lead_step_welcome" model="doorway.onboarding.tour.step">
+        <field name="tour_id" ref="tour_lead_automation"/>
+        <field name="sequence">1</field>
+        <field name="key">welcome</field>
+        <field name="title">Lead Automation Hub</field>
+        <field name="body_html" type="html">
+            <p>Import, segmentation et campagnes d'outreach IA pour vos leads CRM.</p>
+            <div class="alert alert-info border-0 pe-xp-callout" role="status">
+                Badge <em>Automatiseur</em> 🤖 (+30 XP)
+            </div>
+        </field>
+    </record>
+    <record id="tour_lead_step_campaigns" model="doorway.onboarding.tour.step">
+        <field name="tour_id" ref="tour_lead_automation"/>
+        <field name="sequence">2</field>
+        <field name="key">campaigns</field>
+        <field name="title">Cartographie campagnes</field>
+        <field name="body_html" type="html">
+            <p>Associez pays, tags et noms de campagnes pour router les imports et l'IA.</p>
+        </field>
+        <field name="action_xmlid">lead_automation_hub.action_lead_campaign_map</field>
+        <field name="action_label">Cartographie campagnes</field>
+    </record>
+    <record id="tour_lead_step_crm" model="doorway.onboarding.tour.step">
+        <field name="tour_id" ref="tour_lead_automation"/>
+        <field name="sequence">3</field>
+        <field name="key">crm</field>
+        <field name="title">Intégration CRM</field>
+        <field name="body_html" type="html">
+            <p>Les leads enrichis apparaissent dans le CRM avec actions Twilio depuis la fiche lead.</p>
+        </field>
+        <field name="action_xmlid">crm.crm_lead_all_leads</field>
+        <field name="action_label">Voir les leads</field>
+    </record>
+</odoo>

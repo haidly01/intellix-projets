@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pe_performance_score_graph" model="ir.ui.view">
+        <field name="name">pe.performance.score.graph</field>
+        <field name="model">pe.performance.score</field>
+        <field name="arch" type="xml">
+            <graph string="Historique scores" type="line">
+                <field name="period_end" interval="month"/>
+                <field name="score_global" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_pe_performance_score_pivot" model="ir.ui.view">
+        <field name="name">pe.performance.score.pivot</field>
+        <field name="model">pe.performance.score</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="employee_id" type="row"/>
+                <field name="score_global" type="measure"/>
+                <field name="score_performance_total" type="measure"/>
+                <field name="score_engagement_total" type="measure"/>
+                <field name="score_growth_total" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+</odoo>

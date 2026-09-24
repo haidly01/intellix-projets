@@ -1,0 +1,469 @@
+// Intellix — thème global backend Odoo (look site vitrine)
+
+.o_web_client {
+    font-family: var(--ix-font);
+    color: var(--ix-text);
+    background-color: var(--ix-bg);
+}
+
+// ─── Navbar ───────────────────────────────────────────────────────────
+.o_web_client .o_main_navbar {
+    background: var(--ix-gradient-navbar) !important;
+    border-bottom: none;
+    box-shadow: var(--ix-shadow-md);
+
+    .o_menu_brand,
+    .o_navbar_apps_menu > .dropdown > button,
+    .o_menu_sections .o_nav_entry,
+    .o_menu_sections .dropdown-toggle,
+    .o_menu_sections button:not(.dropdown-item),
+    .o_menu_systray button:not(.dropdown-item),
+    .o_menu_systray .dropdown-toggle:not(.dropdown-item) {
+        color: var(--ix-text-inverse) !important;
+        background: transparent !important;
+        font-weight: 500;
+    }
+
+    .o_menu_sections .o_nav_entry:hover,
+    .o_menu_sections .dropdown-toggle:hover {
+        background: rgba(255, 255, 255, 0.12) !important;
+    }
+
+    .dropdown-menu {
+        border-radius: var(--ix-radius-card);
+        border: 1px solid var(--ix-border);
+        background: var(--ix-surface);
+        box-shadow: var(--ix-shadow-md);
+
+        .dropdown-item {
+            color: var(--ix-text) !important;
+            border-radius: var(--ix-radius-btn);
+
+            &:hover,
+            &:focus {
+                background: rgba(99, 102, 241, 0.12) !important;
+                color: var(--ix-primary-light) !important;
+            }
+        }
+    }
+}
+
+// Menu apps (drawer)
+.o_web_client .o_navbar_apps_menu .dropdown-menu,
+.o_web_client .o_menu_apps .dropdown-menu {
+    background: var(--ix-surface);
+    border-color: var(--ix-border);
+}
+
+// ─── Zones principales ────────────────────────────────────────────────
+.o_web_client > .o_action_manager {
+    background-color: var(--ix-bg) !important;
+}
+
+.o_web_client.o_intellix_branded .o_action_manager .o_action .o_content,
+.o_web_client.o_intellix_branded .o_view_controller,
+.o_web_client.o_intellix_branded .o_list_renderer,
+.o_web_client.o_intellix_branded .o_kanban_view,
+.o_web_client.o_intellix_branded .o_kanban_renderer {
+    background-color: var(--ix-bg) !important;
+    color: var(--ix-text);
+}
+
+// Bootstrap utility text on dark UI
+.o_web_client.o_intellix_branded .text-900 {
+    color: var(--ix-text) !important;
+}
+
+.o_web_client.o_intellix_branded .text-muted {
+    color: var(--ix-text-muted) !important;
+}
+
+// Client actions OWL (voir intellix_client_actions.scss)
+
+.o_web_client .o_control_panel {
+    background: var(--ix-surface) !important;
+    border-bottom: 1px solid var(--ix-border) !important;
+    border-radius: 0;
+
+    .o_control_panel_main,
+    .o_breadcrumb,
+    .o_cp_title,
+    .o_cp_buttons {
+        color: var(--ix-text);
+    }
+
+    .text-muted,
+    .o_form_status_indicator {
+        color: var(--ix-text-muted) !important;
+    }
+}
+
+// ─── Formulaires ────────────────────────────────────────────────────────
+.o_web_client .o_form_view {
+    background: var(--ix-bg) !important;
+
+    .o_form_sheet_bg {
+        background: var(--ix-bg) !important;
+    }
+
+    .o_form_sheet {
+        background: var(--ix-surface) !important;
+        border: 1px solid var(--ix-border) !important;
+        border-radius: var(--ix-radius-card) !important;
+        box-shadow: var(--ix-shadow-sm);
+        color: var(--ix-text);
+    }
+
+    .o_form_statusbar {
+        background: var(--ix-surface-elevated) !important;
+        border-bottom-color: var(--ix-border) !important;
+        border-radius: var(--ix-radius-card) var(--ix-radius-card) 0 0;
+    }
+
+    .o_field_widget,
+    .o_form_label,
+    label {
+        color: var(--ix-text);
+    }
+
+    .text-muted,
+    .o_field_empty {
+        color: var(--ix-text-muted) !important;
+    }
+}
+
+// ─── Listes & tableaux ────────────────────────────────────────────────
+.o_web_client .o_list_view,
+.o_web_client .o_list_renderer {
+    --ListRenderer-thead-bg-color: var(--ix-surface-elevated);
+    --ListRenderer-tfoot-bg-color: var(--ix-surface);
+
+    .o_list_table {
+        --table-bg: var(--ix-surface);
+        --table-color: var(--ix-text);
+        --table-border-color: var(--ix-border);
+        --table-hover-bg: rgba(99, 102, 241, 0.08);
+        --table-hover-color: var(--ix-text);
+        --table-striped-bg: var(--ix-surface-elevated);
+        border-radius: var(--ix-radius-card);
+        overflow: hidden;
+    }
+
+    thead {
+        background-color: var(--ix-surface-elevated) !important;
+        color: var(--ix-text-muted);
+
+        th {
+            color: var(--ix-text-muted);
+            border-color: var(--ix-border);
+        }
+    }
+
+    tbody {
+        td,
+        th {
+            border-color: var(--ix-border);
+            color: var(--ix-text);
+        }
+
+        tr:hover td {
+            background-color: rgba(99, 102, 241, 0.08) !important;
+            color: var(--ix-text);
+        }
+    }
+
+    // Lignes décorées CRM (probabilité, etc.)
+    .text-danger {
+        color: var(--ix-danger) !important;
+    }
+
+    .text-success {
+        color: var(--ix-success) !important;
+    }
+
+    .text-warning {
+        color: var(--ix-warning) !important;
+    }
+
+    .text-info {
+        color: var(--ix-secondary) !important;
+    }
+}
+
+// ─── Kanban (laisser Odoo gérer les fonds via $o-view-background-color ; texte seulement)
+.o_web_client .o_kanban_renderer {
+    --Kanban-background: var(--ix-bg);
+    --KanbanGroup-background: var(--ix-bg);
+
+    .o_kanban_record {
+        color: var(--ix-text);
+        border-color: var(--ix-border);
+
+        &:hover {
+            border-color: rgba(99, 102, 241, 0.45);
+        }
+
+        .text-muted,
+        .o_text_muted {
+            color: var(--ix-text-muted) !important;
+        }
+    }
+
+    .o_kanban_header .o_column_title {
+        color: var(--ix-text);
+    }
+}
+
+// ─── Cartes génériques ────────────────────────────────────────────────
+.o_web_client .card:not(.tab-pane) {
+    background: var(--ix-surface);
+    border: 1px solid var(--ix-border);
+    border-radius: var(--ix-radius-card);
+    color: var(--ix-text);
+    box-shadow: var(--ix-shadow-sm);
+}
+
+.o_web_client .alert {
+    border-radius: var(--ix-radius-card);
+    border-width: 1px;
+}
+
+// ─── Champs & inputs ──────────────────────────────────────────────────
+.o_web_client {
+    .form-control,
+    .form-select,
+    .o_input,
+    input.o_input,
+    textarea.o_input {
+        background-color: var(--ix-surface-elevated) !important;
+        border: 1px solid var(--ix-border);
+        border-radius: var(--ix-radius-btn);
+        color: var(--ix-text) !important;
+        -webkit-text-fill-color: var(--ix-text) !important;
+        caret-color: var(--ix-primary-light, #818cf8) !important;
+
+        &:focus {
+            border-color: var(--ix-primary);
+            box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.2);
+            color: var(--ix-text) !important;
+            -webkit-text-fill-color: var(--ix-text) !important;
+        }
+    }
+
+    .form-control::placeholder,
+    .o_input::placeholder {
+        color: var(--ix-text-muted) !important;
+        -webkit-text-fill-color: var(--ix-text-muted) !important;
+        opacity: 0.85;
+    }
+}
+
+// ─── Boutons ──────────────────────────────────────────────────────────
+.o_web_client {
+    .btn-primary:not(.o_onboarding_step_action) {
+        background: var(--ix-gradient-cta) !important;
+        border: none !important;
+        border-radius: var(--ix-radius-btn) !important;
+        font-weight: 600;
+        color: var(--ix-text-inverse) !important;
+
+        &:hover,
+        &:focus {
+            filter: brightness(1.06);
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+            color: var(--ix-text-inverse) !important;
+        }
+    }
+
+    .btn-secondary,
+    .btn-outline-secondary:not(:disabled):not(.disabled) {
+        background: var(--ix-surface-elevated);
+        border: 1px solid var(--ix-border);
+        color: var(--ix-text);
+        border-radius: var(--ix-radius-btn);
+
+        .fa,
+        .oi {
+            color: var(--ix-primary-light);
+        }
+
+        &:hover,
+        &:focus {
+            background: var(--ix-surface-hover);
+            border-color: var(--ix-primary);
+            color: var(--ix-text);
+        }
+    }
+
+    .btn-outline-primary {
+        color: var(--ix-primary-light) !important;
+        border-color: var(--ix-primary) !important;
+        border-radius: var(--ix-radius-btn) !important;
+
+        &:hover {
+            background: rgba(99, 102, 241, 0.1) !important;
+            color: var(--ix-purple) !important;
+        }
+    }
+
+    .btn-link {
+        color: var(--ix-primary);
+
+        &:hover {
+            color: var(--ix-primary-light);
+        }
+    }
+}
+
+// ─── Badges & onglets ─────────────────────────────────────────────────
+.o_web_client {
+    .badge {
+        border-radius: var(--ix-radius-pill);
+        font-weight: 600;
+    }
+
+    .badge.text-bg-primary,
+    .bg-primary {
+        background: var(--ix-gradient-primary) !important;
+    }
+
+    .nav-tabs {
+        border-bottom-color: var(--ix-border);
+        background-color: var(--ix-surface-elevated);
+
+        .nav-link {
+            color: var(--ix-text-muted);
+            background-color: transparent;
+            border-radius: var(--ix-radius-btn) var(--ix-radius-btn) 0 0;
+
+            &:hover:not(.active) {
+                color: var(--ix-text);
+                background-color: var(--ix-surface-hover);
+            }
+
+            &.active {
+                color: var(--ix-text);
+                border-color: var(--ix-border) var(--ix-border) var(--ix-surface);
+                background: var(--ix-surface);
+            }
+        }
+    }
+
+    .nav-pills .nav-link.active {
+        background: var(--ix-gradient-cta);
+    }
+}
+
+// ─── Modales ────────────────────────────────────────────────────────────
+.o_web_client .modal-content {
+    background: var(--ix-surface);
+    border: 1px solid var(--ix-border);
+    border-radius: var(--ix-radius-card);
+    color: var(--ix-text);
+    box-shadow: var(--ix-shadow-md);
+
+    .modal-header {
+        border-bottom-color: var(--ix-border);
+    }
+
+    .modal-footer {
+        border-top-color: var(--ix-border);
+    }
+
+    .o_form_label,
+    label,
+    .o_field_widget {
+        color: var(--ix-text);
+    }
+
+    .text-muted,
+    .o_field_empty {
+        color: var(--ix-text-muted) !important;
+    }
+}
+
+// ─── Chatter / mail ───────────────────────────────────────────────────
+.o_web_client .o-mail-Chatter,
+.o_web_client .o_Chatter {
+    background: var(--ix-bg);
+    border-color: var(--ix-border);
+}
+
+.o_web_client .o-mail-Composer {
+    background: var(--ix-surface);
+    border-color: var(--ix-border);
+    border-radius: var(--ix-radius-card);
+}
+
+// ─── Panneau de recherche (Employés, CRM, etc.) ───────────────────────
+.o_web_client .o_search_panel {
+    background: var(--ix-surface);
+    border-color: var(--ix-border);
+    border-radius: var(--ix-radius-card);
+    color: var(--ix-text);
+
+    .o_search_panel_section_header,
+    .o_search_panel_label {
+        color: var(--ix-text) !important;
+    }
+
+    .o_search_panel_counter {
+        color: var(--ix-text-muted) !important;
+    }
+
+    .list-group-item,
+    .list-group-item-action {
+        background: transparent !important;
+        color: var(--ix-text-muted) !important;
+        border-color: transparent !important;
+
+        &:hover:not(.active) {
+            background-color: var(--ix-surface-hover) !important;
+            color: var(--ix-text) !important;
+        }
+
+        &.active,
+        &.active:hover,
+        &.active:focus {
+            background: rgba(99, 102, 241, 0.22) !important;
+            color: var(--ix-text) !important;
+            border-color: var(--ix-primary) !important;
+            font-weight: 600;
+        }
+
+        &.active .o_search_panel_counter {
+            color: var(--ix-text) !important;
+        }
+    }
+}
+
+// ─── Settings ─────────────────────────────────────────────────────────
+.o_web_client .o_base_settings_view .o_setting_box {
+    background: var(--ix-surface);
+    border: 1px solid var(--ix-border);
+    border-radius: var(--ix-radius-card);
+}
+
+// ─── Liens ────────────────────────────────────────────────────────────
+.o_web_client a:not(.btn) {
+    color: var(--ix-primary);
+
+    &:hover {
+        color: var(--ix-primary-light);
+    }
+}
+
+// ─── Scrollbars (webkit) ────────────────────────────────────────────────
+.o_web_client ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.o_web_client ::-webkit-scrollbar-thumb {
+    background: var(--ix-border);
+    border-radius: var(--ix-radius-pill);
+}
+
+.o_web_client ::-webkit-scrollbar-track {
+    background: transparent;
+}

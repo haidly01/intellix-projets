@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_team" name="Portail — Mon équipe">
+        <t t-call="intellix_partner_portal.ipp_portal_layout">
+            <t t-if="request.params.get('invited')">
+                <div class="ipp-alert-success">Invitation envoyée avec succès.</div>
+            </t>
+            <t t-if="request.params.get('removed')">
+                <div class="ipp-alert-success">Membre retiré de l'équipe.</div>
+            </t>
+            <t t-if="request.params.get('invite_error') == 'missing'">
+                <div class="ipp-alert-error">Nom et courriel requis.</div>
+            </t>
+            <t t-if="request.params.get('invite_error') == 'exists'">
+                <div class="ipp-alert-error">Un compte existe déjà avec ce courriel.</div>
+            </t>
+            <t t-if="request.params.get('remove_error') == 'self'">
+                <div class="ipp-alert-error">Vous ne pouvez pas vous retirer vous-même.</div>
+            </t>
+            <t t-if="request.params.get('remove_error') == 'last_manager'">
+                <div class="ipp-alert-error">Impossible de retirer le dernier gestionnaire de l'organisation.</div>
+            </t>
+
+            <h1 class="ipp-page-title">Mon équipe</h1>
+            <p class="ipp-page-sub">Les membres de votre organisation ayant accès au portail partenaire.</p>
+
+            <div class="ipp-card">
+                <div class="ipp-card-title">Membres</div>
+                <table class="ipp-table">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Courriel</th>
+                            <th>Rôle</th>
+                            <th t-if="is_manager"/>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="members" t-as="member">
+                            <tr>
+                                <td t-esc="member.name"/>
+                                <td t-esc="member.login"/>
+                                <td>
+                                    <span t-if="member.is_portal_manager" class="ipp-badge ipp-badge-manager">Gestionnaire</span>
+                                    <span t-else="" class="ipp-badge">Membre</span>
+                                </td>
+                                <td t-if="is_manager">
+                                    <form t-if="member.id != uid" t-attf-action="/my/equipe/#{member.id}/retirer" method="post" style="display:inline">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        <button type="submit" class="ipp-btn-link-danger"
+                                                onclick="return confirm('Retirer ce membre de l\'équipe ?')">
+                                            Retirer
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="ipp-card" t-if="is_manager">
+                <div class="ipp-card-title">Inviter un nouveau membre</div>
+                <form action="/my/equipe/inviter" method="post">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <div class="ipp-grid-2">
+                        <div>
+                            <label style="font-size:14px;color:#b4b4d0;display:block;margin-bottom:8px">Nom</label>
+                            <input type="text" name="name" class="ipp-input" required="required"/>
+                        </div>
+                        <div>
+                            <label style="font-size:14px;color:#b4b4d0;display:block;margin-bottom:8px">Courriel</label>
+                            <input type="email" name="email" class="ipp-input" required="required"/>
+                        </div>
+                    </div>
+                    <div class="ipp-save-bar">
+                        <button type="submit" class="ipp-btn-primary">Envoyer l'invitation</button>
+                    </div>
+                </form>
+            </div>
+        </t>
+    </template>
+</odoo>

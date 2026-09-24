@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Stades cycle de vie -->
+    <record id="view_pe_lifecycle_stage_tree" model="ir.ui.view">
+        <field name="name">pe.employee.lifecycle.stage.tree</field>
+        <field name="model">pe.employee.lifecycle.stage</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="is_arrival"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pe_lifecycle_stage_form" model="ir.ui.view">
+        <field name="name">pe.employee.lifecycle.stage.form</field>
+        <field name="model">pe.employee.lifecycle.stage</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="code"/>
+                        <field name="sequence"/>
+                        <field name="color" widget="color_picker"/>
+                        <field name="is_arrival"/>
+                        <field name="active"/>
+                    </group>
+                    <field name="description"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_pe_lifecycle_stages" model="ir.actions.act_window">
+        <field name="name">Stades cycle de vie</field>
+        <field name="res_model">pe.employee.lifecycle.stage</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Banque de documents -->
+    <record id="view_pe_document_template_tree" model="ir.ui.view">
+        <field name="name">pe.document.template.tree</field>
+        <field name="model">pe.document.template</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="document_type"/>
+                <field name="contract_subtype" optional="show"/>
+                <field name="disciplinary_letter_type" optional="hide"/>
+                <field name="stage_ids" widget="many2many_tags"/>
+                <field name="legal_article_id" optional="hide"/>
+                <field name="supports_personalization" optional="show"/>
+                <field name="has_file_attachment" optional="hide"/>
+                <field name="is_arrival_pack"/>
+                <field name="document_count"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pe_document_template_form" model="ir.ui.view">
+        <field name="name">pe.document.template.form</field>
+        <field name="model">pe.document.template</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="document_type"/>
+                            <field name="contract_subtype" invisible="document_type != 'contract'"/>
+                            <field name="disciplinary_letter_type" invisible="document_type != 'disciplinary'"/>
+                            <field name="sequence"/>
+                            <field name="is_arrival_pack"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="stage_ids" widget="many2many_tags"/>
+                            <field name="legal_article_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="attachment_id"/>
+                        </group>
+                    </group>
+                    <field name="description"/>
+                    <group string="Personnalisation">
+                        <group>
+                            <field name="supports_personalization" readonly="1"/>
+                            <field name="has_letter_content" readonly="1"/>
+                            <field name="has_file_attachment" readonly="1"/>
+                            <field name="is_file_only" readonly="1"/>
+                        </group>
+                    </group>
+                    <label for="letter_html" string="Contenu HTML du document (PDF généré)"/>
+                    <div class="text-muted mb-2">
+                        Variables disponibles : {{prenom}}, {{nom}}, {{name}}, {{date}},
+                        {{poste}}, {{company}}, {{date_debut}}, [DATE], [PRÉNOM NOM],
+                        [TITRE DU POSTE], [DATE DE DÉBUT], etc.
+                    </div>
+                    <field name="letter_html"/>
+                    <label for="body_html" string="Message e-mail d'accompagnement"/>
+                    <div class="text-muted mb-2">
+                        Texte court personnalisé pour le courriel (mêmes variables).
+                    </div>
+                    <field name="body_html"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_pe_document_template_search" model="ir.ui.view">
+        <field name="name">pe.document.template.search</field>
+        <field name="model">pe.document.template</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="document_type"/>
+                <field name="contract_subtype"/>
+                <field name="disciplinary_letter_type"/>
+                <field name="legal_article_id"/>
+                <filter name="filter_contracts" string="Contrats"
+                        domain="[('document_type', '=', 'contract')]"/>
+                <filter name="filter_letters" string="Lettres RH"
+                        domain="[('document_type', '=', 'letter')]"/>
+                <filter name="filter_disciplinary" string="Disciplinaire"
+                        domain="[('document_type', '=', 'disciplinary')]"/>
+                <filter name="arrival_pack" string="Arrivée"
+                        domain="['|', ('is_arrival_pack', '=', True), ('stage_ids.code', '=', 'arrival')]"/>
+                <filter name="active" string="Actifs" domain="[('active', '=', True)]"/>
+                <group>
+                    <filter name="group_type" string="Type" context="{'group_by': 'document_type'}"/>
+                    <filter name="group_contract_subtype" string="Sous-type contrat"
+                            context="{'group_by': 'contract_subtype'}"/>
+                    <filter name="group_stage" string="Stade" context="{'group_by': 'stage_ids'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_pe_document_bank" model="ir.actions.act_window">
+        <field name="name">Modèles de documents</field>
+        <field name="res_model">pe.document.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_pe_document_template_search"/>
+        <field name="context">{'search_default_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créez vos modèles de documents RH (contrats, lettres, disciplinaire).
+            </p>
+            <p>
+                Les modèles sont personnalisables depuis la fiche collaborateur
+                et filtrés par stade du cycle de vie.
+            </p>
+        </field>
+    </record>
+
+    <!-- Documents envoyés -->
+    <record id="view_pe_employee_document_tree" model="ir.ui.view">
+        <field name="name">pe.employee.document.tree</field>
+        <field name="model">pe.employee.document</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'draft'" decoration-success="state == 'acknowledged'">
+                <field name="sent_date"/>
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="template_id"/>
+                <field name="stage_at_send_id"/>
+                <field name="sent_by_id"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pe_employee_document_form" model="ir.ui.view">
+        <field name="name">pe.employee.document.form</field>
+        <field name="model">pe.employee.document</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_mark_acknowledged" type="object"
+                            string="Accusé réception"
+                            class="btn-primary"
+                            invisible="state != 'sent'"
+                            groups="people_engine.group_employee"/>
+                    <button name="action_print_letter" type="object"
+                            string="Imprimer"
+                            invisible="not content_html and not attachment_id"
+                            groups="people_engine.group_hr"/>
+                    <button name="action_resend" type="object"
+                            string="Renvoyer"
+                            invisible="state == 'draft'"
+                            groups="people_engine.group_hr"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="profile_id"/>
+                            <field name="employee_id"/>
+                            <field name="template_id"/>
+                        </group>
+                        <group>
+                            <field name="stage_at_send_id"/>
+                            <field name="sent_date"/>
+                            <field name="sent_by_id"/>
+                            <field name="delivery_method"/>
+                            <field name="letter_date"/>
+                            <field name="attachment_id"/>
+                        </group>
+                    </group>
+                    <field name="content_html" invisible="not content_html"/>
+                    <field name="notes"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_pe_employee_document_search" model="ir.ui.view">
+        <field name="name">pe.employee.document.search</field>
+        <field name="model">pe.employee.document</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="template_id"/>
+                <filter name="sent" string="Envoyés" domain="[('state', '=', 'sent')]"/>
+                <filter name="ack" string="Accusés" domain="[('state', '=', 'acknowledged')]"/>
+                <group>
+                    <filter name="group_employee" string="Employé" context="{'group_by': 'employee_id'}"/>
+                    <filter name="group_stage" string="Stade" context="{'group_by': 'stage_at_send_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_pe_employee_documents" model="ir.actions.act_window">
+        <field name="name">Documents envoyés</field>
+        <field name="res_model">pe.employee.document</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_pe_employee_document_search"/>
+    </record>
+
+    <!-- Wizard personnalisation document -->
+    <record id="view_pe_personalize_document_wizard" model="ir.ui.view">
+        <field name="name">pe.personalize.document.wizard.form</field>
+        <field name="model">pe.personalize.document.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Document personnalisé">
+                <field name="available_template_ids" invisible="1"/>
+                <field name="batch_mode" invisible="1"/>
+                <field name="has_html_content" invisible="1"/>
+                <field name="has_file_attachment" invisible="1"/>
+                <field name="is_file_only" invisible="1"/>
+                <field name="arrival_pack" invisible="1"/>
+                <group>
+                    <group>
+                        <field name="profile_id" readonly="1"/>
+                        <field name="employee_id"/>
+                        <field name="lifecycle_stage_id"/>
+                        <field name="employee_email"/>
+                    </group>
+                    <group>
+                        <field name="letter_date"/>
+                    </group>
+                </group>
+                <group string="Documents (filtrés par stade)">
+                    <field name="template_ids" widget="many2many_checkboxes"
+                           options="{'no_create': True}"/>
+                </group>
+                <group invisible="batch_mode">
+                    <field name="template_id"
+                           options="{'no_create': True}"
+                           invisible="batch_mode"/>
+                </group>
+                <div class="alert alert-info" role="alert" invisible="not is_file_only">
+                    Ce modèle est un fichier joint sans contenu HTML.
+                    Le message d'accompagnement sera personnalisé ; le fichier original sera joint.
+                </div>
+                <notebook>
+                    <page string="Aperçu personnalisé" name="preview" invisible="batch_mode and is_file_only">
+                        <field name="personalized_content" widget="html"
+                               readonly="is_file_only"
+                               placeholder="Aucun contenu HTML — le fichier modèle sera envoyé tel quel."/>
+                    </page>
+                    <page string="Aperçu" name="preview_batch" invisible="not batch_mode">
+                        <p class="text-muted">
+                            Envoi multiple : chaque document sera personnalisé individuellement
+                            (placeholders appliqués par modèle). Utilisez l'onglet Courriel pour le message global.
+                        </p>
+                        <field name="template_id" string="Prévisualiser"
+                               options="{'no_create': True}"/>
+                        <field name="personalized_content" widget="html" readonly="is_file_only"/>
+                    </page>
+                    <page string="Courriel" name="email">
+                        <group>
+                            <field name="email_subject"/>
+                            <field name="include_pdf_attachment" invisible="is_file_only"/>
+                            <field name="include_template_file" invisible="not has_file_attachment"/>
+                            <field name="email_intro"/>
+                        </group>
+                    </page>
+                </notebook>
+                <footer>
+                    <button name="action_send_email" type="object"
+                            string="Envoyer par courriel" class="btn-primary"/>
+                    <button name="action_print" type="object"
+                            string="Imprimer" class="btn-secondary"/>
+                    <button string="Annuler" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Wizard envoi -->
+    <record id="view_pe_send_document_wizard" model="ir.ui.view">
+        <field name="name">pe.send.document.wizard.form</field>
+        <field name="model">pe.send.document.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Envoyer un document">
+                <group>
+                    <field name="profile_id" readonly="1"/>
+                    <field name="employee_id"/>
+                    <field name="lifecycle_stage_id"/>
+                    <field name="arrival_pack" invisible="1"/>
+                </group>
+                <group>
+                    <field name="template_ids" widget="many2many_checkboxes"
+                           domain="[('active', '=', True)]"
+                           options="{'no_create': True}"/>
+                </group>
+                <group string="E-mail">
+                    <field name="send_email"/>
+                    <field name="email_subject" invisible="not send_email"/>
+                    <field name="email_body" invisible="not send_email"/>
+                </group>
+                <footer>
+                    <button name="action_send" type="object" string="Envoyer" class="btn-primary"/>
+                    <button string="Annuler" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

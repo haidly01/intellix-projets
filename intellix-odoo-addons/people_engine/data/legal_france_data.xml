@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="jurisdiction_fr" model="pe.legal.jurisdiction">
+        <field name="name">France</field>
+        <field name="code">FR</field>
+        <field name="country">FR</field>
+        <field name="main_law">Code du travail français</field>
+    </record>
+
+    <record id="legal_fr_l1232_2" model="pe.legal.article">
+        <field name="jurisdiction_id" ref="jurisdiction_fr"/>
+        <field name="code">CT-L1232-2</field>
+        <field name="title">Entretien préalable au licenciement</field>
+        <field name="content">L'employeur convoque le salarié à un entretien préalable par LRAR ou remise en main propre. L'entretien ne peut avoir lieu moins de cinq jours ouvrables après la convocation.</field>
+        <field name="plain_language">Avant licenciement : convocation LRAR obligatoire, entretien au moins 5 jours ouvrables après réception.</field>
+        <field name="employer_obligations">Convocation LRAR, délai 5 jours, tenir l'entretien, attendre 2 jours ouvrables avant notification.</field>
+        <field name="employee_rights">Assistance par représentant du personnel. Contester aux Prud'hommes sous 12 mois.</field>
+        <field name="penalties">Licenciement sans cause réelle et sérieuse. Indemnités barème Macron.</field>
+        <field name="category">dismissal</field>
+        <field name="is_current" eval="True"/>
+        <field name="applicable_action_ids" eval="[(4, ref('action_type_termination'))]"/>
+        <field name="source_url">https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000006901053</field>
+    </record>
+
+    <record id="legal_fr_l1332_2" model="pe.legal.article">
+        <field name="jurisdiction_id" ref="jurisdiction_fr"/>
+        <field name="code">CT-L1332-2</field>
+        <field name="title">Sanction disciplinaire — notification écrite</field>
+        <field name="content">La sanction ne peut intervenir moins de deux jours ouvrables, ni plus d'un mois après l'entretien. Elle est motivée et notifiée à l'intéressé.</field>
+        <field name="plain_language">Notification écrite entre 2 jours et 1 mois après l'entretien disciplinaire.</field>
+        <field name="category">discipline</field>
+        <field name="is_current" eval="True"/>
+        <field name="applicable_action_ids" eval="[(4, ref('action_type_formal_warn'))]"/>
+    </record>
+
+    <record id="legal_fr_l1152_1" model="pe.legal.article">
+        <field name="jurisdiction_id" ref="jurisdiction_fr"/>
+        <field name="code">CT-L1152-1</field>
+        <field name="title">Interdiction du harcèlement moral</field>
+        <field name="content">Aucun salarié ne doit subir des agissements répétés de harcèlement moral portant atteinte à sa dignité, sa santé ou son avenir professionnel.</field>
+        <field name="plain_language">Harcèlement moral interdit. L'employeur doit prévenir et faire cesser tout harcèlement connu.</field>
+        <field name="category">harassment</field>
+        <field name="penalties">2 ans d'emprisonnement et 30 000€ d'amende. Responsabilité civile de l'employeur.</field>
+        <field name="is_current" eval="True"/>
+        <field name="applicable_action_ids" eval="[(4, ref('action_type_formal_warn'))]"/>
+    </record>
+</odoo>

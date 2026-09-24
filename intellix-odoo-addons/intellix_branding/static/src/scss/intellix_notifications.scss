@@ -1,0 +1,71 @@
+// Intellix — toasts / notifications (bus, reconnect, actions…)
+// Corrige le contraste : fond clair Bootstrap + texte blanc du thème sombre.
+
+.o_web_client.o_intellix_branded {
+    .o_notification_manager {
+        .o_notification {
+            --Notification__background-color: var(--ix-surface-elevated);
+            background-color: var(--ix-surface-elevated) !important;
+            color: var(--ix-text) !important;
+            border: 1px solid var(--ix-border) !important;
+            box-shadow: var(--ix-shadow-md) !important;
+
+            // Panneau message (bordure Bootstrap souvent blanche)
+            > div.border,
+            .border.rounded-end {
+                background-color: var(--ix-surface-elevated) !important;
+                border-color: var(--ix-border) !important;
+                color: var(--ix-text) !important;
+            }
+
+            .o_notification_content,
+            .o_notification_body,
+            .o_notification_body .o_notification_content,
+            .o_notification_body span {
+                color: var(--ix-text) !important;
+            }
+
+            .o_notification_buttons .btn-link {
+                color: var(--ix-primary-light) !important;
+
+                &:hover {
+                    color: var(--ix-text) !important;
+                }
+            }
+
+            .btn-close {
+                opacity: 0.8;
+                filter: invert(1) brightness(1.15);
+
+                &:hover {
+                    opacity: 1;
+                }
+            }
+        }
+    }
+
+    // Toasts Bootstrap (autres écrans)
+    .toast {
+        --bs-toast-bg: var(--ix-surface-elevated);
+        --bs-toast-color: var(--ix-text);
+        --bs-toast-border-color: var(--ix-border);
+        background-color: var(--ix-surface-elevated) !important;
+        color: var(--ix-text) !important;
+        border: 1px solid var(--ix-border) !important;
+
+        .toast-header {
+            background-color: var(--ix-surface) !important;
+            color: var(--ix-text) !important;
+            border-bottom-color: var(--ix-border) !important;
+        }
+
+        .toast-body {
+            color: var(--ix-text) !important;
+        }
+
+        .btn-close {
+            filter: invert(1) brightness(1.15);
+            opacity: 0.8;
+        }
+    }
+}

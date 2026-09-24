@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_extracteur_hub" model="ir.actions.client">
+        <field name="name">Extracteur</field>
+        <field name="tag">extracteur_hub_action</field>
+    </record>
+
+    <record id="action_leads_enriched_list" model="ir.actions.act_window">
+        <field name="name">Leads enrichis</field>
+        <field name="res_model">doorway.leads.bruts</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_leads_bruts_search"/>
+        <field name="domain">[('state', 'in', ['brut', 'nettoye'])]</field>
+        <field name="context">{'search_default_group_campagne': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucun lead enrichi pour le moment
+            </p>
+            <p>
+                Les leads enrichis complètent les données brutes (Melissa Data, nettoyage IA).
+                Lancez d'abord une extraction depuis le hub Extracteur.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_leads_qualified_list" model="ir.actions.act_window">
+        <field name="name">Leads qualifiés</field>
+        <field name="res_model">doorway.leads.bruts</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_leads_bruts_search"/>
+        <field name="domain">[('state', 'in', ['qualifie', 'importe'])]</field>
+        <field name="context">{'search_default_group_campagne': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucun lead qualifié pour le moment
+            </p>
+            <p>
+                Les leads qualifiés proviennent de la qualification IA ou de l'import CRM.
+            </p>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="doorway_hiba_qualif.HibaMartinSlotsField">
+        <div class="hiba-martin-cal">
+            <div class="hiba-martin-cal__hint">
+                Lun–Ven, 9h–15h Toronto · pause 12h–13h · 30 min
+                · un RDV dans l’agenda de Martin retire le créneau
+            </div>
+            <t t-if="state.loading">
+                <div class="hiba-martin-cal__empty">Chargement des créneaux…</div>
+            </t>
+            <t t-elif="!state.days.length">
+                <div class="hiba-martin-cal__empty">Aucun créneau disponible sur 14 jours.</div>
+            </t>
+            <t t-else="">
+                <div class="hiba-martin-cal__title">1. Choisir un jour</div>
+                <div class="hiba-martin-cal__days">
+                    <t t-foreach="state.days" t-as="day" t-key="day.date">
+                        <button type="button" class="hiba-day-btn"
+                                t-att-data-date="day.date"
+                                t-att-class="state.selectedDay and state.selectedDay.date === day.date ? 'selected' : ''"
+                                t-on-click="onClickDay">
+                            <div class="hiba-day-icon">
+                                <div class="hiba-day-num" t-esc="dayNumber(day)"/>
+                                <div class="hiba-day-month" t-esc="dayMonth(day)"/>
+                            </div>
+                            <div class="hiba-day-meta">
+                                <div class="hiba-day-name" t-esc="day.label"/>
+                                <div class="hiba-day-count" t-esc="day.count + ' créneaux'"/>
+                            </div>
+                        </button>
+                    </t>
+                </div>
+                <div class="hiba-martin-cal__title">2. Choisir l’heure</div>
+                <t t-if="!state.selectedDay">
+                    <div class="hiba-martin-cal__empty">← Choisis d’abord un jour</div>
+                </t>
+                <div t-else="" class="hiba-martin-cal__times">
+                    <t t-foreach="state.selectedDay.times" t-as="time" t-key="time">
+                        <button type="button" class="hiba-time-btn"
+                                t-att-data-time="time"
+                                t-att-class="state.selectedTime === time ? 'selected' : ''"
+                                t-on-click="onClickTime"
+                                t-esc="time"/>
+                    </t>
+                </div>
+                <div t-if="state.selectedDay and state.selectedTime" class="hiba-martin-cal__recap">
+                    <strong t-esc="state.selectedDay.label"/>
+                    <span> · </span>
+                    <strong t-esc="state.selectedTime"/>
+                    <span> (Toronto, 30 min)</span>
+                </div>
+            </t>
+        </div>
+    </t>
+</templates>

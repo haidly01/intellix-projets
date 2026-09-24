@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sale_order_form_intellix_template" model="ir.ui.view">
+        <field name="name">sale.order.form.intellix.template</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/div[@class='oe_title']" position="before">
+                <div class="ix-sale-template-banner alert alert-info mb-3" role="status"
+                     invisible="state not in ('draft', 'sent')">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+                        <div>
+                            <strong><i class="fa fa-clone"/> Modèle de devis</strong>
+                            <span class="ms-2 text-muted">
+                                Starter, Croissance IA ou Présence Digitale — puis dh ou $CAD.
+                            </span>
+                        </div>
+                        <button type="action"
+                                name="%(intellix_catalog.action_intellix_quotation_templates)d"
+                                class="btn btn-sm btn-outline-primary">
+                            <i class="fa fa-th-large"/> Voir tous les modèles
+                        </button>
+                    </div>
+                    <div class="mt-2 ix-sale-template-field">
+                        <field name="sale_order_template_id"
+                               string="Modèle"
+                               options="{'no_create': True}"
+                               placeholder="Choisir un modèle (Starter, Croissance IA…)"
+                               readonly="state in ['cancel', 'sale']"
+                               groups="sale_management.group_sale_order_template"/>
+                        <field name="ix_client_type"
+                               string="Client"
+                               readonly="state in ['cancel', 'sale']"
+                               class="mt-2"/>
+                        <field name="ix_entity"
+                               string="Entité / devise"
+                               readonly="state in ['cancel', 'sale']"/>
+                        <field name="ix_template_code" invisible="1"/>
+                        <field name="ix_prospect_category"
+                               string="Secteur"
+                               readonly="ix_prices_locked or state in ['cancel', 'sale']"
+                               class="mt-2"/>
+                        <field name="ix_video_url"
+                               string="Vidéo"
+                               readonly="ix_prices_locked or state in ['cancel', 'sale']"
+                               placeholder="Rempli automatiquement selon le secteur"/>
+                        <field name="ix_prices_locked" invisible="1"/>
+                        <div class="text-muted mt-1" invisible="not ix_prices_locked">
+                            Prix et clauses figés (catalogue
+                            <field name="ix_catalog_version" readonly="1"/>).
+                        </div>
+                        <field name="ix_tax_mode"
+                               string="Taxes"
+                               widget="radio"
+                               readonly="state in ['cancel', 'sale']"
+                               class="mt-2"/>
+                    </div>
+                </div>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Clauses d'entente" name="ix_terms">
+                    <field name="ix_terms_html" nolabel="1"/>
+                </page>
+            </xpath>
+            <!-- Masquer le champ doublon en bas du formulaire -->
+            <xpath expr="//field[@name='sale_order_template_id'][@groups='sale_management.group_sale_order_template']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="sale_quotation_tree_intellix_hint" model="ir.ui.view">
+        <field name="name">sale.quotation.list.intellix.hint</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_quotation_tree_with_onboarding"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="attributes">
+                <attribute name="class">ix-quotation-list</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

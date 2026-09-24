@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Segmentation Doorway (opportunités et utilisateurs) :
+        - B2C : pipelines Rénovation, Assurance, Immobilier
+        - B2B : pipelines Marketing, Driven, Doorway Clients
+    -->
+    <record id="group_doorway_b2b" model="res.groups">
+        <field name="name">Doorway — Segment B2B</field>
+        <field name="comment">Pipelines Marketing, Driven et Doorway Clients.</field>
+    </record>
+
+    <record id="group_doorway_b2c" model="res.groups">
+        <field name="name">Doorway — Segment B2C</field>
+        <field name="comment">Pipelines Rénovation, Assurance et Immobilier.</field>
+    </record>
+
+    <record id="group_doorway_role_user" model="res.groups">
+        <field name="name">Doorway — Rôle Utilisateur</field>
+        <field name="comment">Accès standard CRM / portail.</field>
+    </record>
+
+    <record id="group_doorway_role_supervisor" model="res.groups">
+        <field name="name">Doorway — Rôle Superviseur</field>
+        <field name="comment">Supervise une ou plusieurs équipes CRM.</field>
+        <field name="implied_ids" eval="[(4, ref('group_doorway_role_user'))]"/>
+    </record>
+
+    <record id="group_doorway_role_admin" model="res.groups">
+        <field name="name">Doorway — Rôle Admin</field>
+        <field name="comment">Administration pipelines restreints.</field>
+        <field name="implied_ids" eval="[(4, ref('group_doorway_role_supervisor'))]"/>
+    </record>
+</odoo>

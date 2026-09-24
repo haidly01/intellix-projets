@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="asset_intellix_voice_fill_css" model="ir.asset">
+        <field name="name">doorway_crm.intellix_voice_fill_css</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="path">doorway_crm/static/src/css/intellix_voice_fill.css</field>
+        <field name="sequence" eval="95"/>
+    </record>
+    <record id="asset_intellix_voice_fill_js" model="ir.asset">
+        <field name="name">doorway_crm.intellix_voice_fill_js</field>
+        <field name="bundle">web.assets_backend</field>
+        <field name="path">doorway_crm/static/src/js/intellix_voice_fill.js</field>
+        <field name="sequence" eval="96"/>
+    </record>
+</odoo>

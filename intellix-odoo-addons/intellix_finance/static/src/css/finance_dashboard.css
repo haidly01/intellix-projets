@@ -1,0 +1,108 @@
+.ix-finance-dash{
+  --bg:#0a0a12;
+  --panel:#131320;
+  --border:rgba(255,255,255,0.08);
+  --text:#f4f4f8;
+  --dim:rgba(244,244,248,0.58);
+  --indigo:#6366f1;
+  --violet:#8b5cf6;
+  --cyan:#06b6d4;
+  --green:#34d399;
+  --amber:#fbbf24;
+  --rose:#fb7185;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100%;
+  padding:24px 28px 48px;
+  font-family:Inter,system-ui,sans-serif;
+}
+.ix-finance-dash h1{font-size:22px;margin:4px 0 6px;font-weight:700;}
+.ix-finance-dash h2{font-size:18px;margin:0 0 4px;}
+.ix-finance-dash h3{font-size:13px;margin:0 0 12px;color:var(--dim);font-weight:600;text-transform:uppercase;letter-spacing:.04em;}
+.ix-fin-kicker{font-size:11px;color:var(--cyan);font-weight:600;letter-spacing:.08em;text-transform:uppercase;}
+.ix-fin-sub{color:var(--dim);font-size:13px;line-height:1.45;}
+.ix-fin-top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:18px;}
+.ix-fin-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+.ix-fin-tabs button,.ix-fin-btn{
+  background:var(--panel);color:var(--text);border:1px solid var(--border);
+  border-radius:8px;padding:8px 12px;font-size:13px;cursor:pointer;
+}
+.ix-fin-tabs button.active,.ix-fin-btn.primary{
+  background:linear-gradient(135deg,var(--indigo),var(--violet));
+  border-color:transparent;
+}
+.ix-fin-compare{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+@media(max-width:960px){.ix-fin-compare{grid-template-columns:1fr;}}
+.ix-fin-col{
+  background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:18px;
+}
+.ix-fin-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0;}
+.ix-fin-kpis.compact{grid-template-columns:repeat(3,1fr);}
+.ix-fin-kpi{
+  background:#191927;border:1px solid var(--border);border-radius:10px;padding:12px;
+}
+.ix-fin-kpi .label{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.04em;}
+.ix-fin-kpi .val{font-size:26px;font-weight:700;margin-top:4px;}
+.ix-fin-kpi .hint,.ix-fin-kpi .unit{font-size:11px;color:var(--dim);}
+.ix-fin-card{margin-top:8px;}
+.ix-fin-stage{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.ix-fin-stage .seq{
+  width:22px;height:22px;border-radius:6px;background:#191927;display:flex;align-items:center;justify-content:center;
+  font-size:11px;color:var(--cyan);
+}
+.ix-fin-stage .lab{flex:1;}
+.ix-fin-stage .n{font-weight:700;}
+.ix-fin-loss{display:grid;grid-template-columns:1fr;gap:8px;margin-top:14px;}
+.ix-fin-itex .ix-fin-loss{grid-template-columns:1fr 1fr;}
+@media(max-width:720px){.ix-fin-itex .ix-fin-loss{grid-template-columns:1fr;}}
+.ix-fin-loss-card{border:1px solid var(--border);border-radius:10px;padding:12px;background:#191927;}
+.ix-fin-loss-card .label{font-size:11px;color:var(--dim);text-transform:uppercase;}
+.ix-fin-loss-card .val{font-size:22px;font-weight:700;margin:4px 0;}
+.ix-fin-loss-card.doc .val{color:var(--amber);}
+.ix-fin-loss-card.credit .val{color:var(--rose);}
+.ix-fin-loss-card.rate .val{color:var(--violet);}
+.ix-fin-loss-card.silence .val{color:var(--amber);}
+.ix-fin-loss-card .hint{font-size:11px;color:var(--dim);}
+.ix-fin-stage.confirmed .seq{background:var(--green);color:#04210f;}
+.ix-fin-stage .hint{font-size:11px;color:var(--dim);}
+.ix-fin-actions{display:flex;gap:8px;margin-top:16px;}
+.ix-fin-note{margin-top:16px;font-size:12px;color:var(--dim);}
+.ix-fin-warn{color:var(--amber);padding:12px;}
+.ix-fin-itex .ix-fin-kpis{grid-template-columns:repeat(4,1fr);}
+.ix-fin-filters{display:flex;gap:16px;flex-wrap:wrap;margin:0 0 16px;align-items:end;}
+.ix-fin-filters label{display:flex;flex-direction:column;gap:6px;font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.04em;}
+.ix-fin-filters select{
+  background:var(--panel);color:var(--text);border:1px solid var(--border);
+  border-radius:8px;padding:8px 10px;font-size:13px;min-width:220px;
+}
+.ix-fin-seg{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px;}
+.ix-fin-seg-label{font-size:11px;color:var(--cyan);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;}
+
+/* ITEX / Driven OWL : Odoo .o_action_manager overflow:hidden + 100vh coupaient le scroll. */
+.o_action_manager:has(.ix-itex-dash),
+.o_action:has(.ix-itex-dash),
+.o_view_controller:has(.ix-itex-dash),
+.o_content:has(.ix-itex-dash),
+.o_action_manager:has(.ix-finance-dash),
+.o_action:has(.ix-finance-dash),
+.o_content:has(.ix-finance-dash){
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+}
+.o_action:has(.ix-itex-dash),
+.o_content:has(.ix-itex-dash),
+.o_action:has(.ix-finance-dash),
+.o_content:has(.ix-finance-dash){
+  height:auto !important;
+  min-height:100%;
+}
+.ix-itex-dash,
+.o_coins_part_backend_dash.ix-itex-dash{
+  min-height:100%;
+  height:auto;
+  overflow:visible;
+}
+.ix-itex-dash .shell{
+  min-height:100%;
+  height:auto;
+}

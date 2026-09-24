@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Ancien appel _cq_detach_demo_leads : vidait team_id des fiches CQ.
+         Neutralisé dans hooks.py. noupdate pour ne plus relancer au -u. -->
+</odoo>

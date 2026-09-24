@@ -1,0 +1,57 @@
+{
+  "name": "sofia-es — 02 VICIdial Events",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "sofia-es/vicidial/event",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "name": "Webhook VICIdial AGI",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        300
+      ],
+      "webhookId": "sofia-es-vicidial-agi"
+    },
+    {
+      "parameters": {
+        "jsCode": "const b = $input.first().json.body || $input.first().json;\nconst ev = {\n  event_type: b.event_type || 'recording_ready',\n  call_sid: b.call_sid || b.uniqueid || '',\n  from: b.from || b.phone_number || '',\n  to: b.to || '',\n  recording_url: b.recording_url || b.recording_path || '',\n  amd_result: (b.amd_result || 'unknown').toLowerCase(),\n  duration_sec: parseInt(b.duration_sec || b.duration || 0, 10) || 0,\n  provider: 'vicidial',\n  partner_id: b.partner_id || b.lead_id || '',\n  nombre: b.nombre || b.first_name || '',\n  raw: b,\n};\nconst base = ($env.N8N_WEBHOOK_URL || '').replace(/\\/$/, '');\nconst engine = await this.helpers.httpRequest({\n  method: 'POST',\n  url: base + '/sofia-es/conversation',\n  body: ev,\n  json: true,\n});\nconst out = engine && engine.action ? engine : (Array.isArray(engine) ? engine[0] : { normalized: ev, engine });\nif (ev.event_type === 'call_ended' || out.action === 'hangup') {\n  const odooUrl = ($env.ODOO_URL || 'https://intellixcrm.com').replace(/\\/$/, '');\n  const sp = out.sheet_payload || {};\n  const amd = (ev.amd_result || sp.amd_result || 'unknown').toLowerCase();\n  const dur = ev.duration_sec || sp.duree_sec || 0;\n  const cost = amd === 'machine' || amd === 'not_sure' ? 0 : Math.round((dur * 0.22 / 60) * 10000) / 10000;\n  try {\n    await this.helpers.httpRequest({\n      method: 'POST',\n      url: odooUrl + '/doorway/api/sofia-es/call-ended',\n      body: {\n        jsonrpc: '2.0',\n        method: 'call',\n        params: {\n          tenant_api_key: $env.DOORWAY_TENANT_API_KEY,\n          call_sid: ev.call_sid,\n          duration_seconds: dur,\n          amd_result: amd,\n          partner_id: sp.partner_id || ev.partner_id,\n          nombre: sp.nombre || ev.nombre,\n          telephone: sp.telefono || ev.to || ev.from,\n          lead_ganador: sp.qualified || sp.lead_ganador,\n          propietario: sp.proprietaire,\n          tipo_vivienda: sp.type_logement,\n          codigo_postal: sp.code_postal,\n          etat_final: sp.statut || sp.etat_final,\n          transcript: sp.transcript || '',\n          recording_url: sp.recording_url || ev.recording_url,\n          cost_euros: cost,\n          campaign: 'sofia_es_avatrade',\n        },\n        id: Date.now(),\n      },\n      json: true,\n      timeout: 15000,\n    });\n  } catch (e) {\n    out.odoo_error = (e.message || String(e)).slice(0, 200);\n  }\n}\nreturn [{ json: out }];"
+      },
+      "name": "Normalize + Engine + Odoo",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook VICIdial AGI": {
+      "main": [
+        [
+          {
+            "node": "Normalize + Engine + Odoo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [
+    {
+      "name": "sofia-es"
+    },
+    {
+      "name": "vicidial"
+    }
+  ]
+}

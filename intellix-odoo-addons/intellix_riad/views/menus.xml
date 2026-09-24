@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_riad_fleet" model="ir.actions.client">
+        <field name="name">Intellix Channex</field>
+        <field name="tag">intellix_riad.fleet</field>
+    </record>
+    <record id="action_riad_dashboard" model="ir.actions.client">
+        <field name="name">Tableau de bord</field>
+        <field name="tag">intellix_riad.dashboard</field>
+    </record>
+    <record id="action_riad_calendar" model="ir.actions.client">
+        <field name="name">Réservations</field>
+        <field name="tag">intellix_riad.calendar</field>
+    </record>
+    <record id="action_riad_restaurant_screen" model="ir.actions.client">
+        <field name="name">Restaurant</field>
+        <field name="tag">intellix_riad.restaurant</field>
+    </record>
+    <record id="action_riad_wellness_screen" model="ir.actions.client">
+        <field name="name">Bien-être &amp; beauté</field>
+        <field name="tag">intellix_riad.wellness</field>
+    </record>
+    <record id="action_riad_events_screen" model="ir.actions.client">
+        <field name="name">Événements</field>
+        <field name="tag">intellix_riad.events</field>
+    </record>
+    <record id="action_riad_personnel_screen" model="ir.actions.client">
+        <field name="name">Personnel</field>
+        <field name="tag">intellix_riad.personnel</field>
+    </record>
+    <record id="action_riad_settings_screen" model="ir.actions.client">
+        <field name="name">Paramètres</field>
+        <field name="tag">intellix_riad.settings</field>
+    </record>
+    <record id="action_riad_inbox_screen" model="ir.actions.client">
+        <field name="name">Mails</field>
+        <field name="tag">intellix_riad.inbox</field>
+    </record>
+    <record id="action_riad_social_screen" model="ir.actions.client">
+        <field name="name">Réseaux sociaux</field>
+        <field name="tag">intellix_riad.social</field>
+    </record>
+
+    <record id="action_riad_channels" model="ir.actions.client">
+        <field name="name">Canaux &amp; Channex</field>
+        <field name="tag">intellix_riad.channels</field>
+    </record>
+    <record id="action_riad_finance" model="ir.actions.client">
+        <field name="name">Analyse Finance</field>
+        <field name="tag">intellix_riad.finance</field>
+    </record>
+    <record id="action_riad_whatsapp" model="ir.actions.client">
+        <field name="name">WhatsApp</field>
+        <field name="tag">intellix_riad.whatsapp</field>
+    </record>
+
+    <menuitem id="menu_riad_root"
+              name="Module Hébergement"
+              sequence="8"
+              groups="group_riad_user"
+              web_icon="intellix_riad,static/description/icon.png"/>
+
+    <menuitem id="menu_riad_dashboard"
+              name="Tableau de bord"
+              parent="menu_riad_root"
+              action="action_riad_dashboard"
+              sequence="5"/>
+
+    <menuitem id="menu_riad_channels"
+              name="Canaux &amp; Channex"
+              parent="menu_riad_root"
+              action="action_riad_channels"
+              sequence="6"/>
+
+    <menuitem id="menu_riad_finance"
+              name="Analyse Finance"
+              parent="menu_riad_root"
+              action="action_riad_finance"
+              sequence="8"/>
+
+    <menuitem id="menu_riad_whatsapp"
+              name="WhatsApp"
+              parent="menu_riad_root"
+              action="action_riad_whatsapp"
+              sequence="9"/>
+
+    <menuitem id="menu_riad_fleet"
+              name="Vue flotte Channex"
+              parent="menu_riad_root"
+              action="action_riad_fleet"
+              sequence="7"
+              groups="group_riad_manager"/>
+
+    <menuitem id="menu_coins_channex_fleet"
+              name="Vue globale établissements"
+              parent="coins_marocain.menu_coins_distribution"
+              action="action_riad_fleet"
+              sequence="5"
+              groups="group_riad_user,coins_marocain.group_coins_manager"/>
+
+    <menuitem id="menu_riad_reservations"
+              name="Réservations"
+              parent="menu_riad_root"
+              action="action_riad_calendar"
+              sequence="20"/>
+
+    <menuitem id="menu_riad_police"
+              name="Fiches de police"
+              parent="menu_riad_root"
+              action="action_riad_police_fiche"
+              sequence="21"/>
+
+    <menuitem id="menu_riad_tax_bordereau"
+              name="Bordereaux taxe de séjour"
+              parent="menu_riad_root"
+              action="action_riad_tax_bordereau"
+              sequence="22"/>
+
+    <menuitem id="menu_riad_restaurant"
+              name="Restaurant"
+              parent="menu_riad_root"
+              action="action_riad_restaurant_screen"
+              sequence="30"/>
+
+    <menuitem id="menu_riad_wellness"
+              name="Bien-être &amp; beauté"
+              parent="menu_riad_root"
+              action="action_riad_wellness_screen"
+              sequence="40"/>
+
+    <menuitem id="menu_riad_experience"
+              name="Créateur d'Expérience"
+              parent="menu_riad_root"
+              action="action_riad_experience_thread"
+              sequence="23"/>
+
+    <menuitem id="menu_riad_pricing"
+              name="Tarification"
+              parent="menu_riad_root"
+              action="action_riad_comp_rate"
+              sequence="24"/>
+
+    <menuitem id="menu_riad_pricing_rates"
+              name="Saisies tarifaires"
+              parent="menu_riad_pricing"
+              action="action_riad_comp_rate"
+              sequence="10"/>
+
+    <menuitem id="menu_riad_pricing_compset"
+              name="Comp-set"
+              parent="menu_riad_pricing"
+              action="action_riad_comp_riad"
+              sequence="20"/>
+
+    <menuitem id="menu_riad_mails"
+              name="Mails"
+              parent="menu_riad_root"
+              action="action_riad_inbox_screen"
+              sequence="50"/>
+
+    <menuitem id="menu_riad_social"
+              name="Réseaux sociaux"
+              parent="menu_riad_root"
+              action="action_riad_social_screen"
+              sequence="60"/>
+
+    <menuitem id="menu_riad_personnel"
+              name="Personnel"
+              parent="menu_riad_root"
+              action="action_riad_personnel_screen"
+              sequence="75"/>
+
+    <menuitem id="menu_riad_staff"
+              name="Équipe"
+              parent="menu_riad_personnel"
+              action="action_riad_personnel_screen"
+              sequence="10"/>
+
+    <menuitem id="menu_riad_punch"
+              name="Pointages"
+              parent="menu_riad_personnel"
+              action="action_riad_punch"
+              sequence="20"/>
+
+    <menuitem id="menu_riad_wellness_menu"
+              name="Menu des soins"
+              parent="menu_riad_personnel"
+              action="action_riad_wellness_menu"
+              sequence="30"/>
+
+    <menuitem id="menu_riad_restaurant_menu"
+              name="Menu restaurant"
+              parent="menu_riad_personnel"
+              action="action_riad_restaurant_menu"
+              sequence="40"/>
+
+    <menuitem id="menu_riad_events"
+              name="Événements"
+              parent="menu_riad_root"
+              action="action_riad_events_screen"
+              sequence="70"/>
+
+    <menuitem id="menu_riad_event_tasks"
+              name="Tâches événements"
+              parent="menu_riad_root"
+              action="action_riad_event_task"
+              sequence="71"/>
+
+    <menuitem id="menu_riad_settings"
+              name="Paramètres"
+              parent="menu_riad_root"
+              action="action_riad_settings_screen"
+              sequence="90"/>
+
+    <menuitem id="menu_riad_establishment"
+              name="Établissements"
+              parent="menu_riad_settings"
+              action="action_riad_establishment"
+              sequence="10"/>
+
+    <menuitem id="menu_riad_payment"
+              name="Paiement"
+              parent="menu_riad_settings"
+              action="action_riad_payment_settings"
+              sequence="12"/>
+
+    <menuitem id="menu_riad_space_mode"
+              name="Modes terrasse"
+              parent="menu_riad_settings"
+              action="action_riad_space_mode"
+              sequence="20"/>
+
+    <menuitem id="menu_riad_practitioners"
+              name="Prestataires"
+              parent="menu_riad_settings"
+              action="action_riad_practitioner"
+              sequence="30"/>
+
+    <menuitem id="menu_riad_event_templates"
+              name="Modèles de checklist"
+              parent="menu_riad_settings"
+              action="action_riad_event_template"
+              sequence="40"/>
+
+    <menuitem id="menu_riad_staff_roles"
+              name="Rôles personnel"
+              parent="menu_riad_settings"
+              action="action_riad_staff_role"
+              sequence="45"
+              groups="group_riad_manager"/>
+
+    <menuitem id="menu_riad_settings_wellness_menu"
+              name="Menu des soins"
+              parent="menu_riad_settings"
+              action="action_riad_wellness_menu"
+              sequence="46"/>
+
+    <menuitem id="menu_riad_settings_restaurant_menu"
+              name="Menu restaurant"
+              parent="menu_riad_settings"
+              action="action_riad_restaurant_menu"
+              sequence="47"/>
+
+    <menuitem id="menu_riad_tax_bordereau_template"
+              name="Modèles de bordereau (communes)"
+              parent="menu_riad_settings"
+              action="action_riad_tax_bordereau_template"
+              sequence="50"
+              groups="group_riad_manager"/>
+</odoo>

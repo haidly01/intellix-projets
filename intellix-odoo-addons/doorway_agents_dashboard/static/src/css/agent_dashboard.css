@@ -1,0 +1,82 @@
+.doorway_agent_card {
+    background: var(--ix-surface, #0f0f1a);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: 12px;
+    padding: 16px;
+    min-height: 220px;
+}
+
+.agent_avatar_circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6366f1, #06b6d4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.agent_kpi_grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin: 12px 0;
+}
+
+.kpi_cell {
+    background: var(--ix-surface-hover, rgba(255, 255, 255, 0.04));
+    border-radius: 8px;
+    padding: 8px 6px;
+    text-align: center;
+}
+
+.kpi_val {
+    display: block;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ix-text, #e8e8f0);
+    line-height: 1;
+}
+
+.kpi_lbl {
+    display: block;
+    font-size: 9px;
+    color: var(--ix-text-muted, #6b6b8a);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 3px;
+}
+
+.doorway_agent_chart_container {
+    height: 220px;
+    margin-top: 8px;
+}
+
+.doorway_agent_chart_container canvas {
+    width: 100%;
+    height: 200px;
+}
+
+.ix-perf-card__kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.ix-perf-card__kpi {
+    background: rgba(99, 102, 241, 0.08);
+    border-radius: 8px;
+    padding: 6px;
+    text-align: center;
+    font-size: 11px;
+}
+
+.ix-perf-card__kpi strong {
+    display: block;
+    font-size: 15px;
+}

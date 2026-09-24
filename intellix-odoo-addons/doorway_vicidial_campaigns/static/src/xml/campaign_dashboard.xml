@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="doorway_vicidial_campaigns.CampaignDashboard">
+        <div class="ix-campaign-dashboard o_action o_intellix_client_action">
+
+            <t t-if="state.view === 'list'">
+                <header class="ix-camp-header">
+                    <div>
+                        <h1>Campagnes &amp; Analyse</h1>
+                        <p>Supervisez vos campagnes sortantes, relancez et exportez vos leads.</p>
+                    </div>
+                    <button type="button" class="ix-camp-btn ix-camp-btn--primary" t-on-click="newCampaign">
+                        <i class="fa fa-plus"/> Nouvelle campagne
+                    </button>
+                </header>
+
+                <div class="ix-camp-filters">
+                    <select t-on-change="(e) => setListFilter('period', e.target.value)">
+                        <option value="today" t-att-selected="state.filters.period === 'today'">Aujourd'hui</option>
+                        <option value="week" t-att-selected="state.filters.period === 'week'">7 jours</option>
+                        <option value="month" t-att-selected="state.filters.period === 'month'">Ce mois</option>
+                    </select>
+                    <select t-on-change="(e) => setListFilter('pipeline', e.target.value)">
+                        <option value="">Tous pipelines</option>
+                        <t t-foreach="state.pipelines" t-as="p" t-key="p.value">
+                            <option t-att-value="p.value" t-esc="p.label"/>
+                        </t>
+                    </select>
+                    <select t-on-change="(e) => setListFilter('agent_id', e.target.value)">
+                        <option value="">Tous agents</option>
+                        <t t-foreach="state.agents" t-as="a" t-key="a.id">
+                            <option t-att-value="a.id" t-esc="a.name"/>
+                        </t>
+                    </select>
+                    <select t-on-change="(e) => setListFilter('state', e.target.value)">
+                        <option value="">Tous statuts</option>
+                        <option value="active">Active</option>
+                        <option value="paused">En pause</option>
+                        <option value="completed">Terminée</option>
+                        <option value="ready">Prêt</option>
+                    </select>
+                </div>
+
+                <t t-if="state.summary">
+                    <div class="ix-camp-kpi-grid ix-camp-kpi-grid--summary">
+                        <article class="ix-camp-kpi">
+                            <span class="ix-camp-kpi__label">Campagnes actives</span>
+                            <strong t-esc="state.summary.active_campaigns"/>
+                        </article>
+                        <article class="ix-camp-kpi">
+                            <span class="ix-camp-kpi__label">Appels (période)</span>
+                            <strong t-esc="state.summary.calls_period"/>
+                        </article>
+                        <article class="ix-camp-kpi">
+                            <span class="ix-camp-kpi__label">Qualifiés</span>
+                            <strong t-esc="state.summary.qualified"/>
+                        </article>
+                        <article class="ix-camp-kpi">
+                            <span class="ix-camp-kpi__label">RDV</span>
+                            <strong t-esc="state.summary.rdv"/>
+                        </article>
+                        <article class="ix-camp-kpi">
+                            <span class="ix-camp-kpi__label">Rappels</span>
+                            <strong t-esc="state.summary.rappels"/>
+                        </article>
+                        <article class="ix-camp-kpi">
+                            <span class="ix-camp-kpi__label">Agents live</span>
+                            <strong t-esc="state.summary.live_agents"/>
+                        </article>
+                    </div>
+                </t>
+
+                <t t-if="state.loading">
+                    <div class="ix-camp-loading"><i class="fa fa-spinner fa-spin"/> Chargement…</div>
+                </t>
+                <t t-else="">
+                    <div class="ix-camp-table-wrap">
+                        <table class="ix-camp-table">
+                            <thead>
+                                <tr>
+                                    <th>Nom</th>
+                                    <th>Pipeline</th>
+                                    <th>Statut</th>
+                                    <th>Contacts</th>
+                                    <th>Appels</th>
+                                    <th>Qualifiés</th>
+                                    <th>Taux qualif.</th>
+                                    <th>RDV</th>
+                                    <th>Rappels</th>
+                                    <th>Agents</th>
+                                    <th>Live</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="state.campaigns" t-as="c" t-key="c.id">
+                                    <tr class="ix-camp-row" t-on-click="() => openCampaign(c.id)">
+                                        <td><strong t-esc="c.name"/></td>
+                                        <td t-esc="c.pipeline"/>
+                                        <td>
+                                            <span t-att-class="'ix-camp-badge ' + stateBadge(c.state)"
+                                                  t-esc="c.state_label"/>
+                                        </td>
+                                        <td t-esc="c.total_contacts"/>
+                                        <td t-esc="c.calls_period"/>
+                                        <td t-esc="c.qualified_period"/>
+                                        <td><t t-esc="c.qualification_rate"/>%</td>
+                                        <td t-esc="c.rdv_count"/>
+                                        <td t-esc="c.rappels_period"/>
+                                        <td t-esc="c.human_agents"/>
+                                        <td t-esc="c.live_agents"/>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+
+            <t t-if="state.view === 'detail' and state.detail">
+                <header class="ix-camp-header">
+                    <div>
+                        <button type="button" class="ix-camp-btn ix-camp-btn--ghost" t-on-click="backToList">
+                            <i class="fa fa-arrow-left"/> Retour
+                        </button>
+                        <h1 t-esc="state.detail.campaign.name"/>
+                        <p>
+                            <span t-att-class="'ix-camp-badge ' + stateBadge(state.detail.campaign.state)"
+                                  t-esc="state.detail.campaign.state_label"/>
+                            · <t t-esc="state.detail.campaign.agent_name"/>
+                        </p>
+                    </div>
+                    <div class="ix-camp-header__actions">
+                        <button type="button"
+                                class="ix-camp-btn ix-camp-btn--primary"
+                                t-if="state.detail.campaign.state === 'draft' or state.detail.campaign.state === 'ready' or state.detail.campaign.state === 'paused'"
+                                t-att-disabled="state.campaignActionLoading"
+                                t-on-click="campaignStart">
+                            <i class="fa fa-play"/> Démarrer
+                        </button>
+                        <button type="button"
+                                class="ix-camp-btn ix-camp-btn--secondary"
+                                t-if="state.detail.campaign.state === 'active'"
+                                t-att-disabled="state.campaignActionLoading"
+                                t-on-click="campaignPause">
+                            <i class="fa fa-pause"/> Pause
+                        </button>
+                        <button type="button"
+                                class="ix-camp-btn ix-camp-btn--ghost"
+                                t-att-disabled="state.campaignActionLoading"
+                                t-on-click="campaignImportContacts">
+                            <i class="fa fa-upload"/> Importer contacts
+                        </button>
+                        <button type="button"
+                                class="ix-camp-btn ix-camp-btn--ghost"
+                                t-att-disabled="state.campaignActionLoading"
+                                t-on-click="campaignCleanupList">
+                            <i class="fa fa-eraser"/> Nettoyer ma liste
+                        </button>
+                    </div>
+                </header>
+
+                <div class="ix-camp-kpi-grid">
+                    <article class="ix-camp-kpi">
+                        <span class="ix-camp-kpi__label">Appels (7 j)</span>
+                        <strong t-esc="state.detail.kpis.calls_period"/>
+                    </article>
+                    <article class="ix-camp-kpi">
+                        <span class="ix-camp-kpi__label">Qualifiés (7 j)</span>
+                        <strong t-esc="state.detail.kpis.qualified_period"/>
+                    </article>
+                    <article class="ix-camp-kpi">
+                        <span class="ix-camp-kpi__label">Taux qualification</span>
+                        <strong t-esc="state.detail.kpis.qualification_rate + '%'"/>
+                    </article>
+                    <article class="ix-camp-kpi">
+                        <span class="ix-camp-kpi__label">RDV</span>
+                        <strong t-esc="state.detail.kpis.rdv_count"/>
+                    </article>
+                    <article class="ix-camp-kpi">
+                        <span class="ix-camp-kpi__label">Rappels</span>
+                        <strong t-esc="state.detail.kpis.rappels_period"/>
+                    </article>
+                    <article class="ix-camp-kpi">
+                        <span class="ix-camp-kpi__label">Agents live / assignés</span>
+                        <strong><t t-esc="state.detail.kpis.live_agents"/> / <t t-esc="state.detail.kpis.human_agents"/></strong>
+                    </article>
+                    <article class="ix-camp-kpi">
+                        <span class="ix-camp-kpi__label">Taux de contact</span>
+                        <strong t-esc="state.detail.kpis.contact_rate + '%'"/>
+                    </article>
+                    <article class="ix-camp-kpi">
+                        <span class="ix-camp-kpi__label">Appels aujourd'hui</span>
+                        <strong t-esc="state.detail.kpis.calls_today"/>
+                    </article>
+                </div>
+
+                <section class="ix-camp-timeline">
+                    <div class="ix-camp-timeline__head">
+                        <h2>Appels par heure</h2>
+                        <div class="ix-camp-timeline__toggle">
+                            <button type="button"
+                                    t-att-class="state.detailFilters.timeline_period === 'today' ? 'active' : ''"
+                                    t-on-click="() => setDetailFilter('timeline_period', 'today')">Aujourd'hui</button>
+                            <button type="button"
+                                    t-att-class="state.detailFilters.timeline_period === 'yesterday' ? 'active' : ''"
+                                    t-on-click="() => setDetailFilter('timeline_period', 'yesterday')">Hier</button>
+                            <button type="button"
+                                    t-att-class="state.detailFilters.timeline_period === 'week' ? 'active' : ''"
+                                    t-on-click="() => setDetailFilter('timeline_period', 'week')">7 jours</button>
+                        </div>
+                    </div>
+                    <div class="ix-camp-bars">
+                        <t t-foreach="state.detail.timeline" t-as="bar" t-key="bar.hour">
+                            <div class="ix-camp-bar-col" t-att-title="bar.hour + 'h: ' + bar.count">
+                                <div class="ix-camp-bar" t-att-style="'height:' + barHeight(bar.count) + '%'"/>
+                                <span t-esc="bar.hour"/>
+                            </div>
+                        </t>
+                    </div>
+                </section>
+
+                <div class="ix-camp-lead-filters">
+                    <select t-on-change="(e) => setDetailFilter('operational_status', e.target.value)">
+                        <option value="">Tous statuts</option>
+                        <option value="success">Succès</option>
+                        <option value="callback">Décroché – à relancer</option>
+                        <option value="voicemail">Messagerie</option>
+                        <option value="error">Erreur</option>
+                        <option value="in_progress">En cours</option>
+                    </select>
+                    <input type="number" placeholder="Score IA min" min="0" max="100"
+                           t-on-change="(e) => setDetailFilter('ai_score_min', e.target.value)"/>
+                    <input type="number" placeholder="Score IA max" min="0" max="100"
+                           t-on-change="(e) => setDetailFilter('ai_score_max', e.target.value)"/>
+                </div>
+
+                <div class="ix-camp-table-wrap">
+                    <table class="ix-camp-table ix-camp-table--leads">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox"
+                                    t-on-change="(e) => toggleSelectAll(e.target.checked)"/></th>
+                                <th>Nom</th>
+                                <th>Téléphone</th>
+                                <th>Dernière tentative</th>
+                                <th>Durée</th>
+                                <th>Statut</th>
+                                <th>Note IA</th>
+                                <th>Agent</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="state.detail.contacts" t-as="lead" t-key="lead.id">
+                                <tr>
+                                    <td>
+                                        <input type="checkbox"
+                                               t-att-checked="isSelected(lead.id)"
+                                               t-on-change="(e) => toggleSelect(lead.id, e.target.checked)"/>
+                                    </td>
+                                    <td t-esc="lead.name"/>
+                                    <td t-esc="lead.phone"/>
+                                    <td t-esc="lead.last_attempt || '—'"/>
+                                    <td t-esc="lead.duration + 's'"/>
+                                    <td>
+                                        <span t-att-class="'ix-camp-status ' + statusBadge(lead.status)"
+                                              t-esc="lead.status_label"/>
+                                    </td>
+                                    <td t-esc="lead.ai_note || '—'"/>
+                                    <td t-esc="lead.agent_name"/>
+                                    <td class="ix-camp-actions">
+                                        <button type="button" title="Relancer"
+                                                t-on-click="() => relaunchOne(lead.id)">
+                                            <i class="fa fa-play"/>
+                                        </button>
+                                        <button type="button" title="Détails"
+                                                t-on-click="() => openDrawer(lead.id)">
+                                            <i class="fa fa-eye"/>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="ix-camp-pagination" t-if="state.detail.pagination">
+                    <button type="button" t-on-click="() => changePage(-1)">Précédent</button>
+                    <span>Page <t t-esc="state.detail.pagination.page"/> / <t t-esc="state.detail.pagination.pages"/></span>
+                    <button type="button" t-on-click="() => changePage(1)">Suivant</button>
+                </div>
+
+                <t t-if="state.selectedIds.length">
+                    <div class="ix-camp-bulk-bar">
+                        <span><t t-esc="state.selectedIds.length"/> sélectionné(s)</span>
+                        <button type="button" class="ix-camp-btn ix-camp-btn--primary"
+                                t-att-disabled="state.bulkLoading"
+                                t-on-click="relaunchSelected">Relancer</button>
+                        <button type="button" class="ix-camp-btn ix-camp-btn--secondary"
+                                t-on-click="exportSelected">Exporter CSV</button>
+                        <button type="button" class="ix-camp-btn ix-camp-btn--accent"
+                                t-att-disabled="state.bulkLoading"
+                                t-on-click="pushCrmSelected">Pousser vers CRM</button>
+                    </div>
+                </t>
+            </t>
+
+            <t t-if="state.drawerOpen and state.drawer">
+                <div class="ix-camp-drawer-backdrop" t-on-click="closeDrawer"/>
+                <aside class="ix-camp-drawer">
+                    <header>
+                        <h2 t-esc="state.drawer.name"/>
+                        <button type="button" t-on-click="closeDrawer"><i class="fa fa-times"/></button>
+                    </header>
+                    <div class="ix-camp-drawer__body">
+                        <p><strong>Tél.</strong> <t t-esc="state.drawer.phone"/></p>
+                        <p><strong>Email</strong> <t t-esc="state.drawer.email || '—'"/></p>
+                        <p><strong>Pipeline</strong> <t t-esc="state.drawer.pipeline"/></p>
+                        <p><strong>Statut</strong> <t t-esc="state.drawer.status_label"/></p>
+                        <p><strong>Score IA</strong> <t t-esc="state.drawer.ai_score"/></p>
+                        <t t-if="state.drawer.ai_tags">
+                            <p><strong>Tags</strong> <t t-esc="state.drawer.ai_tags"/></p>
+                        </t>
+                        <h3>Historique tentatives</h3>
+                        <ul class="ix-camp-attempts">
+                            <t t-foreach="state.drawer.attempts" t-as="att" t-key="att_index">
+                                <li>
+                                    <t t-esc="att.call_date"/> — <t t-esc="att.duration"/>s —
+                                    <t t-esc="att.disposition || att.amd_result || '—'"/>
+                                </li>
+                            </t>
+                        </ul>
+                        <t t-if="state.drawer.transcript">
+                            <h3>Transcription (dernier appel)</h3>
+                            <pre class="ix-camp-transcript" t-esc="state.drawer.transcript"/>
+                        </t>
+                        <t t-if="!state.drawer.crm_lead_id">
+                            <button type="button" class="ix-camp-btn ix-camp-btn--primary"
+                                    t-on-click="createCrmFromDrawer">Créer lead Odoo</button>
+                        </t>
+                    </div>
+                </aside>
+            </t>
+        </div>
+    </t>
+</templates>

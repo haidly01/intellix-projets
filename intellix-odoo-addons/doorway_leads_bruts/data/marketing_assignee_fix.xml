@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <function model="doorway.leads.bruts.crm.export" name="reassign_marketing_extracteur_leads"/>
+</odoo>

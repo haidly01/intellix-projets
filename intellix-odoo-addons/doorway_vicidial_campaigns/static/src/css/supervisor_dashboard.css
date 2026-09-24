@@ -1,0 +1,25 @@
+.o_supervisor_dashboard {
+    color: var(--ix-text, #f1f5f9);
+}
+.o_supervisor_dashboard h2 {
+    color: var(--ix-text, #f1f5f9);
+    font-weight: 700;
+}
+.o_supervisor_dashboard .text-muted {
+    color: var(--ix-text-muted, #b8c5d6) !important;
+}
+.o_supervisor_dashboard .card {
+    background: var(--ix-surface, #1a1a2e);
+    border: 1px solid var(--ix-border, #334155);
+    color: var(--ix-text, #f1f5f9);
+}
+.o_supervisor_dashboard .card-header {
+    background: var(--ix-surface-elevated, #16213e);
+    border-bottom: 1px solid var(--ix-border, #334155);
+}
+.o_supervisor_dashboard .table {
+    color: var(--ix-text, #f1f5f9);
+}
+.o_supervisor_dashboard .o_sup_kpi .fs-4 {
+    color: var(--ix-primary-light, #818cf8);
+}

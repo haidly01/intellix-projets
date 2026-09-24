@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_messaging_hub" model="ir.actions.client">
+        <field name="name">Messaging Hub</field>
+        <field name="tag">messaging_hub_action</field>
+    </record>
+
+    <menuitem id="menu_messaging_hub"
+              name="Hub multi-canal"
+              parent="menu_messaging_root"
+              action="action_messaging_hub"
+              sequence="25"
+              groups="base.group_system"/>
+</odoo>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="mail_template_itex_relance" model="mail.template">
+        <field name="name">ITEX — relance intérêt / reporté</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="subject">ITEX — relance {{ object.name }}</field>
+        <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+        <field name="email_to">{{ (object.user_id.email or '') }}</field>
+        <field name="body_html" type="html">
+            <div>
+                <p>Relance ITEX pour <t t-out="object.name or ''"/>.</p>
+                <p>Étape actuelle : <t t-out="object.itex_funnel_stage or ''"/>.</p>
+                <p t-if="object.itex_date_relance">
+                    Date de relance suggérée : <t t-out="object.itex_date_relance"/>.
+                </p>
+                <p>Tentative <t t-out="object.itex_relance_count or 0"/>.</p>
+            </div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+</odoo>

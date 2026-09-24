@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+      Catalogue des répliques FIXES de Léa (source : lea_qc/lib/lea_qc_config.js).
+      Sert à détecter, pour chaque synthèse TTS, si le texte est scripté (donc
+      100% cacheable) afin de projeter exactement les économies d'un cache TTS.
+      text_hash est calculé automatiquement à la création (normalisation NFKD).
+    -->
+    <record id="lea_line_ouverture" model="lea.qc.scripted.line">
+        <field name="key">lea_ouverture</field>
+        <field name="text">Bonjour, ici Léa, l'assistante virtuelle automatisée de Soumission Entrepreneurs. On accompagne les propriétaires pour leurs projets de rénovation et aussi pour la vente de leur propriété. J'ai juste deux petites questions — ça prend moins d'une minute. Est-ce que vous êtes propriétaire de votre maison ?</field>
+    </record>
+    <record id="lea_line_exit_locataire" model="lea.qc.scripted.line">
+        <field name="key">lea_exit_locataire</field>
+        <field name="text">Je comprends, dans ce cas je ne peux pas vous aider pour l'instant. Bonne journée !</field>
+    </record>
+    <record id="lea_line_question_besoin" model="lea.qc.scripted.line">
+        <field name="key">lea_question_besoin</field>
+        <field name="text">Parfait ! Est-ce que vous pensez plutôt à des travaux de rénovation, à vendre votre propriété, ou peut-être les deux ?</field>
+    </record>
+    <record id="lea_line_question_projet" model="lea.qc.scripted.line">
+        <field name="key">lea_question_projet</field>
+        <field name="text">Excellent ! Quels travaux envisagez-vous — cuisine, salle de bain, toiture, fenêtres, sous-sol, agrandissement ou autre chose ?</field>
+    </record>
+    <record id="lea_line_question_immo" model="lea.qc.scripted.line">
+        <field name="key">lea_question_immo</field>
+        <field name="text">Est-ce que vous envisagez de vendre votre propriété dans les prochains mois, disons dans les 12 à 24 prochains mois ?</field>
+    </record>
+    <record id="lea_line_capturer_dispo" model="lea.qc.scripted.line">
+        <field name="key">lea_capturer_dispo</field>
+        <field name="text">Super, c'est exactement pour ça qu'on est là ! Un conseiller de Soumission Entrepreneurs va vous rappeler pour discuter de votre projet en détail. C'est quoi le meilleur moment — plutôt le matin, l'après-midi ou le soir ?</field>
+    </record>
+    <record id="lea_line_closing" model="lea.qc.scripted.line">
+        <field name="key">lea_closing</field>
+        <field name="text">Parfait ! Je confirme — on vous rappelle au numéro qu'on a en dossier. Merci pour votre temps et bonne journée !</field>
+    </record>
+    <record id="lea_line_sonder_futur" model="lea.qc.scripted.line">
+        <field name="key">lea_sonder_futur</field>
+        <field name="text">Je comprends, pas nécessairement là maintenant. Est-ce qu'il y a quelque chose que vous pensez faire sur votre maison dans les prochains mois ?</field>
+    </record>
+    <record id="lea_line_exit_futur" model="lea.qc.scripted.line">
+        <field name="key">lea_exit_futur</field>
+        <field name="text">Pas de problème. Je note votre dossier et on pourra revenir vers vous quand vous serez prêt. Bonne journée !</field>
+    </record>
+    <record id="lea_line_exit_pas_interesse" model="lea.qc.scripted.line">
+        <field name="key">lea_exit_pas_interesse</field>
+        <field name="text">Aucun problème ! Si vous changez d'idée, Soumission Entrepreneurs reste disponible. Bonne journée !</field>
+    </record>
+    <record id="lea_line_exit_dnc" model="lea.qc.scripted.line">
+        <field name="key">lea_exit_dnc</field>
+        <field name="text">C'est noté, on vous retire de notre liste. Bonne journée !</field>
+    </record>
+    <record id="lea_line_objection_entrepreneur" model="lea.qc.scripted.line">
+        <field name="key">lea_objection_entrepreneur</field>
+        <field name="text">C'est parfait ! On peut quand même vous aider pour un deuxième avis ou un prochain projet. Est-ce que je peux noter vos coordonnées pour qu'on reste en contact ?</field>
+    </record>
+    <record id="lea_line_fallback" model="lea.qc.scripted.line">
+        <field name="key">lea_fallback</field>
+        <field name="text">Désolée, je n'ai pas bien entendu. Pouvez-vous répéter s'il vous plaît ?</field>
+    </record>
+    <record id="lea_line_exit_timeout" model="lea.qc.scripted.line">
+        <field name="key">lea_exit_timeout</field>
+        <field name="text">Je vois que vous êtes occupé — on vous rappellera une autre fois. Bonne journée !</field>
+    </record>
+
+    <!--
+      ════════ Variante B (test A/B de scripts) ════════
+      Répliques ALTERNATIVES (accroche + qualification reformulées). Seules les
+      clés ci-dessous diffèrent de la variante A ; les autres répliques (exits,
+      fallback, dnc, timeout) sont réutilisées depuis A. Source : lea_qc_config.js
+      (REPLIQUES_B). text_hash calculé automatiquement → détection « scripté »
+      donc 100% cacheable, attribution de coût identique à A.
+    -->
+    <record id="lea_line_ouverture_b" model="lea.qc.scripted.line">
+        <field name="key">lea_ouverture_b</field>
+        <field name="text">Bonjour, ici Léa, l'assistante virtuelle automatisée de Soumission Entrepreneurs. Bonne nouvelle pour les propriétaires : on aide à faire estimer gratuitement la valeur de votre maison. Ça prend trente secondes — êtes-vous bien propriétaire de votre maison ?</field>
+    </record>
+    <record id="lea_line_question_besoin_b" model="lea.qc.scripted.line">
+        <field name="key">lea_question_besoin_b</field>
+        <field name="text">Super, merci ! Pour bien vous orienter : est-ce que ce qui vous intéresserait le plus en ce moment, ce serait de connaître la valeur de revente de votre maison, de réaliser des rénovations, ou un peu les deux ?</field>
+    </record>
+    <record id="lea_line_question_projet_b" model="lea.qc.scripted.line">
+        <field name="key">lea_question_projet_b</field>
+        <field name="text">Bon choix ! Concrètement, quel projet vous trotte dans la tête — la cuisine, la salle de bain, la toiture, les fenêtres, le sous-sol, un agrandissement, ou autre chose ?</field>
+    </record>
+    <record id="lea_line_question_immo_b" model="lea.qc.scripted.line">
+        <field name="key">lea_question_immo_b</field>
+        <field name="text">Parfait. Et juste pour savoir comment on peut vous aider : est-ce que vendre votre propriété, c'est quelque chose que vous envisagez d'ici un an ou deux, même sans être pressé ?</field>
+    </record>
+    <record id="lea_line_capturer_dispo_b" model="lea.qc.scripted.line">
+        <field name="key">lea_capturer_dispo_b</field>
+        <field name="text">Excellent, c'est exactement notre spécialité ! Un conseiller de Soumission Entrepreneurs va vous rappeler avec une évaluation gratuite et des idées concrètes pour votre projet. Pour qu'il tombe au bon moment, vous préférez plutôt le matin, l'après-midi ou le soir ?</field>
+    </record>
+    <record id="lea_line_closing_b" model="lea.qc.scripted.line">
+        <field name="key">lea_closing_b</field>
+        <field name="text">Parfait, c'est noté ! Votre conseiller de Soumission Entrepreneurs vous rappelle au numéro qu'on a au dossier, au moment que vous avez choisi. Merci beaucoup et excellente journée !</field>
+    </record>
+    <record id="lea_line_sonder_futur_b" model="lea.qc.scripted.line">
+        <field name="key">lea_sonder_futur_b</field>
+        <field name="text">Aucun souci, rien d'urgent ! Juste pour le futur : y a-t-il un petit projet sur votre maison — rénovation ou même une vente éventuelle — que vous aimeriez garder dans un coin de votre tête pour plus tard ?</field>
+    </record>
+    <record id="lea_line_objection_entrepreneur_b" model="lea.qc.scripted.line">
+        <field name="key">lea_objection_entrepreneur_b</field>
+        <field name="text">C'est une excellente chose d'avoir déjà quelqu'un ! On peut quand même vous offrir un deuxième avis gratuit, souvent ça aide à comparer. Est-ce que je peux noter vos coordonnées pour rester en contact ?</field>
+    </record>
+</odoo>

@@ -1,0 +1,116 @@
+{
+  "name": "renov-aides — 01 Outbound Trigger",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "renov/outbound",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "ob-wh",
+      "name": "Webhook Outbound",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 300],
+      "webhookId": "renov-outbound-trigger"
+    },
+    {
+      "parameters": {
+        "jsCode": "const item=$input.first().json;\nconst body=item.body||item;\nfunction norm(p){if(!p)return'';const s=String(p).trim();if(s.startsWith('+'))return'+'+s.replace(/\\D/g,'');const d=s.replace(/\\D/g,'');if(d.length===9)return'+34'+d;if(d.length>=10)return'+'+d;return'+34'+d;}\nconst phone=norm(body.telephone||body.phone||body.phone_number);\nif(!phone) throw new Error('telephone requis');\nconst provider=($env.TELEPHONY_PROVIDER||'twilio').toLowerCase();\nconst campaign=body.campaign||$env.CAMPAIGN_ID||'sofia-test-maroc-juin2026';\nreturn [{json:{telephone:phone,lead_id:body.lead_id||'',nombre:body.nombre||body.first_name||'Sofía',provider,campaign}}];"
+      },
+      "id": "ob-prep",
+      "name": "Prepare + Provider",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [260, 300]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": { "caseSensitive": false },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.provider }}",
+                    "rightValue": "telnyx",
+                    "operator": { "type": "string", "operation": "equals" }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "telnyx"
+            },
+            {
+              "conditions": {
+                "options": { "caseSensitive": false },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.provider }}",
+                    "rightValue": "vicidial",
+                    "operator": { "type": "string", "operation": "equals" }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "vicidial"
+            }
+          ]
+        },
+        "options": { "fallbackOutput": "extra" }
+      },
+      "id": "ob-switch",
+      "name": "Route Provider",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [520, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const row=$('Prepare + Provider').first().json;\nconst sid=$env.TWILIO_ACCOUNT_SID;\nconst token=$env.TWILIO_AUTH_TOKEN;\nconst from=$env.TWILIO_PHONE_NUMBER;\nconst base=($env.N8N_WEBHOOK_URL||'').replace(/\\/$/, '');\nconst auth=Buffer.from(sid+':'+token).toString('base64');\nconst res=await this.helpers.httpRequest({method:'POST',url:`https://api.twilio.com/2010-04-01/Accounts/${sid}/Calls.json`,headers:{Authorization:'Basic '+auth,'Content-Type':'application/x-www-form-urlencoded'},body:{To:row.telephone,From:from,Url:base+'/telephony/twilio/start',Record:'true',RecordingStatusCallback:base+'/telephony/twilio/recording',MachineDetection:'DetectMessageEnd',AsyncAmdStatusCallback:base+'/telephony/twilio/amd',Timeout:'30'},json:false});\nreturn [{json:{...row,provider:'twilio',call_raw:res}}];"
+      },
+      "id": "ob-twilio",
+      "name": "Call Twilio",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [800, 160]
+    },
+    {
+      "parameters": {
+        "jsCode": "const row=$('Prepare + Provider').first().json;\nconst base=($env.N8N_WEBHOOK_URL||'').replace(/\\/$/, '');\nconst res=await this.helpers.httpRequest({method:'POST',url:'https://api.telnyx.com/v2/calls',headers:{Authorization:'Bearer '+$env.TELNYX_API_KEY,'Content-Type':'application/json'},body:{to:row.telephone,from:$env.TELNYX_PHONE_NUMBER,connection_id:$env.TELNYX_CONNECTION_ID,webhook_url:base+'/telephony/telnyx/start',record_audio:true,record_format:'mp3',answering_machine_detection:'premium'},json:true});\nreturn [{json:{...row,provider:'telnyx',call_raw:res}}];"
+      },
+      "id": "ob-telnyx",
+      "name": "Call Telnyx",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [800, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const row=$('Prepare + Provider').first().json;\nconst url=$env.VICIDIAL_API_URL+'?source=doorway_odoo&user='+encodeURIComponent($env.VICIDIAL_USER)+'&pass='+encodeURIComponent($env.VICIDIAL_PASS)+'&function=call_out_number&campaign='+encodeURIComponent(row.campaign)+'&phone_number='+encodeURIComponent(row.telephone.replace('+',''))+'&phone_code=34&outbound_cid='+encodeURIComponent($env.SIP_PHONE_NUMBER||$env.TWILIO_PHONE_NUMBER||'');\nconst text=await this.helpers.httpRequest({method:'GET',url,json:false});\nreturn [{json:{...row,provider:'vicidial',call_raw:text,ok:!String(text).includes('ERROR')}}];"
+      },
+      "id": "ob-vicidial",
+      "name": "Call VICIdial",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [800, 440]
+    }
+  ],
+  "connections": {
+    "Webhook Outbound": { "main": [[{ "node": "Prepare + Provider", "type": "main", "index": 0 }]] },
+    "Prepare + Provider": { "main": [[{ "node": "Route Provider", "type": "main", "index": 0 }]] },
+    "Route Provider": {
+      "main": [
+        [{ "node": "Call Telnyx", "type": "main", "index": 0 }],
+        [{ "node": "Call VICIdial", "type": "main", "index": 0 }],
+        [{ "node": "Call Twilio", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "meta": { "templateCredsSetupCompleted": false },
+  "tags": [{ "name": "renov-aides" }, { "name": "outbound" }]
+}

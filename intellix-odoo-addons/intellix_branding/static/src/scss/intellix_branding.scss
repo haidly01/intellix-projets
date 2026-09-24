@@ -1,0 +1,234 @@
+// Intellix — login & portail (dark-first, tokens via intellix_tokens.scss + data-bs-theme=dark)
+
+// Page login CRM (website.layout sans header/footer)
+body:has(.ix-website-login),
+body:has(.oe_website_login_container) {
+    background: var(--ix-bg) !important;
+
+    #wrapwrap > header,
+    #wrapwrap > footer,
+    #top,
+    #bottom,
+    .o_footer_copyright {
+        display: none !important;
+    }
+
+    #wrapwrap > main {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+.ix-website-login {
+    padding-top: 2rem;
+    padding-bottom: 3rem;
+    background: var(--ix-bg);
+    background-image: radial-gradient(
+            ellipse 80% 50% at 50% -20%,
+            rgba(99, 102, 241, 0.25),
+            transparent
+        ),
+        radial-gradient(
+            ellipse 60% 40% at 100% 100%,
+            rgba(168, 85, 247, 0.12),
+            transparent
+        );
+
+    .card,
+  .o_database_list {
+        background: var(--ix-surface) !important;
+        border: 1px solid var(--ix-border) !important;
+        border-radius: var(--ix-radius-card) !important;
+        color: var(--ix-text);
+    }
+
+    .form-label,
+    label {
+        color: var(--ix-text-muted) !important;
+    }
+
+    .form-control {
+        background: var(--ix-surface-elevated);
+        border-color: var(--ix-border);
+        color: var(--ix-text);
+    }
+
+    .btn-primary {
+        background: var(--ix-gradient-cta) !important;
+        border: none !important;
+    }
+
+    a {
+        color: var(--ix-primary-light);
+    }
+}
+
+body.ix-login,
+body.bg-100.ix-login {
+    background: var(--ix-bg) !important;
+    background-image: radial-gradient(
+            ellipse 80% 50% at 50% -20%,
+            rgba(99, 102, 241, 0.25),
+            transparent
+        ),
+        radial-gradient(
+            ellipse 60% 40% at 100% 100%,
+            rgba(168, 85, 247, 0.12),
+            transparent
+        ) !important;
+    font-family: var(--ix-font);
+    min-height: 100vh;
+}
+
+.ix-login {
+    .card.o_database_list {
+        max-width: 400px !important;
+        background: var(--ix-surface) !important;
+        border: 1px solid var(--ix-border) !important;
+        border-radius: var(--ix-radius-card) !important;
+        box-shadow: 0 24px 48px rgba(0, 0, 0, 0.45);
+    }
+
+    .card-body {
+        color: var(--ix-text);
+    }
+
+    .form-label,
+    label {
+        color: var(--ix-text-muted) !important;
+        font-family: var(--ix-font);
+        font-weight: 500;
+    }
+
+    .form-control {
+        background: var(--ix-surface-elevated);
+        border: 1px solid var(--ix-border);
+        border-radius: var(--ix-radius-btn);
+        color: var(--ix-text);
+        font-family: var(--ix-font);
+
+        &::placeholder {
+            color: var(--ix-text-muted);
+            opacity: 0.7;
+        }
+
+        &:focus {
+            border-color: var(--ix-primary-light);
+            box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
+        }
+    }
+
+    .btn-primary {
+        background: var(--ix-gradient-cta) !important;
+        border: none !important;
+        border-radius: var(--ix-radius-btn) !important;
+        font-family: var(--ix-font);
+        font-weight: 600;
+        letter-spacing: 0.02em;
+
+        &:hover {
+            filter: brightness(1.08);
+        }
+    }
+
+    a {
+        color: var(--ix-text-muted);
+
+        &:hover {
+            color: var(--ix-secondary);
+        }
+    }
+
+    .border-top,
+    .border-bottom {
+        border-color: var(--ix-border) !important;
+    }
+
+    .text-muted {
+        color: var(--ix-text-muted) !important;
+    }
+}
+
+.ix-brand-block {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.ix-brand-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: var(--ix-radius-card);
+    background: var(--ix-gradient-cta);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.35);
+}
+
+.ix-brand-icon span {
+    color: var(--ix-text-inverse);
+    font-family: var(--ix-font);
+    font-weight: 700;
+    font-size: 1.35rem;
+    letter-spacing: -0.04em;
+    line-height: 1;
+}
+
+.ix-brand-name {
+    font-family: var(--ix-font);
+    font-weight: 700;
+    font-size: 1.75rem;
+    color: var(--ix-text);
+    letter-spacing: -0.03em;
+    margin: 0;
+    text-transform: lowercase;
+}
+
+.ix-brand-name .ix-accent {
+    background: var(--ix-gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.ix-brand-baseline {
+    font-family: var(--ix-font);
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--ix-text-muted);
+    margin: 0.35rem 0 0;
+}
+
+body .oe_website_login_container {
+    max-width: 400px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    background: var(--ix-surface);
+    border: 1px solid var(--ix-border);
+    border-radius: var(--ix-radius-card);
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.35);
+    font-family: var(--ix-font);
+
+    .form-label,
+    label {
+        color: var(--ix-text-muted);
+    }
+
+    .form-control {
+        background: var(--ix-surface-elevated);
+        border: 1px solid var(--ix-border);
+        color: var(--ix-text);
+        border-radius: var(--ix-radius-btn);
+    }
+
+    .btn-primary {
+        background: var(--ix-gradient-cta) !important;
+        border: none !important;
+        border-radius: var(--ix-radius-btn) !important;
+    }
+}

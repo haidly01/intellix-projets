@@ -1,0 +1,482 @@
+/* ============================================================
+   Doorway — SEO IA : tableau de bord (thème clair « dashboard »)
+   Toutes les règles sont préfixées par .dseo_app pour rester
+   isolées du reste du back-office Intellix.
+   ============================================================ */
+
+/* Thème LIGHT/DARK : mappe les variables locales sur les tokens
+   partagés (intellix_branding), avec les littéraux d'origine en
+   fallback. Les couleurs sémantiques (good/mid/bad), les accents de
+   marque et le bloc <pre> sombre restent inchangés. */
+.dseo_app,
+.o_web_client .o_action.o_intellix_client_action.dseo_app {
+    --dseo-bg: var(--ix-bg, #eef1f6);
+    --dseo-surface: var(--ix-surface, #ffffff);
+    --dseo-elev: var(--ix-surface-elevated, #f7f9fc);
+    --dseo-hover: var(--ix-surface-hover, #f1f3f8);
+    --dseo-text: var(--ix-text, #111827);
+    --dseo-muted: var(--ix-text-muted, #6b7280);
+    --dseo-subtle: var(--ix-text-subtle, #8a93a3);
+    --dseo-border: var(--ix-border, #e7eaf0);
+}
+
+/* Le conteneur d'action doit remplir la hauteur, sinon le flex s'écrase. */
+.o_action_manager:has(.dseo_app) { height: 100% !important; }
+
+/* FIX thème Intellix — le client action porte aussi
+   .o_action.o_intellix_client_action sur LE MÊME élément que .dseo_app.
+   intellix_branding force flex-column + overflow:auto + fond sombre
+   (spécificité 0,3,0). On remonte à 0,4,0 pour rétablir le thème clair
+   plein-écran. */
+.o_web_client .o_action.o_intellix_client_action.dseo_app {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: hidden !important;
+    width: 100% !important;
+    padding: 0 !important;
+    background-color: var(--dseo-bg) !important;
+    color: var(--dseo-text) !important;
+}
+
+.dseo_app {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    background: var(--dseo-bg);
+    color: var(--dseo-text);
+    font-size: 13px;
+    font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+.dseo_app * { box-sizing: border-box; }
+
+.dseo_loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    height: 100%;
+    width: 100%;
+    color: #6b7280;
+    font-size: 15px;
+}
+
+/* ---------------- Barre supérieure ---------------- */
+.dseo_app .dseo_topbar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 10px 18px;
+    background: var(--dseo-surface);
+    border-bottom: 1px solid var(--dseo-border);
+    flex-shrink: 0;
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+}
+.dseo_app .dseo_brand { display: flex; align-items: center; gap: 9px; font-weight: 800; font-size: 15px; }
+.dseo_app .dseo_brand__mark {
+    width: 30px; height: 30px; border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 14px;
+    background: linear-gradient(135deg, #2f6bff 0%, #14b8a6 55%, #7c3aed 100%);
+}
+.dseo_app .dseo_brand__name { color: var(--dseo-text); letter-spacing: .01em; }
+
+.dseo_app .dseo_search {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--dseo-hover); border: 1px solid var(--dseo-border); border-radius: 10px;
+    padding: 7px 12px; min-width: 180px; max-width: 280px; flex: 0 1 240px;
+    color: var(--dseo-subtle);
+}
+.dseo_app .dseo_search input {
+    border: none; background: transparent; outline: none; width: 100%;
+    font-size: 13px; color: var(--dseo-text);
+}
+
+.dseo_app .dseo_nav { display: flex; align-items: center; gap: 4px; margin: 0 auto; flex-wrap: wrap; }
+.dseo_app .dseo_navtab {
+    border: none; background: transparent; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 8px 14px; border-radius: 9px;
+    color: var(--dseo-muted); font-weight: 600; font-size: 13px;
+    transition: background .12s, color .12s;
+}
+.dseo_app .dseo_navtab:hover { background: var(--dseo-hover); color: var(--dseo-text); }
+.dseo_app .dseo_navtab--active { background: #eaf0ff; color: #2f6bff; }
+
+.dseo_app .dseo_topactions { display: flex; align-items: center; gap: 8px; }
+.dseo_app .dseo_spin { color: #2f6bff; }
+.dseo_app .dseo_credit {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: #fff4d6; color: #92600a;
+    border: 1px solid #fbe3a4; border-radius: 999px;
+    padding: 4px 11px; font-weight: 700; font-size: 12px;
+}
+.dseo_app .dseo_iconpill {
+    width: 28px; height: 28px; border-radius: 8px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 12px;
+}
+.dseo_app .dseo_iconpill--on { background: #e7f8f1; color: #0f9d6e; }
+.dseo_app .dseo_iconpill--off { background: var(--dseo-hover); color: var(--dseo-subtle); }
+.dseo_app .dseo_iconbtn {
+    width: 30px; height: 30px; border-radius: 8px;
+    border: 1px solid var(--dseo-border); background: var(--dseo-surface); color: var(--dseo-muted);
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all .12s;
+}
+.dseo_app .dseo_iconbtn:hover { background: var(--dseo-hover); color: var(--dseo-text); }
+.dseo_app .dseo_iconbtn--active { background: #eaf0ff; border-color: #cdddff; color: #2f6bff; }
+
+/* ---------------- Tiroir brief / profil ---------------- */
+.dseo_app .dseo_brief {
+    flex-shrink: 0;
+    background: var(--dseo-surface);
+    border-bottom: 1px solid var(--dseo-border);
+    padding: 14px 18px;
+}
+.dseo_app .dseo_brief__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px 14px;
+}
+.dseo_app .dseo_brief__wide { grid-column: 1 / -1; }
+.dseo_app .dseo_brief__foot {
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    margin-top: 12px;
+}
+
+.dseo_app .dseo_label {
+    display: block; font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .03em;
+    color: var(--dseo-subtle); margin: 0 0 4px;
+}
+.dseo_app .dseo_links { display: inline-flex; gap: 14px; }
+.dseo_app .dseo_links a { color: #2f6bff; text-decoration: none; font-weight: 600; }
+
+/* ---------------- Corps ---------------- */
+.dseo_app .dseo_body {
+    flex: 1;
+    display: flex;
+    gap: 16px;
+    min-height: 0;
+    padding: 16px;
+    overflow: hidden;
+}
+.dseo_app .dseo_content {
+    flex: 1;
+    min-width: 0;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+.dseo_app .dseo_content > section + section { margin-top: 18px; }
+
+/* ---------------- Carte générique ---------------- */
+.dseo_app .dseo_card {
+    background: var(--dseo-surface);
+    border: 1px solid var(--dseo-border);
+    border-radius: 16px;
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04), 0 8px 24px rgba(16, 24, 40, 0.05);
+}
+
+/* ---------------- En-tête de section ---------------- */
+.dseo_app .dseo_sechead {
+    display: flex; align-items: center; gap: 12px;
+    margin: 0 0 12px;
+}
+.dseo_app .dseo_sechead h2 { font-size: 16px; font-weight: 800; margin: 0; color: var(--dseo-text); }
+.dseo_app .dseo_sechead__sub { color: var(--dseo-subtle); font-size: 12px; }
+.dseo_app .dseo_sechead__actions { display: flex; align-items: center; gap: 8px; margin-left: auto; flex-wrap: wrap; }
+.dseo_app .dseo_sechead > button { margin-left: auto; }
+
+/* ---------------- Hero (gauge + métriques) ---------------- */
+.dseo_app .dseo_hero { display: flex; gap: 16px; align-items: stretch; }
+.dseo_app .dseo_gaugecard {
+    width: 280px; flex-shrink: 0;
+    padding: 18px;
+    display: flex; flex-direction: column; align-items: center;
+}
+.dseo_app .dseo_card__label {
+    align-self: flex-start; font-size: 16px; font-weight: 800; color: var(--dseo-text); margin-bottom: 8px;
+}
+.dseo_app .dseo_gauge {
+    width: 184px; height: 184px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; margin: 6px 0 12px;
+}
+.dseo_app .dseo_gauge__hole {
+    width: 138px; height: 138px; border-radius: 50%; background: var(--dseo-surface);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    box-shadow: inset 0 0 0 1px var(--dseo-border);
+}
+.dseo_app .dseo_gauge__num { font-size: 44px; font-weight: 800; line-height: 1; color: var(--dseo-text); }
+.dseo_app .dseo_gauge__unit { font-size: 12px; color: var(--dseo-subtle); margin-top: 4px; font-weight: 600; }
+.dseo_app .dseo_gauge__cap { text-align: center; font-size: 12px; color: var(--dseo-muted); margin: 0 0 14px; min-height: 32px; }
+.dseo_app .dseo_urlentry { width: 100%; }
+.dseo_app .dseo_urlrow {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--dseo-hover); border: 1px solid var(--dseo-border); border-radius: 10px;
+    padding: 8px 11px; color: var(--dseo-subtle);
+}
+.dseo_app .dseo_urlrow:focus-within { border-color: #2f6bff; box-shadow: 0 0 0 3px rgba(47, 107, 255, 0.12); }
+.dseo_app .dseo_urlrow input {
+    border: none; background: transparent; outline: none; width: 100%;
+    font-size: 13px; color: var(--dseo-text);
+}
+.dseo_app .dseo_gauge__legend {
+    display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+    margin-top: 14px; font-size: 11px; color: var(--dseo-muted);
+}
+.dseo_app .dseo_gauge__legend span { display: inline-flex; align-items: center; gap: 5px; }
+.dseo_app .dseo_led { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+
+/* ---------------- Cartes de métriques ---------------- */
+.dseo_app .dseo_metrics { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.dseo_app .dseo_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 14px;
+}
+.dseo_app .dseo_metric {
+    background: var(--dseo-surface);
+    border: 1px solid var(--dseo-border);
+    border-radius: 14px;
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04), 0 6px 18px rgba(16, 24, 40, 0.04);
+    padding: 14px;
+    display: flex; flex-direction: column;
+    transition: transform .12s, box-shadow .12s;
+}
+.dseo_app .dseo_metric:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(16, 24, 40, 0.08); }
+.dseo_app .dseo_metric__top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.dseo_app .dseo_metric__icon {
+    width: 34px; height: 34px; border-radius: 10px;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: #eaf0ff; color: #2f6bff; font-size: 14px;
+}
+.dseo_app .dseo_metric__label { font-size: 12px; color: var(--dseo-muted); font-weight: 600; }
+.dseo_app .dseo_metric__value { font-size: 26px; font-weight: 800; color: var(--dseo-text); line-height: 1.1; margin: 2px 0; }
+.dseo_app .dseo_metric__sub { font-size: 11px; color: var(--dseo-subtle); }
+
+.dseo_app .dseo_dots { display: flex; gap: 6px; justify-content: center; margin-top: 16px; }
+.dseo_app .dseo_dot { width: 7px; height: 7px; border-radius: 50%; background: #d3d9e3; }
+.dseo_app .dseo_dot--active { background: #2f6bff; width: 18px; border-radius: 4px; }
+
+/* ---------------- Pastilles (status) ---------------- */
+.dseo_app .dseo_pill { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.dseo_app .dseo_pill--good { background: #14b886; }
+.dseo_app .dseo_pill--mid { background: #f59e0b; }
+.dseo_app .dseo_pill--bad { background: #ef4444; }
+.dseo_app .dseo_pill--neutral { background: #cbd2dd; }
+.dseo_app .dseo_pill--text {
+    width: auto; height: auto; border-radius: 999px;
+    padding: 3px 10px; font-size: 11px; font-weight: 700;
+}
+.dseo_app .dseo_pill--text.dseo_pill--good { background: #e7f8f1; color: #0f9d6e; }
+.dseo_app .dseo_pill--text.dseo_pill--mid { background: #fff4d6; color: #b07a09; }
+.dseo_app .dseo_pill--text.dseo_pill--bad { background: #fde7e7; color: #d12d2d; }
+.dseo_app .dseo_pill--text.dseo_pill--neutral { background: var(--dseo-hover); color: var(--dseo-muted); }
+
+/* ---------------- Grilles de cartes ---------------- */
+.dseo_app .dseo_cardgrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+    gap: 14px;
+}
+
+/* ---------------- En-tête / corps / pied de carte ---------------- */
+.dseo_app .dseo_card__head {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 14px; border-bottom: 1px solid var(--dseo-border);
+}
+.dseo_app .dseo_card__title { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+.dseo_app .dseo_card__title a, .dseo_app .dseo_card__title strong { color: var(--dseo-text); font-weight: 700; text-decoration: none; }
+.dseo_app .dseo_card__title small { color: var(--dseo-subtle); font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dseo_app .dseo_card__body { padding: 12px 14px; }
+.dseo_app .dseo_card__foot {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 14px; background: var(--dseo-elev);
+    border-top: 1px solid var(--dseo-border);
+    border-radius: 0 0 16px 16px;
+}
+.dseo_app .dseo_grow { flex: 1; }
+
+.dseo_app .dseo_avatar {
+    width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 700; font-size: 13px;
+}
+
+/* Puce de score (par page) */
+.dseo_app .dseo_scorechip {
+    flex-shrink: 0; min-width: 52px; text-align: center;
+    border-radius: 10px; padding: 5px 8px;
+    font-size: 18px; font-weight: 800; line-height: 1;
+}
+.dseo_app .dseo_scorechip small { font-size: 9px; font-weight: 600; display: block; }
+.dseo_app .dseo_score--good { background: #e7f8f1; color: #0f9d6e; }
+.dseo_app .dseo_score--mid { background: #fff4d6; color: #b07a09; }
+.dseo_app .dseo_score--bad { background: #fde7e7; color: #d12d2d; }
+
+.dseo_app .dseo_keyword { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+.dseo_app .dseo_keyword label { font-size: 11px; color: var(--dseo-subtle); font-weight: 600; text-transform: uppercase; letter-spacing: .03em; }
+.dseo_app .dseo_issues { list-style: none; padding: 0; margin: 0 0 8px; }
+.dseo_app .dseo_issues li { color: #b45309; font-size: 12px; padding: 2px 0; }
+.dseo_app .dseo_issues i { margin-right: 5px; }
+
+.dseo_app .dseo_proposal {
+    background: var(--dseo-elev); border: 1px solid var(--dseo-border);
+    border-radius: 10px; padding: 10px; margin-top: 8px; font-size: 12px;
+}
+.dseo_app .dseo_proposal > div { margin-bottom: 4px; }
+.dseo_app .dseo_pre { white-space: pre-wrap; }
+.dseo_app .dseo_proposal pre { background: #0f172a; color: #e2e8f0; padding: 8px; border-radius: 6px; font-size: 11px; overflow-x: auto; }
+.dseo_app .dseo_muted { color: var(--dseo-muted); }
+.dseo_app .dseo_small { font-size: 11px; }
+.dseo_app .dseo_err { color: #d12d2d; margin-top: 6px; font-size: 12px; }
+.dseo_app .dseo_warnline { color: #9a3412; font-size: 12px; margin-top: 6px; }
+
+/* ---------------- Boutons ---------------- */
+.dseo_app .dseo_btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    border: 1px solid transparent; border-radius: 10px;
+    padding: 9px 16px; font-weight: 700; font-size: 13px;
+    cursor: pointer; transition: filter .12s, background .12s, border-color .12s;
+    white-space: nowrap;
+}
+.dseo_app .dseo_btn:disabled { opacity: .55; cursor: not-allowed; }
+.dseo_app .dseo_btn--sm { padding: 7px 12px; font-size: 12px; }
+.dseo_app .dseo_btn--icon { padding: 7px 9px; font-size: 12px; }
+.dseo_app .dseo_btn--block { width: 100%; margin-top: 8px; }
+.dseo_app .dseo_btn--primary { background: #2f6bff; color: #fff; box-shadow: 0 6px 16px rgba(47, 107, 255, 0.28); }
+.dseo_app .dseo_btn--primary:not(:disabled):hover { filter: brightness(1.05); }
+.dseo_app .dseo_btn--ghost { background: var(--dseo-surface); color: #2f6bff; border-color: #d7e2ff; }
+.dseo_app .dseo_btn--ghost:not(:disabled):hover { background: #eaf0ff; }
+.dseo_app .dseo_btn--success { background: #14b886; color: #fff; }
+.dseo_app .dseo_btn--success:not(:disabled):hover { filter: brightness(1.04); }
+.dseo_app .dseo_btn--danger { background: var(--dseo-surface); color: #d12d2d; border-color: #f4c6c6; }
+.dseo_app .dseo_btn--danger:not(:disabled):hover { background: #fde7e7; }
+
+/* ---------------- Champs ---------------- */
+.dseo_app .form-control, .dseo_app .form-select {
+    border-radius: 9px; border: 1px solid var(--dseo-border); font-size: 13px;
+}
+.dseo_app .form-control:focus, .dseo_app .form-select:focus {
+    border-color: #2f6bff; box-shadow: 0 0 0 3px rgba(47, 107, 255, 0.12);
+}
+.dseo_app .dseo_statussel { max-width: 140px; }
+.dseo_app .dseo_addsel { max-width: 230px; }
+.dseo_app .dseo_seed { max-width: 320px; }
+.dseo_app .dseo_cc { max-width: 80px; }
+.dseo_app .dseo_dev { max-width: 96px; }
+
+/* ---------------- Notices / badges ---------------- */
+.dseo_app .dseo_empty {
+    grid-column: 1 / -1;
+    padding: 28px; text-align: center; color: var(--dseo-subtle);
+    background: var(--dseo-surface); border: 1px dashed var(--dseo-border); border-radius: 14px;
+}
+.dseo_app .dseo_notice {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: #0f7a57; font-size: 12px;
+}
+.dseo_app .dseo_notice--block {
+    display: flex; padding: 10px 12px; margin-bottom: 14px;
+    background: #e7f8f1; border: 1px solid #b6ecd9; border-radius: 10px;
+}
+.dseo_app .dseo_freebadge {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: #e7f8f1; color: #0f7a57; border: 1px solid #b6ecd9;
+    border-radius: 999px; padding: 4px 11px; font-size: 12px; font-weight: 600;
+}
+.dseo_app .dseo_warnbox {
+    background: #fff7ed; border: 1px solid #fed7aa; color: #9a3412;
+    border-radius: 12px; padding: 10px 12px; font-size: 12px; margin-bottom: 12px;
+}
+.dseo_app .dseo_warnbox code { background: #fde8d4; padding: 1px 4px; border-radius: 4px; }
+
+.dseo_app .dseo_toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
+
+/* ---------------- NAP ---------------- */
+.dseo_app .dseo_napbox { padding: 14px 16px; margin-bottom: 16px; }
+.dseo_app .dseo_napbox__title { font-weight: 700; margin-bottom: 12px; }
+.dseo_app .dseo_napbox__title i { color: #2f6bff; margin-right: 5px; }
+
+/* ---------------- Signaux SERP ---------------- */
+.dseo_app .dseo_signals { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; margin-bottom: 16px; }
+.dseo_app .dseo_signalcol { padding: 12px 14px; }
+.dseo_app .dseo_signalcol h5 { font-size: 12px; font-weight: 800; color: var(--dseo-text); margin: 0 0 6px; }
+.dseo_app .dseo_signalcol ul { margin: 0; padding-left: 16px; font-size: 12px; color: var(--dseo-muted); }
+.dseo_app .dseo_signalcol li { padding: 1px 0; }
+
+/* ---------------- Tableau (idées de mots-clés) ---------------- */
+.dseo_app .dseo_tablecard { overflow: hidden; }
+.dseo_app .dseo_table { width: 100%; border-collapse: collapse; background: var(--dseo-surface); }
+.dseo_app .dseo_table th, .dseo_app .dseo_table td {
+    text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--dseo-border);
+    font-size: 12px; vertical-align: top;
+}
+.dseo_app .dseo_table th { background: var(--dseo-elev); color: var(--dseo-subtle); font-weight: 700; text-transform: uppercase; font-size: 11px; letter-spacing: .03em; }
+.dseo_app .dseo_table tbody tr:hover { background: var(--dseo-hover); }
+
+/* ---------------- Suivi ---------------- */
+.dseo_app .dseo_addtrack { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; padding: 12px 14px; margin-bottom: 14px; }
+.dseo_app .dseo_addtrack input.form-control { max-width: 190px; }
+.dseo_app .dseo_rankbox { display: flex; align-items: center; gap: 8px; }
+.dseo_app .dseo_pos { font-size: 22px; font-weight: 800; color: var(--dseo-text); }
+.dseo_app .dseo_delta { display: inline-flex; align-items: center; gap: 3px; font-weight: 700; font-size: 12px; border-radius: 8px; padding: 3px 8px; }
+.dseo_app .dseo_delta--up { background: #e7f8f1; color: #0f9d6e; }
+.dseo_app .dseo_delta--down { background: #fde7e7; color: #d12d2d; }
+.dseo_app .dseo_delta--new { background: #eaf0ff; color: #2f6bff; }
+.dseo_app .dseo_delta--flat { background: var(--dseo-hover); color: var(--dseo-muted); }
+.dseo_app .dseo_trackmeta { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: var(--dseo-muted); margin-bottom: 6px; }
+.dseo_app .dseo_trackmeta a { color: #2f6bff; text-decoration: none; }
+.dseo_app .dseo_features { display: flex; flex-wrap: wrap; gap: 5px; margin: 4px 0; }
+.dseo_app .dseo_chip { background: #eaf0ff; color: #2f6bff; border-radius: 6px; padding: 2px 8px; font-size: 11px; font-weight: 600; }
+.dseo_app .dseo_spark { width: 100%; max-width: 320px; height: 48px; display: block; margin-top: 6px; background: var(--dseo-elev); border: 1px solid var(--dseo-border); border-radius: 8px; }
+
+/* ---------------- Assistant (chat) ---------------- */
+.dseo_app .dseo_chat {
+    width: 330px; flex-shrink: 0;
+    display: flex; flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+}
+.dseo_app .dseo_chat__header {
+    display: flex; align-items: center; gap: 9px;
+    padding: 14px 16px; font-weight: 700;
+    border-bottom: 1px solid var(--dseo-border); flex-shrink: 0;
+}
+.dseo_app .dseo_chat__avatar {
+    width: 28px; height: 28px; border-radius: 9px;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: #fff; background: linear-gradient(135deg, #2f6bff, #7c3aed); font-size: 12px;
+}
+.dseo_app .dseo_chat__thread { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 9px; }
+.dseo_app .dseo_msg { display: flex; }
+.dseo_app .dseo_msg--user { justify-content: flex-end; }
+.dseo_app .dseo_msg__bubble {
+    max-width: 85%; padding: 9px 12px; border-radius: 14px;
+    white-space: pre-wrap; font-size: 13px; line-height: 1.45;
+}
+.dseo_app .dseo_msg--assistant .dseo_msg__bubble { background: var(--dseo-hover); color: var(--dseo-text); border-bottom-left-radius: 4px; }
+.dseo_app .dseo_msg--user .dseo_msg__bubble { background: #2f6bff; color: #fff; border-bottom-right-radius: 4px; }
+.dseo_app .dseo_msg--system .dseo_msg__bubble { background: #fff7ed; color: #9a3412; }
+.dseo_app .dseo_chat__input { padding: 12px 14px; border-top: 1px solid var(--dseo-border); flex-shrink: 0; }
+.dseo_app .dseo_chat__input textarea { border-radius: 10px; min-height: 46px; resize: none; }
+.dseo_app .dseo_chat__hint { font-size: 10px; color: var(--dseo-subtle); margin: 4px 2px 0; }
+
+/* ---------------- Responsive ---------------- */
+@media (max-width: 1180px) {
+    .dseo_app .dseo_body { flex-direction: column; overflow-y: auto; }
+    .dseo_app .dseo_content { overflow: visible; }
+    .dseo_app .dseo_chat { width: 100%; height: 420px; }
+    .dseo_app .dseo_hero { flex-direction: column; }
+    .dseo_app .dseo_gaugecard { width: 100%; }
+}
+@media (max-width: 720px) {
+    .dseo_app .dseo_nav { order: 3; width: 100%; margin: 8px 0 0; }
+    .dseo_app .dseo_brief__grid { grid-template-columns: 1fr; }
+}

@@ -1,0 +1,387 @@
+/* Campagnes & Analyse — Phase 2 Intellix */
+.ix-campaign-dashboard {
+    --ix-camp-bg: var(--ix-bg, #0a0a12);
+    --ix-camp-surface: var(--ix-surface, #12121f);
+    --ix-camp-border: var(--ix-border, #1e293b);
+    --ix-camp-purple: #7f77dd;
+    --ix-camp-teal: #1d9e75;
+    --ix-camp-text: var(--ix-text, #f8fafc);
+    --ix-camp-muted: var(--ix-text-muted, #94a3b8);
+
+    flex: 1;
+    min-height: 100%;
+    background: var(--ix-camp-bg);
+    color: var(--ix-camp-text);
+    font-family: "DM Sans", system-ui, sans-serif;
+    padding: 1.25rem 1.5rem 5rem;
+    position: relative;
+}
+
+.ix-camp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+}
+
+.ix-camp-header h1 {
+    margin: 0.35rem 0 0;
+    font-size: 1.5rem;
+}
+
+.ix-camp-header p {
+    margin: 0.25rem 0 0;
+    color: var(--ix-camp-muted);
+    font-size: 0.9rem;
+}
+
+.ix-camp-header__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.ix-camp-filters,
+.ix-camp-lead-filters {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+.ix-camp-filters select,
+.ix-camp-lead-filters select,
+.ix-camp-lead-filters input {
+    background: var(--ix-camp-surface);
+    border: 1px solid var(--ix-camp-border);
+    color: var(--ix-camp-text);
+    border-radius: 8px;
+    padding: 0.45rem 0.65rem;
+    font-size: 0.8125rem;
+}
+
+.ix-camp-table-wrap {
+    overflow: auto;
+    border: 1px solid var(--ix-camp-border);
+    border-radius: 12px;
+}
+
+.ix-camp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8125rem;
+}
+
+.ix-camp-table th,
+.ix-camp-table td {
+    padding: 0.65rem 0.75rem;
+    border-bottom: 1px solid var(--ix-camp-border);
+    text-align: left;
+}
+
+.ix-camp-table th {
+    background: var(--ix-camp-surface);
+    color: var(--ix-camp-muted);
+    font-weight: 600;
+}
+
+.ix-camp-row {
+    cursor: pointer;
+}
+
+.ix-camp-row:hover {
+    background: rgba(127, 119, 221, 0.08);
+}
+
+.ix-camp-badge {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.ix-camp-badge--active { background: rgba(29, 158, 117, 0.2); color: var(--ix-camp-teal); }
+.ix-camp-badge--paused { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+.ix-camp-badge--done { background: rgba(148, 163, 184, 0.2); color: var(--ix-camp-muted); }
+.ix-camp-badge--draft,
+.ix-camp-badge--ready { background: rgba(127, 119, 221, 0.2); color: var(--ix-camp-purple); }
+
+.ix-camp-status {
+    display: inline-block;
+    padding: 0.12rem 0.45rem;
+    border-radius: 6px;
+    font-size: 0.7rem;
+}
+
+.ix-camp-status--success { background: rgba(29, 158, 117, 0.2); color: var(--ix-camp-teal); }
+.ix-camp-status--callback { background: rgba(127, 119, 221, 0.2); color: var(--ix-camp-purple); }
+.ix-camp-status--vm { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+.ix-camp-status--error { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+.ix-camp-status--progress { background: rgba(99, 102, 241, 0.2); color: #818cf8; }
+
+.ix-camp-kpi-grid--summary {
+    margin-bottom: 1rem;
+}
+
+.ix-camp-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.ix-camp-kpi {
+    background: var(--ix-camp-surface);
+    border: 1px solid var(--ix-camp-border);
+    border-radius: 10px;
+    padding: 0.85rem 1rem;
+}
+
+.ix-camp-kpi__label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--ix-camp-muted);
+    margin-bottom: 0.25rem;
+}
+
+.ix-camp-kpi strong {
+    font-size: 1.35rem;
+    color: var(--ix-camp-teal);
+}
+
+.ix-camp-timeline {
+    background: var(--ix-camp-surface);
+    border: 1px solid var(--ix-camp-border);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.ix-camp-timeline__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.ix-camp-timeline__head h2 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.ix-camp-timeline__toggle button {
+    background: transparent;
+    border: 1px solid var(--ix-camp-border);
+    color: var(--ix-camp-muted);
+    border-radius: 6px;
+    padding: 0.25rem 0.5rem;
+    margin-left: 0.25rem;
+    cursor: pointer;
+    font-size: 0.75rem;
+}
+
+.ix-camp-timeline__toggle button.active {
+    border-color: var(--ix-camp-purple);
+    color: var(--ix-camp-text);
+}
+
+.ix-camp-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 120px;
+}
+
+.ix-camp-bar-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    justify-content: flex-end;
+}
+
+.ix-camp-bar {
+    width: 100%;
+    max-width: 20px;
+    background: linear-gradient(180deg, var(--ix-camp-purple), var(--ix-camp-teal));
+    border-radius: 3px 3px 0 0;
+    min-height: 2px;
+}
+
+.ix-camp-bar-col span {
+    font-size: 0.6rem;
+    color: var(--ix-camp-muted);
+    margin-top: 0.2rem;
+}
+
+.ix-camp-actions button {
+    background: transparent;
+    border: none;
+    color: var(--ix-camp-purple);
+    cursor: pointer;
+    padding: 0.2rem 0.35rem;
+}
+
+.ix-camp-pagination {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.ix-camp-pagination button {
+    background: var(--ix-camp-surface);
+    border: 1px solid var(--ix-camp-border);
+    color: var(--ix-camp-text);
+    border-radius: 6px;
+    padding: 0.35rem 0.75rem;
+    cursor: pointer;
+}
+
+.ix-camp-bulk-bar {
+    position: fixed;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--ix-camp-surface);
+    border: 1px solid var(--ix-camp-purple);
+    border-radius: 12px;
+    padding: 0.65rem 1rem;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+    z-index: 100;
+}
+
+.ix-camp-btn {
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    font-size: 0.8125rem;
+}
+
+.ix-camp-btn--primary {
+    background: linear-gradient(135deg, #6366f1, #7f77dd);
+    color: #fff;
+}
+
+.ix-camp-btn--secondary {
+    background: var(--ix-camp-purple);
+    color: #fff;
+}
+
+.ix-camp-btn--accent {
+    background: var(--ix-camp-teal);
+    color: #fff;
+}
+
+.ix-camp-btn--ghost {
+    background: transparent;
+    border: 1px solid var(--ix-camp-border);
+    color: var(--ix-camp-text);
+}
+
+.ix-camp-drawer-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 200;
+}
+
+.ix-camp-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: min(420px, 92vw);
+    height: 100%;
+    background: var(--ix-camp-surface);
+    border-left: 1px solid var(--ix-camp-border);
+    z-index: 201;
+    overflow: auto;
+    padding: 1rem;
+}
+
+.ix-camp-drawer header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.ix-camp-drawer header h2 {
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+.ix-camp-drawer header button {
+    background: transparent;
+    border: none;
+    color: var(--ix-camp-muted);
+    cursor: pointer;
+    font-size: 1.1rem;
+}
+
+.ix-camp-attempts {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem;
+    font-size: 0.8rem;
+}
+
+.ix-camp-attempts li {
+    padding: 0.35rem 0;
+    border-bottom: 1px solid var(--ix-camp-border);
+}
+
+.ix-camp-transcript {
+    background: var(--ix-surface-elevated, #0a0a12);
+    border: 1px solid var(--ix-camp-border);
+    border-radius: 8px;
+    padding: 0.75rem;
+    font-size: 0.75rem;
+    white-space: pre-wrap;
+    max-height: 200px;
+    overflow: auto;
+}
+
+.ix-camp-loading {
+    text-align: center;
+    padding: 3rem;
+    color: var(--ix-camp-muted);
+}
+
+@media (max-width: 768px) {
+    .ix-campaign-dashboard {
+        padding: 1rem 0.75rem 4rem;
+    }
+
+    .ix-camp-header {
+        flex-direction: column;
+    }
+
+    .ix-camp-filters,
+    .ix-camp-lead-filters {
+        width: 100%;
+    }
+
+    .ix-camp-filters select,
+    .ix-camp-lead-filters select,
+    .ix-camp-lead-filters input {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .ix-camp-transcript {
+        color: var(--ix-camp-text) !important;
+        background: var(--ix-surface-elevated, #0f0f1a) !important;
+    }
+}

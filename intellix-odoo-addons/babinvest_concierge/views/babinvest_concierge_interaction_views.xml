@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_babinvest_concierge_interaction_list" model="ir.ui.view">
+        <field name="name">babinvest.concierge.interaction.list</field>
+        <field name="model">babinvest.concierge.interaction</field>
+        <field name="arch" type="xml">
+            <list string="Interactions / relances">
+                <field name="lead_id"/>
+                <field name="channel"/>
+                <field name="template_used"/>
+                <field name="sent_date"/>
+                <field name="response_received"/>
+                <field name="response_date"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_babinvest_concierge_interaction" model="ir.actions.act_window">
+        <field name="name">Interactions</field>
+        <field name="res_model">babinvest.concierge.interaction</field>
+        <field name="view_mode">list</field>
+    </record>
+</odoo>

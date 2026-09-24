@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_messaging_hub" model="ir.actions.client">
+        <field name="name">Messaging Hub</field>
+        <field name="tag">messaging_hub_action</field>
+    </record>
+
+    <menuitem id="menu_messaging_hub"
+              name="Hub"
+              parent="menu_messaging_root"
+              action="action_messaging_hub"
+              sequence="1"/>
+
+    <record id="menu_messaging_root" model="ir.ui.menu">
+        <field name="action" ref="action_messaging_hub"/>
+        <!-- Pas de group_ids : visible pour tous les utilisateurs internes (comme DEV).
+             Droits fins via ir.model.access + groupe optionnel people_engine. -->
+        <field name="group_ids" eval="[(5, 0, 0)]"/>
+    </record>
+</odoo>

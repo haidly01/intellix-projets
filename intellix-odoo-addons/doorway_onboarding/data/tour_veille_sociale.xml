@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="tour_veille_sociale" model="doorway.onboarding.tour">
+        <field name="name">Veille Sociale</field>
+        <field name="code">doorway_veille_sociale</field>
+        <field name="sequence">20</field>
+        <field name="quest_label">Quête Veille Sociale</field>
+        <field name="home_action_xmlid">doorway_veille_sociale.action_veille_dashboard</field>
+        <field name="badge_icon">📡</field>
+        <field name="badge_name">Veilleur Doorway</field>
+        <field name="reward_points">40</field>
+    </record>
+    <record id="tour_veille_step_welcome" model="doorway.onboarding.tour.step">
+        <field name="tour_id" ref="tour_veille_sociale"/>
+        <field name="sequence">1</field>
+        <field name="key">welcome</field>
+        <field name="title">Veille sociale &amp; communauté</field>
+        <field name="body_html" type="html">
+            <p>Détectez les signaux rénovation / thermo sur le web et transformez-les en leads CRM.</p>
+            <div class="alert alert-info border-0 pe-xp-callout" role="status">
+                <strong>+40 XP</strong> — badge <em>Veilleur Doorway</em> 📡 à la fin de la quête
+            </div>
+        </field>
+    </record>
+    <record id="tour_veille_step_dashboard" model="doorway.onboarding.tour.step">
+        <field name="tour_id" ref="tour_veille_sociale"/>
+        <field name="sequence">2</field>
+        <field name="key">dashboard</field>
+        <field name="title">Tableau de bord temps réel</field>
+        <field name="body_html" type="html">
+            <p>Vue synthèse des signaux <strong>hot</strong>, scores et sources actives.</p>
+            <p>Les flux arrivent via <strong>n8n</strong> (RSS, Reddit) et webhook Odoo.</p>
+        </field>
+        <field name="action_xmlid">doorway_veille_sociale.action_veille_dashboard</field>
+        <field name="action_label">Ouvrir le tableau de bord</field>
+    </record>
+    <record id="tour_veille_step_signaux" model="doorway.onboarding.tour.step">
+        <field name="tour_id" ref="tour_veille_sociale"/>
+        <field name="sequence">3</field>
+        <field name="key">signaux</field>
+        <field name="title">Signaux &amp; leads</field>
+        <field name="body_html" type="html">
+            <ul>
+                <li><strong>En attente (hot)</strong> — à traiter en priorité</li>
+                <li>Répondre, scorer avec l'IA, créer un lead CRM en un clic</li>
+                <li>Suivi des leads déjà créés</li>
+            </ul>
+        </field>
+        <field name="action_xmlid">doorway_veille_sociale.action_veille_signal_hot</field>
+        <field name="action_label">Voir les signaux hot</field>
+    </record>
+    <record id="tour_veille_step_communaute" model="doorway.onboarding.tour.step">
+        <field name="tour_id" ref="tour_veille_sociale"/>
+        <field name="sequence">4</field>
+        <field name="key">communaute</field>
+        <field name="title">Gestion communauté</field>
+        <field name="body_html" type="html">
+            <p>Planifiez publications Facebook / Instagram dans le calendrier intégré au module Projet.</p>
+        </field>
+        <field name="action_xmlid">doorway_veille_sociale.action_community_post_calendar</field>
+        <field name="action_label">Calendrier publications</field>
+    </record>
+    <record id="tour_veille_step_config" model="doorway.onboarding.tour.step">
+        <field name="tour_id" ref="tour_veille_sociale"/>
+        <field name="sequence">5</field>
+        <field name="key">config</field>
+        <field name="title">Configuration</field>
+        <field name="admin_only" eval="True"/>
+        <field name="body_html" type="html">
+            <ul>
+                <li>Token Meta, email Google Alerts, IDs pages</li>
+                <li>URL webhook Odoo + token pour n8n</li>
+                <li>Connexions &amp; sources RSS</li>
+            </ul>
+        </field>
+        <field name="action_xmlid">doorway_veille_sociale.action_veille_config_open</field>
+        <field name="action_label">Paramètres veille</field>
+    </record>
+</odoo>

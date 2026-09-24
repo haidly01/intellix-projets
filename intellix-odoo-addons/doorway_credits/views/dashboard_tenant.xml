@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_tenant_form_client" model="ir.ui.view">
+        <field name="name">doorway.tenant.form.client</field>
+        <field name="model">doorway.tenant</field>
+        <field name="arch" type="xml">
+            <form string="Mon compte Doorway">
+                <header>
+                    <field name="status" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="credit_balance"/> USD</h1>
+                        <p>Solde crédits IA</p>
+                    </div>
+                    <group>
+                        <group string="Abonnement (89 USD / utilisateur)">
+                            <field name="name" readonly="1"/>
+                            <field name="user_count"/>
+                            <field name="monthly_fee"/>
+                            <field name="trial_end_date"/>
+                        </group>
+                        <group string="Consommation">
+                            <field name="today_consumption"/>
+                            <field name="current_month_consumption"/>
+                            <field name="daily_credit_limit"/>
+                        </group>
+                    </group>
+                    <group string="Recharge automatique">
+                        <field name="auto_recharge"/>
+                        <field name="auto_recharge_threshold"/>
+                        <field name="auto_recharge_amount"/>
+                    </group>
+                    <group string="Acheter des crédits (Stripe)">
+                        <button name="action_buy_pack_starter" type="object"
+                                string="Pack Starter — 50$" class="btn-primary"/>
+                        <button name="action_buy_pack_pro" type="object"
+                                string="Pack Pro — 150$" class="btn-secondary"/>
+                        <button name="action_buy_pack_agence" type="object"
+                                string="Pack Agence — 500$" class="btn-secondary"/>
+                    </group>
+                    <notebook>
+                        <page string="Transactions">
+                            <field name="transaction_ids" readonly="1">
+                                <list>
+                                    <field name="date"/>
+                                    <field name="transaction_type"/>
+                                    <field name="service"/>
+                                    <field name="amount"/>
+                                    <field name="balance_after"/>
+                                    <field name="description"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Clé API" groups="doorway_credits.group_doorway_credits_admin">
+                            <field name="api_key" password="True"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_tenant_list_client" model="ir.ui.view">
+        <field name="name">doorway.tenant.list.client</field>
+        <field name="model">doorway.tenant</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="credit_balance"/>
+                <field name="status"/>
+                <field name="user_count"/>
+                <field name="monthly_fee"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_tenant_dashboard" model="ir.actions.act_window">
+        <field name="name">Mes crédits IA</field>
+        <field name="res_model">doorway.tenant</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('company_id', 'in', allowed_company_ids)]</field>
+    </record>
+</odoo>

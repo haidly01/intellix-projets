@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Référentiel structurel (pas de prestataires / leads de démo) -->
+
+    <!-- Activités brief lead -->
+    <record id="coins_event_activite_excursion" model="coins.event.activite">
+        <field name="name">Excursion</field>
+        <field name="code">excursion</field>
+        <field name="sequence">10</field>
+    </record>
+    <record id="coins_event_activite_quad" model="coins.event.activite">
+        <field name="name">Quad</field>
+        <field name="code">quad</field>
+        <field name="sequence">20</field>
+    </record>
+    <record id="coins_event_activite_spa_massage" model="coins.event.activite">
+        <field name="name">Spa / massage</field>
+        <field name="code">spa_massage</field>
+        <field name="sequence">30</field>
+    </record>
+    <record id="coins_event_activite_cours_cuisine" model="coins.event.activite">
+        <field name="name">Cours de cuisine</field>
+        <field name="code">cours_cuisine</field>
+        <field name="sequence">40</field>
+    </record>
+    <record id="coins_event_activite_hammam" model="coins.event.activite">
+        <field name="name">Hammam</field>
+        <field name="code">hammam</field>
+        <field name="sequence">50</field>
+    </record>
+    <record id="coins_event_activite_autre" model="coins.event.activite">
+        <field name="name">Autre</field>
+        <field name="code">autre</field>
+        <field name="sequence">90</field>
+    </record>
+
+    <!-- Tags spécialité prestataires -->
+    <record id="coins_prestataire_tag_marocain" model="coins.prestataire.tag">
+        <field name="name">Marocain</field>
+        <field name="code">marocain</field>
+    </record>
+    <record id="coins_prestataire_tag_international" model="coins.prestataire.tag">
+        <field name="name">International</field>
+        <field name="code">international</field>
+    </record>
+    <record id="coins_prestataire_tag_mix" model="coins.prestataire.tag">
+        <field name="name">Mix</field>
+        <field name="code">mix</field>
+    </record>
+    <record id="coins_prestataire_tag_mariage" model="coins.prestataire.tag">
+        <field name="name">Mariage</field>
+        <field name="code">mariage</field>
+    </record>
+    <record id="coins_prestataire_tag_seminaire" model="coins.prestataire.tag">
+        <field name="name">Séminaire</field>
+        <field name="code">seminaire</field>
+    </record>
+    <record id="coins_prestataire_tag_villa" model="coins.prestataire.tag">
+        <field name="name">Villa privée</field>
+        <field name="code">villa_privee</field>
+    </record>
+    <record id="coins_prestataire_tag_riad" model="coins.prestataire.tag">
+        <field name="name">Riad</field>
+        <field name="code">riad</field>
+    </record>
+    <record id="coins_prestataire_tag_piscine" model="coins.prestataire.tag">
+        <field name="name">Piscine</field>
+        <field name="code">piscine</field>
+    </record>
+    <record id="coins_prestataire_tag_groupe_live" model="coins.prestataire.tag">
+        <field name="name">Groupe live</field>
+        <field name="code">groupe_live</field>
+    </record>
+    <record id="coins_prestataire_tag_cours_cuisine" model="coins.prestataire.tag">
+        <field name="name">Cours de cuisine</field>
+        <field name="code">cours_cuisine</field>
+    </record>
+</odoo>

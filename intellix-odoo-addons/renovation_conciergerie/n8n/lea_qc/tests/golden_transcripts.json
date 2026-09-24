@@ -1,0 +1,92 @@
+[
+  {
+    "label": "Martin — vendre maison",
+    "step": "GREETING",
+    "raw": "je veux vendre ma maison",
+    "expect": { "intent": "proprietaire", "besoin": "immo" }
+  },
+  {
+    "label": "Martin — cuisine et sdb",
+    "step": "QUESTION_PROJET",
+    "raw": "cuisine et salle de bain",
+    "expect": { "intent": "projet" }
+  },
+  {
+    "label": "Martin — sous-sol",
+    "step": "QUESTION_PROJET",
+    "raw": "sous sol",
+    "expect": { "intent": "projet" }
+  },
+  {
+    "label": "Martin — oui propriétaire",
+    "step": "GREETING",
+    "raw": "oui c est ma maison",
+    "expect": { "intent": "proprietaire" }
+  },
+  {
+    "label": "Martin reno — travaux besoin",
+    "step": "QUESTION_BESOIN",
+    "raw": "des travaux de rénovation",
+    "expect": { "intent": "reno" }
+  },
+  {
+    "label": "Martin reno — oui greeting",
+    "step": "GREETING",
+    "raw": "oui",
+    "expect": { "intent": "proprietaire" }
+  },
+  {
+    "label": "Martin — dispo le soir",
+    "step": "CAPTURER_DISPO",
+    "raw": "le soir",
+    "expect": { "intent": "dispo", "valeur": "soir" }
+  },
+  {
+    "label": "Martin — dispo matin",
+    "step": "CAPTURER_DISPO",
+    "raw": "plutôt le matin",
+    "expect": { "intent": "dispo", "valeur": "matin" }
+  },
+  {
+    "label": "Martin objection — pas intéressé",
+    "step": "GREETING",
+    "raw": "non merci pas intéressé",
+    "expect": { "intent": "pas_interesse" }
+  },
+  {
+    "label": "Martin objection — pas le temps",
+    "step": "GREETING",
+    "raw": "je n'ai pas le temps",
+    "expect": { "intent": "pas_le_temps" }
+  },
+  {
+    "label": "Martin objection — locataire",
+    "step": "GREETING",
+    "raw": "je suis locataire",
+    "expect": { "intent": "locataire" }
+  },
+  {
+    "label": "Martin objection — rappeler plus tard",
+    "step": "GREETING",
+    "raw": "rappeler plus tard svp",
+    "expect": { "intent": "rappeler_plus_tard" }
+  },
+  {
+    "label": "Martin objection — qui êtes-vous",
+    "step": "GREETING",
+    "raw": "c'est quoi soumission entrepreneurs",
+    "expect": { "intent": "qui_etes_vous" }
+  },
+  {
+    "label": "Martin — chalet",
+    "step": "GREETING",
+    "raw": "oui c'est mon chalet",
+    "expect": { "intent": "proprietaire" }
+  },
+  {
+    "label": "Martin — pas de projet",
+    "step": "QUESTION_BESOIN",
+    "raw": "pas de projet pour l'instant",
+    "expect": { "intent": "pas_besoin" }
+  }
+]

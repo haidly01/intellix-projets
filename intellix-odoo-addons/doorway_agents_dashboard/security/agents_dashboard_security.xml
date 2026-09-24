@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="group_doorway_agent_viewer" model="res.groups">
+        <field name="name">Agents IA — Lecture</field>
+        <field name="comment">Consultation dashboard et profils agents.</field>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="group_doorway_agent_tester" model="res.groups">
+        <field name="name">Agents IA — Testeur</field>
+        <field name="comment">Lancement d'appels test et analyse.</field>
+        <field name="implied_ids" eval="[(4, ref('group_doorway_agent_viewer'))]"/>
+    </record>
+
+    <record id="group_doorway_agent_manager" model="res.groups">
+        <field name="name">Agents IA — Gestionnaire dashboard</field>
+        <field name="comment">Sync API, affectations pipeline, configuration.</field>
+        <field name="implied_ids" eval="[(4, ref('group_doorway_agent_tester'))]"/>
+        <field name="user_ids" eval="[(4, ref('base.user_admin'))]"/>
+    </record>
+</odoo>

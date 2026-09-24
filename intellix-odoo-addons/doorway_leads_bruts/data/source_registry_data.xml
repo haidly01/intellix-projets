@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Global -->
+    <record id="source_crm_doorway" model="doorway.source.registry">
+        <field name="name">CRM Doorway (import)</field>
+        <field name="code">crm_doorway</field>
+        <field name="pays">tous</field>
+        <field name="type_source">autre</field>
+        <field name="actif" eval="True"/>
+        <field name="premium" eval="False"/>
+        <field name="credit_par_page">0</field>
+        <field name="credit_par_fiche">0</field>
+        <field name="nb_leads_moy">500</field>
+        <field name="taux_tel">90</field>
+        <field name="taux_email">60</field>
+        <field name="rating_stars">4</field>
+        <field name="description">Import des opportunités déjà présentes dans le CRM Doorway</field>
+    </record>
+
+    <record id="source_google_maps" model="doorway.source.registry">
+        <field name="name">Google Maps API</field>
+        <field name="code">google_maps</field>
+        <field name="pays">tous</field>
+        <field name="type_source">gmaps</field>
+        <field name="actif" eval="True"/>
+        <field name="premium" eval="False"/>
+        <field name="credit_par_page">0.0010</field>
+        <field name="credit_par_fiche">0.0005</field>
+        <field name="nb_leads_moy">150</field>
+        <field name="taux_tel">85</field>
+        <field name="taux_email">10</field>
+        <field name="rating_stars">3</field>
+        <field name="description">Google Maps Places — précis, géolocalisé, données officielles</field>
+    </record>
+
+    <!-- Maroc -->
+    <record id="source_avito_ma" model="doorway.source.registry">
+        <field name="name">Avito.ma</field>
+        <field name="code">avito_ma</field>
+        <field name="pays">maroc</field>
+        <field name="type_source">classees</field>
+        <field name="credit_par_page">0.0020</field>
+        <field name="credit_par_fiche">0.0010</field>
+        <field name="nb_leads_moy">60</field>
+        <field name="taux_tel">90</field>
+        <field name="taux_email">20</field>
+        <field name="rating_stars">3</field>
+        <field name="description">Leader annonces classées Maroc — leads actifs avec tél direct</field>
+    </record>
+    <record id="source_marocannuaire" model="doorway.source.registry">
+        <field name="name">marocannuaire.org</field>
+        <field name="code">marocannuaire_org</field>
+        <field name="pays">maroc</field>
+        <field name="type_source">annuaire</field>
+        <field name="credit_par_page">0.0002</field>
+        <field name="credit_par_fiche">0.0001</field>
+        <field name="nb_leads_moy">30</field>
+        <field name="taux_tel">40</field>
+        <field name="rating_stars">2</field>
+    </record>
+    <record id="source_marocannonces" model="doorway.source.registry">
+        <field name="name">MarocAnnonces.com</field>
+        <field name="code">marocannonces_com</field>
+        <field name="pays">maroc</field>
+        <field name="type_source">classees</field>
+        <field name="credit_par_page">0.0030</field>
+        <field name="credit_par_fiche">0.0015</field>
+        <field name="nb_leads_moy">20</field>
+        <field name="taux_tel">60</field>
+        <field name="rating_stars">2</field>
+    </record>
+    <record id="source_telecontact_ma" model="doorway.source.registry">
+        <field name="name">telecontact.ma</field>
+        <field name="code">telecontact_ma</field>
+        <field name="pays">maroc</field>
+        <field name="type_source">annuaire</field>
+        <field name="credit_par_page">0.0002</field>
+        <field name="nb_leads_moy">25</field>
+        <field name="taux_tel">70</field>
+        <field name="rating_stars">2</field>
+    </record>
+    <record id="source_kerix_ma" model="doorway.source.registry">
+        <field name="name">kerix.net</field>
+        <field name="code">kerix_ma</field>
+        <field name="pays">maroc</field>
+        <field name="type_source">annuaire</field>
+        <field name="credit_par_page">0.0002</field>
+        <field name="nb_leads_moy">20</field>
+        <field name="taux_tel">50</field>
+        <field name="rating_stars">1</field>
+    </record>
+    <record id="source_moncallcenter_ma" model="doorway.source.registry">
+        <field name="name">moncallcenter.ma</field>
+        <field name="code">moncallcenter_ma</field>
+        <field name="pays">maroc</field>
+        <field name="type_source">annuaire</field>
+        <field name="credit_par_page">0.0002</field>
+        <field name="nb_leads_moy">15</field>
+        <field name="taux_tel">80</field>
+        <field name="rating_stars">1</field>
+    </record>
+    <record id="source_jiji_ma" model="doorway.source.registry">
+        <field name="name">Jiji.ma</field>
+        <field name="code">jiji_ma</field>
+        <field name="pays">maroc</field>
+        <field name="type_source">classees</field>
+        <field name="credit_par_page">0.0020</field>
+        <field name="nb_leads_moy">25</field>
+        <field name="taux_tel">75</field>
+        <field name="rating_stars">2</field>
+    </record>
+    <record id="source_expressbazar_ma" model="doorway.source.registry">
+        <field name="name">ExpressBazar.ma</field>
+        <field name="code">expressbazar_ma</field>
+        <field name="pays">maroc</field>
+        <field name="type_source">classees</field>
+        <field name="credit_par_page">0.0020</field>
+        <field name="nb_leads_moy">20</field>
+        <field name="taux_tel">55</field>
+        <field name="rating_stars">1</field>
+    </record>
+    <record id="source_khidmat_ma" model="doorway.source.registry">
+        <field name="name">Khidmat.ma</field>
+        <field name="code">khidmat_ma</field>
+        <field name="pays">maroc</field>
+        <field name="type_source">annuaire</field>
+        <field name="credit_par_page">0.0002</field>
+        <field name="nb_leads_moy">18</field>
+        <field name="taux_tel">65</field>
+        <field name="rating_stars">2</field>
+    </record>
+
+    <!-- France -->
+    <record id="source_pagesjaunes_fr" model="doorway.source.registry">
+        <field name="name">PagesJaunes.fr</field>
+        <field name="code">pagesjaunes_fr</field>
+        <field name="pays">france</field>
+        <field name="type_source">annuaire</field>
+        <field name="credit_par_page">0.0003</field>
+        <field name="credit_par_fiche">0.0002</field>
+        <field name="nb_leads_moy">80</field>
+        <field name="taux_tel">95</field>
+        <field name="taux_email">40</field>
+        <field name="rating_stars">3</field>
+        <field name="description">Annuaire pro France — données complètes avec SIRET</field>
+    </record>
+    <record id="source_societe_com" model="doorway.source.registry">
+        <field name="name">Societe.com</field>
+        <field name="code">societe_com</field>
+        <field name="pays">france</field>
+        <field name="type_source">annuaire</field>
+        <field name="credit_par_page">0.0004</field>
+        <field name="nb_leads_moy">60</field>
+        <field name="taux_tel">30</field>
+        <field name="taux_email">50</field>
+        <field name="rating_stars">3</field>
+    </record>
+    <record id="source_leboncoin_fr" model="doorway.source.registry">
+        <field name="name">LeBonCoin.fr (services pro)</field>
+        <field name="code">leboncoin_fr</field>
+        <field name="pays">france</field>
+        <field name="type_source">classees</field>
+        <field name="credit_par_page">0.0025</field>
+        <field name="nb_leads_moy">40</field>
+        <field name="taux_tel">70</field>
+        <field name="rating_stars">2</field>
+    </record>
+    <record id="source_kompass_fr" model="doorway.source.registry">
+        <field name="name">Kompass.fr</field>
+        <field name="code">kompass_fr</field>
+        <field name="pays">france</field>
+        <field name="type_source">annuaire</field>
+        <field name="credit_par_page">0.0005</field>
+        <field name="nb_leads_moy">50</field>
+        <field name="taux_tel">60</field>
+        <field name="rating_stars">2</field>
+    </record>
+
+    <!-- Canada -->
+    <record id="source_yellowpages_ca" model="doorway.source.registry">
+        <field name="name">YellowPages.ca</field>
+        <field name="code">yellowpages_ca</field>
+        <field name="pays">canada</field>
+        <field name="type_source">annuaire</field>
+        <field name="credit_par_page">0.0003</field>
+        <field name="credit_par_fiche">0.0002</field>
+        <field name="nb_leads_moy">70</field>
+        <field name="taux_tel">90</field>
+        <field name="taux_email">35</field>
+        <field name="rating_stars">3</field>
+        <field name="description">Pages jaunes Canada — couverture nationale</field>
+    </record>
+    <record id="source_canada411" model="doorway.source.registry">
+        <field name="name">Canada411</field>
+        <field name="code">canada411</field>
+        <field name="pays">canada</field>
+        <field name="type_source">annuaire</field>
+        <field name="credit_par_page">0.0003</field>
+        <field name="nb_leads_moy">65</field>
+        <field name="taux_tel">88</field>
+        <field name="rating_stars">3</field>
+    </record>
+    <record id="source_kijiji_ca" model="doorway.source.registry">
+        <field name="name">Kijiji.ca (services)</field>
+        <field name="code">kijiji_ca</field>
+        <field name="pays">canada</field>
+        <field name="type_source">classees</field>
+        <field name="credit_par_page">0.0020</field>
+        <field name="nb_leads_moy">35</field>
+        <field name="taux_tel">65</field>
+        <field name="rating_stars">2</field>
+    </record>
+    <record id="source_yelp_ca" model="doorway.source.registry">
+        <field name="name">Yelp.ca</field>
+        <field name="code">yelp_ca</field>
+        <field name="pays">canada</field>
+        <field name="type_source">annuaire</field>
+        <field name="credit_par_page">0.0004</field>
+        <field name="nb_leads_moy">45</field>
+        <field name="taux_tel">75</field>
+        <field name="rating_stars">2</field>
+    </record>
+
+    <!-- Belgique -->
+    <record id="source_goldenpages_be" model="doorway.source.registry">
+        <field name="name">GoldenPages.be</field>
+        <field name="code">goldenpages_be</field>
+        <field name="pays">belgique</field>
+        <field name="type_source">annuaire</field>
+        <field name="credit_par_page">0.0003</field>
+        <field name="nb_leads_moy">55</field>
+        <field name="taux_tel">85</field>
+        <field name="rating_stars">3</field>
+    </record>
+    <record id="source_infobel_be" model="doorway.source.registry">
+        <field name="name">Infobel.be</field>
+        <field name="code">infobel_be</field>
+        <field name="pays">belgique</field>
+        <field name="type_source">annuaire</field>
+        <field name="credit_par_page">0.0003</field>
+        <field name="nb_leads_moy">50</field>
+        <field name="rating_stars">2</field>
+    </record>
+    <record id="source_2ememain_be" model="doorway.source.registry">
+        <field name="name">2ememain.be</field>
+        <field name="code">2ememain_be</field>
+        <field name="pays">belgique</field>
+        <field name="type_source">classees</field>
+        <field name="credit_par_page">0.0020</field>
+        <field name="nb_leads_moy">30</field>
+        <field name="rating_stars">2</field>
+    </record>
+
+    <!-- Suisse -->
+    <record id="source_local_ch" model="doorway.source.registry">
+        <field name="name">local.ch</field>
+        <field name="code">local_ch</field>
+        <field name="pays">suisse</field>
+        <field name="type_source">annuaire</field>
+        <field name="credit_par_page">0.0003</field>
+        <field name="nb_leads_moy">45</field>
+        <field name="rating_stars">3</field>
+    </record>
+    <record id="source_search_ch" model="doorway.source.registry">
+        <field name="name">search.ch</field>
+        <field name="code">search_ch</field>
+        <field name="pays">suisse</field>
+        <field name="type_source">annuaire</field>
+        <field name="credit_par_page">0.0003</field>
+        <field name="nb_leads_moy">40</field>
+        <field name="rating_stars">2</field>
+    </record>
+
+    <!-- Espagne -->
+    <record id="source_paginasamarillas_es" model="doorway.source.registry">
+        <field name="name">PaginasAmarillas.es</field>
+        <field name="code">paginasamarillas_es</field>
+        <field name="pays">espagne</field>
+        <field name="type_source">annuaire</field>
+        <field name="credit_par_page">0.0003</field>
+        <field name="nb_leads_moy">55</field>
+        <field name="rating_stars">3</field>
+    </record>
+    <record id="source_milanuncios" model="doorway.source.registry">
+        <field name="name">MilAnuncios.com</field>
+        <field name="code">milanuncios</field>
+        <field name="pays">espagne</field>
+        <field name="type_source">classees</field>
+        <field name="credit_par_page">0.0020</field>
+        <field name="nb_leads_moy">35</field>
+        <field name="rating_stars">2</field>
+    </record>
+</odoo>

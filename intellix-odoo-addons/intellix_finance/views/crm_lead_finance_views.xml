@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_crm_lead_form_finance" model="ir.ui.view">
+        <field name="name">crm.lead.form.intellix.finance</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="Finance — Canada"
+                       invisible="finance_brand not in ('driven', 'growth_capital')">
+                    <group>
+                        <field name="finance_brand" readonly="1"/>
+                        <field name="finance_province"/>
+                        <field name="finance_lang"/>
+                    </group>
+                </group>
+                <group string="Rappel Alex"
+                       invisible="finance_brand not in ('driven', 'itex') and team_id != 112">
+                    <group>
+                        <field name="finance_callback_datetime"/>
+                        <field name="finance_callback_source"/>
+                        <field name="finance_callback_set" readonly="1"/>
+                        <field name="finance_callback_due" readonly="1"/>
+                    </group>
+                    <group>
+                        <field name="finance_callback_comment"/>
+                    </group>
+                </group>
+                <group string="Finance — pré-qualification"
+                       invisible="finance_brand not in ('driven', 'growth_capital')">
+                    <group>
+                        <field name="finance_prequal_status" readonly="1"/>
+                        <field name="finance_in_funnel" readonly="1"/>
+                        <field name="finance_prequal_failures" readonly="1"
+                               invisible="not finance_prequal_failures"/>
+                    </group>
+                    <group>
+                        <field name="driven_months_in_business"/>
+                        <field name="driven_credit_score"/>
+                        <field name="finance_annual_revenue"/>
+                        <field name="driven_monthly_revenue"/>
+                        <field name="finance_bank_statements"/>
+                        <field name="finance_bankruptcy"/>
+                    </group>
+                </group>
+                <group string="Entonnoir de financement"
+                       invisible="not finance_in_funnel">
+                    <group>
+                        <field name="finance_funnel_stage"/>
+                        <field name="finance_qualified_date" readonly="1"/>
+                        <field name="finance_funded_date" readonly="1"
+                               invisible="finance_funnel_stage != 'funded'"/>
+                    </group>
+                    <group>
+                        <field name="finance_is_lost"/>
+                        <field name="finance_lost_reason" invisible="not finance_is_lost"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_finance_funnel_kanban" model="ir.ui.view">
+        <field name="name">crm.lead.kanban.finance.funnel</field>
+        <field name="model">crm.lead</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="finance_funnel_stage"
+                    class="o_coins_pipeline_kanban o_coins_pipeline_finance o_kanban_small_column"
+                    records_draggable="true"
+                    groups_draggable="false"
+                    group_create="false"
+                    group_delete="false"
+                    quick_create="true">
+                <field name="finance_funnel_stage"/>
+                <field name="finance_brand"/>
+                <field name="finance_province"/>
+                <field name="finance_lang"/>
+                <field name="finance_is_lost"/>
+                <field name="finance_lost_reason"/>
+                <field name="finance_prequal_status"/>
+                <field name="finance_callback_due"/>
+                <field name="finance_callback_set"/>
+                <field name="finance_callback_datetime"/>
+                <field name="partner_name"/>
+                <field name="contact_name"/>
+                <field name="name"/>
+                <templates>
+                    <t t-name="card">
+                        <div t-attf-class="o_coins_lead_card {{ (record.finance_is_lost.raw_value or record.finance_callback_due.raw_value) and 'hot' or '' }}">
+                            <div class="o_coins_lead_name">
+                                <t t-if="record.partner_name.raw_value">
+                                    <field name="partner_name"/>
+                                </t>
+                                <t t-else="">
+                                    <field name="name"/>
+                                </t>
+                            </div>
+                            <div class="o_coins_lead_sub">
+                                <field name="contact_name"/>
+                            </div>
+                            <div class="o_coins_lead_meta">
+                                <span t-if="record.finance_callback_due.raw_value"
+                                      class="o_coins_badge o_coins_badge_cat">Rappel dû</span>
+                                <span t-elif="record.finance_callback_set.raw_value"
+                                      class="o_coins_badge o_coins_badge_manual">Rappel posé</span>
+                                <span t-if="record.finance_is_lost.raw_value"
+                                      class="o_coins_badge o_coins_badge_cat">Perdu</span>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_finance_lead_search" model="ir.ui.view">
+        <field name="name">crm.lead.search.finance</field>
+        <field name="model">crm.lead</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="finance_province"/>
+                <field name="finance_lang"/>
+                <field name="finance_prequal_failures"/>
+                <filter name="lang_fr" string="Français"
+                        domain="[('finance_lang', '=', 'fr')]"/>
+                <filter name="lang_en" string="Anglais"
+                        domain="[('finance_lang', '=', 'en')]"/>
+                <separator/>
+                <filter name="in_funnel" string="Entonnoir financement"
+                        domain="[('finance_in_funnel', '=', True)]"/>
+                <filter name="not_qualified" string="Non qualifiés"
+                        domain="[('finance_prequal_status', '=', 'not_qualified')]"/>
+                <filter name="pending_prequal" string="Pré-qualification en attente"
+                        domain="[('finance_prequal_status', '=', 'pending')]"/>
+                <filter name="open_funnel" string="En cours"
+                        domain="[('finance_in_funnel', '=', True), ('finance_is_lost', '=', False)]"/>
+                <filter name="lost_funnel" string="Perdus financement"
+                        domain="[('finance_in_funnel', '=', True), ('finance_is_lost', '=', True)]"/>
+                <separator/>
+                <filter name="group_stage" string="Étape" context="{'group_by': 'finance_funnel_stage'}"/>
+                <filter name="group_itex_stage" string="Étape ITEX" context="{'group_by': 'itex_funnel_stage'}"/>
+                <filter name="group_prequal" string="Pré-qualification" context="{'group_by': 'finance_prequal_status'}"/>
+                <filter name="group_province" string="Province" context="{'group_by': 'finance_province'}"/>
+                <filter name="group_lang" string="Langue" context="{'group_by': 'finance_lang'}"/>
+                <separator/>
+                <filter name="itex_a_relancer" string="ITEX à relancer"
+                        domain="[('itex_relance_due', '=', True)]"/>
+                <filter name="itex_reporte" string="ITEX reporté"
+                        domain="[('itex_funnel_stage', '=', 'reporte')]"/>
+                <separator/>
+                <filter name="callback_set" string="Rappel Alex posé"
+                        domain="[('finance_callback_set', '=', True)]"/>
+                <filter name="callback_due" string="Rappel Alex dû"
+                        domain="[('finance_callback_due', '=', True)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_finance_not_qualified_list" model="ir.ui.view">
+        <field name="name">crm.lead.list.finance.not.qualified</field>
+        <field name="model">crm.lead</field>
+        <field name="arch" type="xml">
+            <list create="1">
+                <field name="name"/>
+                <field name="finance_brand"/>
+                <field name="finance_province"/>
+                <field name="finance_lang"/>
+                <field name="finance_prequal_status"/>
+                <field name="finance_prequal_failures"/>
+                <field name="driven_credit_score"/>
+                <field name="driven_months_in_business"/>
+                <field name="finance_annual_revenue"/>
+                <field name="finance_bank_statements"/>
+                <field name="finance_bankruptcy"/>
+                <field name="finance_in_funnel"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_finance_funnel_list" model="ir.ui.view">
+        <field name="name">crm.lead.list.finance.funnel</field>
+        <field name="model">crm.lead</field>
+        <field name="arch" type="xml">
+            <list create="1">
+                <field name="name"/>
+                <field name="partner_name" string="Entreprise"/>
+                <field name="contact_name" string="Contact"/>
+                <field name="phone"/>
+                <field name="finance_funnel_stage"/>
+                <field name="finance_callback_set"/>
+                <field name="finance_callback_datetime"/>
+                <field name="finance_is_lost"/>
+                <field name="finance_province"/>
+                <field name="finance_lang"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_finance_funnel_driven" model="ir.actions.act_window">
+        <field name="name">Finance — entonnoir Driven</field>
+        <field name="path">fin-driven</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="view_id" ref="view_finance_funnel_kanban"/>
+        <field name="domain">[('finance_brand', '=', 'driven'), ('finance_in_funnel', '=', True)]</field>
+        <field name="context" eval="{
+            'default_type': 'opportunity',
+            'default_team_id': ref('renovation_conciergerie.crm_team_driven'),
+            'default_finance_funnel_stage': 'lead_contacted',
+            'finance_pipeline': 'driven',
+            'search_default_open_funnel': 1,
+        }"/>
+        <field name="search_view_id" ref="view_finance_lead_search"/>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'sequence': 1, 'view_mode': 'kanban', 'view_id': ref('view_finance_funnel_kanban')}),
+            (0, 0, {'sequence': 2, 'view_mode': 'list', 'view_id': ref('view_finance_funnel_list')})]"/>
+    </record>
+
+    <record id="action_finance_funnel_growth" model="ir.actions.act_window">
+        <field name="name">Finance — entonnoir Growth Capital</field>
+        <field name="path">fin-growth</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="view_id" ref="view_finance_funnel_kanban"/>
+        <field name="domain">[('finance_brand', '=', 'growth_capital'), ('finance_in_funnel', '=', True)]</field>
+        <field name="context" eval="{
+            'default_type': 'opportunity',
+            'default_team_id': ref('intellix_finance.crm_team_growth_capital'),
+            'default_finance_funnel_stage': 'lead_contacted',
+            'finance_pipeline': 'growth_capital',
+            'search_default_open_funnel': 1,
+        }"/>
+        <field name="search_view_id" ref="view_finance_lead_search"/>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'sequence': 1, 'view_mode': 'kanban', 'view_id': ref('view_finance_funnel_kanban')}),
+            (0, 0, {'sequence': 2, 'view_mode': 'list', 'view_id': ref('view_finance_funnel_list')})]"/>
+    </record>
+
+    <record id="action_finance_not_qualified_driven" model="ir.actions.act_window">
+        <field name="name">Finance — non qualifiés Driven</field>
+        <field name="path">fin-nq-driven</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('finance_brand', '=', 'driven'), ('finance_prequal_status', '=', 'not_qualified')]</field>
+        <field name="context" eval="{
+            'default_type': 'opportunity',
+            'default_team_id': ref('renovation_conciergerie.crm_team_driven'),
+        }"/>
+        <field name="search_view_id" ref="view_finance_lead_search"/>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_finance_not_qualified_list')})]"/>
+    </record>
+
+    <record id="action_finance_not_qualified_growth" model="ir.actions.act_window">
+        <field name="name">Finance — non qualifiés Growth Capital</field>
+        <field name="path">fin-nq-growth</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('finance_brand', '=', 'growth_capital'), ('finance_prequal_status', '=', 'not_qualified')]</field>
+        <field name="context" eval="{
+            'default_type': 'opportunity',
+            'default_team_id': ref('intellix_finance.crm_team_growth_capital'),
+        }"/>
+        <field name="search_view_id" ref="view_finance_lead_search"/>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_finance_not_qualified_list')})]"/>
+    </record>
+
+    <record id="view_finance_callback_list" model="ir.ui.view">
+        <field name="name">crm.lead.list.finance.callback</field>
+        <field name="model">crm.lead</field>
+        <field name="arch" type="xml">
+            <list create="1">
+                <field name="name"/>
+                <field name="phone"/>
+                <field name="partner_id"/>
+                <field name="finance_callback_datetime"/>
+                <field name="finance_callback_due"/>
+                <field name="finance_callback_source"/>
+                <field name="finance_callback_comment"/>
+                <field name="user_id"/>
+                <field name="finance_funnel_stage"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_finance_callbacks_driven" model="ir.actions.act_window">
+        <field name="name">Finance — rappels Alex Driven</field>
+        <field name="path">fin-driven-rappels</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('finance_brand', '=', 'driven'), ('finance_callback_set', '=', True)]</field>
+        <field name="context" eval="{
+            'default_type': 'opportunity',
+            'default_team_id': ref('renovation_conciergerie.crm_team_driven'),
+            'default_finance_callback_source': 'alex_driven',
+            'search_default_callback_due': 1,
+        }"/>
+        <field name="search_view_id" ref="view_finance_lead_search"/>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_finance_callback_list')})]"/>
+    </record>
+
+    <function model="crm.lead" name="_finance_seed_demo_leads"/>
+    <function model="crm.lead" name="_finance_ensure_demo_segments"/>
+</odoo>

@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Compléter votre fiche — Coins Marocain</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #f6f4ef;
+    --surface: #ffffff;
+    --border: #e2ddd0;
+    --text: #2a2620;
+    --text-muted: #8a8375;
+    --mauve: #7c5cbf;
+    --mauve-dark: #6a4bab;
+    --mauve-tint: #efe9f9;
+    --sand: #c9a876;
+    --red: #b4554a;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:var(--bg); color:var(--text);
+    font-family:'Inter', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:640px; margin:0 auto; padding:40px 20px 100px;}
+
+  .brand{font-family:'IBM Plex Mono', monospace; font-size:0.72rem; letter-spacing:0.04em; color:var(--sand); margin-bottom:10px;}
+  h1{font-family:'Space Grotesk', sans-serif; font-weight:600; font-size:1.6rem; letter-spacing:-0.01em; margin-bottom:6px;}
+  .lead{color:var(--text-muted); font-size:0.92rem; line-height:1.5; margin-bottom:32px;}
+
+  .stepper{display:flex; gap:6px; margin-bottom:36px;}
+  .stepper .seg{flex:1; height:3px; background:var(--border); border-radius:3px; overflow:hidden;}
+  .stepper .seg .fill{height:100%; width:0%; background:var(--mauve); transition:width .3s ease;}
+  .stepper .seg.done .fill{width:100%;}
+  .stepper .seg.current .fill{width:100%;}
+
+  .step-label{font-size:0.76rem; color:var(--text-muted); margin-bottom:24px;}
+  .step-label span{color:var(--mauve); font-weight:500;}
+
+  .card{background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:28px; margin-bottom:16px;}
+  .field-group{margin-bottom:20px;}
+  .field-group:last-child{margin-bottom:0;}
+  label{display:block; font-size:0.82rem; font-weight:500; margin-bottom:7px;}
+  label .opt{color:var(--text-muted); font-weight:400;}
+  input[type=text], input[type=tel], input[type=email], input[type=number], textarea, select{
+    width:100%; padding:10px 13px; border:1px solid var(--border); border-radius:8px;
+    font-family:'Inter'; font-size:0.9rem; color:var(--text); background:var(--surface);
+  }
+  textarea{min-height:80px; resize:vertical;}
+  input:focus, textarea:focus, select:focus{outline:none; border-color:var(--mauve);}
+  .row2{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  .row3{display:grid; grid-template-columns:1.4fr 1fr 1fr; gap:10px;}
+
+  .cat-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .cat-option{
+    border:2px solid var(--border); border-radius:10px; padding:14px 16px 14px 44px; cursor:pointer;
+    transition:border-color .15s, background .15s; position:relative; user-select:none;
+  }
+  .cat-option.selected{border-color:var(--mauve); background:var(--mauve-tint);}
+  .cat-option .cat-name{font-weight:600; font-size:0.88rem; margin-bottom:3px; pointer-events:none;}
+  .cat-option .cat-desc{font-size:0.76rem; color:var(--text-muted); line-height:1.4; pointer-events:none;}
+  .cat-option input{position:absolute; opacity:0; width:100%; height:100%; top:0; left:0; margin:0; cursor:pointer;}
+  .cat-option .checkbox{
+    position:absolute; top:14px; left:14px; width:18px; height:18px;
+    border:1.5px solid var(--border); border-radius:5px; background:#fff;
+    display:flex; align-items:center; justify-content:center;
+    transition:border-color .15s, background .15s; pointer-events:none;
+  }
+  .cat-option.selected .checkbox{border-color:var(--mauve); background:var(--mauve);}
+  .cat-option .checkbox::after{
+    content:''; width:9px; height:5px; border-left:2px solid #fff; border-bottom:2px solid #fff;
+    transform:rotate(-45deg) translateY(-1px); opacity:0;
+  }
+  .cat-option.selected .checkbox::after{opacity:1;}
+
+  .dyn-section{border-top:1px solid var(--border); padding-top:20px; margin-top:20px;}
+  .dyn-section .dyn-title{
+    font-family:'Space Grotesk'; font-size:0.95rem; font-weight:600; margin-bottom:14px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .dyn-title .tag{
+    font-family:'IBM Plex Mono'; font-size:0.65rem; background:var(--mauve-tint); color:var(--mauve-dark);
+    padding:2px 8px; border-radius:5px;
+  }
+
+  .repeat-row{display:grid; grid-template-columns:1.4fr 1fr 1fr auto; gap:8px; margin-bottom:8px; align-items:center;}
+  .repeat-row input{font-size:0.85rem; padding:8px 10px;}
+  .price-with-currency{display:grid; grid-template-columns:1fr 88px; gap:8px; align-items:center;}
+  .price-with-currency select.cm-currency{font-size:0.85rem; padding:8px 8px;}
+  .room-block .price-with-currency{margin-top:0;}
+  .repeat-row .rm{
+    width:34px; height:34px; border:1px solid var(--border); background:#fff; border-radius:8px; cursor:pointer; color:var(--text-muted);
+  }
+  .repeat-row .rm:hover{border-color:#c77; color:#c77;}
+  .room-block{
+    border:1px solid var(--border); border-radius:10px; padding:12px; margin-bottom:12px; background:#faf9f6;
+  }
+  .room-block textarea{min-height:72px; font-size:0.85rem; margin-top:4px;}
+  .room-block .upload-mini{display:block; font-size:0.78rem; color:var(--text-muted); margin-top:8px;}
+  .already-media{font-size:0.78rem; color:var(--text-muted); margin:0 0 8px;}
+  .add-row-btn{
+    font-family:'Inter'; font-size:0.8rem; font-weight:500; color:var(--mauve);
+    background:var(--mauve-tint); border:1px dashed var(--mauve); border-radius:8px;
+    padding:8px 14px; cursor:pointer; margin-top:4px;
+  }
+  .add-row-btn:hover{background:#e6dcf7;}
+
+  .upload-box{
+    border:1.5px dashed var(--border); border-radius:10px; padding:20px; text-align:center;
+    color:var(--text-muted); font-size:0.82rem; cursor:pointer; background:#fbfaf7;
+    display:block;
+  }
+  .upload-box:hover{border-color:var(--mauve); color:var(--mauve);}
+  .upload-box input{display:none;}
+  .upload-hint{font-size:0.72rem; margin-top:4px; color:#b0aa9c;}
+  .file-list{margin-top:8px; font-size:0.75rem; color:var(--text-muted); text-align:left;}
+
+  .nav-row{display:flex; justify-content:space-between; align-items:center; margin-top:24px;}
+  .btn-ghost{
+    font-family:'Inter'; font-weight:500; font-size:0.88rem; background:transparent;
+    color:var(--text-muted); border:none; cursor:pointer; padding:10px 4px;
+  }
+  .btn-ghost:hover{color:var(--text);}
+
+  .btn-mauve{
+    font-family:'Space Grotesk'; font-weight:600; font-size:0.95rem;
+    background:var(--mauve); color:#fff; border:none; border-radius:10px;
+    padding:13px 26px; cursor:pointer; box-shadow:0 4px 14px rgba(124,92,191,0.35);
+    transition:background .15s, transform .1s;
+  }
+  .btn-mauve:hover{background:var(--mauve-dark);}
+  .btn-mauve:active{transform:scale(0.98);}
+  .btn-mauve:disabled{opacity:0.5; cursor:not-allowed; box-shadow:none;}
+
+  .step-panel{display:none;}
+  .step-panel.active{display:block;}
+
+  .summary-item{display:flex; justify-content:space-between; gap:16px; padding:10px 0; border-bottom:1px solid var(--border); font-size:0.86rem;}
+  .summary-item:last-child{border-bottom:none;}
+  .summary-item .k{color:var(--text-muted); flex-shrink:0;}
+  .summary-item .v{text-align:right;}
+
+  .done-screen{text-align:center; padding:50px 20px;}
+  .done-screen .check{
+    width:54px; height:54px; border-radius:50%; background:var(--mauve-tint); color:var(--mauve);
+    display:flex; align-items:center; justify-content:center; margin:0 auto 18px; font-size:1.5rem;
+  }
+  .section-label{font-size:0.72rem; font-weight:500; color:var(--text-muted); margin-bottom:6px; display:block;}
+
+  .prefilled-wrap{position:relative;}
+  .prefilled-badge{
+    position:absolute; top:-9px; right:0; font-family:'IBM Plex Mono'; font-size:0.62rem;
+    background:var(--mauve-tint); color:var(--mauve-dark); padding:2px 8px; border-radius:20px;
+    border:1px solid var(--mauve-tint);
+  }
+  .area-chips{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;}
+  .area-chip{
+    font-size:0.8rem; padding:7px 14px; border-radius:20px; border:1.5px solid var(--border);
+    color:var(--text-muted); cursor:pointer; user-select:none; transition:all .15s;
+  }
+  .area-chip.selected{border-color:var(--mauve); background:var(--mauve-tint); color:var(--mauve-dark);}
+
+  .banner{display:none; background:#f8e8e6; color:var(--red); border:1px solid #ead2ce; border-radius:10px; padding:12px 14px; font-size:0.85rem; margin-bottom:16px;}
+  .banner.show{display:block;}
+  .loading{color:var(--text-muted); font-size:0.88rem; padding:24px 0;}
+
+  html[data-brand="coins_quebec"]{
+    --bg: #F5F1E6;
+    --surface: #fffdf8;
+    --border: #d9d0bc;
+    --text: #1F2A1E;
+    --text-muted: #5c6b58;
+    --mauve: #3A4F35;
+    --mauve-dark: #1F2A1E;
+    --mauve-tint: #e4eadc;
+    --sand: #D9A94D;
+  }
+  html[data-brand="coins_quebec"] h1,
+  html[data-brand="coins_quebec"] .dyn-title,
+  html[data-brand="coins_quebec"] .btn-mauve {
+    font-family: "Cormorant Garamond", Georgia, serif;
+  }
+  html[data-brand="coins_quebec"] .btn-mauve { box-shadow: 0 4px 14px rgba(31,42,30,0.28); }
+
+  @media (max-width: 800px) {
+    .wrap{padding:24px 16px 80px;}
+    h1{font-size:1.35rem;}
+    .card{padding:20px;}
+    .row2, .row3, .cat-grid{grid-template-columns:1fr;}
+    .repeat-row{grid-template-columns:1fr 1fr auto;}
+    .repeat-row input:first-child{grid-column:1 / -2;}
+    .nav-row{gap:12px;}
+    .btn-mauve{width:auto; flex:1;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+
+  <div class="brand" id="brand-kicker">ESPACE PARTENAIRE</div>
+  <h1>Complétez votre fiche</h1>
+  <p class="lead" id="brand-lead">Chargement de votre fiche…</p>
+  <p class="banner" id="error-banner"></p>
+  <p class="loading" id="loading">Ouverture de votre fiche…</p>
+
+  <div id="form-shell" hidden>
+  <div class="stepper">
+    <div class="seg current" data-step="1"><div class="fill"></div></div>
+    <div class="seg" data-step="2"><div class="fill"></div></div>
+    <div class="seg" data-step="3"><div class="fill"></div></div>
+    <div class="seg" data-step="4"><div class="fill"></div></div>
+  </div>
+  <div class="step-label">Étape <span id="step-num">1</span> sur 4 — <span id="step-name">Coordonnées</span></div>
+
+  <form id="fiche-form" novalidate>
+  <!-- STEP 1 -->
+  <div class="step-panel active" data-panel="1">
+    <div class="card">
+      <div class="field-group prefilled-wrap" id="wrap-etablissement">
+        <span class="prefilled-badge" hidden>Depuis la fiche Odoo</span>
+        <label for="etablissement">Nom de l'établissement</label>
+        <input id="etablissement" name="etablissement" type="text" autocomplete="organization">
+      </div>
+      <div class="row2">
+        <div class="field-group prefilled-wrap" id="wrap-ville">
+          <span class="prefilled-badge" hidden>Depuis la fiche Odoo</span>
+          <label for="ville">Ville / région</label>
+          <input id="ville" name="ville" type="text" placeholder="ex. Marrakech, Palmeraie" autocomplete="address-level2">
+        </div>
+        <div class="field-group prefilled-wrap" id="wrap-contact">
+          <span class="prefilled-badge" hidden>Depuis la fiche Odoo</span>
+          <label for="contact_nom">Nom du contact</label>
+          <input id="contact_nom" name="contact_nom" type="text" autocomplete="name">
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field-group">
+          <label for="telephone">Téléphone / WhatsApp</label>
+          <input id="telephone" name="telephone" type="tel" placeholder="+212 6XX XXX XXX" autocomplete="tel">
+        </div>
+        <div class="field-group">
+          <label for="courriel">Courriel <span class="opt">(optionnel)</span></label>
+          <input id="courriel" name="courriel" type="email" placeholder="contact@exemple.com" autocomplete="email">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step-panel" data-panel="2">
+    <div class="card">
+      <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:16px;">Sélectionnez toutes les catégories qui s'appliquent à votre établissement (plusieurs choix possibles) — ça détermine les informations à remplir à l'étape suivante.</p>
+      <div class="cat-grid" id="cat-grid"></div>
+    </div>
+  </div>
+
+  <!-- STEP 3 (dynamic) -->
+  <div class="step-panel" data-panel="3">
+    <div class="card" id="dyn-container">
+      <p style="font-size:0.85rem; color:var(--text-muted);" id="dyn-empty">Aucune catégorie sélectionnée à l'étape précédente — retournez en arrière pour en choisir au moins une.</p>
+
+      <div class="dyn-section" data-dyn="decouverte" style="display:none;">
+        <div class="dyn-title"><span class="tag">DÉCOUVERTE</span> Activité proposée</div>
+        <div class="field-group"><label for="dec-type">Type d'activité</label><input id="dec-type" type="text" placeholder="ex. journée piscine, atelier poterie, excursion"></div>
+        <div class="row2">
+          <div class="field-group"><label for="dec-jours">Jours disponibles</label><input id="dec-jours" type="text" placeholder="ex. mercredi, vendredi, samedi"></div>
+          <div class="field-group"><label for="dec-min">Nombre minimum de personnes</label><input id="dec-min" type="number" min="1" placeholder="ex. 10"></div>
+        </div>
+        <div class="field-group"><label for="dec-delai">Délai de réservation</label><input id="dec-delai" type="text" placeholder="ex. 48h à l'avance"></div>
+      </div>
+
+      <div class="dyn-section" data-dyn="hebergement" style="display:none;">
+        <div class="dyn-title"><span class="tag">HÉBERGEMENT</span> Chambres</div>
+        <span class="section-label">Ajoutez une ligne par chambre — nom, tarif, description et photos</span>
+        <div id="rooms-list"></div>
+        <button type="button" class="add-row-btn" data-add="rooms">+ Ajouter une chambre</button>
+        <div class="field-group" style="margin-top:16px;"><label for="breakfast">Petit-déjeuner inclus ?</label>
+          <select id="breakfast"><option value="">—</option><option value="oui">Oui</option><option value="non">Non</option></select>
+        </div>
+
+        <span class="section-label" style="margin-top:18px;">Espaces communs disponibles</span>
+        <div class="area-chips">
+          <div class="area-chip" data-area="piscine">Piscine</div>
+          <div class="area-chip" data-area="rooftop">Rooftop</div>
+          <div class="area-chip" data-area="jardin">Jardin</div>
+          <div class="area-chip" data-area="terrasse">Terrasse</div>
+          <div class="area-chip" data-area="salon">Salon marocain</div>
+          <div class="area-chip" data-area="hammam">Hammam privé</div>
+        </div>
+        <div class="field-group">
+          <label for="areas-desc">Description des espaces communs <span class="opt">(ambiance, vue, particularités)</span></label>
+          <textarea id="areas-desc" placeholder="ex. Piscine à débordement avec vue sur l'Atlas, rooftop aménagé pour l'apéro au coucher du soleil..."></textarea>
+        </div>
+      </div>
+
+      <div class="dyn-section" data-dyn="evenements" style="display:none;">
+        <div class="dyn-title"><span class="tag">ÉVÉNEMENTS</span> Capacité, tables et tarifs</div>
+        <div class="row2">
+          <div class="field-group"><label for="evt-cap">Capacité maximale (invités)</label><input id="evt-cap" type="number" min="1"></div>
+          <div class="field-group"><label for="evt-tarif">Tarif journée</label>
+            <div class="price-with-currency">
+              <input id="evt-tarif" type="text" placeholder="ex. 1500 / jour">
+              <select class="cm-currency" id="evt-currency" aria-label="Devise">
+                <option value="EUR">EUR</option>
+                <option value="MAD">MAD</option>
+                <option value="CAD">CAD</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <span class="section-label">Disposition des tables</span>
+        <div id="tables-list"></div>
+        <button type="button" class="add-row-btn" data-add="tables">+ Ajouter une configuration de table</button>
+        <div class="field-group" style="margin-top:16px;"><label for="evt-equip">Équipements inclus</label><textarea id="evt-equip" placeholder="ex. sonorisation, décoration de base, parking"></textarea></div>
+      </div>
+
+      <div class="dyn-section" data-dyn="privatisation" style="display:none;">
+        <div class="dyn-title"><span class="tag">PRIVATISATION</span> Location exclusive</div>
+        <div class="row2">
+          <div class="field-group"><label for="priv-tarif">Tarif privatisation (jour/nuit)</label>
+            <div class="price-with-currency">
+              <input id="priv-tarif" type="text" placeholder="ex. 600 / jour">
+              <select class="cm-currency" id="priv-currency" aria-label="Devise">
+                <option value="EUR">EUR</option>
+                <option value="MAD">MAD</option>
+                <option value="CAD">CAD</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-group"><label for="priv-cap">Capacité (personnes)</label><input id="priv-cap" type="number" min="1"></div>
+        </div>
+      </div>
+
+      <div class="dyn-section" data-dyn="bienetre" style="display:none;">
+        <div class="dyn-title"><span class="tag">BIEN-ÊTRE</span> Soins proposés</div>
+        <div class="field-group"><label for="be-duree">Durée moyenne d'un soin</label><input id="be-duree" type="text" placeholder="ex. 45-60 min"></div>
+        <p style="font-size:0.78rem; color:var(--text-muted); margin-top:-8px; margin-bottom:14px;">Détaillez chaque soin et son prix dans la section Menu / tarifs ci-dessous.</p>
+      </div>
+
+      <div class="dyn-section" data-dyn="always" style="display:block; border-top:1px solid var(--border);">
+        <div class="dyn-title">Menu, forfaits ou tarifs à la carte <span class="opt" style="font-weight:400; font-size:0.78rem;">(optionnel)</span></div>
+        <span class="section-label">Nom de l'item et prix — soins, plats, forfaits, activités...</span>
+        <div id="menu-list"></div>
+        <button type="button" class="add-row-btn" data-add="menu">+ Ajouter un item</button>
+      </div>
+
+      <div class="dyn-section" data-dyn="always" style="display:block;">
+        <div class="dyn-title">La petite histoire de l'endroit <span class="opt" style="font-weight:400; font-size:0.78rem;">(optionnel)</span></div>
+        <div class="field-group"><textarea id="histoire" placeholder="Comment est né ce lieu, ce qui le rend unique, l'esprit de la maison — quelques lignes pour raconter votre histoire."></textarea></div>
+      </div>
+
+      <div class="dyn-section" data-dyn="always" style="display:block;">
+        <div class="dyn-title">Détails additionnels</div>
+        <div class="field-group"><textarea id="details" placeholder="Toute information utile — accès, particularités, politique d'annulation, etc."></textarea></div>
+      </div>
+
+      <div class="dyn-section" data-dyn="always" style="display:block;">
+        <div class="dyn-title">Photos</div>
+        <p class="already-media" id="photos-already" hidden></p>
+        <label class="upload-box">
+          <input id="photos" type="file" multiple accept="image/*">
+          Glissez vos photos ici ou cliquez pour en choisir
+          <div class="upload-hint">JPG/PNG — plusieurs fichiers. Elles apparaissent dans l’onglet Galerie photos.</div>
+          <div class="file-list" id="photos-list"></div>
+        </label>
+      </div>
+
+      <div class="dyn-section" data-dyn="always" style="display:block;">
+        <div class="dyn-title">Vidéos</div>
+        <p class="already-media" id="videos-already" hidden></p>
+        <div class="field-group">
+          <label for="video-url">Lien vidéo <span class="opt">(YouTube, Instagram, Vimeo)</span></label>
+          <input id="video-url" type="url" placeholder="https://…">
+        </div>
+        <label class="upload-box">
+          <input id="videos" type="file" multiple accept="video/*">
+          Ou déposez un fichier MP4
+          <div class="upload-hint">Fichier de préférence sous 50 Mo — sinon utilisez un lien.</div>
+          <div class="file-list" id="videos-list"></div>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="step-panel" data-panel="4">
+    <div class="card" id="summary-card">
+      <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:14px;">Vérifiez vos informations avant l'envoi.</p>
+      <div id="summary-body"></div>
+    </div>
+  </div>
+  </form>
+
+  <div class="nav-row" id="nav-row">
+    <button type="button" class="btn-ghost" id="btn-back">← Retour</button>
+    <button type="button" class="btn-mauve" id="btn-next">Continuer</button>
+  </div>
+  </div>
+
+  <!-- DONE -->
+  <div class="done-screen" id="done-screen" style="display:none;">
+    <div class="check">✓</div>
+    <h1 style="font-size:1.3rem;">Fiche envoyée</h1>
+    <p class="lead" id="done-lead" style="max-width:400px; margin:8px auto 0;">Merci — votre fiche est en cours de validation. Vous serez visible sous peu.</p>
+  </div>
+
+</div>
+
+<script>
+  const stepNames = {1:'Coordonnées', 2:'Catégorie(s)', 3:'Détails', 4:'Récapitulatif'};
+  let catLabels = {};
+  let current = 1;
+  const total = 4;
+  const token = (location.pathname.match(/\/(?:partenaire|coins\/completer-fiche)\/([^/]+)/) || [])[1] || "cm-casa-ysabella";
+  const DYN_ALIAS = { evenements_deco: "evenements" };
+
+  function showError(msg) {
+    const el = document.getElementById("error-banner");
+    el.textContent = msg;
+    el.classList.toggle("show", Boolean(msg));
+  }
+
+  function bindCats() {
+    document.querySelectorAll('.cat-option').forEach(opt => {
+      const checkbox = opt.querySelector('input[type=checkbox]');
+      function sync(){ opt.classList.toggle('selected', checkbox.checked); }
+      checkbox.addEventListener('change', sync);
+      sync();
+    });
+  }
+
+  document.querySelectorAll('.area-chip').forEach(chip => {
+    chip.addEventListener('click', () => chip.classList.toggle('selected'));
+  });
+
+  const rowTemplates = {
+    rooms: () => `<div class="room-block">
+        <div class="repeat-row">
+          <input type="text" data-k="nom" placeholder="Nom / type de chambre">
+          <input type="number" data-k="capacite" min="1" placeholder="Capacité">
+          <div class="price-with-currency">
+            <input type="text" data-k="prix" placeholder="Prix / nuit">
+            <select class="cm-currency" data-k="currency" aria-label="Devise">
+              <option value="EUR">EUR</option>
+              <option value="MAD">MAD</option>
+              <option value="CAD">CAD</option>
+            </select>
+          </div>
+          <button type="button" class="rm">✕</button>
+        </div>
+        <textarea data-k="description" placeholder="Description : vue, literie, salle de bain, ce qui la rend unique…"></textarea>
+        <label class="upload-mini">Photos de cette chambre
+          <input type="file" data-room-photos accept="image/*" multiple>
+        </label>
+      </div>`,
+    tables: () => `<div class="repeat-row">
+        <input type="text" data-k="type" placeholder="Type de table / disposition">
+        <input type="number" data-k="capacite" min="1" placeholder="Capacité">
+        <input type="text" data-k="quantite" placeholder="Nb. disponible">
+        <button type="button" class="rm">✕</button>
+      </div>`,
+    menu: () => `<div class="repeat-row" style="grid-template-columns:1.8fr 1fr auto;">
+        <input type="text" data-k="nom" placeholder="Nom de l'item">
+        <div class="price-with-currency">
+          <input type="text" data-k="prix" placeholder="Prix">
+          <select class="cm-currency" data-k="currency" aria-label="Devise">
+            <option value="EUR">EUR</option>
+            <option value="MAD">MAD</option>
+            <option value="CAD">CAD</option>
+          </select>
+        </div>
+        <button type="button" class="rm">✕</button>
+      </div>`
+  };
+
+  function addRow(target, values){
+    const list = document.getElementById(target + '-list');
+    const div = document.createElement('div');
+    div.innerHTML = rowTemplates[target]();
+    const row = div.firstElementChild;
+    if (values) {
+      row.querySelectorAll("input[data-k], textarea[data-k], select[data-k]").forEach(inp => {
+        if (values[inp.dataset.k] != null) inp.value = values[inp.dataset.k];
+      });
+    }
+    row.querySelectorAll(".cm-currency").forEach(sel => {
+      sel.value = (values && values.currency) || currentCurrency();
+    });
+    row.querySelector('.rm').addEventListener('click', () => row.remove());
+    list.appendChild(row);
+  }
+
+  document.addEventListener("change", (ev) => {
+    if (!ev.target.classList.contains("cm-currency")) return;
+    setAllCurrency(ev.target.value);
+  });
+
+  document.querySelectorAll('[data-add]').forEach(btn => {
+    btn.addEventListener('click', () => addRow(btn.dataset.add));
+  });
+
+  function listFiles(input, destId) {
+    const dest = document.getElementById(destId);
+    const files = [...(input.files || [])];
+    dest.textContent = files.length ? files.map(f => f.name).join(" · ") : "";
+  }
+  document.getElementById("photos").addEventListener("change", (e) => listFiles(e.target, "photos-list"));
+  document.getElementById("videos").addEventListener("change", (e) => listFiles(e.target, "videos-list"));
+
+  function selectedCats() {
+    return Array.from(document.querySelectorAll('.cat-option.selected')).map(o => o.dataset.cat);
+  }
+
+  function collectRooms() {
+    return Array.from(document.querySelectorAll("#rooms-list .room-block")).map(block => {
+      const obj = {};
+      block.querySelectorAll("input[data-k], textarea[data-k], select[data-k]").forEach(inp => {
+        obj[inp.dataset.k] = inp.value.trim();
+      });
+      return obj;
+    }).filter(r => r.nom);
+  }
+
+  function collectRows(listId) {
+    return Array.from(document.querySelectorAll("#" + listId + " .repeat-row")).map(row => {
+      const obj = {};
+      row.querySelectorAll("input[data-k], select[data-k]").forEach(inp => { obj[inp.dataset.k] = inp.value.trim(); });
+      return obj;
+    }).filter(r => Object.values(r).some(Boolean));
+  }
+
+  function currentCurrency() {
+    const sel = document.querySelector(".cm-currency");
+    return (sel && sel.value) || "EUR";
+  }
+
+  function setAllCurrency(code) {
+    const v = String(code || "EUR").toUpperCase();
+    document.querySelectorAll(".cm-currency").forEach(sel => { sel.value = v; });
+  }
+
+  function collect() {
+    const cats = selectedCats();
+    const payload = {
+      etablissement: document.getElementById("etablissement").value.trim(),
+      ville: document.getElementById("ville").value.trim(),
+      contact_nom: document.getElementById("contact_nom").value.trim(),
+      telephone: document.getElementById("telephone").value.trim(),
+      courriel: document.getElementById("courriel").value.trim(),
+      categories: cats,
+      menu: collectRows("menu-list"),
+      histoire: document.getElementById("histoire").value.trim(),
+      details: document.getElementById("details").value.trim(),
+      video_url: (document.getElementById("video-url") && document.getElementById("video-url").value.trim()) || "",
+      currency: currentCurrency(),
+    };
+    if (cats.includes("decouverte")) {
+      payload.decouverte = {
+        type: document.getElementById("dec-type").value.trim(),
+        jours: document.getElementById("dec-jours").value.trim(),
+        min_personnes: document.getElementById("dec-min").value.trim(),
+        delai: document.getElementById("dec-delai").value.trim(),
+      };
+    }
+    if (cats.includes("hebergement")) {
+      payload.hebergement = {
+        chambres: collectRooms(),
+        petit_dejeuner: document.getElementById("breakfast").value,
+        espaces: Array.from(document.querySelectorAll(".area-chip.selected")).map(c => c.textContent.trim()),
+        espaces_desc: document.getElementById("areas-desc").value.trim(),
+      };
+    }
+    if (cats.includes("evenements") || cats.includes("evenements_deco")) {
+      payload.evenements = {
+        capacite: document.getElementById("evt-cap").value.trim(),
+        tarif_jour: document.getElementById("evt-tarif").value.trim(),
+        tables: collectRows("tables-list"),
+        equipements: document.getElementById("evt-equip").value.trim(),
+      };
+    }
+    if (cats.includes("privatisation")) {
+      payload.privatisation = {
+        tarif: document.getElementById("priv-tarif").value.trim(),
+        capacite: document.getElementById("priv-cap").value.trim(),
+      };
+    }
+    if (cats.includes("bienetre")) {
+      payload.bienetre = { duree: document.getElementById("be-duree").value.trim() };
+    }
+    return payload;
+  }
+
+  function updateStepper(){
+    document.querySelectorAll('.stepper .seg').forEach(seg => {
+      const s = parseInt(seg.dataset.step);
+      seg.classList.remove('done','current');
+      if(s < current) seg.classList.add('done');
+      if(s === current) seg.classList.add('current');
+    });
+    document.getElementById('step-num').textContent = current;
+    document.getElementById('step-name').textContent = stepNames[current];
+    document.querySelectorAll('.step-panel').forEach(p => p.classList.toggle('active', parseInt(p.dataset.panel) === current));
+    document.getElementById('btn-back').style.visibility = current === 1 ? 'hidden' : 'visible';
+    document.getElementById('btn-next').textContent = current === total ? 'Envoyer la fiche' : 'Continuer';
+  }
+
+  function refreshDynamicFields(){
+    const selected = selectedCats().map(c => DYN_ALIAS[c] || c);
+    document.querySelectorAll('.dyn-section[data-dyn]:not([data-dyn="always"])').forEach(sec => {
+      sec.style.display = selected.includes(sec.dataset.dyn) ? 'block' : 'none';
+    });
+    document.getElementById('dyn-empty').style.display = selected.length ? 'none' : 'block';
+  }
+
+  function renderSummary() {
+    const d = collect();
+    const photos = document.getElementById("photos").files.length;
+    const videos = document.getElementById("videos").files.length;
+    const rows = [
+      ["Établissement", d.etablissement || "—"],
+      ["Ville / région", d.ville || "—"],
+      ["Contact", d.contact_nom || "—"],
+      ["Téléphone", d.telephone || "—"],
+      ["Courriel", d.courriel || "—"],
+      ["Catégories", d.categories.length ? d.categories.map(s => catLabels[s] || s).join(", ") : "—"],
+    ];
+    if (d.hebergement) {
+      rows.push(["Chambres", d.hebergement.chambres.length ? d.hebergement.chambres.map(c => c.nom).filter(Boolean).join(", ") : "—"]);
+      const withDesc = (d.hebergement.chambres || []).filter(c => c.description).length;
+      rows.push(["Descriptions de chambres", withDesc ? withDesc + " renseignée(s)" : "Aucune"]);
+      if (d.hebergement.petit_dejeuner) {
+        rows.push(["Petit-déjeuner", d.hebergement.petit_dejeuner === "oui" ? "Inclus" : "Non inclus"]);
+      }
+      if (d.hebergement.espaces.length) rows.push(["Espaces communs", d.hebergement.espaces.join(", ")]);
+    }
+    if (d.decouverte && d.decouverte.type) rows.push(["Activité", d.decouverte.type]);
+    if (d.evenements && d.evenements.capacite) rows.push(["Capacité événements", d.evenements.capacite + " invités"]);
+    if (d.privatisation && d.privatisation.tarif) rows.push(["Privatisation", d.privatisation.tarif]);
+    if (d.bienetre && d.bienetre.duree) rows.push(["Durée soin", d.bienetre.duree]);
+    if (d.menu.length) rows.push(["Menu / tarifs", d.menu.length + " item(s)"]);
+    if (d.histoire) rows.push(["Histoire / descriptif", "Renseigné"]);
+    if (d.video_url) rows.push(["Lien vidéo", d.video_url]);
+    rows.push(["Photos", photos ? photos + " fichier(s) à envoyer" : "Aucune nouvelle"]);
+    rows.push(["Vidéos fichier", videos ? videos + " fichier(s) à envoyer" : "Aucun nouveau"]);
+    document.getElementById("summary-body").innerHTML = rows.map(([k,v]) =>
+      `<div class="summary-item"><span class="k">${k}</span><span class="v">${v}</span></div>`
+    ).join("");
+  }
+
+  function validateStep() {
+    if (current === 1 && !document.getElementById("etablissement").value.trim()) {
+      return "Indiquez le nom de l’établissement.";
+    }
+    if (current === 2 && !selectedCats().length) {
+      return "Choisissez au moins une catégorie.";
+    }
+    return "";
+  }
+
+  async function submitFiche() {
+    const btn = document.getElementById("btn-next");
+    btn.disabled = true;
+    btn.textContent = "Envoi…";
+    try {
+      const payload = { wizard: collect() };
+      const fd = new FormData();
+      fd.append("payload", JSON.stringify(payload));
+      for (const f of document.getElementById("photos").files) fd.append("photos", f);
+      for (const f of document.getElementById("videos").files) fd.append("videos", f);
+      document.querySelectorAll("#rooms-list .room-block").forEach((block, i) => {
+        const input = block.querySelector("input[data-room-photos]");
+        if (!input) return;
+        for (const f of input.files) fd.append("room_photos_" + i, f);
+      });
+      const res = await fetch("/api/partenaire/" + encodeURIComponent(token) + "/fiche", {
+        method: "POST",
+        body: fd,
+      });
+      const raw = await res.text();
+      let body = {};
+      try { body = JSON.parse(raw); } catch (_e) { body = {}; }
+      if (!res.ok) throw new Error(body.error || ("Envoi impossible (" + res.status + ")."));
+      document.querySelectorAll('.wrap > .brand, .wrap > h1, .wrap > .lead, #form-shell').forEach(el => el.style.display='none');
+      document.getElementById('done-screen').style.display='block';
+      showError("");
+    } catch (err) {
+      showError(err.message);
+      btn.disabled = false;
+      btn.textContent = "Envoyer la fiche";
+    }
+  }
+
+  document.getElementById('btn-next').addEventListener('click', () => {
+    const err = validateStep();
+    if (err) { showError(err); return; }
+    showError("");
+    if (current === 2) refreshDynamicFields();
+    if (current < total) {
+      current++;
+      updateStepper();
+      if (current === 4) renderSummary();
+    } else {
+      submitFiche();
+    }
+  });
+  document.getElementById('btn-back').addEventListener('click', () => {
+    if (current > 1) { current--; updateStepper(); showError(""); }
+  });
+
+  function applyBrand(brand) {
+    document.documentElement.dataset.brand = brand.id;
+    document.getElementById("brand-kicker").textContent = brand.kicker;
+    document.getElementById("brand-lead").textContent = brand.lead;
+    document.title = "Compléter votre fiche — " + brand.label;
+    document.getElementById("done-lead").textContent =
+      "Merci — votre fiche est en cours de validation. Vous serez visible sur " + brand.label + " sous peu.";
+    catLabels = {};
+    const grid = document.getElementById("cat-grid");
+    grid.innerHTML = brand.categories.map(c => `
+      <label class="cat-option" data-cat="${c.id}" ${c.wide ? 'style="grid-column:1/-1;"' : ""}>
+        <input type="checkbox" name="categories" value="${c.id}">
+        <span class="checkbox"></span>
+        <div class="cat-name">${c.label}</div>
+        <div class="cat-desc">${c.desc}</div>
+      </label>`).join("");
+    brand.categories.forEach(c => { catLabels[c.id] = c.label; });
+    bindCats();
+  }
+
+  function fillRows(listId, target, items) {
+    const list = document.getElementById(listId);
+    list.innerHTML = "";
+    const rows = items && items.length ? items : [{}];
+    rows.forEach(v => addRow(target, v));
+  }
+
+  function applyWizard(wizard, prefilled) {
+    const map = [
+      ["etablissement", wizard.etablissement, "wrap-etablissement"],
+      ["contact_nom", wizard.contact_nom, "wrap-contact"],
+      ["ville", wizard.ville, "wrap-ville"],
+      ["telephone", wizard.telephone, null],
+      ["courriel", wizard.courriel, null],
+    ];
+    for (const [id, value, wrapId] of map) {
+      const input = document.getElementById(id);
+      if (value) input.value = value;
+      if (wrapId && prefilled && prefilled[id]) {
+        const badge = document.querySelector("#" + wrapId + " .prefilled-badge");
+        if (badge) badge.hidden = false;
+      }
+    }
+    (wizard.categories || []).forEach(id => {
+      const cb = document.querySelector('.cat-option[data-cat="'+id+'"] input');
+      if (cb) { cb.checked = true; cb.dispatchEvent(new Event("change")); }
+    });
+    fillRows("rooms-list", "rooms", wizard.hebergement && wizard.hebergement.chambres);
+    setAllCurrency(wizard.currency || "EUR");
+    fillRows("tables-list", "tables", wizard.evenements && wizard.evenements.tables);
+    fillRows("menu-list", "menu", wizard.menu);
+    if (wizard.hebergement) {
+      if (wizard.hebergement.petit_dejeuner) document.getElementById("breakfast").value = wizard.hebergement.petit_dejeuner;
+      (wizard.hebergement.espaces || []).forEach(label => {
+        document.querySelectorAll(".area-chip").forEach(chip => {
+          if (chip.textContent.trim() === label) chip.classList.add("selected");
+        });
+      });
+      if (wizard.hebergement.espaces_desc) document.getElementById("areas-desc").value = wizard.hebergement.espaces_desc;
+    }
+    if (wizard.histoire) document.getElementById("histoire").value = wizard.histoire;
+    if (wizard.details) document.getElementById("details").value = wizard.details;
+    if (wizard.video_url && document.getElementById("video-url")) {
+      document.getElementById("video-url").value = wizard.video_url;
+    }
+    if (wizard.bienetre && wizard.bienetre.duree) document.getElementById("be-duree").value = wizard.bienetre.duree;
+    if (wizard.privatisation) {
+      if (wizard.privatisation.tarif) document.getElementById("priv-tarif").value = wizard.privatisation.tarif;
+      if (wizard.privatisation.capacite) document.getElementById("priv-cap").value = wizard.privatisation.capacite;
+    }
+    if (wizard.evenements) {
+      if (wizard.evenements.capacite) document.getElementById("evt-cap").value = wizard.evenements.capacite;
+      if (wizard.evenements.tarif_jour) document.getElementById("evt-tarif").value = wizard.evenements.tarif_jour;
+      if (wizard.evenements.equipements) document.getElementById("evt-equip").value = wizard.evenements.equipements;
+    }
+    if (wizard.decouverte) {
+      if (wizard.decouverte.type) document.getElementById("dec-type").value = wizard.decouverte.type;
+      if (wizard.decouverte.jours) document.getElementById("dec-jours").value = wizard.decouverte.jours;
+      if (wizard.decouverte.min_personnes) document.getElementById("dec-min").value = wizard.decouverte.min_personnes;
+      if (wizard.decouverte.delai) document.getElementById("dec-delai").value = wizard.decouverte.delai;
+    }
+    refreshDynamicFields();
+  }
+
+  async function boot() {
+    try {
+      let body = window.FICHE_BOOTSTRAP;
+      if (!body) {
+        const res = await fetch("/api/partenaire/" + encodeURIComponent(token));
+        body = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(body.error || "Lien partenaire invalide ou expiré.");
+      }
+      applyBrand(body.brand);
+      applyWizard(body.wizard, body.prefilled);
+      const media = (body.wizard && body.wizard.media) || body.media || {};
+      if (media.photos) {
+        const el = document.getElementById("photos-already");
+        el.hidden = false;
+        el.textContent = media.photos + " photo(s) déjà enregistrée(s) — vous pouvez en ajouter.";
+      }
+      if (media.videos) {
+        const el = document.getElementById("videos-already");
+        el.hidden = false;
+        el.textContent = media.videos + " vidéo(s) déjà enregistrée(s) — vous pouvez en ajouter.";
+      }
+      document.getElementById("loading").hidden = true;
+      document.getElementById("form-shell").hidden = false;
+      updateStepper();
+    } catch (err) {
+      document.getElementById("loading").hidden = true;
+      showError(err.message + " Demandez un nouveau lien à votre contact.");
+    }
+  }
+
+  boot();
+</script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_campaign_form_demo_trunk" model="ir.ui.view">
+        <field name="name">doorway.campaign.form.demo.trunk</field>
+        <field name="model">doorway.campaign</field>
+        <field name="inherit_id" ref="doorway_vicidial_campaigns.view_campaign_form"/>
+        <field name="arch" type="xml">
+            <field name="vicidial_list_id" position="after">
+                <field name="company_id" groups="doorway_demo_call_center.group_demo_call_center"/>
+                <field name="sip_trunk_id"
+                       groups="doorway_demo_call_center.group_demo_call_center"
+                       options="{'no_create_edit': False}"/>
+            </field>
+            <button name="action_sync_vicidial" position="after">
+                <button name="action_demo_configure_ia_agent"
+                        string="✏️ Modifier Sofía"
+                        type="object"
+                        class="btn-secondary"
+                        groups="doorway_demo_call_center.group_demo_call_center"
+                        invisible="campaign_mode == 'human_agent'"/>
+                <button name="action_demo_test_ia_agent"
+                        string="📞 Tester Sofía"
+                        type="object"
+                        class="btn-secondary"
+                        groups="doorway_demo_call_center.group_demo_call_center"
+                        invisible="campaign_mode == 'human_agent'"/>
+                <button name="action_demo_refresh_performance"
+                        string="🔄 Actualiser performance"
+                        type="object"
+                        class="btn-secondary"
+                        groups="doorway_demo_call_center.group_demo_call_center"/>
+            </button>
+            <field name="ia_agent_id" position="attributes">
+                <attribute name="options">{'no_create': True, 'no_open': False}</attribute>
+            </field>
+            <xpath expr="//field[@name='ia_call_script_hint']" position="after">
+                <group string="Résultats des appels (30 derniers jours)"
+                       groups="doorway_demo_call_center.group_demo_call_center"
+                       colspan="2">
+                    <group>
+                        <field name="demo_stat_total" string="📞 Total appels" readonly="1"/>
+                        <field name="demo_stat_human" string="✅ Décrochés (humain)" readonly="1"/>
+                        <field name="demo_stat_qualifie" string="⭐ Qualifiés" readonly="1"/>
+                        <field name="demo_stat_repondeur" string="📠 Répondeur" readonly="1"/>
+                    </group>
+                    <group>
+                        <field name="demo_stat_mauvais_numero" string="❌ Mauvais numéro" readonly="1"/>
+                        <field name="demo_stat_sans_reponse" string="🔇 Sans réponse" readonly="1"/>
+                        <field name="demo_stat_occupe" string="⏳ Occupé" readonly="1"/>
+                        <field name="demo_stat_autre" string="Autres" readonly="1"/>
+                    </group>
+                    <field name="demo_calls_today" string="Appels aujourd'hui" readonly="1"/>
+                    <field name="demo_hopper_ready" string="Contacts en file" readonly="1"/>
+                    <button name="action_demo_refresh_performance"
+                            string="Actualiser"
+                            type="object"
+                            class="btn-primary"/>
+                    <button name="action_demo_open_call_results"
+                            string="Détail par appel"
+                            type="object"
+                            class="btn-secondary"/>
+                </group>
+                <group string="Vitesse d'appels"
+                       groups="doorway_demo_call_center.group_demo_call_center"
+                       colspan="2">
+                    <div class="text-muted mb-2" colspan="2">
+                        Réglez combien vite Sofía compose et combien d'appels partent en même temps.
+                        Les changements sont appliqués automatiquement à l'enregistrement,
+                        ou cliquez sur « Appliquer ».
+                    </div>
+                    <field name="dial_level" string="Vitesse d'appels (1–6)"/>
+                    <field name="max_concurrent_calls" string="Appels simultanés"/>
+                    <field name="dial_timeout_seconds" string="Sonnerie max (secondes)"/>
+                    <button name="action_demo_apply_dial_speed"
+                            string="Appliquer la vitesse"
+                            type="object"
+                            class="btn-primary"
+                            colspan="2"/>
+                </group>
+            </xpath>
+            <xpath expr="//field[@name='dial_ratio']/ancestor::page[1]" position="attributes">
+                <attribute name="groups">sales_team.group_sale_manager</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_demo_dial_speed" model="ir.actions.server">
+        <field name="name">Vitesse d'appels</field>
+        <field name="model_id" ref="doorway_vicidial_campaigns.model_doorway_campaign"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_demo_open_dial_speed()</field>
+    </record>
+
+    <record id="action_demo_my_campaigns" model="ir.actions.act_window">
+        <field name="name">Mes campagnes</field>
+        <field name="res_model">doorway.campaign</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{
+            'default_company_id': allowed_company_ids[0],
+            'default_campaign_mode': 'human_agent',
+            'default_pipeline': 'marketing'
+        }</field>
+    </record>
+
+    <menuitem id="menu_demo_dial_speed"
+              name="Vitesse d'appels"
+              parent="doorway_vicidial_campaigns.menu_vicidial_app_root"
+              action="action_demo_dial_speed"
+              groups="doorway_demo_call_center.group_demo_call_center"
+              sequence="4"/>
+
+    <menuitem id="menu_demo_my_campaigns"
+              name="Mes campagnes"
+              parent="doorway_vicidial_campaigns.menu_vicidial_app_root"
+              action="action_demo_my_campaigns"
+              groups="doorway_demo_call_center.group_demo_call_center"
+              sequence="5"/>
+
+    <record id="action_demo_sip_trunks" model="ir.actions.act_window">
+        <field name="name">Mes trunks SIP</field>
+        <field name="res_model">doorway.sip.trunk</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'default_company_id': allowed_company_ids[0]}</field>
+    </record>
+
+    <menuitem id="menu_demo_sip_trunks"
+              name="Mes trunks SIP"
+              parent="doorway_vicidial_campaigns.menu_vicidial_app_root"
+              action="action_demo_sip_trunks"
+              groups="doorway_demo_call_center.group_demo_call_center"
+              sequence="6"/>
+</odoo>

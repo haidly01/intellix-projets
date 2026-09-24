@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- ============================================================= -->
+    <!-- Annuaires INCONTOURNABLES (international / cartes & moteurs)   -->
+    <!-- ============================================================= -->
+    <record id="dir_google_business" model="doorway.seo.directory">
+        <field name="name">Google Business Profile</field>
+        <field name="url">https://www.google.com/business/</field>
+        <field name="region">global</field>
+        <field name="category">general</field>
+        <field name="format_hint">Nom + adresse + tél + catégories + description (750 car.) + horaires + photos</field>
+        <field name="is_priority" eval="True"/>
+        <field name="sequence">1</field>
+    </record>
+    <record id="dir_bing_places" model="doorway.seo.directory">
+        <field name="name">Bing Places for Business</field>
+        <field name="url">https://www.bingplaces.com/</field>
+        <field name="region">global</field>
+        <field name="category">general</field>
+        <field name="format_hint">NAP + catégories + description courte</field>
+        <field name="is_priority" eval="True"/>
+        <field name="sequence">2</field>
+    </record>
+    <record id="dir_apple_business" model="doorway.seo.directory">
+        <field name="name">Apple Business Connect</field>
+        <field name="url">https://businessconnect.apple.com/</field>
+        <field name="region">global</field>
+        <field name="category">general</field>
+        <field name="format_hint">NAP + catégorie Apple Maps + vitrine</field>
+        <field name="is_priority" eval="True"/>
+        <field name="sequence">3</field>
+    </record>
+    <record id="dir_facebook" model="doorway.seo.directory">
+        <field name="name">Page Facebook (Meta Business)</field>
+        <field name="url">https://www.facebook.com/business/</field>
+        <field name="region">global</field>
+        <field name="category">general</field>
+        <field name="format_hint">Nom + à propos + coordonnées + catégorie</field>
+        <field name="is_priority" eval="True"/>
+        <field name="sequence">4</field>
+    </record>
+    <record id="dir_yelp" model="doorway.seo.directory">
+        <field name="name">Yelp</field>
+        <field name="url">https://biz.yelp.com/</field>
+        <field name="region">global</field>
+        <field name="category">general</field>
+        <field name="format_hint">NAP + catégories Yelp + description + photos</field>
+        <field name="is_priority" eval="True"/>
+        <field name="sequence">5</field>
+    </record>
+    <record id="dir_foursquare" model="doorway.seo.directory">
+        <field name="name">Foursquare</field>
+        <field name="url">https://foursquare.com/products/places/</field>
+        <field name="region">global</field>
+        <field name="category">general</field>
+        <field name="format_hint">NAP + catégorie + courte description</field>
+        <field name="sequence">6</field>
+    </record>
+
+    <!-- ============================================================= -->
+    <!-- QUÉBEC / CANADA                                                -->
+    <!-- ============================================================= -->
+    <record id="dir_pagesjaunes_ca" model="doorway.seo.directory">
+        <field name="name">PagesJaunes.ca / YellowPages.ca</field>
+        <field name="url">https://www.pagesjaunes.ca/</field>
+        <field name="region">qc</field>
+        <field name="category">general</field>
+        <field name="format_hint">NAP + rubriques + description bilingue (FR/EN)</field>
+        <field name="is_priority" eval="True"/>
+        <field name="sequence">10</field>
+    </record>
+    <record id="dir_411_ca" model="doorway.seo.directory">
+        <field name="name">411.ca</field>
+        <field name="url">https://411.ca/</field>
+        <field name="region">qc</field>
+        <field name="category">local</field>
+        <field name="format_hint">NAP + catégorie + description courte</field>
+        <field name="sequence">11</field>
+    </record>
+    <record id="dir_canada411" model="doorway.seo.directory">
+        <field name="name">Canada411</field>
+        <field name="url">https://www.canada411.ca/</field>
+        <field name="region">qc</field>
+        <field name="category">local</field>
+        <field name="format_hint">NAP de base (nom, adresse, téléphone)</field>
+        <field name="sequence">12</field>
+    </record>
+    <record id="dir_cylex_ca" model="doorway.seo.directory">
+        <field name="name">Cylex Canada</field>
+        <field name="url">https://www.cylex-canada.ca/</field>
+        <field name="region">qc</field>
+        <field name="category">local</field>
+        <field name="format_hint">NAP + mots-clés + description</field>
+        <field name="sequence">13</field>
+    </record>
+    <record id="dir_ailleurs_qc" model="doorway.seo.directory">
+        <field name="name">Annuaire Québec (Pages Québec)</field>
+        <field name="url">https://www.pagesquebec.com/</field>
+        <field name="region">qc</field>
+        <field name="category">local</field>
+        <field name="format_hint">NAP + catégorie régionale</field>
+        <field name="sequence">14</field>
+    </record>
+    <record id="dir_reno_assurance" model="doorway.seo.directory">
+        <field name="name">RénoAssistance (rénovation, QC)</field>
+        <field name="url">https://www.renoassistance.ca/</field>
+        <field name="region">qc</field>
+        <field name="category">sector</field>
+        <field name="format_hint">Profil entrepreneur rénovation : services, zones, accréditations</field>
+        <field name="sequence">15</field>
+    </record>
+    <record id="dir_rbq" model="doorway.seo.directory">
+        <field name="name">Répertoire RBQ (licences construction, QC)</field>
+        <field name="url">https://www.rbq.gouv.qc.ca/</field>
+        <field name="region">qc</field>
+        <field name="category">sector</field>
+        <field name="format_hint">Référence officielle de licence (construction/rénovation)</field>
+        <field name="sequence">16</field>
+    </record>
+    <record id="dir_centris" model="doorway.seo.directory">
+        <field name="name">Centris (immobilier, QC)</field>
+        <field name="url">https://www.centris.ca/</field>
+        <field name="region">qc</field>
+        <field name="category">sector</field>
+        <field name="format_hint">Profil courtier / agence immobilière</field>
+        <field name="sequence">17</field>
+    </record>
+
+    <!-- ============================================================= -->
+    <!-- FRANCE                                                         -->
+    <!-- ============================================================= -->
+    <record id="dir_pagesjaunes_fr" model="doorway.seo.directory">
+        <field name="name">PagesJaunes.fr</field>
+        <field name="url">https://www.pagesjaunes.fr/</field>
+        <field name="region">fr</field>
+        <field name="category">general</field>
+        <field name="format_hint">NAP + rubriques PagesJaunes + description + photos</field>
+        <field name="is_priority" eval="True"/>
+        <field name="sequence">20</field>
+    </record>
+    <record id="dir_societe_com" model="doorway.seo.directory">
+        <field name="name">Societe.com</field>
+        <field name="url">https://www.societe.com/</field>
+        <field name="region">fr</field>
+        <field name="category">general</field>
+        <field name="format_hint">Fiche entreprise (SIREN/SIRET) + coordonnées</field>
+        <field name="sequence">21</field>
+    </record>
+    <record id="dir_kompass_fr" model="doorway.seo.directory">
+        <field name="name">Kompass France</field>
+        <field name="url">https://fr.kompass.com/</field>
+        <field name="region">fr</field>
+        <field name="category">general</field>
+        <field name="format_hint">NAP + activités + mots-clés B2B</field>
+        <field name="sequence">22</field>
+    </record>
+    <record id="dir_yelp_fr" model="doorway.seo.directory">
+        <field name="name">Yelp France</field>
+        <field name="url">https://www.yelp.fr/</field>
+        <field name="region">fr</field>
+        <field name="category">local</field>
+        <field name="format_hint">NAP + catégories + description + photos</field>
+        <field name="sequence">23</field>
+    </record>
+    <record id="dir_cylex_fr" model="doorway.seo.directory">
+        <field name="name">Cylex France</field>
+        <field name="url">https://www.cylex-france.fr/</field>
+        <field name="region">fr</field>
+        <field name="category">local</field>
+        <field name="format_hint">NAP + mots-clés + description</field>
+        <field name="sequence">24</field>
+    </record>
+    <record id="dir_houzz_fr" model="doorway.seo.directory">
+        <field name="name">Houzz (rénovation / déco)</field>
+        <field name="url">https://www.houzz.fr/</field>
+        <field name="region">fr</field>
+        <field name="category">sector</field>
+        <field name="format_hint">Profil pro rénovation : portfolio, services, zones</field>
+        <field name="sequence">25</field>
+    </record>
+    <record id="dir_seloger" model="doorway.seo.directory">
+        <field name="name">SeLoger / Bien'ici (immobilier, FR)</field>
+        <field name="url">https://www.seloger.com/</field>
+        <field name="region">fr</field>
+        <field name="category">sector</field>
+        <field name="format_hint">Profil agence immobilière + annonces</field>
+        <field name="sequence">26</field>
+    </record>
+</odoo>

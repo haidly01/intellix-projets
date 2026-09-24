@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_renovation_pipelines_home" model="ir.actions.server">
+        <field name="name">Pipelines Doorway</field>
+        <field name="model_id" ref="base.model_res_users"/>
+        <field name="state">code</field>
+        <field name="code">action = env['doorway.onboarding.service'].action_open_home('renovation_conciergerie')</field>
+    </record>
+
+    <!-- Après la visite guidée : vue combinée (tous pipelines), pas Rénovation seule -->
+    <record id="doorway_onboarding.tour_renovation" model="doorway.onboarding.tour">
+        <field name="home_action_xmlid">renovation_conciergerie.doorway_action_pipeline_all</field>
+    </record>
+    <record id="doorway_onboarding.tour_renov_step_pipelines" model="doorway.onboarding.tour.step">
+        <field name="action_xmlid">renovation_conciergerie.doorway_action_pipeline_all</field>
+        <field name="action_label">Tous les pipelines</field>
+    </record>
+
+    <record id="action_renovation_onboarding_tour" model="ir.actions.act_window">
+        <field name="name">Visite guidée</field>
+        <field name="res_model">doorway.onboarding.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_tour_code': 'renovation_conciergerie'}</field>
+    </record>
+</odoo>

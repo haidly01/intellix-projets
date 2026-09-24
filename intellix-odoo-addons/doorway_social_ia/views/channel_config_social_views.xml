@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_channel_config_form_social" model="ir.ui.view">
+        <field name="name">doorway.channel.config.form.social</field>
+        <field name="model">doorway.channel.config</field>
+        <field name="inherit_id" ref="doorway_messaging.view_channel_config_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_sync_social_account" type="object"
+                        string="Sync Réseaux Sociaux"
+                        invisible="canal not in ('linkedin', 'gmb')"
+                        class="btn-secondary"/>
+            </xpath>
+            <xpath expr="//field[@name='last_test_ok']/.." position="before">
+                <group string="Lien Réseaux Sociaux IA" invisible="canal not in ('linkedin', 'gmb')">
+                    <field name="social_account_id"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

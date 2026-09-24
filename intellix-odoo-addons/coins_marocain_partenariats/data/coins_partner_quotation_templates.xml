@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Visibilité : une seule ligne CM_VISIBILITE (15 %). Channel Manager / shooting = autres modèles. -->
+    <record id="quotation_template_coins_visibilite" model="sale.order.template">
+        <field name="name">Visibilité Coins Marocain</field>
+        <field name="ix_template_code">coins_visibilite</field>
+        <field name="ix_tax_mode">with_tax</field>
+        <field name="sequence">40</field>
+        <field name="number_of_days">15</field>
+        <field name="require_signature" eval="True"/>
+        <field name="company_id" eval="False"/>
+        <field name="currency_id" ref="base.MAD"/>
+        <field name="note" type="html">
+            <p>Offre Visibilité Coins Marocain uniquement — commission 15 % sur les réservations via Coins Marocain. Aucun Channel Manager, aucun shooting, aucun forfait à la signature.</p>
+        </field>
+    </record>
+    <record id="quotation_line_coins_visibilite_main" model="sale.order.template.line">
+        <field name="sale_order_template_id" ref="quotation_template_coins_visibilite"/>
+        <field name="sequence">10</field>
+        <field name="product_id" model="product.product" search="[('default_code', '=', 'CM_VISIBILITE')]"/>
+        <field name="product_uom_qty">1</field>
+    </record>
+
+    <!-- Digitalisation : 10 % par défaut, forfait 1 500 DH en alternative, marketing optionnel -->
+    <record id="quotation_template_coins_digitalisation" model="sale.order.template">
+        <field name="name">Digitalisation</field>
+        <field name="ix_template_code">coins_digitalisation</field>
+        <field name="ix_tax_mode">with_tax</field>
+        <field name="sequence">50</field>
+        <field name="number_of_days">15</field>
+        <field name="require_signature" eval="True"/>
+        <field name="company_id" eval="False"/>
+        <field name="note" type="html">
+            <p>Digitalisation : 10 % des réservations par défaut. Pour le forfait 1 500 DH/mois, passez sa quantité à 1 — la ligne 10 % sera retirée. Les deux ne vont pas ensemble.</p>
+        </field>
+    </record>
+    <record id="quotation_line_coins_digital_comm" model="sale.order.template.line">
+        <field name="sale_order_template_id" ref="quotation_template_coins_digitalisation"/>
+        <field name="sequence">10</field>
+        <field name="product_id" model="product.product" search="[('default_code', '=', 'CM_DIGITAL_COMM')]"/>
+        <field name="product_uom_qty">1</field>
+    </record>
+    <record id="quotation_line_coins_digital_alt_section" model="sale.order.template.line">
+        <field name="sale_order_template_id" ref="quotation_template_coins_digitalisation"/>
+        <field name="sequence">20</field>
+        <field name="display_type">line_section</field>
+        <field name="name">Alternative : forfait 1 500 DH/mois (à la place du 10 %)</field>
+        <field name="is_optional" eval="True"/>
+        <field name="product_uom_qty">0</field>
+    </record>
+    <record id="quotation_line_coins_digital_fixe" model="sale.order.template.line">
+        <field name="sale_order_template_id" ref="quotation_template_coins_digitalisation"/>
+        <field name="sequence">30</field>
+        <field name="product_id" model="product.product" search="[('default_code', '=', 'CM_DIGITAL_FIXE')]"/>
+        <field name="product_uom_qty">0</field>
+    </record>
+    <record id="quotation_line_coins_digital_mkt_section" model="sale.order.template.line">
+        <field name="sale_order_template_id" ref="quotation_template_coins_digitalisation"/>
+        <field name="sequence">40</field>
+        <field name="display_type">line_section</field>
+        <field name="name">Options marketing (activer si besoin)</field>
+        <field name="is_optional" eval="True"/>
+        <field name="product_uom_qty">0</field>
+    </record>
+    <record id="quotation_line_coins_digital_site" model="sale.order.template.line">
+        <field name="sale_order_template_id" ref="quotation_template_coins_digitalisation"/>
+        <field name="sequence">50</field>
+        <field name="product_id" model="product.product" search="[('default_code', '=', 'CM_SITE_CREATION')]"/>
+        <field name="product_uom_qty">0</field>
+    </record>
+    <record id="quotation_line_coins_digital_host" model="sale.order.template.line">
+        <field name="sale_order_template_id" ref="quotation_template_coins_digitalisation"/>
+        <field name="sequence">60</field>
+        <field name="product_id" model="product.product" search="[('default_code', '=', 'CM_SITE_HEBERGEMENT')]"/>
+        <field name="product_uom_qty">0</field>
+    </record>
+    <record id="quotation_line_coins_digital_social" model="sale.order.template.line">
+        <field name="sale_order_template_id" ref="quotation_template_coins_digitalisation"/>
+        <field name="sequence">70</field>
+        <field name="product_id" model="product.product" search="[('default_code', '=', 'CM_SOCIAL_SHOOTING')]"/>
+        <field name="product_uom_qty">0</field>
+    </record>
+    <record id="quotation_line_coins_digital_shoot" model="sale.order.template.line">
+        <field name="sale_order_template_id" ref="quotation_template_coins_digitalisation"/>
+        <field name="sequence">80</field>
+        <field name="product_id" model="product.product" search="[('default_code', '=', 'CM_SHOOTING_SEUL')]"/>
+        <field name="product_uom_qty">0</field>
+    </record>
+
+    <!-- Présence complète = visibilité + digitalisation + marketing -->
+    <record id="quotation_template_coins_presence" model="sale.order.template">
+        <field name="name">Présence complète</field>
+        <field name="ix_template_code">coins_presence_complete</field>
+        <field name="ix_tax_mode">with_tax</field>
+        <field name="sequence">60</field>
+        <field name="number_of_days">15</field>
+        <field name="require_signature" eval="True"/>
+        <field name="company_id" eval="False"/>
+        <field name="note" type="html">
+            <p>Bundle Visibilité + Digitalisation (10 %) + marketing (site, hébergement, réseaux). Option : forfait digital 1 500 DH/mois à la place du 10 %, ou shooting seul.</p>
+        </field>
+    </record>
+    <record id="quotation_line_coins_presence_visib" model="sale.order.template.line">
+        <field name="sale_order_template_id" ref="quotation_template_coins_presence"/>
+        <field name="sequence">10</field>
+        <field name="product_id" model="product.product" search="[('default_code', '=', 'CM_VISIBILITE')]"/>
+        <field name="product_uom_qty">1</field>
+    </record>
+    <record id="quotation_line_coins_presence_digital" model="sale.order.template.line">
+        <field name="sale_order_template_id" ref="quotation_template_coins_presence"/>
+        <field name="sequence">20</field>
+        <field name="product_id" model="product.product" search="[('default_code', '=', 'CM_DIGITAL_COMM')]"/>
+        <field name="product_uom_qty">1</field>
+    </record>
+    <record id="quotation_line_coins_presence_site" model="sale.order.template.line">
+        <field name="sale_order_template_id" ref="quotation_template_coins_presence"/>
+        <field name="sequence">30</field>
+        <field name="product_id" model="product.product" search="[('default_code', '=', 'CM_SITE_CREATION')]"/>
+        <field name="product_uom_qty">1</field>
+    </record>
+    <record id="quotation_line_coins_presence_host" model="sale.order.template.line">
+        <field name="sale_order_template_id" ref="quotation_template_coins_presence"/>
+        <field name="sequence">40</field>
+        <field name="product_id" model="product.product" search="[('default_code', '=', 'CM_SITE_HEBERGEMENT')]"/>
+        <field name="product_uom_qty">1</field>
+    </record>
+    <record id="quotation_line_coins_presence_social" model="sale.order.template.line">
+        <field name="sale_order_template_id" ref="quotation_template_coins_presence"/>
+        <field name="sequence">50</field>
+        <field name="product_id" model="product.product" search="[('default_code', '=', 'CM_SOCIAL_SHOOTING')]"/>
+        <field name="product_uom_qty">1</field>
+    </record>
+    <record id="quotation_line_coins_presence_opt_section" model="sale.order.template.line">
+        <field name="sale_order_template_id" ref="quotation_template_coins_presence"/>
+        <field name="sequence">60</field>
+        <field name="display_type">line_section</field>
+        <field name="name">Options (forfait digital à la place du 10 %, ou shooting seul)</field>
+        <field name="is_optional" eval="True"/>
+        <field name="product_uom_qty">0</field>
+    </record>
+    <record id="quotation_line_coins_presence_fixe" model="sale.order.template.line">
+        <field name="sale_order_template_id" ref="quotation_template_coins_presence"/>
+        <field name="sequence">70</field>
+        <field name="product_id" model="product.product" search="[('default_code', '=', 'CM_DIGITAL_FIXE')]"/>
+        <field name="product_uom_qty">0</field>
+    </record>
+    <record id="quotation_line_coins_presence_shoot" model="sale.order.template.line">
+        <field name="sale_order_template_id" ref="quotation_template_coins_presence"/>
+        <field name="sequence">80</field>
+        <field name="product_id" model="product.product" search="[('default_code', '=', 'CM_SHOOTING_SEUL')]"/>
+        <field name="product_uom_qty">0</field>
+    </record>
+</odoo>

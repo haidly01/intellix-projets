@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="ir_cron_social_analytics" model="ir.cron">
+        <field name="name">Social IA : sync analytics (6h)</field>
+        <field name="model_id" ref="model_doorway_social_analytics_service"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_sync_all_analytics()</field>
+        <field name="interval_number">6</field>
+        <field name="interval_type">hours</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

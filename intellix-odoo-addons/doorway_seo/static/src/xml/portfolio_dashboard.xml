@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="doorway_seo.PortfolioDashboard" owl="1">
+        <div class="pdb_app">
+            <t t-if="state.loading">
+                <div class="pdb_loading"><i class="fa fa-spinner fa-spin"/><span>Chargement du dashboard portfolio…</span></div>
+            </t>
+            <t t-else="">
+                <header class="pdb_topbar">
+                    <div class="pdb_brand">
+                        <span class="pdb_brand__mark"/>
+                        <span class="pdb_brand__name">IntelliX — Portfolio Doorway</span>
+                    </div>
+                    <nav class="pdb_tabs">
+                        <span t-att-class="'pdb_tab' + (state.view === 'overview' ? ' pdb_tab--active' : '')" t-on-click="() => this.backToOverview()">Vue d'ensemble</span>
+                        <span t-if="state.view === 'detail'" class="pdb_tab pdb_tab--active">Fiche site</span>
+                    </nav>
+                </header>
+
+                <!-- =============== Barre de filtres =============== -->
+                <div class="pdb_filterbar">
+                    <div class="pdb_filtergroup">
+                        <span class="pdb_filterlabel">Sites</span>
+                        <span t-foreach="allSiteIds" t-as="sid" t-key="sid"
+                              t-att-class="'pdb_pill' + (isSiteToggled(sid) ? ' pdb_pill--active' : '')"
+                              t-on-click="() => this.toggleSite(sid)"
+                              t-esc="siteLabel(sid)"/>
+                        <span t-if="state.selectedSiteIds.length" class="pdb_pill pdb_pill--ghost" t-on-click="() => this.clearSiteFilter()">Réinitialiser</span>
+                    </div>
+                    <div class="pdb_filtergroup">
+                        <span class="pdb_filterlabel">Période</span>
+                        <span t-foreach="[7,30,90]" t-as="p" t-key="p"
+                              t-att-class="'pdb_pill' + (state.period === p ? ' pdb_pill--active' : '')"
+                              t-on-click="() => this.setPeriod(p)">
+                            <t t-esc="p"/>j
+                        </span>
+                    </div>
+                    <div class="pdb_filtergroup" t-if="state.view === 'overview'">
+                        <span class="pdb_filterlabel">Catégorie</span>
+                        <span t-foreach="[['tout','Tout'],['trafic','Trafic'],['geo','GEO'],['citations','Citations'],['technique','Technique']]" t-as="cat" t-key="cat[0]"
+                              t-att-class="'pdb_pill' + (state.category === cat[0] ? ' pdb_pill--active' : '')"
+                              t-on-click="() => this.setCategory(cat[0])" t-esc="cat[1]"/>
+                    </div>
+                    <div class="pdb_search" t-if="state.view === 'overview'">
+                        <input type="text" t-model="state.search" placeholder="Rechercher un site…"/>
+                    </div>
+                </div>
+
+                <!-- =============== Vue d'ensemble =============== -->
+                <t t-if="state.view === 'overview'">
+                    <div class="pdb_kpirow">
+                        <div class="pdb_kpi">
+                            <div class="pdb_kpi__label">Clics (portefeuille)</div>
+                            <div class="pdb_kpi__value mono" t-esc="fmtNum(kpis.clicks)"/>
+                        </div>
+                        <div class="pdb_kpi">
+                            <div class="pdb_kpi__label">Impressions</div>
+                            <div class="pdb_kpi__value mono" t-esc="fmtNum(kpis.impressions)"/>
+                        </div>
+                        <div class="pdb_kpi">
+                            <div class="pdb_kpi__label">Sites avec trafic</div>
+                            <div class="pdb_kpi__value mono"><t t-esc="kpis.withTraffic"/> / <t t-esc="kpis.total"/></div>
+                        </div>
+                        <div class="pdb_kpi">
+                            <div class="pdb_kpi__label">Meilleur site (clics)</div>
+                            <div class="pdb_kpi__value pdb_kpi__value--text" t-esc="kpis.topLabel"/>
+                        </div>
+                    </div>
+
+                    <div class="pdb_card">
+                        <div class="pdb_card__title">Sites (<t t-esc="filteredSites.length"/>) — période <t t-esc="state.period"/>j</div>
+                        <div class="pdb_table">
+                            <div class="pdb_table__head">
+                                <span>Site</span><span>Trafic</span><span>Score GEO</span><span>Citations</span><span>Statut</span><span/>
+                            </div>
+                            <div class="pdb_table__row" t-foreach="filteredSites" t-as="site" t-key="site.site_id">
+                                <span class="pdb_table__site">
+                                    <span t-esc="site.label || site.domain"/>
+                                    <span class="pdb_table__domain" t-esc="site.domain"/>
+                                </span>
+                                <span class="mono">
+                                    <t t-esc="fmtNum(site.clicks)"/> clics
+                                    <span t-att-class="deltaClass(site.clicks_delta_pct, site.period_comparable)" t-esc="fmtDelta(site.clicks_delta_pct, site.period_comparable)"/>
+                                </span>
+                                <span class="mono" t-esc="site.geo_score_label || '—'"/>
+                                <span t-esc="site.citations_status_label || '—'"/>
+                                <span t-att-class="statusChipClass(site.status_class)" t-esc="site.status_label || '—'"/>
+                                <span class="pdb_table__link" t-on-click="() => this.openSite(site.site_id)">Détail →</span>
+                            </div>
+                            <div class="pdb_table__empty" t-if="!filteredSites.length">Aucun site pour ces filtres.</div>
+                        </div>
+                    </div>
+
+                    <div class="pdb_panels">
+                        <div class="pdb_card" t-if="showSection('geo')">
+                            <div class="pdb_card__title">GEO — visibilité IA (meilleurs sites)</div>
+                            <div class="pdb_geolist">
+                                <div class="pdb_geolist__row" t-foreach="geoTop" t-as="site" t-key="site.site_id">
+                                    <span t-esc="site.label || site.domain"/>
+                                    <span class="mono" t-esc="site.geo_score_label"/>
+                                </div>
+                                <div class="pdb_table__empty" t-if="!geoTop.length">Aucune donnée GEO pour ces filtres.</div>
+                            </div>
+                        </div>
+                        <div class="pdb_card" t-if="showSection('citations')">
+                            <div class="pdb_card__title">Citations / annuaires</div>
+                            <div class="pdb_citstats">
+                                <div class="pdb_citstat">
+                                    <div class="pdb_citstat__label">Vérification humaine</div>
+                                    <div class="mono"><t t-esc="citationsSummary.humanDone"/> / <t t-esc="citationsSummary.humanObj"/></div>
+                                </div>
+                                <div class="pdb_citstat">
+                                    <div class="pdb_citstat__label">Libre-service</div>
+                                    <div class="mono"><t t-esc="citationsSummary.selfDone"/> / <t t-esc="citationsSummary.selfObj"/></div>
+                                </div>
+                            </div>
+                            <div class="pdb_card__subtitle">Actions en attente (<t t-esc="citationsSummary.pending.length"/>)</div>
+                            <div class="pdb_pendinglist">
+                                <div class="pdb_pendinglist__row" t-foreach="citationsSummary.pending" t-as="site" t-key="site.site_id">
+                                    <span t-esc="site.label || site.domain"/>
+                                    <span t-esc="site.citations_status_label || '—'"/>
+                                </div>
+                                <div class="pdb_table__empty" t-if="!citationsSummary.pending.length">Aucune action en attente.</div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+
+                <!-- =============== Fiche site =============== -->
+                <t t-if="state.view === 'detail' and detailRow">
+                    <div class="pdb_detailhead">
+                        <span class="pdb_back" t-on-click="() => this.backToOverview()">← Retour</span>
+                        <h2 t-esc="detailRow.label || detailRow.domain"/>
+                        <span t-att-class="statusChipClass(detailRow.status_class)" t-esc="detailRow.status_label"/>
+                    </div>
+                    <p class="pdb_detailnote">Période <t t-esc="state.period"/> jours — capturé le <t t-esc="fmtCapturedAt(detailRow.captured_at)"/></p>
+
+                    <div class="pdb_kpirow">
+                        <div class="pdb_kpi">
+                            <div class="pdb_kpi__label">Clics</div>
+                            <div class="pdb_kpi__value mono" t-esc="fmtNum(detailRow.clicks)"/>
+                            <div t-att-class="deltaClass(detailRow.clicks_delta_pct, detailRow.period_comparable)" t-esc="fmtDelta(detailRow.clicks_delta_pct, detailRow.period_comparable)"/>
+                        </div>
+                        <div class="pdb_kpi">
+                            <div class="pdb_kpi__label">Impressions</div>
+                            <div class="pdb_kpi__value mono" t-esc="fmtNum(detailRow.impressions)"/>
+                            <div t-att-class="deltaClass(detailRow.impressions_delta_pct, detailRow.period_comparable)" t-esc="fmtDelta(detailRow.impressions_delta_pct, detailRow.period_comparable)"/>
+                        </div>
+                        <div class="pdb_kpi">
+                            <div class="pdb_kpi__label">CTR</div>
+                            <div class="pdb_kpi__value mono"><t t-esc="(detailRow.ctr * 100).toFixed(1)"/>%</div>
+                            <div t-att-class="deltaClass(detailRow.ctr_delta_pct, detailRow.period_comparable)" t-esc="fmtDelta(detailRow.ctr_delta_pct, detailRow.period_comparable)"/>
+                        </div>
+                        <div class="pdb_kpi">
+                            <div class="pdb_kpi__label">Position moy.</div>
+                            <div class="pdb_kpi__value mono" t-esc="detailRow.position.toFixed(1)"/>
+                            <div t-att-class="deltaClass(-detailRow.position_delta_pct, detailRow.period_comparable)" t-esc="fmtDelta(detailRow.position_delta_pct, detailRow.period_comparable)"/>
+                        </div>
+                    </div>
+
+                    <div class="pdb_panels">
+                        <div class="pdb_card">
+                            <div class="pdb_card__title">Top requêtes</div>
+                            <div class="pdb_table pdb_table--queries">
+                                <div class="pdb_table__head"><span>Requête</span><span>Position</span><span>Clics</span></div>
+                                <div class="pdb_table__row" t-foreach="detailTopQueries" t-as="q" t-key="q_index">
+                                    <span t-esc="q.query"/>
+                                    <span class="mono" t-esc="fmtPos(q.position)"/>
+                                    <span class="mono" t-esc="fmtNum(q.clicks)"/>
+                                </div>
+                                <div class="pdb_table__empty" t-if="!detailTopQueries.length">Aucune requête disponible pour cette période.</div>
+                            </div>
+                        </div>
+                        <div class="pdb_card">
+                            <div class="pdb_card__title">Santé technique</div>
+                            <ul class="pdb_healthlist">
+                                <li t-foreach="detailHealthLines" t-as="line" t-key="line_index" t-esc="line"/>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="pdb_nextaction" t-if="detailRow.next_action">
+                        <strong>Prochaine action recommandée —</strong> <span t-esc="detailRow.next_action"/>
+                    </div>
+
+                    <div class="pdb_card">
+                        <div class="pdb_card__title">Sommaire de recommandations</div>
+                        <div class="pdb_recogrid">
+                            <div class="pdb_recocol">
+                                <div class="pdb_recocol__label pdb_reco--sante">Santé du site</div>
+                                <ol><li t-foreach="recommendations.sante" t-as="r" t-key="r_index" t-esc="r"/></ol>
+                            </div>
+                            <div class="pdb_recocol">
+                                <div class="pdb_recocol__label pdb_reco--presence">Présence (GEO + citations)</div>
+                                <ol><li t-foreach="recommendations.presence" t-as="r" t-key="r_index" t-esc="r"/></ol>
+                            </div>
+                            <div class="pdb_recocol">
+                                <div class="pdb_recocol__label pdb_reco--position">Positionnement mots-clés</div>
+                                <ol><li t-foreach="recommendations.positionnement" t-as="r" t-key="r_index" t-esc="r"/></ol>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pdb_card">
+                        <div class="pdb_card__title">Chantiers internes</div>
+                        <div class="pdb_chantierrow">
+                            <div class="pdb_chantiermini">
+                                <div class="pdb_chantiermini__title">Chantier 1 — Rendu / santé</div>
+                                <div class="mono"><t t-esc="chantier1.pagesChecked"/> page(s) vérifiée(s) · <t t-esc="chantier1.findings"/> problème(s)</div>
+                            </div>
+                            <div class="pdb_chantiermini">
+                                <div class="pdb_chantiermini__title">Chantier 4 — Attribution leads</div>
+                                <div class="mono"><t t-esc="chantier4.leads"/> lead(s) (90j)</div>
+                            </div>
+                        </div>
+                        <div class="pdb_chantierfull">
+                            <div class="pdb_chantierfull__title">Chantier 2 — Dilution de contenu</div>
+                            <div class="pdb_chantier2grid">
+                                <div><span class="mono" t-esc="chantier2.pagesCrawled"/><span>pages explorées</span></div>
+                                <div><span class="mono" t-esc="chantier2.uniquenessScore"/><span>score d'unicité</span></div>
+                                <div><span class="mono" t-esc="chantier2.cannibalization"/><span>cannibalisations</span></div>
+                                <div><span class="mono" t-esc="chantier2.neverClicked"/><span>pages jamais cliquées</span></div>
+                            </div>
+                            <div class="pdb_detailnote" t-if="chantier2.cannibTop.length">
+                                Cannibalisation : <t t-esc="chantier2.cannibalization"/> cas au total — 5 pires paires (requête | page A | page B)
+                                <div t-foreach="chantier2.cannibTop" t-as="line" t-key="line_index"><span class="mono" t-esc="line"/></div>
+                            </div>
+                        </div>
+                        <div class="pdb_chantierfull">
+                            <div class="pdb_chantierfull__title">Chantier 3 — Positions mots-clés (liste complète)</div>
+                            <div class="pdb_bucketrow" t-foreach="detailBuckets" t-as="b" t-key="b.id">
+                                <div class="pdb_bucket__head">
+                                    <span>Positions <t t-esc="b.id"/></span>
+                                    <span class="mono"><t t-esc="b.count"/> mot(s)-clé(s)</span>
+                                </div>
+                                <div class="pdb_bucket__bar"><div class="pdb_bucket__fill" t-att-style="'width:' + b.pct + '%'"/></div>
+                                <div class="pdb_bucket__kwlist" t-if="b.hasSourceData">
+                                    <span class="pdb_kwchip" t-foreach="b.keywords" t-as="kw" t-key="kw.id" t-esc="kw.query + ' · ' + fmtPos(kw.position)"/>
+                                    <span class="pdb_table__empty" t-if="!b.keywords.length">Aucun mot-clé dans cette tranche.</span>
+                                </div>
+                                <div class="pdb_bucket__kwlist pdb_bucket__kwlist--loading" t-if="!b.hasSourceData">Chargement des mots-clés…</div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </div>
+    </t>
+
+</templates>

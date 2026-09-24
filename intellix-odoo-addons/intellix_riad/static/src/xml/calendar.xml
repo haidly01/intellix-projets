@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="intellix_riad.Calendar">
+        <div class="o_action o_riad_screen">
+            <RiadShell page="shellPage"/>
+            <div class="main">
+                <div class="topbar">
+                    <div class="property-switch">
+                        <span class="dot"/>
+                        <select t-on-change="onEstablishmentChange">
+                            <t t-foreach="state.data.establishments or []" t-as="est" t-key="est.id">
+                                <option t-att-value="est.id" t-att-selected="state.establishmentId === est.id" t-esc="est.name"/>
+                            </t>
+                        </select>
+                    </div>
+                    <div class="topbar-right">
+                        <button class="btn-new" t-on-click="() => this.newReservation()" t-esc="labels.newReservation"/>
+                        <div class="avatar" t-esc="state.data.user and state.data.user.initial or 'R'"/>
+                    </div>
+                </div>
+                <div class="content" t-if="state.view === 'room'">
+                    <div class="page-head">
+                        <div>
+                            <button class="link" t-on-click="backToCalendar">← Réservations</button>
+                            <div class="eyebrow" t-esc="labels.reservations"/>
+                            <h1>Nouvelle chambre</h1>
+                        </div>
+                    </div>
+                    <div class="riad-card book-card">
+                        <div class="book-grid">
+                            <label class="book-wide">Nom
+                                <input type="text" data-field="name" t-att-value="state.roomForm.name" t-on-change="onRoomChange" placeholder="Suite Rose de Paris"/>
+                            </label>
+                            <label>Emplacement
+                                <select data-field="emplacement" t-on-change="onRoomChange">
+                                    <option value="etage" t-att-selected="state.roomForm.emplacement === 'etage'">Étage</option>
+                                    <option value="rdc" t-att-selected="state.roomForm.emplacement === 'rdc'">RDC</option>
+                                </select>
+                            </label>
+                            <label>Tarif / nuit
+                                <input type="number" min="0" data-field="price_per_night" t-att-value="state.roomForm.price_per_night" t-on-change="onRoomChange"/>
+                            </label>
+                        </div>
+                        <div class="book-actions">
+                            <button class="btn-new" t-on-click="saveRoom" t-att-disabled="state.saving">Ajouter</button>
+                            <button class="link" t-on-click="backToCalendar">Annuler</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="content" t-elif="state.view === 'form'">
+                    <div class="page-head">
+                        <div>
+                            <button class="link" t-on-click="backToCalendar">← Réservations</button>
+                            <div class="eyebrow" t-esc="labels.reservations"/>
+                            <h1 t-if="state.form.id">Fiche réservation</h1>
+                            <h1 t-else="">Nouvelle réservation</h1>
+                        </div>
+                        <div class="date-today" t-if="state.form.state_label" t-esc="state.form.state_label"/>
+                    </div>
+                    <div class="riad-card book-card">
+                        <div class="type-picks" t-if="!state.form.id">
+                            <button t-att-class="state.form.kind === 'room' ? 'active' : ''" t-on-click="() => this.setKind('room')">Chambre</button>
+                            <button t-att-class="state.form.kind === 'restaurant' ? 'active' : ''" t-on-click="() => this.setKind('restaurant')">Restaurant</button>
+                            <button t-att-class="state.form.kind === 'wellness' ? 'active' : ''" t-on-click="() => this.setKind('wellness')">Bien-être</button>
+                            <button t-att-class="state.form.kind === 'excursion' ? 'active' : ''" t-on-click="() => this.setKind('excursion')">Excursion</button>
+                            <button t-att-class="state.form.kind === 'privatisation' ? 'active' : ''" t-on-click="() => this.setKind('privatisation')">Privatisation</button>
+                        </div>
+                        <div class="book-grid">
+                            <label class="book-wide" t-if="state.form.kind === 'excursion' or state.form.kind === 'privatisation'">Intitulé
+                                <input type="text" data-field="name" t-att-value="state.form.name" t-on-change="onFormChange" placeholder="Karine Barmaki"/>
+                            </label>
+                            <label class="book-wide" t-else="">Nom de la cliente
+                                <input type="text" data-field="guest_name" t-att-value="state.form.guest_name" t-on-change="onFormChange" placeholder="Karine Barmaki"/>
+                            </label>
+                            <label t-if="!state.form.kind or state.form.kind === 'room'">Chambre
+                                <select data-field="room_id" t-on-change="onFormChange">
+                                    <option value="">Choisir une chambre…</option>
+                                    <t t-foreach="rooms" t-as="row" t-key="row.id">
+                                        <option t-att-value="row.id" t-att-selected="state.form.room_id == row.id" t-esc="row.name"/>
+                                    </t>
+                                </select>
+                            </label>
+                            <label t-if="state.form.kind === 'restaurant'">Table
+                                <select data-field="table_id" t-on-change="onFormChange">
+                                    <option value="">Choisir une table…</option>
+                                    <t t-foreach="tables" t-as="row" t-key="row.id">
+                                        <option t-att-value="row.id" t-att-selected="state.form.table_id == row.id" t-esc="row.name"/>
+                                    </t>
+                                </select>
+                            </label>
+                            <label t-if="state.form.kind === 'wellness'">Soin
+                                <select data-field="type_id" t-on-change="onFormChange">
+                                    <option value="">Choisir un soin…</option>
+                                    <t t-foreach="serviceTypes" t-as="row" t-key="row.id">
+                                        <option t-att-value="row.id" t-att-selected="state.form.type_id == row.id" t-esc="row.name"/>
+                                    </t>
+                                </select>
+                            </label>
+                            <label t-if="state.form.kind === 'wellness'">Prestataire
+                                <select data-field="practitioner_id" t-on-change="onFormChange">
+                                    <option value="">Choisir…</option>
+                                    <t t-foreach="practitioners" t-as="row" t-key="row.id">
+                                        <option t-att-value="row.id" t-att-selected="state.form.practitioner_id == row.id" t-esc="row.label or row.name"/>
+                                    </t>
+                                </select>
+                            </label>
+                            <label t-if="state.form.kind === 'restaurant'">Couverts
+                                <input type="number" min="1" data-field="covers" t-att-value="state.form.covers" t-on-change="onFormChange"/>
+                            </label>
+                            <label t-if="state.form.kind !== 'restaurant' and state.form.kind !== 'wellness'">
+                                <t t-if="state.form.kind === 'privatisation' or state.form.kind === 'excursion'">Personnes</t>
+                                <t t-else="">Voyageurs</t>
+                                <input type="number" min="1" data-field="guests" t-att-value="state.form.guests" t-on-change="onFormChange"/>
+                            </label>
+                            <label>
+                                <t t-if="state.form.kind === 'restaurant' or state.form.kind === 'wellness'">Date</t>
+                                <t t-elif="state.form.kind === 'excursion' or state.form.kind === 'privatisation'">Début</t>
+                                <t t-else="">Arrivée</t>
+                                <input type="date" data-field="check_in" t-att-value="state.form.check_in" t-on-change="onFormChange"/>
+                            </label>
+                            <label t-if="state.form.kind !== 'restaurant' and state.form.kind !== 'wellness'">
+                                <t t-if="state.form.kind === 'excursion' or state.form.kind === 'privatisation'">Fin</t>
+                                <t t-else="">Départ</t>
+                                <input type="date" data-field="check_out" t-att-value="state.form.check_out" t-on-change="onFormChange"/>
+                            </label>
+                            <label class="book-wide book-check" t-if="!state.form.kind or state.form.kind === 'room'">
+                                <input type="checkbox" data-field="breakfast" t-att-checked="state.form.breakfast" t-on-change="onFormChange"/>
+                                Petit-déjeuner inclus
+                            </label>
+                            <label class="book-wide" t-if="!state.form.kind or state.form.kind === 'room'">Nationalité / pièce
+                                <select data-field="guest_residency" t-on-change="onFormChange">
+                                    <option value="unknown" t-att-selected="state.form.guest_residency === 'unknown'">À préciser (demandé sur le lien)</option>
+                                    <option value="foreign" t-att-selected="state.form.guest_residency === 'foreign'">Étranger (passeport)</option>
+                                    <option value="moroccan" t-att-selected="state.form.guest_residency === 'moroccan'">Résident marocain (CIN)</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div class="riad-demo-banner" t-if="state.form.is_demo">
+                            DÉMO CHANNNEX — réservation fictive. Ne pas traiter comme une réservation réelle.
+                        </div>
+                        <p class="muted" t-if="state.form.source_label">Source : <t t-esc="state.form.source_label"/></p>
+                        <p class="muted" t-if="state.form.restaurant_note">Note restaurant en chambre : <t t-esc="state.form.restaurant_note"/></p>
+                        <p class="muted" t-if="state.form.id and (!state.form.kind or state.form.kind === 'room')">
+                            Fiche de police : <t t-esc="state.form.police_status or '—'"/>
+                            · Taxe de séjour : <t t-esc="state.form.tourist_tax_amount or 0"/> MAD
+                            (due aussi si résident marocain)
+                        </p>
+                        <div class="book-actions">
+                            <button class="btn-new" t-on-click="saveReservation" t-att-disabled="state.saving">
+                                <t t-if="state.form.id">Enregistrer</t>
+                                <t t-else="">Confirmer</t>
+                            </button>
+                            <button class="btn-new" t-if="state.form.id and state.form.checkin_can_send and (!state.form.kind or state.form.kind === 'room')"
+                                    t-on-click="sendCheckinLink" t-att-disabled="state.saving">
+                                Envoyer le lien de check-in
+                            </button>
+                            <button class="link" t-on-click="backToCalendar">Annuler</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="content" t-elif="state.view === 'list' or state.view === 'calendar'">
+                    <div class="page-head">
+                        <div>
+                            <div class="eyebrow" t-esc="labels.reservations"/>
+                            <h1>Réservations</h1>
+                        </div>
+                        <div class="head-actions">
+                            <button class="link" t-on-click="newRoom">Ajouter une chambre</button>
+                            <div class="date-today" t-esc="state.data.today_label"/>
+                        </div>
+                    </div>
+
+                    <div class="cal-filters">
+                        <button t-att-class="state.view === 'list' ? 'active' : ''" t-on-click="() => this.setMode('list')">Liste par statut</button>
+                        <button t-att-class="state.view === 'calendar' ? 'active' : ''" t-on-click="() => this.setMode('calendar')">Calendrier</button>
+                    </div>
+
+                    <div class="riad-card" style="margin-bottom:16px">
+                        <div class="book-grid">
+                            <label>Mois
+                                <input type="month" t-att-value="state.month" t-on-change="onMonthChange"/>
+                            </label>
+                            <label>Du
+                                <input type="date" t-att-value="state.dateFrom" t-on-change="onDateFromChange"/>
+                            </label>
+                            <label>Au
+                                <input type="date" t-att-value="state.dateTo" t-on-change="onDateToChange"/>
+                            </label>
+                            <label>Raccourci
+                                <select t-on-change="onSpanPreset">
+                                    <option value="">Personnalisé</option>
+                                    <option value="7">7 jours</option>
+                                    <option value="14">14 jours</option>
+                                    <option value="30">30 jours</option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+
+                    <t t-if="state.view === 'list'">
+                        <div class="cal-filters">
+                            <button t-att-class="state.statusTab === 'all' ? 'active' : ''" t-on-click="() => this.setStatusTab('all')">Toutes</button>
+                            <t t-foreach="state.data.reservation_groups or []" t-as="grp" t-key="grp.key">
+                                <button t-att-class="state.statusTab === grp.key ? 'active' : ''"
+                                        t-on-click="() => this.setStatusTab(grp.key)">
+                                    <t t-esc="grp.label"/> (<t t-esc="grp.count"/>)
+                                </button>
+                            </t>
+                        </div>
+                        <div class="cal-filters" style="margin-top:8px">
+                            <button t-att-class="state.paymentTab === 'all' ? 'active' : ''" t-on-click="() => this.setPaymentTab('all')">Tous paiements</button>
+                            <t t-foreach="state.data.payment_tabs or []" t-as="pay" t-key="pay.key">
+                                <button t-att-class="state.paymentTab === pay.key ? 'active' : ''"
+                                        t-on-click="() => this.setPaymentTab(pay.key)">
+                                    <t t-esc="pay.label"/> (<t t-esc="pay.count"/>)
+                                </button>
+                            </t>
+                        </div>
+
+                        <t t-foreach="visibleReservationGroups" t-as="grp" t-key="grp.key">
+                            <div class="riad-card" style="margin-top:16px">
+                                <div class="card-head">
+                                    <h3><t t-esc="grp.label"/> · <t t-esc="filteredRows(grp).length"/></h3>
+                                </div>
+                                <p class="muted" t-if="grp.hint" t-esc="grp.hint"/>
+                                <t t-if="!filteredRows(grp).length">
+                                    <p class="muted">Aucune réservation dans cette période.</p>
+                                </t>
+                                <table class="staff-table" t-else="">
+                                    <thead>
+                                        <tr>
+                                            <th>Réf.</th>
+                                            <th>Voyageur</th>
+                                            <th>Séjour</th>
+                                            <th>Source</th>
+                                            <th>Statut</th>
+                                            <th>Paiement</th>
+                                            <th>Montant</th>
+                                            <th/>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="filteredRows(grp)" t-as="row" t-key="row.id">
+                                            <tr>
+                                                <td t-esc="row.name"/>
+                                                <td t-esc="row.guest"/>
+                                                <td><t t-esc="row.check_in"/> → <t t-esc="row.check_out"/></td>
+                                                <td t-esc="row.source_label"/>
+                                                <td t-esc="row.state_label"/>
+                                                <td t-esc="row.payment_label"/>
+                                                <td t-esc="fmtMad(row.amount)"/>
+                                                <td>
+                                                    <button class="link" t-on-click="() => this.openReservation(row.id)">Ouvrir</button>
+                                                    <button class="link" t-if="grp.actions"
+                                                            t-on-click="() => this.nudgeReservation(row.id)">Relancer</button>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </t>
+                    </t>
+
+                    <t t-else="">
+                    <div class="riad-demo-banner" t-if="state.data.has_channex_demo">
+                        DÉMO CHANNNEX — cellules [DÉMO] / hachurées = réservations fictives. Ne pas traiter comme du réel.
+                    </div>
+                    <div class="cal-filters">
+                        <button t-att-class="isSectionOn('rooms') ? 'active' : ''" t-on-click="() => this.toggleSection('rooms')">Chambres</button>
+                        <button t-att-class="isSectionOn('restaurant') ? 'active' : ''" t-on-click="() => this.toggleSection('restaurant')">Restaurant</button>
+                        <button t-att-class="isSectionOn('wellness') ? 'active' : ''" t-on-click="() => this.toggleSection('wellness')">Bien-être</button>
+                        <button t-att-class="isSectionOn('excursion') ? 'active' : ''" t-on-click="() => this.toggleSection('excursion')">Excursions</button>
+                        <button t-att-class="isSectionOn('privatisation') ? 'active' : ''" t-on-click="() => this.toggleSection('privatisation')">Privatisation</button>
+                    </div>
+                    <div class="riad-card">
+                        <div class="card-head">
+                            <h3 t-esc="labels.availability14"/>
+                            <span class="muted" t-esc="labels.calendarLegend"/>
+                        </div>
+                        <table class="occ-table">
+                            <tr>
+                                <th/>
+                                <t t-foreach="grid.days or []" t-as="day" t-key="day.key">
+                                    <th t-esc="day.label"/>
+                                </t>
+                            </tr>
+                            <t t-foreach="visibleGroups" t-as="group" t-key="group.key">
+                                <tr class="occ-section">
+                                    <td t-att-colspan="(grid.days or []).length + 1" t-esc="group.label"/>
+                                </tr>
+                                <t t-foreach="group.rooms or []" t-as="room" t-key="room.id">
+                                    <tr>
+                                        <td class="occ-room">
+                                            <t t-esc="room.name"/>
+                                            <t t-if="room.emplacement_label">
+                                                <span> — <t t-esc="room.emplacement_label"/></span>
+                                            </t>
+                                        </td>
+                                        <t t-foreach="room.cells or []" t-as="cell" t-key="cell.date">
+                                            <td>
+                                                <div t-att-class="'occ-cell ' + (cell.css or 'free')"
+                                                     t-att-title="cell.guest"
+                                                     t-on-click="() => this.onCellClick(room, cell)">
+                                                    <div class="cal-guest" t-esc="cell.guest"/>
+                                                </div>
+                                            </td>
+                                        </t>
+                                    </tr>
+                                </t>
+                            </t>
+                        </table>
+                    </div>
+                    <div class="footnote">Chambres · restaurant · bien-être · excursions · privatisation</div>
+                    </t>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inbox e-mail (client webmail doorway_crm), pas le hub SMS/WhatsApp. -->
+    <record id="action_messaging_inbox" model="ir.actions.client">
+        <field name="name">Boîte de réception</field>
+        <field name="tag">doorway_crm_webmail_action</field>
+    </record>
+
+    <record id="action_messaging_new_email" model="ir.actions.client">
+        <field name="name">Nouveau e-mail</field>
+        <field name="tag">doorway_crm_webmail_action</field>
+        <field name="params" eval="{'mode': 'compose'}"/>
+    </record>
+
+    <menuitem id="menu_messaging_webmail"
+              name="Boîte de réception"
+              parent="menu_messaging_root"
+              action="action_messaging_inbox"
+              sequence="1"/>
+
+    <menuitem id="menu_messaging_new_email"
+              name="Nouveau e-mail"
+              parent="menu_messaging_root"
+              action="action_messaging_new_email"
+              sequence="2"/>
+
+    <record id="menu_messaging_mailboxes" model="ir.ui.menu">
+        <field name="name">Gérer mes boîtes</field>
+        <field name="parent_id" ref="menu_messaging_root"/>
+        <field name="action" ref="doorway_crm.action_doorway_crm_mailbox_list"/>
+        <field name="sequence">3</field>
+    </record>
+
+    <record id="menu_messaging_root" model="ir.ui.menu">
+        <field name="action" ref="action_messaging_inbox"/>
+        <field name="group_ids" eval="[(5, 0, 0)]"/>
+    </record>
+</odoo>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_lead_automation_hub_dashboard" model="ir.ui.view">
+        <field name="name">lead.automation.hub.dashboard</field>
+        <field name="model">lead.automation.hub</field>
+        <field name="arch" type="xml">
+            <form string="Lead Automation Hub" create="0" delete="0" class="o_lead_automation_hub_dashboard">
+                <sheet>
+                    <div class="oe_title mb-3">
+                        <h1>Lead Automation Hub</h1>
+                        <p class="text-muted mb-0">
+                            Import, segmentation et campagnes d'outreach IA pour vos leads CRM.
+                        </p>
+                    </div>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6 col-lg-4">
+                            <div class="ix-veille-stat ix-veille-pending p-3 text-center">
+                                <strong>Cartographies</strong>
+                                <div class="ix-veille-stat-value">
+                                    <field name="campaign_map_count" readonly="1" nolabel="1"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="ix-veille-stat ix-veille-warm p-3 text-center">
+                                <strong>Leads CRM</strong>
+                                <div class="ix-veille-stat-value">
+                                    <field name="lead_count" readonly="1" nolabel="1"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <group>
+                        <div class="d-flex flex-wrap gap-2">
+                            <button name="action_open_campaign_maps" type="object"
+                                    string="Cartographie campagnes" class="btn btn-primary"/>
+                            <button name="action_open_leads" type="object"
+                                    string="Voir les leads" class="btn btn-outline-primary"/>
+                        </div>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_lead_automation_hub_dashboard" model="ir.actions.act_window">
+        <field name="name">Lead Automation Hub</field>
+        <field name="res_model">lead.automation.hub</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+    </record>
+</odoo>

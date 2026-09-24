@@ -1,0 +1,17 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_jt_client_user,jt.client.user,model_jt_client,base.group_user,1,1,1,0
+access_jt_client_manager,jt.client.manager,model_jt_client,base.group_system,1,1,1,1
+access_jt_police_user,jt.police.user,model_jt_police,base.group_user,1,1,1,0
+access_jt_police_manager,jt.police.manager,model_jt_police,base.group_system,1,1,1,1
+access_jt_transaction_user,jt.transaction.user,model_jt_transaction,base.group_user,1,1,1,0
+access_jt_transaction_manager,jt.transaction.manager,model_jt_transaction,base.group_system,1,1,1,1
+access_jt_activite_user,jt.activite.user,model_jt_activite,base.group_user,1,1,1,0
+access_jt_activite_manager,jt.activite.manager,model_jt_activite,base.group_system,1,1,1,1
+access_jt_dashboard_user,jt.dashboard.user,model_jt_dashboard,base.group_user,1,1,1,1
+access_jt_tache_user,jt.tache.user,model_jt_tache,base.group_user,1,1,1,0
+access_jt_tache_manager,jt.tache.manager,model_jt_tache,base.group_system,1,1,1,1
+access_jt_email_task_wizard_user,jt.email.task.wizard.user,model_jt_email_task_wizard,base.group_user,1,1,1,1
+access_jt_email_task_wizard_line_user,jt.email.task.wizard.line.user,model_jt_email_task_wizard_line,base.group_user,1,1,1,1
+access_jt_client_merge_wizard_user,jt.client.merge.wizard.user,model_jt_client_merge_wizard,base.group_user,1,1,1,1
+access_jt_sync_cookie_user,jt.sync.cookie.user,model_jt_sync_cookie,base.group_user,1,0,0,0
+access_jt_sync_cookie_admin,jt.sync.cookie.admin,model_jt_sync_cookie,jason_thomas_assurance.group_jt_admin,1,1,1,1

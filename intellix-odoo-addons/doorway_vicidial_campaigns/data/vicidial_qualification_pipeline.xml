@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="crm_team_vicidial_qualification_france" model="crm.team">
+        <field name="name">Appels — Qualification</field>
+        <field name="use_leads">True</field>
+        <field name="use_opportunities">True</field>
+        <field name="is_agence_doorway_pipeline">True</field>
+        <field name="uses_provenance_stages">False</field>
+        <field name="sequence">35</field>
+    </record>
+
+    <record id="crm_stage_vicidial_nouveau" model="crm.stage">
+        <field name="name">Nouveau</field>
+        <field name="sequence">1</field>
+        <field name="team_ids" eval="[(6, 0, [ref('crm_team_vicidial_qualification_france')])]"/>
+    </record>
+    <record id="crm_stage_vicidial_en_cours" model="crm.stage">
+        <field name="name">En cours de qualification</field>
+        <field name="sequence">2</field>
+        <field name="team_ids" eval="[(6, 0, [ref('crm_team_vicidial_qualification_france')])]"/>
+    </record>
+    <record id="crm_stage_vicidial_qualifie" model="crm.stage">
+        <field name="name">Qualifié — lead chaud</field>
+        <field name="sequence">3</field>
+        <field name="team_ids" eval="[(6, 0, [ref('crm_team_vicidial_qualification_france')])]"/>
+    </record>
+    <record id="crm_stage_vicidial_rdv" model="crm.stage">
+        <field name="name">RDV planifié</field>
+        <field name="sequence">4</field>
+        <field name="team_ids" eval="[(6, 0, [ref('crm_team_vicidial_qualification_france')])]"/>
+    </record>
+    <record id="crm_stage_vicidial_b2b" model="crm.stage">
+        <field name="name">B2B — À transmettre Karine</field>
+        <field name="sequence">5</field>
+        <field name="team_ids" eval="[(6, 0, [ref('crm_team_vicidial_qualification_france')])]"/>
+    </record>
+    <record id="crm_stage_vicidial_rappeler" model="crm.stage">
+        <field name="name">À rappeler</field>
+        <field name="sequence">6</field>
+        <field name="team_ids" eval="[(6, 0, [ref('crm_team_vicidial_qualification_france')])]"/>
+    </record>
+    <record id="crm_stage_vicidial_hors_cible" model="crm.stage">
+        <field name="name">Hors cible</field>
+        <field name="sequence">7</field>
+        <field name="fold" eval="True"/>
+        <field name="team_ids" eval="[(6, 0, [ref('crm_team_vicidial_qualification_france')])]"/>
+    </record>
+</odoo>

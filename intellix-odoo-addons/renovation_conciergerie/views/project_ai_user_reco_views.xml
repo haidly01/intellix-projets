@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_project_ai_user_reco_form" model="ir.ui.view">
+        <field name="name">project.ai.user.reco.form</field>
+        <field name="model">project.ai.user.reco</field>
+        <field name="arch" type="xml">
+            <form string="Mes recommandations IA">
+                <div class="alert alert-info" role="status">
+                    Recommandations personnalisées selon vos tâches et votre rythme de
+                    travail. Cliquez sur <b>Générer mon plan du jour</b> pour obtenir une
+                    priorisation. Chaque appel IA est tracé dans le Journal IA.
+                </div>
+                <group>
+                    <field name="summary_html" nolabel="1" readonly="1"/>
+                </group>
+                <group invisible="not reco_html">
+                    <field name="reco_html" nolabel="1" readonly="1"/>
+                </group>
+                <footer>
+                    <button name="action_generate" type="object"
+                            string="Générer mon plan du jour" class="btn-primary"/>
+                    <button string="Fermer" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_project_ai_user_reco" model="ir.actions.act_window">
+        <field name="name">Mes recommandations IA</field>
+        <field name="res_model">project.ai.user.reco</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_project_ai_user_reco"
+              name="Mes recommandations IA"
+              parent="project.menu_main_pm"
+              action="action_project_ai_user_reco"
+              groups="base.group_user"
+              sequence="95"/>
+
+    <record id="view_project_ai_help_form" model="ir.ui.view">
+        <field name="name">project.ai.help.form</field>
+        <field name="model">project.ai.help</field>
+        <field name="arch" type="xml">
+            <form string="Aide &amp; formation IA">
+                <field name="content_html" nolabel="1" readonly="1"/>
+                <footer>
+                    <button string="Fermer" class="btn-primary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_project_ai_help" model="ir.actions.act_window">
+        <field name="name">Aide &amp; formation IA</field>
+        <field name="res_model">project.ai.help</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_project_ai_help"
+              name="Aide &amp; formation IA"
+              parent="project.menu_main_pm"
+              action="action_project_ai_help"
+              groups="base.group_user"
+              sequence="96"/>
+
+    <record id="view_project_ai_chat_form" model="ir.ui.view">
+        <field name="name">project.ai.chat.form</field>
+        <field name="model">project.ai.chat</field>
+        <field name="arch" type="xml">
+            <form string="Assistant IA">
+                <field name="conversation_html" nolabel="1" readonly="1"/>
+                <group>
+                    <field name="user_input" nolabel="1"
+                           placeholder="Posez votre question… (ex : « Quelles sont mes priorités aujourd'hui ? »)"/>
+                </group>
+                <footer>
+                    <button name="action_send" type="object" string="Envoyer"
+                            class="btn-primary"/>
+                    <button string="Fermer" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_project_ai_chat" model="ir.actions.act_window">
+        <field name="name">Assistant IA</field>
+        <field name="res_model">project.ai.chat</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_project_ai_chat"
+              name="Assistant IA (chat)"
+              parent="project.menu_main_pm"
+              action="action_project_ai_chat"
+              groups="base.group_user"
+              sequence="94"/>
+</odoo>

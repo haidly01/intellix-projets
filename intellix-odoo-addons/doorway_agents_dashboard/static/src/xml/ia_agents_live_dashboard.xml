@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="doorway_agents_dashboard.IaAgentsLiveDashboard">
+        <div class="ia-live-dashboard o_action o_intellix_client_action">
+            <header class="ia-live-header">
+                <div>
+                    <h1>Monitoring live IA</h1>
+                    <p class="ia-live-sub">
+                        Sofia FR (<code>DW_FRB2C</code>) · Léa QC (<code>DW_QCB2C</code>)
+                        <t t-if="state.snapshot?.generated_at">
+                            · Généré <t t-esc="state.snapshot.generated_at"/>
+                        </t>
+                        <t t-if="state.snapshot?.date_paris">
+                            · Jour Paris <t t-esc="state.snapshot.date_paris"/>
+                        </t>
+                    </p>
+                    <p t-if="state.snapshot?.message" class="ia-live-banner">
+                        <i class="fa fa-info-circle"/> <t t-esc="state.snapshot.message"/>
+                    </p>
+                </div>
+                <div class="ia-live-actions">
+                    <span t-if="state.snapshot?.source" class="ia-live-source">
+                        Source : <t t-esc="state.snapshot.source"/>
+                    </span>
+                    <button type="button"
+                            class="btn btn-primary ia-live-refresh-btn"
+                            t-att-disabled="state.refreshing"
+                            t-on-click="onManualRefresh">
+                        <i t-att-class="state.refreshing ? 'fa fa-spinner fa-spin' : 'fa fa-refresh'"/>
+                        Actualiser live
+                    </button>
+                </div>
+            </header>
+
+            <t t-if="state.loading">
+                <div class="ia-live-loading">
+                    <i class="fa fa-spinner fa-spin"/> Chargement…
+                </div>
+            </t>
+            <t t-elif="state.error and !state.snapshot">
+                <div class="ia-live-error" t-esc="state.error"/>
+            </t>
+            <t t-else="">
+                <div class="ia-live-grid">
+                    <t t-foreach="campaignIds" t-as="cid" t-key="cid">
+                        <t t-set="meta" t-value="campaignMeta(cid)"/>
+                        <t t-set="camp" t-value="campaignData(cid)"/>
+                        <t t-set="iaLog" t-value="camp.ia_log or {}"/>
+                        <article class="ia-live-card">
+                            <h2>
+                                <t t-esc="meta.flag"/>
+                                <t t-esc="meta.title"/> — <code t-esc="meta.code"/>
+                            </h2>
+                            <div class="ia-live-kpi">
+                                <div>
+                                    <div class="ia-live-kpi__lbl">Appels (jour)</div>
+                                    <div class="ia-live-kpi__val" t-esc="camp.calls_today or 0"/>
+                                </div>
+                                <div>
+                                    <div class="ia-live-kpi__lbl">Connectés (length&gt;0)</div>
+                                    <div class="ia-live-kpi__val" t-esc="camp.connected_today or 0"/>
+                                </div>
+                                <div>
+                                    <div class="ia-live-kpi__lbl">Taux connexion</div>
+                                    <div class="ia-live-kpi__val ia-live-rate">
+                                        <t t-esc="formatRate(camp.connect_rate_pct)"/>%
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="ia-live-kpi__lbl">Logs Odoo</div>
+                                    <div class="ia-live-kpi__val" t-esc="camp.odoo_logs or 0"/>
+                                </div>
+                                <div>
+                                    <div class="ia-live-kpi__lbl">Hopper READY</div>
+                                    <div class="ia-live-kpi__val" t-esc="camp.hopper_ready or 0"/>
+                                </div>
+                                <div>
+                                    <div class="ia-live-kpi__lbl">auto_dial_level</div>
+                                    <div class="ia-live-kpi__val" t-esc="displayValue(camp.auto_dial_level, '?')"/>
+                                </div>
+                                <div>
+                                    <div class="ia-live-kpi__lbl">Campagne active</div>
+                                    <div class="ia-live-kpi__val" t-esc="displayValue(camp.active, '?')"/>
+                                </div>
+                                <div>
+                                    <div class="ia-live-kpi__lbl">Agents READY</div>
+                                    <div class="ia-live-kpi__val" t-esc="camp.agents_ready or 0"/>
+                                </div>
+                            </div>
+
+                            <div class="ia-live-section">
+                                <strong>Statuts VICIdial :</strong>
+                                <t t-if="camp.vicidial_statuses?.length">
+                                    <t t-foreach="camp.vicidial_statuses" t-as="pill" t-key="pill.key">
+                                        <span class="ia-live-pill">
+                                            <t t-esc="pill.key"/>
+                                            <strong t-esc="pill.count"/>
+                                        </span>
+                                    </t>
+                                </t>
+                                <span t-else="" class="ia-live-muted">—</span>
+                            </div>
+
+                            <div class="ia-live-section">
+                                <strong>Dispositions Odoo :</strong>
+                                <span class="ia-live-muted ia-live-hint">
+                                    (qualification CRM : Vente, Intérêt, Refus…)
+                                </span>
+                                <t t-if="camp.odoo_dispositions?.length">
+                                    <t t-foreach="camp.odoo_dispositions" t-as="pill" t-key="pill.key">
+                                        <span class="ia-live-pill ia-live-pill--teal">
+                                            <t t-esc="pill.key"/>
+                                            <strong t-esc="pill.count"/>
+                                        </span>
+                                    </t>
+                                </t>
+                                <span t-else="" class="ia-live-muted">
+                                    <t t-if="camp.odoo_logs">0 disposition</t>
+                                    <t t-else="">0 log Odoo</t>
+                                </span>
+                            </div>
+
+                            <div class="ia-live-section" t-if="camp.odoo_amd_results?.length">
+                                <strong>Résultat AMD (Odoo) :</strong>
+                                <t t-foreach="camp.odoo_amd_results" t-as="pill" t-key="pill.key">
+                                    <span class="ia-live-pill">
+                                        <t t-esc="pill.key"/>
+                                        <strong t-esc="pill.count"/>
+                                    </span>
+                                </t>
+                            </div>
+
+                            <div class="ia-live-section">
+                                <strong>
+                                    <t t-esc="camp.log_name or 'ia-live.log'"/>
+                                    (<t t-esc="state.snapshot?.date_paris or ''"/>) :
+                                </strong>
+                                OPENING <strong t-esc="iaLog.opening or 0"/>
+                                · EMPTY_REC
+                                <strong t-att-class="isBadEmptyRec(iaLog.empty_rec) ? 'ia-live-bad' : ''"
+                                        t-esc="iaLog.empty_rec or 0"/>
+                                · EMPTY_STT <strong t-esc="iaLog.empty_stt or 0"/>
+                                · EARLY_EMPTY <strong t-esc="iaLog.early_empty or 0"/>
+                            </div>
+                        </article>
+                    </t>
+                </div>
+                <footer class="ia-live-footer">
+                    Auto-refresh ~75 s · Fichier cron :
+                    <code>/opt/doorway/reports/ia_agents_live.json</code>
+                </footer>
+            </t>
+        </div>
+    </t>
+</templates>

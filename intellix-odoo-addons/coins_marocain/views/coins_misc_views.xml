@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_calendar_event_form_coins" model="ir.ui.view">
+        <field name="name">calendar.event.form.coins</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_coins_source" type="object" class="oe_stat_button" icon="fa-ticket"
+                        invisible="res_model not in ('coins.detente_booking', 'coins.reservation')">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">Réservation</span>
+                    </div>
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>

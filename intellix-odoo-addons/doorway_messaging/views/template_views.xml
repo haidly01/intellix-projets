@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_message_template_tree" model="ir.ui.view">
+        <field name="name">doorway.message.template.tree</field>
+        <field name="model">doorway.message.template</field>
+        <field name="arch" type="xml">
+            <list>
+                <header>
+                    <button name="action_sync_twilio_templates" type="object"
+                            string="Synchroniser les templates Twilio"
+                            class="btn-primary"/>
+                </header>
+                <field name="name"/>
+                <field name="canal"/>
+                <field name="twilio_content_sid" optional="show"/>
+                <field name="twilio_status" optional="show"/>
+                <field name="is_twilio_ready" optional="show"/>
+                <field name="actif"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_message_template_form" model="ir.ui.view">
+        <field name="name">doorway.message.template.form</field>
+        <field name="model">doorway.message.template</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_sync_twilio_templates" type="object"
+                            string="Synchroniser depuis Twilio" class="btn-secondary"
+                            help="Importe les templates Twilio Content et leur statut d'approbation (lecture seule)."/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Approuvé" bg_color="text-bg-success"
+                            invisible="not is_twilio_ready"/>
+                    <group>
+                        <field name="name"/>
+                        <field name="canal"/>
+                        <field name="actif"/>
+                        <field name="sujet" invisible="canal != 'email'"/>
+                    </group>
+                    <group string="Template Twilio approuvé"
+                           invisible="canal not in ('sms', 'whatsapp')">
+                        <field name="twilio_content_sid" placeholder="HXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"/>
+                        <field name="twilio_status"/>
+                        <field name="is_twilio_ready"/>
+                        <field name="twilio_language"/>
+                        <field name="twilio_messaging_service_sid" placeholder="MGxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"/>
+                        <field name="twilio_variables" placeholder='{"1": "name"}'/>
+                    </group>
+                    <field name="corps" widget="html" invisible="canal in ('sms', 'whatsapp', 'linkedin', 'gmb')"/>
+                    <field name="corps_text" invisible="canal not in ('sms', 'whatsapp', 'linkedin', 'gmb')"/>
+                    <field name="description"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_message_template" model="ir.actions.act_window">
+        <field name="name">Templates</field>
+        <field name="res_model">doorway.message.template</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

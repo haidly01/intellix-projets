@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_coins_reservation_form_riad" model="ir.ui.view">
+        <field name="name">coins.reservation.form.riad</field>
+        <field name="model">coins.reservation</field>
+        <field name="inherit_id" ref="coins_marocain.view_coins_reservation_form"/>
+        <field name="arch" type="xml">
+            <field name="room_id" position="after">
+                <field name="room_emplacement" invisible="not room_id"/>
+                <field name="room_rate" invisible="not room_id"/>
+                <field name="is_demo" invisible="1"/>
+                <field name="demo_mark" invisible="not is_demo"/>
+            </field>
+            <xpath expr="//sheet" position="before">
+                <div class="alert alert-warning" role="alert"
+                     style="margin:12px 16px 0;border:2px dashed #c27b2b;background:#fff6e6;color:#5c3d12;font-weight:600;"
+                     invisible="not is_demo">
+                    DÉMO CHANNNEX — réservation fictive. Ne pas traiter comme une réservation réelle.
+                    Référence préfixée DEMO-CHANNEX-. Hors production.
+                </div>
+            </xpath>
+            <field name="meal_breakfast" position="attributes">
+                <attribute name="string">Petit-déjeuner (inclus par défaut)</attribute>
+            </field>
+            <field name="amount_property" position="after">
+                <field name="riad_payment_transaction_id"/>
+                <field name="riad_payment_state"/>
+                <button name="action_capture_payment" type="object"
+                        string="Encaisser (manuel)"
+                        class="btn-primary"
+                        invisible="riad_payment_state == 'done'"/>
+                <field name="riad_taxable_guests"/>
+                <field name="riad_tourist_tax_rate"/>
+                <field name="riad_tax_currency_id" invisible="1"/>
+                <field name="riad_tourist_tax_amount"/>
+            </field>
+            <field name="referral_code" position="attributes">
+                <attribute name="invisible">0</attribute>
+                <attribute name="string">Source / code de référence</attribute>
+            </field>
+            <field name="referral_code" position="after">
+                <field name="riad_referral_exported" readonly="1"
+                       invisible="not referral_code"/>
+                <field name="riad_review_asked" readonly="1"/>
+                <field name="riad_review_ota_thanks" readonly="1"
+                       invisible="not riad_review_asked"/>
+                <field name="riad_review_followup_sent" readonly="1"
+                       invisible="not riad_review_asked or riad_review_ota_thanks"/>
+            </field>
+            <xpath expr="//page[@name='notes']" position="before">
+                <page string="Fiches de police" name="police">
+                    <div class="oe_button_box" name="police_buttons">
+                        <button name="action_send_checkin_link" type="object"
+                                string="Envoyer le lien de check-in" class="btn-primary"
+                                invisible="riad_guest_residency == 'moroccan'"/>
+                        <button name="action_prepare_police_fiches" type="object"
+                                string="Préparer une fiche par voyageur" class="btn-secondary"
+                                invisible="riad_guest_residency == 'moroccan'"/>
+                        <button name="action_print_police_fiches" type="object"
+                                string="Imprimer / exporter" class="btn-primary"
+                                invisible="riad_guest_residency == 'moroccan'"/>
+                    </div>
+                    <group>
+                        <group string="Nationalité (filtre fiche de police)">
+                            <field name="riad_guest_residency"/>
+                            <field name="riad_guest_nationality_id"/>
+                            <field name="riad_police_status" readonly="1"/>
+                            <field name="riad_checkin_expiry" readonly="1"
+                                   invisible="not riad_checkin_token"/>
+                        </group>
+                        <group string="Taxe de séjour (tous les voyageurs)">
+                            <field name="riad_taxable_guests"/>
+                            <field name="riad_tourist_tax_amount"/>
+                            <p colspan="2" class="text-muted">
+                                La taxe de séjour s'applique aussi aux résidents marocains.
+                                Ce filtre nationalité ne concerne que la fiche DGSN.
+                            </p>
+                        </group>
+                    </group>
+                    <p>Un séjour à plusieurs personnes = une fiche par voyageur étranger.
+                       Joindre la photo du passeport avant l'arrivée. Les nationaux marocains ne sont pas concernés.
+                       Les fiches transmises se conservent 2 ans, sans suppression.</p>
+                    <field name="riad_police_fiche_ids">
+                        <list>
+                            <field name="sequence" widget="handle"/>
+                            <field name="lastname"/>
+                            <field name="firstname"/>
+                            <field name="nationality_id"/>
+                            <field name="passport_number"/>
+                            <field name="passport_image" widget="image" options="{'size': [64, 40]}"/>
+                            <field name="state" widget="badge"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_coins_property_form_riad_rooms" model="ir.ui.view">
+        <field name="name">coins.property.form.riad.rooms</field>
+        <field name="model">coins.property</field>
+        <field name="inherit_id" ref="coins_marocain.view_coins_property_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='rooms']//list" position="inside">
+                <field name="emplacement"/>
+                <field name="price_per_night"/>
+                <field name="breakfast_included"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_riad_reservation_form" model="ir.actions.act_window">
+        <field name="name">Réservation</field>
+        <field name="res_model">coins.reservation</field>
+        <field name="view_mode">form,list,calendar</field>
+        <field name="context">{'default_booking_channel': 'backoffice', 'default_source': 'direct', 'default_meal_breakfast': True}</field>
+    </record>
+</odoo>

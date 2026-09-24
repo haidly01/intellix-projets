@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- 5.1 Anniversaire -->
+    <record id="pe_celebration_template_birthday_fr" model="pe.celebration.template">
+        <field name="name">Anniversaire — FR</field>
+        <field name="occasion_type">birthday</field>
+        <field name="lang">fr_FR</field>
+        <field name="email_subject">🎉 Joyeux anniversaire à {{prenom}} !</field>
+        <field name="email_body"><![CDATA[
+<p>Bonjour à toute l'équipe,</p>
+<p>Aujourd'hui, c'est l'anniversaire de <strong>{{prenom}} {{nom}}</strong> ! 🎂</p>
+<p>Toute l'équipe Intellix se joint pour lui souhaiter une excellente journée. N'hésitez pas à passer lui faire un petit coucou ou un message !</p>
+<p>Bonne journée à tous,<br/>L'équipe RH</p>
+        ]]></field>
+        <field name="notification_message">🎂 C'est l'anniversaire de {{prenom}} aujourd'hui — pensez à lui souhaiter !</field>
+    </record>
+
+    <!-- 5.2 Ancienneté 1 an -->
+    <record id="pe_celebration_template_anniversary_1y_fr" model="pe.celebration.template">
+        <field name="name">Ancienneté 1 an — FR</field>
+        <field name="occasion_type">anniversary_1y</field>
+        <field name="lang">fr_FR</field>
+        <field name="email_subject">🌱 {{prenom}} fête sa première année avec nous !</field>
+        <field name="email_body"><![CDATA[
+<p>Bonjour à tous,</p>
+<p>Il y a un an, <strong>{{prenom}} {{nom}}</strong> rejoignait l'équipe en tant que <strong>{{poste}}</strong>.</p>
+<p>Une première année riche en apprentissages — merci pour ton implication et bienvenue dans la suite de l'aventure Intellix !</p>
+<p>Belle continuation,<br/>L'équipe RH</p>
+        ]]></field>
+        <field name="notification_message">🌱 {{prenom}} célèbre 1 an chez Intellix aujourd'hui !</field>
+    </record>
+
+    <!-- 5.3 Ancienneté 3 ans -->
+    <record id="pe_celebration_template_anniversary_3y_fr" model="pe.celebration.template">
+        <field name="name">Ancienneté 3 ans — FR</field>
+        <field name="occasion_type">anniversary_3y</field>
+        <field name="lang">fr_FR</field>
+        <field name="email_subject">🎯 3 ans d'engagement pour {{prenom}} !</field>
+        <field name="email_body"><![CDATA[
+<p>Bonjour à toute l'équipe,</p>
+<p><strong>{{prenom}} {{nom}}</strong> ({{poste}}) célèbre aujourd'hui ses 3 années avec Intellix.</p>
+<p>Trois ans de contribution, de progression et d'engagement au sein de {{equipe}}. Merci {{prenom}} !</p>
+<p>L'équipe RH</p>
+        ]]></field>
+        <field name="notification_message">🎯 {{prenom}} fête 3 ans chez Intellix aujourd'hui — bravo !</field>
+    </record>
+
+    <!-- 5.4 Ancienneté 5 ans -->
+    <record id="pe_celebration_template_anniversary_5y_fr" model="pe.celebration.template">
+        <field name="name">Ancienneté 5 ans — FR</field>
+        <field name="occasion_type">anniversary_5y</field>
+        <field name="lang">fr_FR</field>
+        <field name="email_subject">🏆 5 ans d'aventure avec {{prenom}} !</field>
+        <field name="email_body"><![CDATA[
+<p>Bonjour à tous,</p>
+<p>Un cap important : <strong>{{prenom}} {{nom}}</strong> fête aujourd'hui ses 5 ans au sein d'Intellix, en tant que <strong>{{poste}}</strong> dans l'équipe {{equipe}}.</p>
+<p>Cinq années de fidélité, d'expertise et de contribution à la croissance de l'entreprise. Un immense merci, {{prenom}} !</p>
+<p>Toute l'équipe RH te souhaite encore de belles années à nos côtés.</p>
+        ]]></field>
+        <field name="notification_message">🏆 {{prenom}} fête 5 ans chez Intellix aujourd'hui — un grand bravo !</field>
+    </record>
+
+    <!-- 5.5 Ancienneté 10 ans+ -->
+    <record id="pe_celebration_template_anniversary_10y_fr" model="pe.celebration.template">
+        <field name="name">Ancienneté 10 ans+ — FR</field>
+        <field name="occasion_type">anniversary_10y</field>
+        <field name="lang">fr_FR</field>
+        <field name="email_subject">🌟 10 ans (et plus) de fidélité — merci {{prenom}} !</field>
+        <field name="email_body"><![CDATA[
+<p>Chère équipe,</p>
+<p>Aujourd'hui marque une étape exceptionnelle : <strong>{{prenom}} {{nom}}</strong> célèbre <strong>{{anciennete}} ans</strong> avec Intellix, en tant que <strong>{{poste}}</strong>.</p>
+<p>Une décennie (ou plus !) de confiance, d'expertise et de contribution majeure à notre développement. Merci infiniment, {{prenom}}, pour ton engagement durable.</p>
+<p>Avec toute notre reconnaissance,<br/>L'équipe RH</p>
+        ]]></field>
+        <field name="notification_message">🌟 {{prenom}} célèbre {{anciennete}} ans chez Intellix aujourd'hui — merci pour cette fidélité !</field>
+    </record>
+
+    <!-- 5.6 Performance -->
+    <record id="pe_celebration_template_performance_fr" model="pe.celebration.template">
+        <field name="name">Performance / objectif — FR</field>
+        <field name="occasion_type">performance</field>
+        <field name="lang">fr_FR</field>
+        <field name="email_subject">🚀 Bravo {{prenom}} — objectif atteint !</field>
+        <field name="email_body"><![CDATA[
+<p>Bonjour à toute l'équipe,</p>
+<p>Une belle nouvelle à partager : <strong>{{prenom}} {{nom}}</strong> ({{poste}}, équipe {{equipe}}) vient d'atteindre un objectif important :</p>
+<p>👉 <strong>{{detail}}</strong></p>
+<p>Félicitations pour ce résultat, {{prenom}} — un bel exemple pour toute l'équipe !</p>
+<p>L'équipe RH</p>
+        ]]></field>
+        <field name="notification_message">🚀 {{prenom}} a atteint un objectif clé : {{detail}}. Bravo !</field>
+    </record>
+
+    <!-- 5.7 Promotion -->
+    <record id="pe_celebration_template_promotion_fr" model="pe.celebration.template">
+        <field name="name">Promotion — FR</field>
+        <field name="occasion_type">promotion</field>
+        <field name="lang">fr_FR</field>
+        <field name="email_subject">📈 Félicitations à {{prenom}} pour sa promotion !</field>
+        <field name="email_body"><![CDATA[
+<p>Bonjour à tous,</p>
+<p>Nous sommes ravis d'annoncer que <strong>{{prenom}} {{nom}}</strong> évolue vers un nouveau poste : <strong>{{poste}}</strong>, au sein de l'équipe {{equipe}}.</p>
+<p>Cette promotion récompense le travail, l'implication et les résultats de {{prenom}} au cours des derniers mois. Toutes nos félicitations pour cette belle évolution !</p>
+<p>N'hésitez pas à venir la/le féliciter.</p>
+<p>L'équipe RH</p>
+        ]]></field>
+        <field name="notification_message">📈 Félicitations à {{prenom}}, désormais {{poste}} ! 🎉</field>
+    </record>
+
+    <!-- 5.8 Personnalisé -->
+    <record id="pe_celebration_template_custom_fr" model="pe.celebration.template">
+        <field name="name">Personnalisé / autre — FR</field>
+        <field name="occasion_type">custom</field>
+        <field name="lang">fr_FR</field>
+        <field name="email_subject">✨ Un mot pour {{prenom}}</field>
+        <field name="email_body"><![CDATA[
+<p>Bonjour à toute l'équipe,</p>
+<p>{{detail}}</p>
+<p>Toutes nos félicitations à <strong>{{prenom}} {{nom}}</strong> !</p>
+<p>L'équipe RH</p>
+        ]]></field>
+        <field name="notification_message">✨ {{detail}} — bravo {{prenom}} !</field>
+    </record>
+</odoo>

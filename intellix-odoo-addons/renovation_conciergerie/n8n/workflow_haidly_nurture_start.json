@@ -1,0 +1,149 @@
+{
+  "name": "Haidly — Séquence nurture (J+1 → J+14)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "haidly-nurture-start",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "hn0-webhook",
+      "name": "Webhook Nurture Start",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 400],
+      "webhookId": "haidly-nurture-start"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json;\nconst body = raw.body || raw;\nif (body.score === 'hot' || body.do_not_call || body.haidly_do_not_call) {\n  return [{ json: { ...body, skip_nurture: true } }];\n}\nreturn [{ json: { ...body, skip_nurture: false, relance_base: 'https://n8n.intellixcrm.com/webhook/haidly-relance-step' } }];"
+      },
+      "id": "hn1-prep",
+      "name": "Préparer contexte",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [240, 400]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "leftValue": "={{ $json.skip_nurture }}",
+              "rightValue": true,
+              "operator": { "type": "boolean", "operation": "equals" }
+            }
+          ]
+        }
+      },
+      "id": "hn2-skip",
+      "name": "Skip nurture?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [480, 400]
+    },
+    {
+      "parameters": { "amount": 1, "unit": "days" },
+      "id": "hn-w1",
+      "name": "Wait J+1",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [720, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n.intellixcrm.com/webhook/haidly-relance-step",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ ...$('Préparer contexte').item.json, relance_number: 1, days_since_request: 1 }) }}"
+      },
+      "id": "hn-r1",
+      "name": "Relance J+1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [960, 300]
+    },
+    {
+      "parameters": { "amount": 2, "unit": "days" },
+      "id": "hn-w3",
+      "name": "Wait J+3",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [1200, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n.intellixcrm.com/webhook/haidly-relance-step",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ ...$('Préparer contexte').item.json, relance_number: 2, days_since_request: 3 }) }}"
+      },
+      "id": "hn-r3",
+      "name": "Relance J+3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1440, 300]
+    },
+    {
+      "parameters": { "amount": 4, "unit": "days" },
+      "id": "hn-w7",
+      "name": "Wait J+7",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [1680, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n.intellixcrm.com/webhook/haidly-relance-step",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ ...$('Préparer contexte').item.json, relance_number: 3, days_since_request: 7 }) }}"
+      },
+      "id": "hn-r7",
+      "name": "Relance J+7",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1920, 300]
+    },
+    {
+      "parameters": { "amount": 7, "unit": "days" },
+      "id": "hn-w14",
+      "name": "Wait J+14",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [2160, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n.intellixcrm.com/webhook/haidly-relance-step",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ ...$('Préparer contexte').item.json, relance_number: 4, days_since_request: 14 }) }}"
+      },
+      "id": "hn-r14",
+      "name": "Relance J+14",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2400, 300]
+    }
+  ],
+  "connections": {
+    "Webhook Nurture Start": { "main": [[{ "node": "Préparer contexte", "type": "main", "index": 0 }]] },
+    "Préparer contexte": { "main": [[{ "node": "Skip nurture?", "type": "main", "index": 0 }]] },
+    "Skip nurture?": { "main": [[], [{ "node": "Wait J+1", "type": "main", "index": 0 }]] },
+    "Wait J+1": { "main": [[{ "node": "Relance J+1", "type": "main", "index": 0 }]] },
+    "Relance J+1": { "main": [[{ "node": "Wait J+3", "type": "main", "index": 0 }]] },
+    "Wait J+3": { "main": [[{ "node": "Relance J+3", "type": "main", "index": 0 }]] },
+    "Relance J+3": { "main": [[{ "node": "Wait J+7", "type": "main", "index": 0 }]] },
+    "Wait J+7": { "main": [[{ "node": "Relance J+7", "type": "main", "index": 0 }]] },
+    "Relance J+7": { "main": [[{ "node": "Wait J+14", "type": "main", "index": 0 }]] },
+    "Wait J+14": { "main": [[{ "node": "Relance J+14", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "tags": [{ "name": "haidly" }]
+}

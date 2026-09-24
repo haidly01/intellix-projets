@@ -1,0 +1,94 @@
+/* Coins Marocain — conversation d'accueil Yasmine (remplace le quiz) */
+.yas-accueil-card{
+  max-width:720px;margin:0 auto;background:#fff;
+  border:1px solid rgba(224,212,191,.7);border-radius:18px;
+  box-shadow:0 18px 48px rgba(58,47,35,.08);overflow:hidden;
+}
+.yas-accueil-head{
+  display:flex;align-items:center;gap:14px;padding:18px 22px;
+  background:linear-gradient(135deg,#1e4d8c 0%,#b8893f 100%);
+  color:#fff;
+}
+.yas-accueil-head img{
+  width:48px;height:48px;border-radius:50%;object-fit:cover;
+  border:2px solid rgba(255,255,255,.55);background:#fff;
+}
+.yas-accueil-head h3{
+  font-family:'Cardo',serif;font-size:1.25rem;margin:0;font-weight:700;
+}
+.yas-accueil-head p{margin:2px 0 0;font-size:.82rem;opacity:.92}
+.yas-accueil-body{
+  min-height:320px;max-height:480px;overflow-y:auto;padding:20px 22px;
+  background:var(--cream,#f5efe3) url("img/topo.webp");
+  background-size:400px;background-blend-mode:soft-light;
+  display:flex;flex-direction:column;gap:12px;
+}
+.yas-msg{
+  max-width:88%;padding:12px 15px;border-radius:16px;font-size:.95rem;
+  line-height:1.5;white-space:pre-wrap;
+}
+.yas-msg.bot{
+  background:#fff;border:1px solid var(--line,#e0d4bf);
+  border-bottom-left-radius:5px;align-self:flex-start;color:var(--ink,#2c2620);
+}
+.yas-msg.user{
+  background:var(--terracotta,#b8893f);color:#fff;
+  border-bottom-right-radius:5px;align-self:flex-end;
+}
+.yas-typing{
+  align-self:flex-start;display:flex;gap:5px;padding:12px 16px;
+  background:#fff;border:1px solid var(--line,#e0d4bf);border-radius:16px;
+  border-bottom-left-radius:5px;
+}
+.yas-typing span{
+  width:7px;height:7px;border-radius:50%;background:#1e4d8c;
+  animation:yasPulse 1.1s ease-in-out infinite;
+}
+.yas-typing span:nth-child(2){animation-delay:.18s;background:var(--terracotta,#b8893f)}
+.yas-typing span:nth-child(3){animation-delay:.36s;background:#c8912a}
+@keyframes yasPulse{
+  0%,80%,100%{transform:translateY(0);opacity:.35}
+  40%{transform:translateY(-4px);opacity:1}
+}
+.yas-reco{
+  align-self:stretch;margin-top:4px;padding:16px;
+  background:linear-gradient(160deg,#fff 0%,#fbf5ea 100%);
+  border:1px solid rgba(184,137,63,.35);border-radius:14px;
+}
+.yas-reco-acts{display:grid;gap:10px;margin:12px 0}
+.yas-reco-act{
+  display:flex;gap:12px;align-items:center;padding:10px 12px;
+  background:#fff;border:1px solid var(--line,#e0d4bf);border-radius:12px;
+}
+.yas-reco-act .thumb{
+  width:56px;height:56px;border-radius:10px;flex:none;
+  background:linear-gradient(135deg,#1e4d8c,#b8893f);opacity:.85;
+}
+.yas-reco-act h4{margin:0;font-family:'Cardo',serif;font-size:1.05rem;color:var(--ink,#2c2620)}
+.yas-reco-act p{margin:2px 0 0;font-size:.82rem;color:var(--muted,#7a6f63)}
+.yas-reco-cta{
+  display:inline-block;margin-top:8px;background:var(--terracotta,#b8893f);
+  color:#fff!important;font-weight:600;padding:12px 18px;border-radius:11px;
+  text-decoration:none;border:none;cursor:pointer;font-family:inherit;
+}
+.yas-reco-cta:hover{filter:brightness(1.05)}
+.yas-accueil-foot{
+  display:flex;gap:10px;align-items:flex-end;padding:14px 16px;
+  border-top:1px solid var(--line,#e0d4bf);background:#fff;
+}
+.yas-accueil-foot textarea{
+  flex:1;border:1px solid #d8bd8a;border-radius:12px;padding:11px 13px;
+  font-family:inherit;font-size:.95rem;resize:none;max-height:90px;
+  background:var(--cream,#f5efe3);color:var(--ink,#2c2620);min-height:44px;
+}
+.yas-accueil-foot textarea:focus{outline:2px solid var(--ochre,#c8912a);border-color:var(--ochre,#c8912a)}
+.yas-accueil-foot button{
+  width:44px;height:44px;border:none;border-radius:12px;cursor:pointer;
+  background:linear-gradient(135deg,#1e4d8c,#b8893f);color:#fff;font-size:1.15rem;
+  display:flex;align-items:center;justify-content:center;flex:none;
+}
+.yas-accueil-foot button:disabled{opacity:.45;cursor:wait}
+@media(max-width:560px){
+  .yas-accueil-body{min-height:280px;max-height:420px;padding:16px}
+  .yas-msg{max-width:94%}
+}

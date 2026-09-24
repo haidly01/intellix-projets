@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="deco_type_fleuriste" model="coins.deco.prestataire.type">
+        <field name="name">Fleuriste</field>
+        <field name="code">fleuriste</field>
+        <field name="sequence">10</field>
+    </record>
+    <record id="deco_type_mobilier" model="coins.deco.prestataire.type">
+        <field name="name">Mobilier</field>
+        <field name="code">mobilier</field>
+        <field name="sequence">20</field>
+    </record>
+    <record id="deco_type_chapiteau" model="coins.deco.prestataire.type">
+        <field name="name">Chapiteau</field>
+        <field name="code">chapiteau</field>
+        <field name="sequence">30</field>
+    </record>
+    <record id="deco_type_decoration_generale" model="coins.deco.prestataire.type">
+        <field name="name">Décoration générale</field>
+        <field name="code">decoration_generale</field>
+        <field name="sequence">40</field>
+    </record>
+
+    <record id="deco_theme_oriental_traditionnel" model="coins.deco.prestataire.theme">
+        <field name="name">Oriental traditionnel</field>
+        <field name="code">oriental_traditionnel</field>
+        <field name="sequence">10</field>
+    </record>
+    <record id="deco_theme_moderne_minimaliste" model="coins.deco.prestataire.theme">
+        <field name="name">Moderne minimaliste</field>
+        <field name="code">moderne_minimaliste</field>
+        <field name="sequence">20</field>
+    </record>
+    <record id="deco_theme_boheme_nature" model="coins.deco.prestataire.theme">
+        <field name="name">Bohème nature</field>
+        <field name="code">boheme_nature</field>
+        <field name="sequence">30</field>
+    </record>
+    <record id="deco_theme_nomade_desert" model="coins.deco.prestataire.theme">
+        <field name="name">Nomade désert</field>
+        <field name="code">nomade_desert</field>
+        <field name="sequence">40</field>
+    </record>
+    <record id="deco_theme_romantique_classique" model="coins.deco.prestataire.theme">
+        <field name="name">Romantique classique</field>
+        <field name="code">romantique_classique</field>
+        <field name="sequence">50</field>
+    </record>
+    <record id="deco_theme_festif_colore" model="coins.deco.prestataire.theme">
+        <field name="name">Festif coloré</field>
+        <field name="code">festif_colore</field>
+        <field name="sequence">60</field>
+    </record>
+</odoo>

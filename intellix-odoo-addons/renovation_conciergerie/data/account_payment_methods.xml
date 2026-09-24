@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <record id="payment_method_ix_card_in" model="account.payment.method">
+            <field name="name">Carte de crédit</field>
+            <field name="code">ix_card</field>
+            <field name="payment_type">inbound</field>
+        </record>
+        <record id="payment_method_ix_interac_in" model="account.payment.method">
+            <field name="name">Virement Interac</field>
+            <field name="code">ix_interac</field>
+            <field name="payment_type">inbound</field>
+        </record>
+        <record id="payment_method_ix_transfer_in" model="account.payment.method">
+            <field name="name">Transfert bancaire</field>
+            <field name="code">ix_transfer</field>
+            <field name="payment_type">inbound</field>
+        </record>
+        <record id="payment_method_ix_cash_in" model="account.payment.method">
+            <field name="name">Espèces</field>
+            <field name="code">ix_cash</field>
+            <field name="payment_type">inbound</field>
+        </record>
+        <function model="account.payment.method" name="_intellix_sync_payment_method_lines"/>
+        <function model="account.account" name="_intellix_activate_outstanding_payment_accounts"/>
+    </data>
+</odoo>

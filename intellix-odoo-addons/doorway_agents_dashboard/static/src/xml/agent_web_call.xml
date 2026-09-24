@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="doorway_agents_dashboard.AgentWebCall">
+        <div class="ix-web-call o_action o_intellix_client_action">
+
+            <header class="ix-web-call__hero">
+                <div>
+                    <h1>Test agent — appel web</h1>
+                    <p t-if="state.agentName">
+                        Agent : <strong t-esc="state.agentName"/>
+                    </p>
+                    <p t-if="state.stackLabel" class="ix-web-call__stack">
+                        Stack : <strong t-esc="state.stackLabel"/>
+                    </p>
+                    <p t-if="state.fallbackReason" class="ix-web-call__hint">
+                        n8n : <span t-esc="state.fallbackReason"/>
+                    </p>
+                    <p t-if="state.scenarioHint" class="ix-web-call__hint" t-esc="state.scenarioHint"/>
+                    <p t-if="state.scriptLabel" class="ix-web-call__script-label">
+                        Script : <strong t-esc="state.scriptLabel"/>
+                    </p>
+                    <p t-if="state.firstMessagePreview" class="ix-web-call__hint">
+                        Ouverture : <em t-esc="state.firstMessagePreview"/>
+                    </p>
+                </div>
+                <button type="button" class="ix-web-call__back" t-on-click="backToDashboard">
+                    <i class="fa fa-arrow-left"/> Dashboard
+                </button>
+            </header>
+
+            <t t-if="state.phase === 'error'">
+                <div class="ix-web-call__error">
+                    <i class="fa fa-exclamation-triangle"/>
+                    <p t-esc="state.error"/>
+                </div>
+            </t>
+
+            <t t-if="state.phase === 'ready' or state.phase === 'live'">
+                <section class="ix-web-call__panel">
+                    <div class="ix-web-call__status">
+                        <span t-att-class="'ix-web-call__dot ' + (state.phase === 'live' ? 'ix-web-call__dot--live' : '')"/>
+                        <span t-esc="state.statusText"/>
+                    </div>
+                    <div class="ix-web-call__actions">
+                        <button type="button" class="ix-web-call__btn ix-web-call__btn--primary"
+                                t-if="state.phase === 'ready'"
+                                t-att-disabled="state.busy"
+                                t-on-click="startCall">
+                            <i class="fa fa-microphone"/> Démarrer l'appel web
+                        </button>
+                        <button type="button" class="ix-web-call__btn ix-web-call__btn--danger"
+                                t-if="state.phase === 'live'"
+                                t-att-disabled="state.busy"
+                                t-on-click="endCall">
+                            <i class="fa fa-stop"/> Terminer l'appel
+                        </button>
+                    </div>
+                    <div class="ix-web-call__script-box" t-if="state.scriptPreview">
+                        <div class="ix-web-call__script-head">
+                            <span>Script effectif envoyé à l'agent</span>
+                            <span class="ix-web-call__script-badge" t-if="state.scriptHasImprovements">
+                                Qualification lead J+0
+                            </span>
+                            <button type="button" class="ix-web-call__link-btn"
+                                    t-on-click="openAgentPrompt">Éditer le prompt</button>
+                            <button type="button" class="ix-web-call__link-btn"
+                                    t-if="state.scriptIsLinked"
+                                    t-on-click="copyScriptToAgent">Copier sur cet agent</button>
+                        </div>
+                        <pre class="ix-web-call__script-preview" t-esc="state.scriptPreview"/>
+                    </div>
+                    <p class="ix-web-call__help">
+                        Autorisez le micro. Vérifiez que l'onglet Odoo n'est pas muet (icône haut-parleur
+                        dans la barre d'adresse) et que le volume système est actif.
+                    </p>
+                    <p t-if="state.agentMode" class="ix-web-call__hint">
+                        Mode : <strong t-esc="state.agentMode === 'speaking' ? 'Agent en train de parler' : (state.agentMode === 'listening' ? 'Écoute en cours' : state.agentMode)"/>
+                    </p>
+                    <t t-if="state.error">
+                        <p class="ix-web-call__error-inline" t-esc="state.error"/>
+                    </t>
+                    <div class="ix-web-call__transcript" t-if="state.transcriptLines.length">
+                        <h3>Transcription en direct</h3>
+                        <t t-foreach="state.transcriptLines" t-as="line" t-key="line_index">
+                            <p t-att-class="'ix-web-call__line ix-web-call__line--' + line.role">
+                                <strong t-esc="line.role === 'user' ? 'Vous' : 'Agent'"/> :
+                                <span t-esc="line.text"/>
+                            </p>
+                        </t>
+                    </div>
+                </section>
+            </t>
+
+            <t t-if="state.phase === 'feedback' and state.result">
+                <section class="ix-web-call__panel">
+                    <h2>Résultat du test</h2>
+                    <div class="ix-web-call__scores">
+                        <article>
+                            <span>Score global</span>
+                            <strong><t t-esc="state.result.score_global"/>/100</strong>
+                        </article>
+                        <article>
+                            <span>Durée</span>
+                            <strong><t t-esc="state.durationSec"/>s</strong>
+                        </article>
+                    </div>
+                    <t t-if="state.result.analyse_ia">
+                        <h3>Analyse IA</h3>
+                        <pre class="ix-web-call__analysis" t-esc="state.result.analyse_ia"/>
+                    </t>
+                </section>
+
+                <section class="ix-web-call__panel ix-web-call__feedback">
+                    <h2>Vos commentaires pour améliorer l'agent</h2>
+                    <p>Qu'avez-vous observé ? Votre retour alimente l'assistance IA de performance.</p>
+
+                    <div class="ix-web-call__stars">
+                        <span>Note :</span>
+                        <t t-foreach="[1,2,3,4,5]" t-as="star" t-key="star">
+                            <button type="button"
+                                    t-att-class="'ix-web-call__star' + (state.rating >= star ? ' active' : '')"
+                                    t-on-click="() => this.setRating(star)">
+                                <i class="fa fa-star"/>
+                            </button>
+                        </t>
+                    </div>
+
+                    <label class="ix-web-call__label">Commentaire</label>
+                    <textarea class="ix-web-call__textarea"
+                              t-att-value="state.comment"
+                              placeholder="Ex: L'agent répète la question budget, ton trop robotique, transfert humain non déclenché…"
+                              t-on-input="(e) => state.comment = e.target.value"/>
+
+                    <div class="ix-web-call__issues">
+                        <span>Points à corriger :</span>
+                        <t t-foreach="[
+                            ['tone', 'Ton / voix'],
+                            ['script', 'Script'],
+                            ['qualification', 'Qualification'],
+                            ['latency', 'Latence'],
+                            ['actions', 'Actions'],
+                            ['other', 'Autre']
+                        ]" t-as="issue" t-key="issue[0]">
+                            <button type="button"
+                                    t-att-class="'ix-web-call__chip' + (state.issues[issue[0]] ? ' active' : '')"
+                                    t-on-click="() => this.toggleIssue(issue[0])"
+                                    t-esc="issue[1]"/>
+                        </t>
+                    </div>
+
+                    <div class="ix-web-call__actions">
+                        <button type="button" class="ix-web-call__btn ix-web-call__btn--primary"
+                                t-att-disabled="state.busy"
+                                t-on-click="submitFeedback">
+                            Enregistrer mes commentaires
+                        </button>
+                        <button type="button" class="ix-web-call__btn ix-web-call__btn--ghost"
+                                t-on-click="skipFeedback">
+                            Passer
+                        </button>
+                    </div>
+                </section>
+            </t>
+
+            <t t-if="state.phase === 'assist' or state.phase === 'done'">
+                <section class="ix-web-call__panel ix-web-call__assist">
+                    <h2><i class="fa fa-magic"/> Assistance IA — améliorer les performances</h2>
+                    <p>
+                        Claude analyse votre test et vos commentaires pour proposer des améliorations
+                        concrètes au prompt de l'agent.
+                    </p>
+                    <button type="button" class="ix-web-call__btn ix-web-call__btn--primary"
+                            t-if="state.phase === 'assist'"
+                            t-att-disabled="state.busy"
+                            t-on-click="runAiAssist">
+                        <i class="fa fa-robot"/> Générer les recommandations IA
+                    </button>
+
+                    <t t-if="state.aiResult">
+                        <t t-if="state.aiResult.analysis">
+                            <h3>Diagnostic</h3>
+                            <p t-esc="state.aiResult.analysis"/>
+                        </t>
+                        <t t-if="state.aiResult.weaknesses and state.aiResult.weaknesses.length">
+                            <h3>Points faibles</h3>
+                            <t t-foreach="state.aiResult.weaknesses" t-as="w" t-key="w_index">
+                                <article class="ix-web-call__weakness">
+                                    <strong t-esc="w.title"/>
+                                    <blockquote t-esc="w.verbatim"/>
+                                </article>
+                            </t>
+                        </t>
+                        <t t-if="state.aiResult.prompt_suggestions and state.aiResult.prompt_suggestions.length">
+                            <h3>Suggestions pour le prompt</h3>
+                            <ul>
+                                <t t-foreach="state.aiResult.prompt_suggestions" t-as="sug" t-key="sug_index">
+                                    <li t-esc="sug"/>
+                                </t>
+                            </ul>
+                        </t>
+                        <div class="ix-web-call__actions">
+                            <button type="button" class="ix-web-call__btn ix-web-call__btn--secondary"
+                                    t-on-click="openPerformance">
+                                Ouvrir Performance IA
+                            </button>
+                            <button type="button" class="ix-web-call__btn ix-web-call__btn--ghost"
+                                    t-on-click="backToDashboard">
+                                Retour au dashboard
+                            </button>
+                        </div>
+                    </t>
+                </section>
+            </t>
+
+            <t t-if="state.phase === 'feedback' or state.phase === 'assist' or state.phase === 'done'">
+                <section class="ix-web-call__panel ix-web-call__prod">
+                    <h2><i class="fa fa-rocket"/> Passer en production</h2>
+                    <p>
+                        L'agent est validé en test web. Démarrez la campagne sortante pour quitter
+                        la phase test et lancer les appels réels.
+                    </p>
+                    <ul class="ix-web-call__prod-checklist">
+                        <li>Sync du prompt vers ElevenLabs</li>
+                        <li>Création ou mise à jour de la campagne VICIdial</li>
+                        <li>Démarrage de la campagne (si VICIdial est disponible)</li>
+                    </ul>
+                    <div class="ix-web-call__actions">
+                        <button type="button"
+                                class="ix-web-call__btn ix-web-call__btn--prod"
+                                t-att-disabled="state.busy"
+                                t-on-click="startCampaign">
+                            <i class="fa fa-play"/> Démarrer la campagne
+                        </button>
+                        <button type="button"
+                                class="ix-web-call__btn ix-web-call__btn--ghost"
+                                t-att-disabled="state.busy"
+                                t-on-click="openCampaignConfig">
+                            <i class="fa fa-cog"/> Configurer la campagne
+                        </button>
+                    </div>
+                </section>
+            </t>
+        </div>
+    </t>
+</templates>

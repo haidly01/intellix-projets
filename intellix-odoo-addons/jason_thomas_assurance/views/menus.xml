@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <menuitem id="menu_jt_root"
+    name="Jason Thomas Assurance"
+    sequence="5"
+    action="action_jt_dashboard"
+    groups="jason_thomas_assurance.group_jt_admin"
+    web_icon="jason_thomas_assurance,static/description/icon.png"/>
+
+  <menuitem id="menu_jt_dashboard"
+    name="Tableau de bord"
+    parent="menu_jt_root"
+    action="action_jt_dashboard"
+    sequence="5"/>
+
+  <menuitem id="menu_jt_clients"
+    name="Clients"
+    parent="menu_jt_root"
+    action="action_jt_client"
+    sequence="10"/>
+
+  <menuitem id="menu_jt_anniversaires"
+    name="Anniversaires"
+    parent="menu_jt_root"
+    action="action_jt_client_anniversaires"
+    sequence="15"/>
+
+  <menuitem id="menu_jt_polices"
+    name="Polices"
+    parent="menu_jt_root"
+    action="action_jt_police"
+    sequence="20"/>
+
+  <menuitem id="menu_jt_renewals"
+    name="Renouvellements 30j"
+    parent="menu_jt_root"
+    action="action_jt_police_renewals"
+    sequence="25"/>
+
+  <menuitem id="menu_jt_courriel"
+    name="Courriel"
+    parent="menu_jt_root"
+    action="doorway_crm.action_doorway_crm_webmail"
+    sequence="28"/>
+
+  <menuitem id="menu_jt_taches"
+    name="Tâches"
+    parent="menu_jt_root"
+    action="action_jt_tache"
+    sequence="29"/>
+
+  <menuitem id="menu_jt_calendar"
+    name="Calendrier"
+    parent="menu_jt_root"
+    action="calendar.action_calendar_event"
+    groups="jason_thomas_assurance.group_jt_admin"
+    sequence="30"/>
+
+  <menuitem id="menu_jt_messages"
+    name="Messages"
+    parent="menu_jt_root"
+    action="doorway_messaging.action_messaging_hub"
+    groups="jason_thomas_assurance.group_jt_admin"
+    sequence="35"/>
+
+  <menuitem id="menu_jt_agents"
+    name="Agent IA"
+    parent="menu_jt_root"
+    action="doorway_agents_dashboard.action_agents_dashboard"
+    groups="jason_thomas_assurance.group_jt_admin"
+    sequence="40"/>
+
+  <menuitem id="menu_jt_sync_cookie"
+    name="Sync portails"
+    parent="menu_jt_root"
+    action="action_jt_sync_cookie"
+    sequence="45"
+    groups="jason_thomas_assurance.group_jt_admin"/>
+</odoo>

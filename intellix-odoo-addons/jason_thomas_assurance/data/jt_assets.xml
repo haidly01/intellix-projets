@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="asset_jt_theme" model="ir.asset">
+    <field name="name">jt.theme</field>
+    <field name="bundle">web.assets_backend</field>
+    <field name="path">jason_thomas_assurance/static/css/jt_theme.css</field>
+    <field name="sequence" eval="10100"/>
+  </record>
+  <record id="asset_jt_dashboard_css" model="ir.asset">
+    <field name="name">jt.dashboard.css</field>
+    <field name="bundle">web.assets_backend</field>
+    <field name="path">jason_thomas_assurance/static/css/jt_dashboard.css</field>
+    <field name="sequence" eval="10101"/>
+  </record>
+  <record id="asset_jt_shell_js" model="ir.asset">
+    <field name="name">jt.shell.js</field>
+    <field name="bundle">web.assets_backend</field>
+    <field name="path">jason_thomas_assurance/static/src/js/jt_shell.js</field>
+    <field name="sequence" eval="10102"/>
+  </record>
+</odoo>

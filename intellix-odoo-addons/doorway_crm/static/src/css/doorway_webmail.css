@@ -1,0 +1,848 @@
+/* Webmail CRM — interface 3 panneaux (style Hostinger) */
+.o_action:has(.doorway-webmail),
+.o_action_manager:has(.doorway-webmail) .o_action,
+.o_action:has(.doorway-webmail) .o_content {
+    height: calc(100vh - 46px) !important;
+    max-height: calc(100vh - 46px) !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+}
+
+.doorway-webmail.o_intellix_client_action {
+    --wm-text: var(--ix-text, #f1f5f9);
+    --wm-muted: var(--ix-text-muted, #94a3b8);
+    --wm-surface: var(--ix-surface, #1a1a2e);
+    --wm-surface-alt: var(--ix-surface-elevated, #1e1e32);
+    --wm-border: var(--ix-border, #334155);
+    --wm-accent: var(--ix-accent, #6366f1);
+    --wm-hover: var(--ix-surface-hover, #2a2a48);
+    background: var(--ix-bg, #0a0a1a);
+    color: var(--wm-text);
+    height: 100%;
+    max-height: calc(100vh - 46px);
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    font-family: var(--ix-font, "DM Sans", system-ui, sans-serif);
+}
+
+/* Sidebar */
+.doorway-webmail .wm-sidebar {
+    width: 240px;
+    min-width: 220px;
+    background: var(--wm-surface);
+    border-right: 1px solid var(--wm-border);
+    display: flex;
+    flex-direction: column;
+    padding: 16px 12px;
+    gap: 16px;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.doorway-webmail .wm-btn-compose {
+    background: var(--wm-accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+}
+
+.doorway-webmail .wm-btn-compose:hover {
+    filter: brightness(1.08);
+}
+
+.doorway-webmail .wm-section-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--wm-muted);
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.doorway-webmail .wm-mailbox-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 8px 10px;
+    cursor: pointer;
+    color: var(--wm-text);
+    margin-bottom: 4px;
+}
+
+.doorway-webmail .wm-mailbox-item:hover {
+    background: var(--wm-hover);
+}
+
+.doorway-webmail .wm-mailbox-item.active {
+    background: var(--wm-hover);
+    border-color: var(--wm-accent);
+}
+
+.doorway-webmail .wm-mb-name {
+    display: block;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.doorway-webmail .wm-mb-email {
+    display: block;
+    font-size: 11px;
+    color: var(--wm-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.doorway-webmail .wm-mb-count {
+    display: inline-block;
+    margin-top: 4px;
+    font-size: 10px;
+    background: var(--wm-border);
+    border-radius: 999px;
+    padding: 1px 8px;
+    color: var(--wm-muted);
+}
+
+.doorway-webmail .wm-folder {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 10px;
+    color: var(--wm-muted);
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.doorway-webmail .wm-folder:hover,
+.doorway-webmail .wm-folder.active {
+    background: var(--wm-hover);
+    color: var(--wm-text);
+}
+
+.doorway-webmail .wm-folder.active {
+    font-weight: 600;
+    color: var(--wm-accent);
+}
+
+.doorway-webmail .wm-sidebar-actions {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.doorway-webmail .wm-btn-secondary {
+    background: var(--wm-surface-alt);
+    color: var(--wm-text);
+    border: 1px solid var(--wm-border);
+    border-radius: 6px;
+    padding: 7px 12px;
+    cursor: pointer;
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: center;
+}
+
+.doorway-webmail .wm-btn-secondary:hover:not(:disabled) {
+    border-color: var(--wm-accent);
+}
+
+.doorway-webmail .wm-btn-secondary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.doorway-webmail .wm-link-btn {
+    background: none;
+    border: none;
+    color: var(--wm-accent);
+    cursor: pointer;
+    font-size: 12px;
+    padding: 0;
+    text-decoration: underline;
+}
+
+/* Message list */
+.doorway-webmail .wm-list-panel {
+    width: 380px;
+    min-width: 300px;
+    border-right: 1px solid var(--wm-border);
+    background: var(--wm-surface-alt);
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.doorway-webmail .wm-list-header {
+    padding: 14px 14px 10px;
+    border-bottom: 1px solid var(--wm-border);
+}
+
+.doorway-webmail .wm-list-title {
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 8px;
+}
+
+.doorway-webmail .wm-list-sub {
+    display: block;
+    font-size: 11px;
+    color: var(--wm-muted);
+    font-weight: 400;
+}
+
+.doorway-webmail .wm-search {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--wm-border);
+    background: var(--wm-surface);
+    color: var(--wm-text);
+    font-size: 13px;
+}
+
+.doorway-webmail .wm-message-list {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.doorway-webmail .wm-message-row {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--wm-border);
+    cursor: pointer;
+    position: relative;
+}
+
+.doorway-webmail .wm-message-row:hover {
+    background: var(--wm-hover);
+}
+
+.doorway-webmail .wm-message-row.selected {
+    background: var(--wm-hover);
+    border-left: 3px solid var(--wm-accent);
+    padding-left: 11px;
+}
+
+.doorway-webmail .wm-row-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 2px;
+}
+
+.doorway-webmail .wm-sender {
+    font-weight: 600;
+    font-size: 13px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+}
+
+.doorway-webmail .wm-date {
+    font-size: 11px;
+    color: var(--wm-muted);
+    flex-shrink: 0;
+}
+
+.doorway-webmail .wm-subject {
+    font-size: 13px;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-bottom: 2px;
+}
+
+.doorway-webmail .wm-snippet {
+    font-size: 12px;
+    color: var(--wm-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.doorway-webmail .wm-attach-badge {
+    position: absolute;
+    right: 10px;
+    bottom: 8px;
+    font-size: 10px;
+    color: var(--wm-muted);
+}
+
+.doorway-webmail .wm-list-footer {
+    padding: 8px 14px;
+    font-size: 11px;
+    color: var(--wm-muted);
+    border-top: 1px solid var(--wm-border);
+}
+
+/* Content panel */
+.doorway-webmail .wm-content-panel {
+    flex: 1;
+    min-width: 0;
+    background: var(--wm-surface);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.doorway-webmail .wm-placeholder {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--wm-muted);
+    gap: 8px;
+}
+
+.doorway-webmail .wm-placeholder .fa {
+    font-size: 48px;
+    opacity: 0.4;
+}
+
+.doorway-webmail .wm-read {
+    padding: 20px 24px;
+    flex: 1;
+}
+
+.doorway-webmail .wm-read-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.doorway-webmail .wm-read-subject {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.3;
+}
+
+.doorway-webmail .wm-read-actions {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.doorway-webmail .wm-read-meta {
+    font-size: 13px;
+    color: var(--wm-muted);
+    margin-bottom: 16px;
+    line-height: 1.6;
+}
+
+.doorway-webmail .wm-read-meta strong {
+    color: var(--wm-text);
+}
+
+.doorway-webmail .wm-attachments {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.doorway-webmail .wm-attach-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: var(--wm-surface-alt);
+    border: 1px solid var(--wm-border);
+    border-radius: 6px;
+    color: var(--wm-accent);
+    font-size: 12px;
+    text-decoration: none;
+}
+
+.doorway-webmail .wm-body {
+    background: #fff;
+    color: #1e293b;
+    border-radius: 8px;
+    padding: 20px 24px;
+    min-height: 200px;
+    line-height: 1.6;
+    font-size: 14px;
+    overflow-x: auto;
+    word-break: break-word;
+}
+
+.doorway-webmail .wm-body img {
+    max-width: 100%;
+    height: auto;
+}
+
+.doorway-webmail .wm-body a {
+    color: #4f46e5;
+}
+
+/* Compose */
+.doorway-webmail .wm-compose {
+    padding: 20px 24px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.doorway-webmail .wm-compose-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.doorway-webmail .wm-compose-header h3 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.doorway-webmail .wm-btn-icon {
+    background: transparent;
+    border: none;
+    color: var(--wm-muted);
+    cursor: pointer;
+    font-size: 18px;
+    padding: 4px 8px;
+}
+
+.doorway-webmail .wm-compose-fields {
+    display: grid;
+    grid-template-columns: 72px 1fr;
+    gap: 8px 12px;
+    align-items: center;
+    flex: 1;
+}
+
+.doorway-webmail .wm-compose-fields label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--wm-muted);
+    text-align: right;
+}
+
+.doorway-webmail .wm-input,
+.doorway-webmail .wm-textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--wm-border);
+    background: var(--wm-surface-alt);
+    color: var(--wm-text);
+    font-size: 13px;
+    font-family: inherit;
+}
+
+.doorway-webmail .wm-textarea {
+    resize: vertical;
+    min-height: 200px;
+    grid-column: 2;
+}
+
+.doorway-webmail .wm-cc-toggle {
+    grid-column: 2;
+    justify-self: start;
+    margin-bottom: 4px;
+}
+
+.doorway-webmail .wm-compose-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--wm-border);
+}
+
+.doorway-webmail .wm-btn-primary {
+    background: var(--wm-accent);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 9px 18px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.doorway-webmail .wm-btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.doorway-webmail .wm-loading,
+.doorway-webmail .wm-empty-list,
+.doorway-webmail .wm-empty-hint {
+    padding: 24px 16px;
+    text-align: center;
+    color: var(--wm-muted);
+    font-size: 13px;
+}
+
+.doorway-webmail .wm-status {
+    padding: 8px 14px;
+    font-size: 12px;
+    color: #86efac;
+    background: rgba(34, 197, 94, 0.1);
+    border-bottom: 1px solid var(--wm-border);
+}
+
+.doorway-webmail .wm-muted {
+    color: var(--wm-muted);
+    font-size: 12px;
+}
+
+@media (max-width: 1100px) {
+    .doorway-webmail .wm-sidebar {
+        width: 200px;
+        min-width: 180px;
+    }
+    .doorway-webmail .wm-list-panel {
+        width: 300px;
+        min-width: 260px;
+    }
+}
+
+@media (max-width: 900px) {
+    .o_web_client .o_action_manager .o_action:has(.doorway-webmail) {
+        display: flex !important;
+        flex-direction: column !important;
+        height: calc(100dvh - 46px) !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+    }
+
+    .doorway-webmail.wm--mobile {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+    }
+
+    .doorway-webmail.wm--mobile .wm-sidebar,
+    .doorway-webmail.wm--mobile .wm-list-panel,
+    .doorway-webmail.wm--mobile .wm-content-panel {
+        flex: 1;
+        min-height: 0;
+        width: 100%;
+        min-width: 0;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        border-right: none;
+        border-bottom: none;
+    }
+
+    .doorway-webmail.wm--mobile .wm-sidebar {
+        display: flex;
+        flex-direction: column;
+        padding-bottom: 12px;
+    }
+
+    .doorway-webmail.wm--mobile .wm-list-panel {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .doorway-webmail.wm--mobile .wm-content-panel {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .doorway-webmail.wm--mobile .wm-message-list {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .doorway-webmail.wm--mobile .wm-btn-compose,
+    .doorway-webmail.wm--mobile .wm-mailbox-item,
+    .doorway-webmail.wm--mobile .wm-folder,
+    .doorway-webmail.wm--mobile .wm-btn-secondary,
+    .doorway-webmail.wm--mobile .wm-btn-primary,
+    .doorway-webmail.wm--mobile .wm-message-row,
+    .doorway-webmail.wm--mobile .wm-mobile-tab {
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .doorway-webmail.wm--mobile .wm-mobile-bar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        background: var(--wm-surface);
+        border-bottom: 1px solid var(--wm-border);
+        flex-shrink: 0;
+    }
+
+    .doorway-webmail.wm--mobile .wm-mobile-back,
+    .doorway-webmail.wm--mobile .wm-mobile-icon-btn {
+        background: var(--wm-surface-alt);
+        border: 1px solid var(--wm-border);
+        border-radius: 8px;
+        color: var(--wm-text);
+        width: 40px;
+        height: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        flex-shrink: 0;
+        touch-action: manipulation;
+    }
+
+    .doorway-webmail.wm--mobile .wm-mobile-title {
+        flex: 1;
+        font-weight: 700;
+        font-size: 14px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .doorway-webmail.wm--mobile .wm-mobile-tabs {
+        display: flex;
+        flex-shrink: 0;
+        border-top: 1px solid var(--wm-border);
+        background: var(--wm-surface);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    .doorway-webmail.wm--mobile .wm-mobile-tab {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        padding: 8px 4px 10px;
+        border: none;
+        background: transparent;
+        color: var(--wm-muted);
+        font-size: 11px;
+        font-weight: 600;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .doorway-webmail.wm--mobile .wm-mobile-tab .fa {
+        font-size: 18px;
+    }
+
+    .doorway-webmail.wm--mobile .wm-mobile-tab--active {
+        color: var(--wm-accent);
+    }
+
+    .doorway-webmail.wm--mobile .wm-mobile-tab-badge {
+        position: absolute;
+        top: 4px;
+        right: calc(50% - 22px);
+        background: var(--wm-accent);
+        color: #fff;
+        font-size: 9px;
+        border-radius: 999px;
+        padding: 1px 5px;
+        min-width: 16px;
+        text-align: center;
+    }
+
+    .doorway-webmail.wm--mobile .wm-read,
+    .doorway-webmail.wm--mobile .wm-compose {
+        padding: 12px 14px;
+    }
+
+    .doorway-webmail.wm--mobile .wm-read-subject {
+        font-size: 1.05rem;
+        word-break: break-word;
+    }
+
+    .doorway-webmail.wm--mobile .wm-read-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .doorway-webmail.wm--mobile .wm-body {
+        padding: 12px 14px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        max-width: 100%;
+        word-break: break-word;
+    }
+
+    .doorway-webmail.wm--mobile .wm-body table,
+    .doorway-webmail.wm--mobile .wm-body img,
+    .doorway-webmail.wm--mobile .wm-body iframe {
+        max-width: 100% !important;
+        height: auto !important;
+    }
+
+    .doorway-webmail.wm--mobile .wm-compose-fields {
+        grid-template-columns: 1fr;
+    }
+
+    .doorway-webmail.wm--mobile .wm-compose-fields label {
+        text-align: left;
+    }
+
+    .doorway-webmail.wm--mobile .wm-textarea {
+        grid-column: 1;
+        min-height: 140px;
+    }
+
+    .o_web_client:has(.doorway-webmail) .o_doorway_card_scan_systray {
+        display: none !important;
+    }
+}
+
+/* Fallback si JS pas chargé — page scrollable */
+@media (max-width: 900px) {
+    .doorway-webmail:not(.wm--mobile) {
+        flex-direction: column;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        min-height: calc(100dvh - 46px);
+        height: auto;
+    }
+    .doorway-webmail:not(.wm--mobile) .wm-sidebar,
+    .doorway-webmail:not(.wm--mobile) .wm-list-panel,
+    .doorway-webmail:not(.wm--mobile) .wm-content-panel {
+        width: 100%;
+        min-width: 0;
+        border-right: none;
+    }
+    .doorway-webmail:not(.wm--mobile) .wm-list-panel {
+        min-height: 50vh;
+    }
+}
+
+.doorway-webmail .wm-content-panel {
+    min-width: 320px;
+}
+.doorway-webmail .wm-btn-compose-inline {
+    width: 100%;
+    margin-top: 10px;
+}
+.doorway-webmail:not(.wm--mobile)[class] .wm-content-panel:has(.wm-compose) {
+    min-width: 380px;
+    flex: 1.4;
+}
+
+
+/* Compose overlay — always on top, not stuck in the 3rd column */
+.doorway-webmail .wm-compose-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 2100;
+    background: rgba(6, 8, 20, 0.72);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+}
+.doorway-webmail .wm-compose-overlay .wm-compose {
+    background: var(--wm-surface);
+    border: 1px solid var(--wm-border);
+    border-radius: 12px;
+    width: min(720px, 100%);
+    max-height: min(92vh, 860px);
+    overflow: auto;
+    padding: 20px 22px;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+    flex: none;
+}
+.doorway-webmail.wm--mobile .wm-compose-overlay {
+    padding: 8px;
+    align-items: stretch;
+}
+.doorway-webmail.wm--mobile .wm-compose-overlay .wm-compose {
+    max-height: 100%;
+    width: 100%;
+    border-radius: 10px;
+}
+
+
+/* Pièces jointes du composeur */
+.doorway-webmail .wm-attach {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: flex-start;
+}
+.doorway-webmail .wm-compose-fields label.wm-attach-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border: 1px dashed var(--wm-border);
+    border-radius: 6px;
+    background: var(--wm-surface-alt);
+    color: var(--wm-text);
+    font-size: 13px;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+}
+.doorway-webmail .wm-attach-btn:hover {
+    background: var(--wm-hover);
+}
+.doorway-webmail .wm-attach-input {
+    display: none;
+}
+.doorway-webmail .wm-attach-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.doorway-webmail .wm-attach-list li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 8px;
+    border: 1px solid var(--wm-border);
+    border-radius: 6px;
+    background: var(--wm-surface-alt);
+    font-size: 13px;
+}
+.doorway-webmail .wm-attach-name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.doorway-webmail .wm-attach-size,
+.doorway-webmail .wm-attach-hint {
+    color: var(--wm-muted);
+    font-size: 12px;
+}

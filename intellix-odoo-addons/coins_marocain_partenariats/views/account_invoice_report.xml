@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="report_invoice_document_client_contact" model="ir.ui.view">
+        <field name="name">account.report_invoice_document.client.contact</field>
+        <field name="inherit_id" ref="account.report_invoice_document"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='address_not_same_as_shipping']//address" position="attributes">
+                <attribute name="t-options">{"widget": "contact", "fields": ["address", "name", "phone", "email", "website"], "no_marker": True}</attribute>
+            </xpath>
+            <xpath expr="//div[@name='address_same_as_shipping']//address" position="attributes">
+                <attribute name="t-options">{"widget": "contact", "fields": ["address", "name", "phone", "email", "website"], "no_marker": True}</attribute>
+            </xpath>
+            <xpath expr="//div[@name='no_shipping']//address" position="attributes">
+                <attribute name="t-options">{"widget": "contact", "fields": ["address", "name", "phone", "email", "website"], "no_marker": True}</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="report_invoice_document_doorway_letterhead" model="ir.ui.view">
+        <field name="name">account.report_invoice_document.doorway.letterhead</field>
+        <field name="inherit_id" ref="account.report_invoice_document"/>
+        <field name="arch" type="xml">
+            <xpath expr="//h2" position="before">
+                <t t-if="o.company_id.vat == '799456165RT0001'">
+                    <div style="margin:0 0 18px 0;padding:0 0 14px 0;border-bottom:3px solid #E84C14;">
+                        <img t-if="o.company_id.logo"
+                             t-att-src="image_data_uri(o.company_id.logo)"
+                             style="max-height:48px;max-width:260px;"
+                             alt="Agence Doorway"/>
+                        <div style="font-size:12px;line-height:1.45;color:#444;margin-top:8px;">
+                            <strong>Agence Doorway Inc.</strong><br/>
+                            204 Rue du Saint-Sacrement, bureau 300, Montréal (Québec) H2Y 1W8<br/>
+                            TPS/TVH : 799456165RT0001 · 438 992-9200 · comptabilite@agencedoorway.com
+                        </div>
+                    </div>
+                </t>
+            </xpath>
+        </field>
+    </record>
+</odoo>

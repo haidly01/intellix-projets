@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="coins_marocain.detente_dashboard">
+        <div class="o_coins_dashboard_stub p-4">
+            <h2>Tableau de bord</h2>
+            <p>Vue en cours de restauration. Utilisez les menus listes pour l'instant.</p>
+        </div>
+    </t>
+</templates>

@@ -1,0 +1,197 @@
+// Intellix — menus apps, sections, systray, burger (harmonie thème sombre)
+
+.o_web_client.o_intellix_branded {
+    --bs-dropdown-bg: var(--ix-surface);
+    --bs-dropdown-color: var(--ix-text);
+    --bs-dropdown-link-color: var(--ix-text);
+    --bs-dropdown-link-hover-color: var(--ix-primary-light);
+    --bs-dropdown-link-hover-bg: rgba(99, 102, 241, 0.14);
+    --bs-dropdown-link-active-color: var(--ix-text);
+    --bs-dropdown-link-active-bg: rgba(99, 102, 241, 0.22);
+    --bs-dropdown-border-color: var(--ix-border);
+    --bs-dropdown-divider-bg: var(--ix-border);
+
+    .o-dropdown--menu,
+    .dropdown-menu {
+        background-color: var(--ix-surface) !important;
+        border: 1px solid var(--ix-border) !important;
+        box-shadow: var(--ix-shadow-md) !important;
+        color: var(--ix-text) !important;
+
+        .dropdown-header {
+            color: var(--ix-text-muted) !important;
+        }
+
+        .dropdown-divider {
+            border-color: var(--ix-border) !important;
+            opacity: 1;
+        }
+
+        .dropdown-item,
+        .o-dropdown-item,
+        button.dropdown-item,
+        .o-dropdown-item-unstyled-button button {
+            color: var(--ix-text) !important;
+            background-color: transparent !important;
+
+            &:hover,
+            &:focus,
+            &.focus,
+            &.active,
+            &:active {
+                background-color: rgba(99, 102, 241, 0.14) !important;
+                color: var(--ix-primary-light) !important;
+            }
+        }
+    }
+
+    // Liste des applications (icône grille en haut à gauche)
+    .o_navbar_apps_menu .o-dropdown--menu {
+        max-height: #{"min(80vh, 640px)"};
+        overflow-y: auto;
+        padding-top: 0.35rem;
+        padding-bottom: 0.35rem;
+
+        .dropdown-item.o_app {
+            font-weight: 500;
+            padding-top: 0.45rem;
+            padding-bottom: 0.45rem;
+
+            &.focus,
+            &:focus-visible {
+                background-color: rgba(99, 102, 241, 0.2) !important;
+                color: var(--ix-primary-light) !important;
+            }
+        }
+    }
+
+    // Barre supérieure : un seul dégradé (plus de bande plus foncée sur Ventes / Pistes…)
+    .o_main_navbar {
+        --NavBar-entry-backgroundColor: transparent;
+        --NavBar-entry-backgroundColor--hover: rgba(255, 255, 255, 0.12);
+        --NavBar-entry-backgroundColor--focus: rgba(255, 255, 255, 0.12);
+        --NavBar-entry-backgroundColor--active: rgba(255, 255, 255, 0.18);
+        --NavBar-entry-color: var(--ix-text-inverse);
+        --NavBar-brand-color: var(--ix-text-inverse);
+        background: var(--ix-gradient-navbar) !important;
+        border-bottom: none !important;
+
+        .o_navbar_apps_menu .dropdown-toggle,
+        .o_menu_brand,
+        .o_menu_toggle,
+        .o_nav_entry,
+        .o_menu_sections .o_nav_entry,
+        .o_menu_sections .dropdown-toggle,
+        .o_menu_systray .dropdown-toggle,
+        .o_menu_systray button:not(.dropdown-item) {
+            background: transparent !important;
+            color: var(--ix-text-inverse) !important;
+        }
+
+        .o_menu_sections .o_nav_entry:hover,
+        .o_menu_sections .dropdown-toggle:hover,
+        .o_nav_entry:hover,
+        .o_menu_systray .dropdown-toggle:hover {
+            background: rgba(255, 255, 255, 0.12) !important;
+        }
+
+        .o_menu_sections .dropdown.show.dropdown-toggle,
+        .o_menu_sections .o_nav_entry.active {
+            background: rgba(255, 255, 255, 0.18) !important;
+        }
+    }
+
+    // Sous-menus CRM / Ventes sous la barre violette
+    .o_main_navbar .o_menu_sections {
+        .o_nav_entry,
+        .dropdown-toggle {
+            color: var(--ix-text-inverse) !important;
+        }
+
+        .o-dropdown--menu,
+        .dropdown-menu {
+            background-color: var(--ix-surface) !important;
+            border: 1px solid var(--ix-border) !important;
+            margin-top: 0.15rem;
+            z-index: 1050;
+
+            .dropdown-item,
+            .o-dropdown-item {
+                color: var(--ix-text) !important;
+                font-weight: 500;
+
+                &:hover,
+                &:focus,
+                &.active {
+                    background-color: rgba(99, 102, 241, 0.16) !important;
+                    color: var(--ix-primary-light) !important;
+                }
+            }
+        }
+    }
+
+    // Sous-menus (Configuration, etc.)
+    .o_menu_sections .o-dropdown--menu {
+        .dropdown-item {
+            font-weight: 450;
+        }
+    }
+
+    // Systray (utilisateur, activités)
+    .o_menu_systray .o-dropdown--menu {
+        .dropdown-item {
+            font-weight: 450;
+        }
+    }
+
+    // Menu burger / sidebar mobile
+    .o_burger_menu,
+    .o_app_menu_sidebar {
+        background-color: var(--ix-surface) !important;
+        border-color: var(--ix-border) !important;
+        color: var(--ix-text);
+
+        .o_sidebar_topbar {
+            background-color: var(--ix-surface-elevated) !important;
+            color: var(--ix-text) !important;
+            box-shadow: inset 0 -1px 0 var(--ix-border) !important;
+
+            .btn-primary {
+                background: var(--ix-gradient-cta) !important;
+                border: none !important;
+                color: var(--ix-text-inverse) !important;
+            }
+
+            .o_sidebar_close {
+                color: var(--ix-text-muted) !important;
+            }
+        }
+
+        .o_burger_menu_content.o_burger_menu_app {
+            background-color: var(--ix-bg) !important;
+        }
+
+        li,
+        button,
+        a,
+        .o_app,
+        span {
+            color: var(--ix-text);
+        }
+
+        li.o_app,
+        li.o_app:hover {
+            background-color: transparent;
+        }
+
+        li.o_app:hover,
+        .o_burger_menu_content li:hover {
+            background-color: rgba(99, 102, 241, 0.12) !important;
+        }
+
+        .bg-primary-subtle {
+            background-color: rgba(99, 102, 241, 0.22) !important;
+            color: var(--ix-primary-light) !important;
+        }
+    }
+}

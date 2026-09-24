@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_pe_freelance_invoice" model="ir.actions.report">
+        <field name="name">Facture freelance</field>
+        <field name="model">pe.freelance.invoice</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">people_engine.report_pe_freelance_invoice</field>
+        <field name="report_file">people_engine.report_pe_freelance_invoice</field>
+        <field name="print_report_name">'Facture_%s_%s' % (object.employee_id.name, object.name)</field>
+    </record>
+
+    <template id="report_pe_freelance_invoice">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Facture freelance</h2>
+                        <div class="row mt-3">
+                            <div class="col-6">
+                                <p><strong>Prestataire :</strong> <span t-field="doc.employee_id.name"/></p>
+                                <p t-if="doc.ice_freelance"><strong>ICE :</strong> <span t-field="doc.ice_freelance"/></p>
+                                <p t-if="doc.rc_freelance"><strong>RC :</strong> <span t-field="doc.rc_freelance"/></p>
+                                <p t-if="doc.rib_freelance"><strong>RIB :</strong> <span t-field="doc.rib_freelance"/></p>
+                            </div>
+                            <div class="col-6 text-end">
+                                <p><strong>Référence :</strong> <span t-field="doc.name"/></p>
+                                <p><strong>Période :</strong> <span t-field="doc.period_label"/></p>
+                                <p><strong>Date émission :</strong> <span t-field="doc.date_emission"/></p>
+                                <p><strong>Date échéance :</strong> <span t-field="doc.date_echeance"/></p>
+                            </div>
+                        </div>
+                        <table class="table table-sm mt-4">
+                            <thead>
+                                <tr>
+                                    <th>Description</th>
+                                    <th class="text-end">Quantité</th>
+                                    <th class="text-end">Taux</th>
+                                    <th class="text-end">Montant HT</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-if="doc.type_facturation == 'horaire'">
+                                    <td>Prestation horaire</td>
+                                    <td class="text-end"><span t-field="doc.heures_loguees"/> h</td>
+                                    <td class="text-end"><span t-field="doc.taux_applique"/> <span t-field="doc.devise"/></td>
+                                    <td class="text-end"><span t-field="doc.montant_ht"/> <span t-field="doc.devise"/></td>
+                                </tr>
+                                <tr t-if="doc.type_facturation == 'journalier'">
+                                    <td>Prestation journalière (8h/j)</td>
+                                    <td class="text-end"><span t-field="doc.jours_loguees"/> j</td>
+                                    <td class="text-end"><span t-field="doc.taux_applique"/> <span t-field="doc.devise"/></td>
+                                    <td class="text-end"><span t-field="doc.montant_ht"/> <span t-field="doc.devise"/></td>
+                                </tr>
+                                <tr t-if="doc.type_facturation == 'forfait'">
+                                    <td>Forfait (<span t-field="doc.heures_loguees"/> h loguées)</td>
+                                    <td class="text-end">1</td>
+                                    <td class="text-end"><span t-field="doc.taux_applique"/> <span t-field="doc.devise"/></td>
+                                    <td class="text-end"><span t-field="doc.montant_ht"/> <span t-field="doc.devise"/></td>
+                                </tr>
+                                <tr t-if="doc.primes_challenges">
+                                    <td>Primes challenges</td>
+                                    <td class="text-end">—</td>
+                                    <td class="text-end">—</td>
+                                    <td class="text-end"><span t-field="doc.primes_challenges"/> <span t-field="doc.devise"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-sm mt-2">
+                            <tr><td>Total HT</td><td class="text-end"><span t-field="doc.montant_ht"/> <span t-field="doc.devise"/></td></tr>
+                            <tr><td>TVA (0 % — auto-entrepreneur Maroc)</td><td class="text-end"><span t-field="doc.tva"/> <span t-field="doc.devise"/></td></tr>
+                            <tr class="fw-bold"><td>Total TTC</td><td class="text-end"><span t-field="doc.montant_ttc"/> <span t-field="doc.devise"/></td></tr>
+                            <tr t-if="doc.primes_challenges" class="fw-bold">
+                                <td>Total à payer (TTC + primes)</td>
+                                <td class="text-end"><span t-field="doc.total_a_payer"/> <span t-field="doc.devise"/></td>
+                            </tr>
+                        </table>
+                        <p class="text-muted small mt-4">
+                            TVA non applicable — statut auto-entrepreneur (Maroc), article 91 CGI.
+                        </p>
+                        <p class="text-muted small" t-if="doc.detail_calcul">
+                            <span t-field="doc.detail_calcul"/>
+                        </p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="group_intellix_platform" model="res.groups">
+    <field name="name">Plateforme IntelliX (interne)</field>
+    <field name="comment">Accès aux menus Doorway / Agents IA / CRM interne. Non accordé aux clients JT.</field>
+    <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+  </record>
+
+  <record id="group_jt_admin" model="res.groups">
+    <field name="name">Administrateur Jason Thomas</field>
+    <field name="comment">Espace assurance JT — CRM, messages, calendrier et agents IA dédiés.</field>
+    <field name="implied_ids" eval="[
+      (4, ref('base.group_user')),
+      (4, ref('sales_team.group_sale_salesman')),
+      (4, ref('doorway_messaging.group_messaging_user')),
+      (4, ref('doorway_agents_dashboard.group_doorway_agent_viewer')),
+    ]"/>
+  </record>
+</odoo>

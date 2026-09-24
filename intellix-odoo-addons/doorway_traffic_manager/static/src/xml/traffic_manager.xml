@@ -1,0 +1,672 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!-- Dashboard -->
+    <t t-name="doorway_traffic_manager.Dashboard">
+        <div class="dtm-app o_action o_intellix_client_action">
+            <header class="dtm-header">
+                <div>
+                    <h1>Traffic Manager</h1>
+                    <p class="dtm-subtitle">Vue d'ensemble — campagnes, budgets et alertes IA</p>
+                </div>
+                <button type="button" class="dtm-btn dtm-btn--primary" t-on-click="newCampaign">
+                    <i class="fa fa-plus"/> Nouvelle campagne
+                </button>
+            </header>
+
+            <t t-if="state.loading">
+                <div class="dtm-loading"><i class="fa fa-spinner fa-spin"/> Chargement…</div>
+            </t>
+            <t t-else="">
+                <div class="dtm-kpi-row">
+                    <div class="dtm-kpi">
+                        <span class="dtm-kpi__label">Campagnes actives</span>
+                        <span class="dtm-kpi__value" t-esc="state.stats.active_count"/>
+                    </div>
+                    <div class="dtm-kpi">
+                        <span class="dtm-kpi__label">Budget / mois</span>
+                        <span class="dtm-kpi__value"><t t-esc="state.stats.monthly_budget"/> €</span>
+                    </div>
+                    <div class="dtm-kpi">
+                        <span class="dtm-kpi__label">Leads ce mois</span>
+                        <span class="dtm-kpi__value" t-esc="state.stats.leads_month"/>
+                    </div>
+                    <div class="dtm-kpi">
+                        <span class="dtm-kpi__label">CPA moyen</span>
+                        <span class="dtm-kpi__value"><t t-esc="state.stats.avg_cpa"/> €</span>
+                    </div>
+                    <div class="dtm-kpi dtm-kpi--alert">
+                        <span class="dtm-kpi__label">Alertes IA</span>
+                        <span class="dtm-kpi__value">
+                            <t t-esc="state.stats.alert_count"/>
+                            <t t-if="state.stats.alert_count"> ⚠</t>
+                        </span>
+                    </div>
+                </div>
+
+                <section class="dtm-benchmarks">
+                    <h2>Benchmarks objectifs</h2>
+                    <div class="dtm-benchmark-row">
+                        <span class="dtm-benchmark">🇨🇦 Canada : 15 CAD/lead</span>
+                        <span class="dtm-benchmark">🇪🇺 Europe : 15 EUR/lead</span>
+                        <span class="dtm-benchmark">🇲🇦 Maroc : 1 USD/lead</span>
+                    </div>
+                </section>
+
+                <section class="dtm-alerts">
+                    <div class="dtm-section-head">
+                        <h2>Alertes en attente</h2>
+                        <button type="button" class="dtm-btn dtm-btn--ghost" t-on-click="openRecommendations">
+                            Voir toutes les recommandations →
+                        </button>
+                    </div>
+                    <t t-if="!state.alerts.length">
+                        <p class="dtm-empty">Aucune alerte — tout est sous contrôle.</p>
+                    </t>
+                    <t t-foreach="state.alerts" t-as="alert" t-key="alert.id">
+                        <div t-att-class="'dtm-alert-card ' + recoClass(alert.urgency)">
+                            <div class="dtm-alert-card__main">
+                                <strong t-esc="alert.name"/>
+                                <span class="dtm-zone" t-esc="alert.zone_label"/>
+                                <span t-att-class="cpaClass(alert.cpa_status)">
+                                    CPA <t t-esc="alert.cpa"/> <t t-esc="alert.currency"/>
+                                    vs objectif <t t-esc="alert.target_cpa"/>
+                                </span>
+                                <p class="dtm-muted" t-esc="alert.recommendation"/>
+                            </div>
+                            <button type="button" class="dtm-btn dtm-btn--primary"
+                                    t-on-click="() => this.openCampaign(alert.id)">
+                                Voir la recommandation IA
+                            </button>
+                        </div>
+                    </t>
+                </section>
+            </t>
+        </div>
+    </t>
+
+    <!-- Campagnes -->
+    <t t-name="doorway_traffic_manager.Campaigns">
+        <div class="dtm-app o_action o_intellix_client_action">
+            <header class="dtm-header">
+                <div>
+                    <h1>Campagnes</h1>
+                    <p class="dtm-subtitle">Performance par zone — cliquez une ligne pour le détail</p>
+                </div>
+                <button type="button" class="dtm-btn dtm-btn--primary" t-on-click="newCampaign">
+                    <i class="fa fa-magic"/> Créer IA
+                </button>
+            </header>
+
+            <div class="dtm-filters">
+                <button type="button" t-att-class="'dtm-chip' + (state.filters.zone === '' ? ' active' : '')"
+                        t-on-click="() => this.setFilter('zone', '')">Toutes</button>
+                <t t-foreach="state.zones" t-as="z" t-key="z.value">
+                    <button type="button"
+                            t-att-class="'dtm-chip ' + zoneClass(z.value) + (state.filters.zone === z.value ? ' active' : '')"
+                            t-on-click="() => this.setFilter('zone', z.value)"
+                            t-esc="z.label"/>
+                </t>
+                <span class="dtm-filter-sep"/>
+                <button type="button" t-att-class="'dtm-chip' + (state.filters.status === '' ? ' active' : '')"
+                        t-on-click="() => this.setFilter('status', '')">Toutes</button>
+                <button type="button" t-att-class="'dtm-chip' + (state.filters.status === 'active' ? ' active' : '')"
+                        t-on-click="() => this.setFilter('status', 'active')">Actives</button>
+                <button type="button" t-att-class="'dtm-chip' + (state.filters.status === 'paused' ? ' active' : '')"
+                        t-on-click="() => this.setFilter('status', 'paused')">En pause</button>
+                <button type="button" t-att-class="'dtm-chip' + (state.filters.status === 'alerts' ? ' active' : '')"
+                        t-on-click="() => this.setFilter('status', 'alerts')">Alertes IA</button>
+            </div>
+
+            <t t-if="state.loading">
+                <div class="dtm-loading"><i class="fa fa-spinner fa-spin"/></div>
+            </t>
+            <t t-else="">
+                <table class="dtm-table">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Zone</th>
+                            <th>Canal</th>
+                            <th>CPA réel</th>
+                            <th>Objectif</th>
+                            <th>Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="state.campaigns" t-as="c" t-key="c.id">
+                            <tr class="dtm-table__row" t-on-click="() => this.openDrawer(c.id)">
+                                <td><strong t-esc="c.name"/></td>
+                                <td><span t-att-class="'dtm-zone-badge ' + zoneClass(c.zone)" t-esc="c.zone_label"/></td>
+                                <td t-esc="c.channel"/>
+                                <td t-att-class="cpaClass(c.cpa_status)">
+                                    <t t-esc="c.cpa"/> <t t-esc="c.currency"/>
+                                </td>
+                                <td><t t-esc="c.target_cpa"/> <t t-esc="c.currency"/></td>
+                                <td t-esc="c.status_label"/>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+            </t>
+
+            <t t-if="state.drawerOpen">
+                <div class="dtm-drawer-backdrop" t-on-click="closeDrawer"/>
+                <aside class="dtm-drawer">
+                    <header class="dtm-drawer__head">
+                        <div>
+                            <h2 t-esc="state.drawer?.campaign?.name"/>
+                            <span class="dtm-muted" t-esc="state.drawer?.campaign?.channel + ' · ' + state.drawer?.campaign?.zone_label"/>
+                        </div>
+                        <button type="button" class="dtm-btn dtm-btn--icon" t-on-click="closeDrawer">×</button>
+                    </header>
+                    <nav class="dtm-tabs">
+                        <button t-att-class="state.drawerTab === 'analyse' ? 'active' : ''"
+                                t-on-click="() => this.setDrawerTab('analyse')">Analyse</button>
+                        <button t-att-class="state.drawerTab === 'reco' ? 'active' : ''"
+                                t-on-click="() => this.setDrawerTab('reco')">Reco IA</button>
+                        <button t-att-class="state.drawerTab === 'audiences' ? 'active' : ''"
+                                t-on-click="() => this.setDrawerTab('audiences')">Audiences</button>
+                        <button t-att-class="state.drawerTab === 'creatives' ? 'active' : ''"
+                                t-on-click="() => this.setDrawerTab('creatives')">Créatifs</button>
+                    </nav>
+                    <div class="dtm-drawer__body">
+                        <t t-if="state.drawerLoading">
+                            <div class="dtm-loading"><i class="fa fa-spinner fa-spin"/></div>
+                        </t>
+                        <t t-elif="state.drawerTab === 'analyse'">
+                            <div class="dtm-drawer-kpis">
+                                <div>CPA <span t-att-class="cpaClass(state.drawer.campaign.cpa_status)"
+                                    t-esc="state.drawer.campaign.cpa + ' ' + state.drawer.campaign.currency"/></div>
+                                <div>Objectif <t t-esc="state.drawer.campaign.target_cpa"/></div>
+                                <div>Leads <t t-esc="state.drawer.campaign.leads"/></div>
+                                <div>Dépense 7j <t t-esc="state.drawer.campaign.spend"/> €</div>
+                            </div>
+                            <button type="button" class="dtm-btn dtm-btn--primary" t-on-click="runAnalysis">
+                                Lancer l'analyse IA
+                            </button>
+                            <div class="dtm-html-preview" t-out="state.drawer.campaign.analysis"/>
+                        </t>
+                        <t t-elif="state.drawerTab === 'reco'">
+                            <t t-if="!state.drawer.recos.length">
+                                <p class="dtm-empty">Aucune recommandation en attente.</p>
+                            </t>
+                            <t t-foreach="state.drawer.recos" t-as="r" t-key="r.id">
+                                <div class="dtm-reco-mini">
+                                    <strong t-esc="r.title"/>
+                                    <p t-esc="r.body"/>
+                                    <button type="button" class="dtm-btn dtm-btn--success"
+                                            t-on-click="() => this.applyReco(r.id)">✓ Appliquer</button>
+                                </div>
+                            </t>
+                        </t>
+                        <t t-elif="state.drawerTab === 'audiences'">
+                            <button type="button" class="dtm-btn dtm-btn--primary mb-2" t-on-click="generateAudience">
+                                Générer audiences IA
+                            </button>
+                            <t t-foreach="state.drawer.audiences" t-as="a" t-key="a.id">
+                                <div class="dtm-mini-card">
+                                    <strong t-esc="a.name"/>
+                                    <span t-esc="a.audience_type"/>
+                                    <p t-esc="a.targeting_rationale"/>
+                                </div>
+                            </t>
+                        </t>
+                        <t t-elif="state.drawerTab === 'creatives'">
+                            <div class="dtm-drawer-actions">
+                                <button type="button" class="dtm-btn dtm-btn--secondary" t-on-click="generateCanva">+ Canva IA</button>
+                                <button type="button" class="dtm-btn dtm-btn--primary" t-on-click="generateHeygen">+ Vidéo HeyGen</button>
+                            </div>
+                            <t t-foreach="state.drawer.creatives" t-as="cr" t-key="cr.id">
+                                <div class="dtm-mini-card dtm-creative-mini">
+                                    <img t-if="cr.preview_image" t-att-src="'/web/image/doorway.creative/' + cr.id + '/preview_image'" alt=""/>
+                                    <strong t-esc="cr.headline"/>
+                                    <span t-esc="cr.format"/>
+                                </div>
+                            </t>
+                        </t>
+                    </div>
+                </aside>
+            </t>
+        </div>
+    </t>
+
+    <!-- Recommandations -->
+    <t t-name="doorway_traffic_manager.RecoInbox">
+        <div class="dtm-app o_action o_intellix_client_action">
+            <header class="dtm-header">
+                <div>
+                    <h1>Recommandations IA</h1>
+                    <p class="dtm-subtitle">
+                        <t t-esc="state.pending_count"/> en attente ·
+                        <t t-esc="state.applied_month"/> acceptées ce mois
+                    </p>
+                </div>
+                <button type="button" class="dtm-btn dtm-btn--primary" t-on-click="analyzeAll">
+                    Analyser toutes les campagnes
+                </button>
+            </header>
+            <t t-if="state.loading">
+                <div class="dtm-loading"><i class="fa fa-spinner fa-spin"/></div>
+            </t>
+            <t t-else="">
+                <t t-if="!state.recos.length">
+                    <p class="dtm-empty">Inbox vide — aucune action requise.</p>
+                </t>
+                <t t-foreach="state.recos" t-as="r" t-key="r.id">
+                    <div t-att-class="'dtm-reco-card ' + recoClass(r.urgency)">
+                        <div class="dtm-reco-card__head">
+                            <span class="dtm-reco-urgency" t-esc="r.urgency_label"/>
+                            <strong t-esc="r.campaign_name"/>
+                            <span class="dtm-muted" t-esc="r.channel + ' · ' + r.zone_label"/>
+                        </div>
+                        <h3 t-esc="r.title"/>
+                        <p t-esc="r.body"/>
+                        <div class="dtm-muted">
+                            CPA <t t-esc="r.cpa"/> <t t-esc="r.currency"/> —
+                            objectif <t t-esc="r.target_cpa"/> ·
+                            Confiance <t t-esc="r.confidence"/>%
+                        </div>
+                        <div class="dtm-reco-actions">
+                            <button type="button" class="dtm-btn dtm-btn--success"
+                                    t-on-click="() => this.applyReco(r.id)">✓ Appliquer</button>
+                            <button type="button" class="dtm-btn dtm-btn--ghost"
+                                    t-on-click="() => this.ignoreReco(r.id)">✕ Ignorer</button>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </div>
+    </t>
+
+    <!-- Créatifs -->
+    <t t-name="doorway_traffic_manager.CreativeGrid">
+        <div class="dtm-app o_action o_intellix_client_action">
+            <header class="dtm-header">
+                <div>
+                    <h1>Créatifs</h1>
+                    <p class="dtm-subtitle">Grille visuelle — cliquez pour éditer</p>
+                </div>
+            </header>
+            <div class="dtm-filters">
+                <button type="button" t-att-class="'dtm-chip' + (state.filters.status === '' ? ' active' : '')"
+                        t-on-click="() => this.setFilter('status', '')">Tous</button>
+                <button type="button" t-att-class="'dtm-chip' + (state.filters.status === 'winner' ? ' active' : '')"
+                        t-on-click="() => this.setFilter('status', 'winner')">Gagnants</button>
+                <button type="button" t-att-class="'dtm-chip' + (state.filters.status === 'test' ? ' active' : '')"
+                        t-on-click="() => this.setFilter('status', 'test')">En test</button>
+                <span class="dtm-filter-sep"/>
+                <button type="button" t-att-class="'dtm-chip' + (state.filters.format === '' ? ' active' : '')"
+                        t-on-click="() => this.setFilter('format', '')">Tous formats</button>
+                <button type="button" t-att-class="'dtm-chip' + (state.filters.format === 'image' ? ' active' : '')"
+                        t-on-click="() => this.setFilter('format', 'image')">Images</button>
+                <button type="button" t-att-class="'dtm-chip' + (state.filters.format === 'video' ? ' active' : '')"
+                        t-on-click="() => this.setFilter('format', 'video')">Vidéos</button>
+            </div>
+            <t t-if="state.loading">
+                <div class="dtm-loading"><i class="fa fa-spinner fa-spin"/></div>
+            </t>
+            <t t-else="">
+                <div class="dtm-creative-grid">
+                    <t t-foreach="state.creatives" t-as="c" t-key="c.id">
+                        <div class="dtm-creative-tile" t-on-click="() => this.openEdit(c)">
+                            <div class="dtm-creative-tile__media">
+                                <img t-if="c.has_image" t-att-src="imageUrl(c.id)" alt=""/>
+                                <i t-else="" t-att-class="c.format in ['video','reel','story'] ? 'fa fa-video-camera fa-3x' : 'fa fa-image fa-3x'"/>
+                                <span class="dtm-creative-badge" t-esc="statusBadge(c.ai_status)"/>
+                            </div>
+                            <div class="dtm-creative-tile__body">
+                                <strong t-esc="c.headline"/>
+                                <span class="dtm-muted" t-esc="c.campaign"/>
+                                <div class="dtm-creative-metrics">
+                                    CTR <t t-esc="c.ctr"/>% · <t t-esc="c.conversions"/> leads
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </t>
+
+            <t t-if="state.editOpen">
+                <div class="dtm-drawer-backdrop" t-on-click="closeEdit"/>
+                <aside class="dtm-drawer dtm-drawer--wide">
+                    <header class="dtm-drawer__head">
+                        <h2>Éditer le créatif</h2>
+                        <button type="button" class="dtm-btn dtm-btn--icon" t-on-click="closeEdit">×</button>
+                    </header>
+                    <t t-if="state.editLoading">
+                        <div class="dtm-loading"><i class="fa fa-spinner fa-spin"/></div>
+                    </t>
+                    <t t-else="">
+                        <div class="dtm-form">
+                            <label>Headline</label>
+                            <input type="text" t-att-value="state.creative.headline"
+                                   t-on-input="(e) => state.creative.headline = e.target.value"/>
+                            <label>Corps</label>
+                            <textarea t-on-input="(e) => state.creative.body = e.target.value"
+                                      t-esc="state.creative.body"/>
+                            <label>CTA</label>
+                            <input type="text" t-att-value="state.creative.cta"
+                                   t-on-input="(e) => state.creative.cta = e.target.value"/>
+                            <div class="dtm-drawer-actions">
+                                <button type="button" class="dtm-btn dtm-btn--secondary"
+                                        t-on-click="() => this.generateCanva(state.creative.id)">Régénérer Canva</button>
+                                <button type="button" class="dtm-btn dtm-btn--primary"
+                                        t-on-click="() => this.generateHeygen(state.creative.id)">Régénérer HeyGen</button>
+                                <button type="button" class="dtm-btn dtm-btn--success" t-on-click="saveCreative">Appliquer</button>
+                                <button type="button" class="dtm-btn dtm-btn--ghost" t-on-click="loadSuggestions">Suggestions IA ↗</button>
+                            </div>
+                            <t t-if="state.suggestions.length">
+                                <h3>Suggestions Claude</h3>
+                                <t t-foreach="state.suggestions" t-as="s" t-key="s_index">
+                                    <div class="dtm-suggestion" t-on-click="() => this.applySuggestion(s.headline || s)">
+                                        <t t-esc="s.headline || s"/>
+                                    </div>
+                                </t>
+                            </t>
+                        </div>
+                    </t>
+                </aside>
+            </t>
+        </div>
+    </t>
+
+    <!-- Wizard création campagne -->
+    <t t-name="doorway_traffic_manager.CampaignWizard">
+        <div class="dtm-app dtm-wizard o_action o_intellix_client_action">
+            <header class="dtm-header">
+                <div>
+                    <h1>Nouvelle campagne</h1>
+                    <p class="dtm-subtitle">Assistant IA en 5 étapes — validation humaine à la fin</p>
+                </div>
+                <button type="button" class="dtm-btn dtm-btn--ghost" t-on-click="cancel">Annuler</button>
+            </header>
+
+            <nav class="dtm-wizard-steps">
+                <t t-foreach="steps" t-as="st" t-key="st.id">
+                    <div t-att-class="'dtm-wizard-step ' + stepClass(st.id)">
+                        <span class="dtm-wizard-step__num" t-esc="st.id"/>
+                        <span class="dtm-wizard-step__label" t-esc="st.label"/>
+                    </div>
+                    <t t-if="st.id &lt; 5">
+                        <div t-att-class="'dtm-wizard-connector ' + (state.step > st.id ? 'done' : '')"/>
+                    </t>
+                </t>
+            </nav>
+
+            <t t-if="state.loading">
+                <div class="dtm-loading"><i class="fa fa-spinner fa-spin"/> Chargement…</div>
+            </t>
+            <t t-else="">
+                <div class="dtm-wizard-body">
+                    <!-- Étape 1 : Canal -->
+                    <t t-if="state.step === 1">
+                        <h2>Quel canal pour cette campagne ?</h2>
+                        <div class="dtm-channel-grid">
+                            <t t-foreach="state.channels" t-as="ch" t-key="ch.code">
+                                <button type="button"
+                                        t-att-class="'dtm-channel-card' + (state.channelCode === ch.code ? ' selected' : '')"
+                                        t-on-click="() => this.selectChannel(ch.code)">
+                                    <i t-att-class="'fa ' + (ch.code === 'meta' ? 'fa-facebook' : ch.code === 'google' ? 'fa-google' : ch.code === 'tiktok' ? 'fa-music' : ch.code === 'linkedin' ? 'fa-linkedin' : 'fa-bullhorn')"/>
+                                    <span t-esc="ch.name"/>
+                                </button>
+                            </t>
+                        </div>
+                    </t>
+
+                    <!-- Étape 2 : Zone + marque -->
+                    <t t-if="state.step === 2">
+                        <h2>Zone géographique et marque</h2>
+                        <div class="dtm-zone-grid">
+                            <t t-foreach="state.zones" t-as="z" t-key="z.code">
+                                <button type="button"
+                                        t-att-class="'dtm-zone-card ' + zoneClass(z.code) + (state.zone === z.code ? ' selected' : '')"
+                                        t-on-click="() => this.selectZone(z.code)">
+                                    <strong t-esc="z.label"/>
+                                    <span>Objectif : <t t-esc="z.target_cpa"/> <t t-esc="z.currency"/>/lead</span>
+                                </button>
+                            </t>
+                        </div>
+                        <h3 class="mt-3">Marque</h3>
+                        <div class="dtm-foundation-grid">
+                            <t t-foreach="state.foundations" t-as="f" t-key="f.id">
+                                <button type="button"
+                                        t-att-class="'dtm-foundation-card' + (state.foundationId === f.id ? ' selected' : '')"
+                                        t-on-click="() => this.selectFoundation(f.id)">
+                                    <span t-esc="f.name"/>
+                                </button>
+                            </t>
+                        </div>
+                        <div class="dtm-form-row mt-3">
+                            <label>Budget journalier (€)</label>
+                            <input type="number" t-att-value="state.budgetDaily" t-on-input="onBudgetInput"/>
+                        </div>
+                        <p class="dtm-muted" t-if="state.zone">
+                            CPA objectif affiché : <strong t-esc="targetCpa()"/>
+                        </p>
+                    </t>
+
+                    <!-- Étape 3 : Brief -->
+                    <t t-if="state.step === 3">
+                        <h2>Décris ta campagne à Claude</h2>
+                        <div class="dtm-brief-context">
+                            <span t-esc="channelLabel(state.channelCode)"/>
+                            · <span t-esc="zoneLabel(state.zone)"/>
+                            · Objectif <span t-esc="targetCpa()"/>/lead
+                            · Tour <t t-esc="state.chatTurn"/>
+                        </div>
+                        <div class="dtm-brief-checklist">
+                            <span t-att-class="'dtm-check-item' + (checklistDone('produit') ? ' done' : '')">
+                                <i t-att-class="checklistDone('produit') ? 'fa fa-check' : 'fa fa-circle-o'"/> Produit
+                            </span>
+                            <span t-att-class="'dtm-check-item' + (checklistDone('cible') ? ' done' : '')">
+                                <i t-att-class="checklistDone('cible') ? 'fa fa-check' : 'fa fa-circle-o'"/> Cible
+                            </span>
+                            <span t-att-class="'dtm-check-item' + (checklistDone('budget') ? ' done' : '')">
+                                <i t-att-class="checklistDone('budget') ? 'fa fa-check' : 'fa fa-circle-o'"/> Budget
+                            </span>
+                            <span t-att-class="'dtm-check-item' + (checklistDone('objectif') ? ' done' : '')">
+                                <i t-att-class="checklistDone('objectif') ? 'fa fa-check' : 'fa fa-circle-o'"/> Objectif
+                            </span>
+                        </div>
+                        <div class="dtm-chat">
+                            <t t-foreach="state.messages" t-as="msg" t-key="msg_index">
+                                <div t-att-class="'dtm-chat-bubble dtm-chat-bubble--' + msg.role">
+                                    <span t-if="msg.role === 'assistant'" class="dtm-chat-avatar">IX</span>
+                                    <p t-esc="msg.text"/>
+                                </div>
+                            </t>
+                        </div>
+                        <div class="dtm-chat-input">
+                            <input type="text" placeholder="Écrire un message…"
+                                   t-att-value="state.chatInput"
+                                   t-on-input="onChatInput"
+                                   t-on-keydown="(ev) => ev.key === 'Enter' &amp;&amp; sendChat()"/>
+                            <button type="button" class="dtm-btn dtm-btn--primary"
+                                    t-att-disabled="state.generating"
+                                    t-on-click="sendChat">Envoyer</button>
+                        </div>
+                        <t t-if="state.chatReady">
+                            <p class="dtm-success-hint">
+                                <i class="fa fa-check-circle"/> Brief complet —
+                                cliquez « Générer audiences &amp; créatifs ».
+                            </p>
+                        </t>
+                        <t t-elif="state.messages.length">
+                            <p class="dtm-muted dtm-chat-hint">
+                                Répondez aux questions d'IX pour débloquer la génération.
+                            </p>
+                        </t>
+                    </t>
+
+                    <!-- Étape 4 : Audiences -->
+                    <t t-if="state.step === 4">
+                        <h2>Valider les audiences générées</h2>
+                        <p class="dtm-muted" t-if="state.strategyNotes" t-esc="state.strategyNotes"/>
+                        <t t-foreach="state.audiences" t-as="aud" t-key="aud_index">
+                            <div t-att-class="'dtm-proposal-card' + (aud.accepted ? ' accepted' : '')">
+                                <div class="dtm-proposal-card__head">
+                                    <strong t-esc="aud.name"/>
+                                    <span class="dtm-muted" t-esc="aud.audience_type"/>
+                                </div>
+                                <p t-esc="aud.description"/>
+                                <p class="dtm-muted" t-esc="aud.targeting_rationale"/>
+                                <div class="dtm-proposal-actions">
+                                    <button type="button" class="dtm-btn dtm-btn--success"
+                                            t-on-click="() => this.toggleAudience(aud_index)">
+                                        <t t-if="aud.accepted">✓ Acceptée</t>
+                                        <t t-else="">Accepter</t>
+                                    </button>
+                                </div>
+                            </div>
+                        </t>
+                    </t>
+
+                    <!-- Étape 5 : Créatifs -->
+                    <t t-if="state.step === 5">
+                        <div class="dtm-section-head">
+                            <h2>Valider les créatifs &amp; médias</h2>
+                            <button type="button" class="dtm-btn dtm-btn--secondary"
+                                    t-att-disabled="state.generating"
+                                    t-on-click="generateAllMedia">
+                                <i class="fa fa-magic"/> Tout générer (Canva + HeyGen)
+                            </button>
+                        </div>
+                        <div class="dtm-form-row">
+                            <label>Nom de la campagne</label>
+                            <input type="text" t-att-value="state.campaignName" t-on-input="onNameInput"/>
+                        </div>
+                        <t t-foreach="state.creatives" t-as="cr" t-key="cr_index">
+                            <div t-att-class="'dtm-proposal-card dtm-creative-proposal' + (cr.accepted ? ' accepted' : '')">
+                                <div class="dtm-wizard-creative-row">
+                                    <div class="dtm-wizard-creative-preview" t-if="cr.preview_url">
+                                        <img t-att-src="cr.preview_url" alt="Aperçu"/>
+                                        <span t-if="cr.media_status === 'video_pending'" class="dtm-video-overlay">
+                                            <i class="fa fa-play"/> Vidéo
+                                        </span>
+                                    </div>
+                                    <div class="dtm-wizard-creative-text">
+                                        <div class="dtm-proposal-card__head">
+                                            <strong t-esc="cr.headline"/>
+                                            <span class="dtm-muted" t-esc="cr.format"/>
+                                        </div>
+                                        <p t-esc="cr.body"/>
+                                        <p class="dtm-muted">CTA : <t t-esc="cr.cta"/> · <t t-esc="cr.angle"/></p>
+                                        <t t-if="cr.video_script &amp;&amp; isVideoFormat(cr.format)">
+                                            <p class="dtm-muted small">Script : <t t-esc="cr.video_script"/></p>
+                                        </t>
+                                    </div>
+                                </div>
+                                <div class="dtm-proposal-actions">
+                                    <button type="button" class="dtm-btn dtm-btn--secondary"
+                                            t-if="!isVideoFormat(cr.format)"
+                                            t-att-disabled="cr.generating_media"
+                                            t-on-click="() => this.generateCreativeMedia(cr_index)">
+                                        <i class="fa fa-paint-brush"/> Canva IA
+                                    </button>
+                                    <button type="button" class="dtm-btn dtm-btn--primary"
+                                            t-if="isVideoFormat(cr.format)"
+                                            t-att-disabled="cr.generating_media"
+                                            t-on-click="() => this.generateCreativeMedia(cr_index)">
+                                        <i class="fa fa-video-camera"/> HeyGen
+                                    </button>
+                                    <button type="button" class="dtm-btn dtm-btn--ghost"
+                                            t-if="cr.canva_design_url"
+                                            t-on-click="() => this.openCanva(cr)">
+                                        Ouvrir Canva
+                                    </button>
+                                    <button type="button" class="dtm-btn dtm-btn--success"
+                                            t-on-click="() => this.toggleCreative(cr_index)">
+                                        <t t-if="cr.accepted">✓ Validé</t>
+                                        <t t-else="">Valider</t>
+                                    </button>
+                                </div>
+                            </div>
+                        </t>
+                    </t>
+                </div>
+
+                <footer class="dtm-wizard-footer">
+                    <button type="button" class="dtm-btn dtm-btn--ghost"
+                            t-if="state.step > 1"
+                            t-on-click="prevStep">← Retour</button>
+                    <t t-if="state.step &lt; 5">
+                        <button type="button" class="dtm-btn dtm-btn--primary"
+                                t-att-disabled="!canNext() || state.generating"
+                                t-on-click="nextStep">
+                            <t t-if="state.step === 3">Générer audiences &amp; créatifs →</t>
+                            <t t-else="">Continuer →</t>
+                        </button>
+                    </t>
+                    <t t-else="">
+                        <button type="button" class="dtm-btn dtm-btn--primary"
+                                t-att-disabled="!canNext() || state.generating"
+                                t-on-click="launchCampaign">
+                            <i class="fa fa-rocket"/> Lancer la campagne (validation requise)
+                        </button>
+                    </t>
+                </footer>
+            </t>
+        </div>
+    </t>
+
+    <!-- Paramètres -->
+    <t t-name="doorway_traffic_manager.Settings">
+        <div class="dtm-app o_action o_intellix_client_action">
+            <header class="dtm-header">
+                <h1>Paramètres</h1>
+                <p class="dtm-subtitle">Configuration Traffic Manager</p>
+            </header>
+            <t t-if="state.loading">
+                <div class="dtm-loading"><i class="fa fa-spinner fa-spin"/></div>
+            </t>
+            <t t-else="">
+                <section class="dtm-settings-card dtm-settings-form">
+                    <h3>Intégrations médias</h3>
+                    <p class="dtm-muted">
+                        Canva MCP : endpoint HTTP POST (JSON) qui reçoit
+                        <code>action=create_design</code> et renvoie
+                        <code>design_id</code>, <code>edit_url</code>, <code>export_url</code>.
+                    </p>
+                    <div class="dtm-form">
+                        <label>URL Canva MCP</label>
+                        <input type="url" placeholder="https://votre-serveur/canva/mcp"
+                               t-att-value="state.canva_mcp_url"
+                               t-on-input="(ev) => this.state.canva_mcp_url = ev.target.value"/>
+                        <t t-if="state.canva_configured">
+                            <p class="dtm-muted"><i class="fa fa-check text-success"/> Canva configuré</p>
+                        </t>
+                        <t t-else="">
+                            <p class="dtm-muted">Non configuré — un placeholder sera utilisé.</p>
+                        </t>
+                        <label>Clé API HeyGen</label>
+                        <input type="password" placeholder="sk-..."
+                               t-att-value="state.heygen_api_key"
+                               t-on-input="(ev) => this.state.heygen_api_key = ev.target.value"/>
+                        <t t-if="state.heygen_configured">
+                            <p class="dtm-muted"><i class="fa fa-check text-success"/> HeyGen configuré</p>
+                        </t>
+                        <button type="button" class="dtm-btn dtm-btn--primary"
+                                t-att-disabled="state.saving"
+                                t-on-click="saveIntegrations">
+                            Enregistrer
+                        </button>
+                    </div>
+                </section>
+                <div class="dtm-settings-grid">
+                    <div class="dtm-settings-card" t-on-click="openBrandFoundations">
+                        <i class="fa fa-building fa-2x"/>
+                        <h3>Analyse marque</h3>
+                        <p>Fondations de marque, questionnaires et validation</p>
+                    </div>
+                    <div class="dtm-settings-card" t-on-click="openSystemSettings">
+                        <i class="fa fa-cog fa-2x"/>
+                        <h3>Paramètres Odoo</h3>
+                        <p>Meta Ads, Google Ads, tokens système</p>
+                    </div>
+                </div>
+            </t>
+        </div>
+    </t>
+
+</templates>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_credit_config_form" model="ir.ui.view">
+        <field name="name">doorway.credit.config.form</field>
+        <field name="model">doorway.credit.config</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group string="Paramètres commerciaux" groups="doorway_leads_bruts.group_admin_commercial">
+                        <field name="mode_commercial"/>
+                        <field name="devise"/>
+                        <field name="prix_credit_revient"/>
+                        <field name="prix_credit_vente"/>
+                        <field name="marge_defaut_pct"/>
+                        <field name="marge_premium_pct"/>
+                        <field name="tva_pct"/>
+                        <field name="stripe_public_key"/>
+                        <field name="stripe_secret_key" password="True"/>
+                    </group>
+                    <group string="API &amp; coûts techniques">
+                        <field name="google_maps_api_key" password="True"/>
+                        <field name="credit_gmaps_search"/>
+                        <field name="credit_gmaps_detail"/>
+                        <field name="credit_scraping_page"/>
+                        <field name="credit_nettoyage_ia"/>
+                        <field name="credit_import_odoo"/>
+                    </group>
+                    <group string="Export CRM Doorway">
+                        <field name="auto_import_crm_doorway"/>
+                        <field name="crm_assignee_login"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_credit_config" model="ir.actions.act_window">
+        <field name="name">Configuration crédits</field>
+        <field name="res_model">doorway.credit.config</field>
+        <field name="view_mode">form</field>
+        <field name="res_id" ref="credit_config_default"/>
+    </record>
+</odoo>

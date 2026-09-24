@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="rule_lead_user_assigned" model="ir.rule">
+        <field name="name">Bab Invest lead : assigné ou non assigné</field>
+        <field name="model_id" search="[('model', '=', 'babinvest.concierge.lead')]"/>
+        <field name="domain_force">['|', ('assigned_to', '=', user.id), ('assigned_to', '=', False)]</field>
+        <field name="groups" eval="[(4, ref('group_babinvest_user'))]"/>
+    </record>
+    <record id="rule_lead_manager_all" model="ir.rule">
+        <field name="name">Bab Invest lead : accès manager</field>
+        <field name="model_id" search="[('model', '=', 'babinvest.concierge.lead')]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_babinvest_manager'))]"/>
+    </record>
+</odoo>

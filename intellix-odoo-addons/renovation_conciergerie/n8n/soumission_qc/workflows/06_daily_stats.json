@@ -1,0 +1,60 @@
+{
+  "name": "soumission-qc — 06 Stats Quotidiennes",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 18 * * *"
+            }
+          ]
+        }
+      },
+      "name": "Cron 18h",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const today = new Date().toISOString().slice(0, 10);\nconst odooUrl = ($env.ODOO_URL || 'https://intellixcrm.com').replace(/\\/$/, '');\n\nlet stats = { date: today, calls: 0, qualified: 0, pas_interesse: 0, locataire: 0, pas_projet: 0 };\ntry {\n  const res = await this.helpers.httpRequest({\n    method: 'POST',\n    url: odooUrl + '/doorway/api/soumission-qc/daily-stats',\n    body: {\n      jsonrpc: '2.0',\n      method: 'call',\n      params: { tenant_api_key: $env.DOORWAY_TENANT_API_KEY, date: today },\n      id: Date.now(),\n    },\n    json: true,\n  });\n  stats = { ...stats, ...(res.result || res) };\n} catch (_e) { /* stats optional */ }\n\nconst pct = stats.calls ? Math.round((stats.qualified / stats.calls) * 100) : 0;\nconst body =\n  `Rapport Sofia — ${today}\\n` +\n  `📞 Appels : ${stats.calls}\\n` +\n  `✅ Qualifiés : ${stats.qualified} (${pct}%)\\n` +\n  `❌ Pas intéressés : ${stats.pas_interesse}\\n` +\n  `🏠 Locataires : ${stats.locataire}\\n` +\n  `📋 Sans projet : ${stats.pas_projet}`;\n\nconst email = $env.MANAGER_EMAIL || $env.DIRECTOR_EMAIL;\nif (email) {\n  try {\n    await this.helpers.httpRequest({\n      method: 'POST',\n      url: odooUrl + '/doorway/api/soumission-qc/send-report',\n      body: {\n        jsonrpc: '2.0',\n        method: 'call',\n        params: { tenant_api_key: $env.DOORWAY_TENANT_API_KEY, email, subject: `Rapport Sofia SE — ${today}`, body },\n        id: Date.now(),\n      },\n      json: true,\n    });\n  } catch (_e) { /* email optional */ }\n}\n\nreturn [{ json: { ok: true, stats, report: body } }];"
+      },
+      "name": "Daily Stats",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Cron 18h": {
+      "main": [
+        [
+          {
+            "node": "Daily Stats",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [
+    {
+      "name": "soumission-qc"
+    },
+    {
+      "name": "sofia"
+    }
+  ]
+}

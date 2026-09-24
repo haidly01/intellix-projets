@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="intellix_finance.FinanceDashboard">
+        <div class="ix-finance-dash">
+            <div class="ix-fin-top">
+                <div>
+                    <div class="ix-fin-kicker">IntelliX · Finance</div>
+                    <h1>ITEX · Driven · Growth Capital</h1>
+                    <div class="ix-fin-sub">
+                        ITEX : cycle d'adhésion à 8 étapes · Driven / Growth Capital : 7 étapes ·
+                        jamais agrégés
+                    </div>
+                </div>
+                <button class="ix-fin-btn" t-on-click="refresh">Rafraîchir</button>
+            </div>
+
+            <div class="ix-fin-filters">
+                <label>
+                    Province
+                    <select t-att-value="state.province" t-on-change="onProvinceChange">
+                        <option value="">Toutes (Canada)</option>
+                        <t t-foreach="state.provinces or []" t-as="prov" t-key="prov.key or ('prov-' + prov_index)">
+                            <option t-att-value="prov.key" t-esc="prov.label"/>
+                        </t>
+                    </select>
+                </label>
+                <label>
+                    Langue
+                    <select t-att-value="state.lang" t-on-change="onLangChange">
+                        <option value="">Français + anglais</option>
+                        <option value="fr">Français</option>
+                        <option value="en">Anglais</option>
+                    </select>
+                </label>
+            </div>
+
+            <div class="ix-fin-tabs">
+                <button t-att-class="state.tab === 'itex' ? 'active' : ''" t-on-click="() => this.setTab('itex')">ITEX</button>
+                <button t-att-class="state.tab === 'driven' ? 'active' : ''" t-on-click="() => this.setTab('driven')">Driven</button>
+                <button t-att-class="state.tab === 'growth' ? 'active' : ''" t-on-click="() => this.setTab('growth')">Growth Capital</button>
+            </div>
+
+            <t t-if="state.error">
+                <div class="ix-fin-card ix-fin-warn" t-esc="state.error"/>
+            </t>
+            <t t-elif="state.loading">
+                <div class="ix-fin-sub">Chargement…</div>
+            </t>
+            <t t-else="">
+                <t t-if="state.tab === 'itex'">
+                    <div class="ix-fin-itex">
+                        <div class="ix-fin-kpis">
+                            <div class="ix-fin-kpi">
+                                <div class="label">Leads entonnoir</div>
+                                <div class="val" t-esc="state.stats.itex.in_funnel ?? 0"/>
+                                <div class="hint">8 étapes ITEX · hors Driven / GC</div>
+                            </div>
+                            <div class="ix-fin-kpi">
+                                <div class="label">Approbation globale</div>
+                                <div class="val" t-esc="pct(state.stats.itex.approval_rate)"/>
+                                <div class="hint">adhérents / leads · cible 30 %</div>
+                            </div>
+                            <div class="ix-fin-kpi">
+                                <div class="label">Cycle moyen</div>
+                                <div class="val">
+                                    <t t-if="state.stats.itex.cycle_days_avg != null" t-esc="state.stats.itex.cycle_days_avg"/>
+                                    <t t-else="">—</t>
+                                    <span class="unit"> j</span>
+                                </div>
+                                <div class="hint">cible 30–90 j</div>
+                            </div>
+                            <div class="ix-fin-kpi">
+                                <div class="label">Adhérents / membres</div>
+                                <div class="val" t-esc="state.stats.itex.adherent ?? 0"/>
+                                <div class="hint" t-esc="state.stats.itex.members_source or 'Étape Adhérent'"/>
+                            </div>
+                        </div>
+
+                        <div class="ix-fin-card">
+                            <h3>Entonnoir ITEX à 8 étapes</h3>
+                            <t t-foreach="(state.stats.itex and state.stats.itex.stages) or []" t-as="stage" t-key="stage.key or ('itex-stage-' + stage_index)">
+                                <div t-att-class="'ix-fin-stage' + (stage.green ? ' confirmed' : '')">
+                                    <span class="seq" t-esc="stage.seq"/>
+                                    <span class="lab" t-esc="stage.label"/>
+                                    <span class="n" t-esc="stage.count"/>
+                                    <span t-if="stage.key === 'paiement_initial'" class="hint">
+                                        <t t-if="stage.confirmed"> · confirmé</t>
+                                        <t t-else=""> · en attente payment.transaction</t>
+                                    </span>
+                                </div>
+                            </t>
+                        </div>
+
+                        <div class="ix-fin-card">
+                            <h3>Conversion étape → étape</h3>
+                            <t t-foreach="(state.stats.itex and state.stats.itex.conversions) or []" t-as="row" t-key="row.from_key or ('itex-conv-' + row_index)">
+                                <div class="ix-fin-stage">
+                                    <span class="lab">
+                                        <t t-esc="row.from_label"/> → <t t-esc="row.to_label"/>
+                                    </span>
+                                    <span class="n" t-esc="pct(row.rate)"/>
+                                    <span class="hint">
+                                        <t t-esc="row.next ?? 0"/> / <t t-esc="row.reached ?? 0"/>
+                                    </span>
+                                </div>
+                            </t>
+                        </div>
+
+                        <div class="ix-fin-loss">
+                            <div class="ix-fin-loss-card silence">
+                                <div class="label">Abandon intérêt → silence</div>
+                                <div class="val" t-esc="pct(state.stats.itex.silence and state.stats.itex.silence.rate)"/>
+                                <div class="hint">
+                                    <t t-esc="state.stats.itex.silence and state.stats.itex.silence.lost or 0"/>
+                                    / <t t-esc="state.stats.itex.silence and state.stats.itex.silence.reached or 0"/>
+                                    dossiers à « Intérêt confirmé » devenus Perdu — sans réponse
+                                </div>
+                            </div>
+                            <div class="ix-fin-loss-card doc">
+                                <div class="label">Abandon documentaire</div>
+                                <div class="val" t-esc="pct(state.stats.itex.documentary and state.stats.itex.documentary.rate)"/>
+                                <div class="hint">
+                                    <t t-esc="state.stats.itex.documentary and state.stats.itex.documentary.lost or 0"/>
+                                    / <t t-esc="state.stats.itex.documentary and state.stats.itex.documentary.reached or 0"/>
+                                    dossiers à « Documentation » devenus Perdu
+                                </div>
+                            </div>
+                        </div>
+
+                        <t t-call="intellix_finance.SegmentBars">
+                            <t t-set="segments" t-value="(state.stats.itex and state.stats.itex.segments) or {}"/>
+                            <t t-set="title" t-value="'Répartition membres / leads ITEX'"/>
+                        </t>
+                        <button class="ix-fin-btn primary" t-on-click="openItex">
+                            Ouvrir les leads ITEX
+                        </button>
+                        <div class="ix-fin-note">
+                            Compteurs membres / CRM / devis : même moteur
+                            (coins.entente.get_live_dashboard_stats). Entonnoir ITEX
+                            distinct de Driven et Growth Capital. Paiement initial
+                            vert uniquement si payment.transaction confirmée.
+                        </div>
+                    </div>
+                </t>
+
+                <t t-if="state.tab === 'driven'">
+                    <t t-call="intellix_finance.BrandColumn">
+                        <t t-set="brand" t-value="state.stats.driven or {}"/>
+                        <t t-set="brandKey" t-value="'driven'"/>
+                    </t>
+                </t>
+                <t t-if="state.tab === 'growth'">
+                    <t t-call="intellix_finance.BrandColumn">
+                        <t t-set="brand" t-value="state.stats.growth_capital or {}"/>
+                        <t t-set="brandKey" t-value="'growth_capital'"/>
+                    </t>
+                </t>
+            </t>
+        </div>
+    </t>
+
+    <t t-name="intellix_finance.BrandColumn">
+        <section class="ix-fin-col">
+            <header>
+                <h2 t-esc="brand.name or '—'"/>
+                <div class="ix-fin-sub">
+                    <t t-esc="brand.qualified ?? 0"/> pré-qualifiés dans l'entonnoir
+                    · <t t-esc="brand.not_qualified ?? 0"/> non qualifiés (hors métriques)
+                </div>
+            </header>
+
+            <div class="ix-fin-kpis compact">
+                <div class="ix-fin-kpi">
+                    <div class="label">Approbation globale</div>
+                    <div class="val" t-esc="pct(brand.approval_rate)"/>
+                    <div class="hint">cible 30 %</div>
+                </div>
+                <div class="ix-fin-kpi">
+                    <div class="label">Financés</div>
+                    <div class="val" t-esc="brand.funded ?? 0"/>
+                </div>
+                <div class="ix-fin-kpi">
+                    <div class="label">Cycle moyen</div>
+                    <div class="val">
+                        <t t-if="brand.cycle_days_avg != null" t-esc="brand.cycle_days_avg"/>
+                        <t t-else="">—</t>
+                        <span class="unit"> j</span>
+                    </div>
+                    <div class="hint">cible 30–90 j</div>
+                </div>
+            </div>
+
+            <div class="ix-fin-card">
+                <h3>Entonnoir à 7 étapes</h3>
+                <t t-foreach="(brand and brand.stages) or []" t-as="stage" t-key="stage.key or ('brand-stage-' + stage_index)">
+                    <div class="ix-fin-stage">
+                        <span class="seq" t-esc="stage.seq"/>
+                        <span class="lab" t-esc="stage.label"/>
+                        <span class="n" t-esc="stage.count"/>
+                    </div>
+                </t>
+            </div>
+
+            <div class="ix-fin-card">
+                <h3>Conversion étape → étape</h3>
+                <t t-foreach="(brand and brand.conversions) or []" t-as="row" t-key="row.from_key or ('brand-conv-' + row_index)">
+                    <div class="ix-fin-stage">
+                        <span class="lab">
+                            <t t-esc="row.from_label"/> → <t t-esc="row.to_label"/>
+                        </span>
+                        <span class="n" t-esc="pct(row.rate)"/>
+                        <span class="hint">
+                            <t t-esc="row.next ?? 0"/> / <t t-esc="row.reached ?? 0"/>
+                        </span>
+                    </div>
+                </t>
+            </div>
+
+            <div class="ix-fin-loss">
+                <div class="ix-fin-loss-card doc">
+                    <div class="label">Abandon documentaire</div>
+                    <div class="val" t-esc="pct(brand.loss and brand.loss.documentary and brand.loss.documentary.rate)"/>
+                    <div class="hint">
+                        <t t-esc="brand.loss and brand.loss.documentary and brand.loss.documentary.lost or 0"/>
+                        / <t t-esc="brand.loss and brand.loss.documentary and brand.loss.documentary.reached or 0"/>
+                        dossiers à « Documents demandés »
+                    </div>
+                </div>
+                <div class="ix-fin-loss-card credit">
+                    <div class="label">Refus crédit</div>
+                    <div class="val" t-esc="pct(brand.loss and brand.loss.credit and brand.loss.credit.rate)"/>
+                    <div class="hint">
+                        <t t-esc="brand.loss and brand.loss.credit and brand.loss.credit.lost or 0"/>
+                        / <t t-esc="brand.loss and brand.loss.credit and brand.loss.credit.reached or 0"/>
+                        dossiers à « Documents vérifiés »
+                    </div>
+                </div>
+                <div class="ix-fin-loss-card rate">
+                    <div class="label">Refus taux</div>
+                    <div class="val" t-esc="pct(brand.loss and brand.loss.rate and brand.loss.rate.rate)"/>
+                    <div class="hint">
+                        <t t-esc="brand.loss and brand.loss.rate and brand.loss.rate.lost or 0"/>
+                        / <t t-esc="brand.loss and brand.loss.rate and brand.loss.rate.reached or 0"/>
+                        dossiers à « Offre présentée »
+                    </div>
+                </div>
+            </div>
+
+            <t t-call="intellix_finance.SegmentBars">
+                <t t-set="segments" t-value="(brand and brand.segments) or {}"/>
+                <t t-set="title" t-value="'Entonnoir par province / langue'"/>
+            </t>
+
+            <div class="ix-fin-actions">
+                <button class="ix-fin-btn primary" t-on-click="() => this.openFunnel(brandKey)">Entonnoir</button>
+                <button class="ix-fin-btn" t-on-click="() => this.openNotQualified(brandKey)">Non qualifiés</button>
+            </div>
+        </section>
+    </t>
+
+    <t t-name="intellix_finance.SegmentBars">
+        <div class="ix-fin-card">
+            <h3 t-esc="title or 'Province / langue'"/>
+            <div class="ix-fin-seg">
+                <div>
+                    <div class="ix-fin-seg-label">Province</div>
+                    <t t-foreach="(segments and segments.by_province) or []" t-as="row" t-key="row.key or ('prov-seg-' + row_index)">
+                        <div class="ix-fin-stage">
+                            <span class="lab" t-esc="row.label"/>
+                            <span class="n" t-esc="row.count"/>
+                        </div>
+                    </t>
+                    <t t-if="!((segments and segments.by_province) or []).length">
+                        <div class="ix-fin-sub">Aucune donnée pour ce filtre.</div>
+                    </t>
+                </div>
+                <div>
+                    <div class="ix-fin-seg-label">Langue</div>
+                    <t t-foreach="(segments and segments.by_lang) or []" t-as="row" t-key="row.key or ('lang-seg-' + row_index)">
+                        <div class="ix-fin-stage">
+                            <span class="lab" t-esc="row.label"/>
+                            <span class="n" t-esc="row.count"/>
+                        </div>
+                    </t>
+                    <t t-if="!((segments and segments.by_lang) or []).length">
+                        <div class="ix-fin-sub">Aucune donnée pour ce filtre.</div>
+                    </t>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

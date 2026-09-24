@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="crm_lead_view_form_immo_meta" model="ir.ui.view">
+        <field name="name">crm.lead.form.immo.meta</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Qualification IA (Immo)" name="immo_ia_qualification">
+                    <group>
+                        <group string="Score">
+                            <field name="immo_ia_score"/>
+                            <field name="immo_ia_score_numeric"/>
+                            <field name="immo_nurture_step"/>
+                            <field name="immo_relance_number"/>
+                            <field name="immo_days_since_request"/>
+                            <field name="immo_total_call_attempts"/>
+                            <field name="immo_last_call_at"/>
+                            <field name="immo_do_not_call"/>
+                            <field name="immo_explicit_refusal"/>
+                            <field name="immo_callback_scheduled"/>
+                            <field name="immo_nurture_active"/>
+                            <field name="immo_nurture_started_at"/>
+                            <field name="immo_transfer_at"/>
+                        </group>
+                        <group string="Données collectées">
+                            <field name="immo_selling_timeline"/>
+                            <field name="immo_estimated_value"/>
+                            <field name="immo_is_owner_confirmed"/>
+                            <field name="immo_other_agents"/>
+                            <field name="elevenlabs_conversation_id"/>
+                            <field name="immo_meta_lead_id"/>
+                            <field name="immo_meta_ad_id"/>
+                            <field name="immo_meta_form_id"/>
+                        </group>
+                    </group>
+                    <group string="Transcript">
+                        <field name="immo_call_transcript" nolabel="1"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

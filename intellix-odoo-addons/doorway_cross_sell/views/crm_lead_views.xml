@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_crm_lead_form_cross_sell" model="ir.ui.view">
+        <field name="name">crm.lead.form.doorway.cross.sell</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="priority">50</field>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Cross-sell" name="doorway_cross_sell">
+                    <group>
+                        <group>
+                            <field name="origine_rdv_statut"/>
+                            <field name="date_validation_conversion" readonly="1"/>
+                            <field name="cross_sell_statut" readonly="1"/>
+                            <field name="cross_sell_verticaux" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="currency_cross_sell_id" invisible="1"/>
+                            <field name="bonus_conversion_calcule" readonly="1"/>
+                            <field name="cross_sell_montant_total" readonly="1"/>
+                        </group>
+                    </group>
+                    <field name="cross_sell_line_ids">
+                        <list editable="bottom">
+                            <field name="checklist_key" column_invisible="1"/>
+                            <field name="vertical_origine"/>
+                            <field name="vertical_secondaire"/>
+                            <field name="statut"/>
+                            <field name="moment_detection"/>
+                            <field name="call_journal_id"/>
+                            <field name="agent_credite_manuel_visible" column_invisible="1"/>
+                            <field name="agent_credite_manuel_editable" column_invisible="1"/>
+                            <field
+                                name="agent_credite_manuel_id"
+                                column_invisible="not agent_credite_manuel_visible"
+                                readonly="not agent_credite_manuel_editable"
+                            />
+                            <field name="agent_credite_id" readonly="1"/>
+                            <field name="date_detection"/>
+                            <field name="currency_id" column_invisible="1"/>
+                            <field name="bonus_calcule" readonly="1"/>
+                            <field name="date_validation" readonly="1"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_crm_lead_form_cross_sell_reno_sheet" model="ir.ui.view">
+        <field name="name">crm.lead.form.doorway.cross.sell.reno.sheet</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="reno_immobilier.view_crm_lead_form_reno_immobilier"/>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('o_reno_revenue_row')]" position="inside">
+                <div class="o_reno_revenue_field" invisible="not reno_immo_lead">
+                    <label for="origine_rdv_statut" string="RDV d'origine"/>
+                    <field name="origine_rdv_statut" class="o_reno_revenue_value"/>
+                </div>
+                <div class="o_reno_revenue_field" invisible="not reno_immo_lead">
+                    <label for="cross_sell_montant_total" string="Cross-sell (total)"/>
+                    <field name="cross_sell_montant_total" class="o_reno_revenue_value"/>
+                </div>
+            </xpath>
+            <xpath expr="//div[hasclass('o_reno_lead_form')]" position="inside">
+                <div class="o_reno_form_grid" invisible="not reno_immo_lead">
+                    <separator string="Formulaire"/>
+                    <field name="immo_is_meta_lead" invisible="1"/>
+                    <field name="immo_meta_mapped_keys" invisible="1"/>
+                    <field name="immo_property_type_enrich" invisible="1"/>
+                    <field name="immo_selling_timeline_enrich" invisible="1"/>
+                    <field name="immo_estimated_value_enrich" invisible="1"/>
+                    <field name="immo_is_owner_enrich" invisible="1"/>
+                    <field name="immo_other_agents_enrich" invisible="1"/>
+                    <group col="4">
+                        <label for="immo_property_type"/>
+                        <div class="o_reno_meta_field">
+                            <field name="immo_property_type"/>
+                            <span class="o_reno_enrich_badge o_reno_enrich_ok"
+                                  invisible="immo_property_type_enrich != 'enriched'">Enrichi automatiquement</span>
+                            <span class="o_reno_enrich_badge o_reno_enrich_warn"
+                                  invisible="immo_property_type_enrich != 'failed'">Non enrichi — vérifier manuellement</span>
+                        </div>
+                        <label for="immo_selling_timeline"/>
+                        <div class="o_reno_meta_field">
+                            <field name="immo_selling_timeline"/>
+                            <span class="o_reno_enrich_badge o_reno_enrich_ok"
+                                  invisible="immo_selling_timeline_enrich != 'enriched'">Enrichi automatiquement</span>
+                            <span class="o_reno_enrich_badge o_reno_enrich_warn"
+                                  invisible="immo_selling_timeline_enrich != 'failed'">Non enrichi — vérifier manuellement</span>
+                        </div>
+                        <label for="immo_estimated_value"/>
+                        <div class="o_reno_meta_field">
+                            <field name="immo_estimated_value"/>
+                            <span class="o_reno_enrich_badge o_reno_enrich_ok"
+                                  invisible="immo_estimated_value_enrich != 'enriched'">Enrichi automatiquement</span>
+                            <span class="o_reno_enrich_badge o_reno_enrich_warn"
+                                  invisible="immo_estimated_value_enrich != 'failed'">Non enrichi — vérifier manuellement</span>
+                        </div>
+                        <label for="immo_is_owner_confirmed"/>
+                        <div class="o_reno_meta_field o_reno_bool_field">
+                            <div class="o_reno_bool_row">
+                                <field name="immo_is_owner_confirmed"
+                                       widget="boolean_toggle"
+                                       readonly="False"/>
+                                <span class="o_reno_bool_caption"
+                                      invisible="not immo_is_owner_confirmed">Oui</span>
+                                <span class="o_reno_bool_caption o_reno_bool_caption_off"
+                                      invisible="immo_is_owner_confirmed">Non</span>
+                            </div>
+                            <span class="o_reno_enrich_badge o_reno_enrich_ok"
+                                  invisible="immo_is_owner_enrich != 'enriched'">Enrichi automatiquement</span>
+                            <span class="o_reno_enrich_badge o_reno_enrich_warn"
+                                  invisible="immo_is_owner_enrich != 'failed'">Non enrichi — vérifier manuellement</span>
+                        </div>
+                        <label for="immo_other_agents"/>
+                        <div class="o_reno_meta_field o_reno_bool_field">
+                            <div class="o_reno_bool_row">
+                                <field name="immo_other_agents"
+                                       widget="boolean_toggle"
+                                       readonly="False"/>
+                                <span class="o_reno_bool_caption"
+                                      invisible="not immo_other_agents">Oui</span>
+                                <span class="o_reno_bool_caption o_reno_bool_caption_off"
+                                      invisible="immo_other_agents">Non</span>
+                            </div>
+                            <span class="o_reno_enrich_badge o_reno_enrich_ok"
+                                  invisible="immo_other_agents_enrich != 'enriched'">Enrichi automatiquement</span>
+                            <span class="o_reno_enrich_badge o_reno_enrich_warn"
+                                  invisible="immo_other_agents_enrich != 'failed'">Non enrichi — vérifier manuellement</span>
+                        </div>
+                        <field name="immo_meta_form_id" readonly="1"/>
+                    </group>
+                    <group>
+                        <field name="immo_show_raw_meta"/>
+                        <field name="description" string="Réponse brute Meta"
+                               invisible="not immo_show_raw_meta"
+                               placeholder="Réponses brutes du site ou de Meta…"/>
+                    </group>
+                    <separator string="Cross-sell"/>
+                    <field name="cs_origin_kind" invisible="1"/>
+                    <field name="cs_origin_vertical" invisible="1"/>
+                    <field name="cs_q2_needs_target" invisible="1"/>
+                    <div class="o_reno_cs_checklist">
+                        <div class="o_reno_cs_origin_badge">
+                            <field name="cs_origin_badge_label" nolabel="1" readonly="1"/>
+                        </div>
+                        <div class="o_reno_cs_checklist_title">
+                            <field name="cs_checklist_title" nolabel="1" readonly="1"/>
+                        </div>
+                        <div class="o_reno_cs_item">
+                            <field name="cs_q_travaux_vente" nolabel="1" widget="boolean" readonly="0"/>
+                            <field name="cs_q1_label" nolabel="1" class="o_reno_cs_q" readonly="1"/>
+                            <field name="cs_q1_to" nolabel="1" class="o_reno_cs_to" readonly="1"/>
+                        </div>
+                        <div class="o_reno_cs_item">
+                            <field name="cs_q_rachat_reno" nolabel="1" widget="boolean" readonly="0"/>
+                            <field name="cs_q2_label" nolabel="1" class="o_reno_cs_q" readonly="1"/>
+                            <field name="cs_q2_to" nolabel="1" class="o_reno_cs_to" readonly="1"/>
+                            <field name="cs_q_target_vertical"
+                                   nolabel="1"
+                                   invisible="not cs_q2_needs_target or not cs_q_rachat_reno"/>
+                        </div>
+                        <div class="o_reno_cs_item o_reno_cs_item_q3">
+                            <field name="cs_q_autre_propriete" nolabel="1" widget="boolean" readonly="0"/>
+                            <field name="cs_q3_label" nolabel="1" class="o_reno_cs_q" readonly="1"/>
+                            <field name="cs_q3_to" nolabel="1" class="o_reno_cs_to" readonly="1"/>
+                        </div>
+                    </div>
+                    <group col="4">
+                        <field name="origine_rdv_statut"/>
+                        <field name="cross_sell_statut" readonly="1"/>
+                        <field name="cross_sell_verticaux" readonly="1"/>
+                        <field name="currency_cross_sell_id" invisible="1"/>
+                        <field name="bonus_conversion_calcule" readonly="1"/>
+                    </group>
+                    <field name="cross_sell_line_ids" nolabel="1">
+                        <list editable="bottom">
+                            <field name="checklist_key" column_invisible="1"/>
+                            <field name="vertical_origine"/>
+                            <field name="vertical_secondaire"/>
+                            <field name="statut"/>
+                            <field name="moment_detection"/>
+                            <field name="agent_credite_id" readonly="1"/>
+                            <field name="currency_id" column_invisible="1"/>
+                            <field name="bonus_calcule" readonly="1"/>
+                        </list>
+                    </field>
+                </div>
+            </xpath>
+            <xpath expr="//page[@name='reno_immobilier']" position="inside">
+                <group string="Identifiants Meta" name="reno_formulaire" invisible="not immo_is_meta_lead">
+                    <group>
+                        <field name="immo_meta_form_id" readonly="1"/>
+                        <field name="immo_meta_lead_id" readonly="1"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

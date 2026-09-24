@@ -1,0 +1,220 @@
+/* Page Contact — identité cream / cuivre-or */
+.ct-page {
+  --cream: #faf6ee;
+  --gold-1: #b5732f;
+  --gold-2: #e6b876;
+  --gold-3: #8a4f22;
+  --charcoal: #262220;
+  background: var(--cream);
+  color: var(--charcoal);
+  font-family: "Jost", sans-serif;
+  font-weight: 300;
+}
+
+.ct-hero {
+  padding: 120px 0 48px;
+  background: linear-gradient(165deg, #e6b876 0%, #f3d9b0 38%, #faf6ee 100%);
+  text-align: center;
+}
+.ct-hero .eyebrow {
+  font-family: "Jost", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: 0.72rem;
+  color: var(--gold-3);
+  margin: 0 0 12px;
+}
+.ct-hero h1 {
+  font-family: "Cormorant Garamond", "Playfair Display", serif;
+  font-weight: 600;
+  font-size: clamp(2.2rem, 5vw, 3.2rem);
+  margin: 0 0 12px;
+  color: var(--charcoal);
+  letter-spacing: 0.02em;
+}
+.ct-hero .sub {
+  max-width: 38rem;
+  margin: 0 auto;
+  font-size: 1.05rem;
+  color: var(--gold-3);
+  font-style: italic;
+}
+.ct-hero .gold-line {
+  width: 64px;
+  height: 2px;
+  margin: 22px auto 0;
+  background: linear-gradient(90deg, var(--gold-3), var(--gold-2));
+}
+
+.ct-main {
+  padding: 40px 0 80px;
+}
+.ct-main .wrap {
+  max-width: 720px;
+}
+
+.ct-form {
+  display: grid;
+  gap: 22px;
+}
+.ct-type {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.ct-type label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 12px;
+  border: 1px solid rgba(138, 79, 34, 0.28);
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  background: #fff;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
+}
+.ct-type input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.ct-type label:has(input:checked) {
+  border-color: var(--gold-1);
+  background: linear-gradient(180deg, #fff8ee, #fff);
+  color: var(--gold-3);
+  box-shadow: inset 0 0 0 1px rgba(181, 115, 47, 0.25);
+}
+
+.ct-fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 16px;
+}
+.ct-fieldset[hidden] {
+  display: none !important;
+}
+.ct-label {
+  display: grid;
+  gap: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--charcoal);
+}
+.ct-label span.hint {
+  font-weight: 300;
+  font-size: 0.8rem;
+  color: rgba(38, 34, 32, 0.55);
+}
+.ct-label input,
+.ct-label select,
+.ct-label textarea {
+  font: inherit;
+  font-weight: 300;
+  padding: 12px 14px;
+  border: 1px solid rgba(138, 79, 34, 0.28);
+  border-radius: 4px;
+  background: #fff;
+  color: var(--charcoal);
+}
+.ct-label textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+.ct-label input:focus,
+.ct-label select:focus,
+.ct-label textarea:focus {
+  outline: none;
+  border-color: var(--gold-1);
+  box-shadow: 0 0 0 3px rgba(181, 115, 47, 0.15);
+}
+
+.ct-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.ct-interests {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 14px;
+}
+.ct-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.92rem;
+  font-weight: 400;
+  cursor: pointer;
+}
+.ct-check input {
+  margin-top: 3px;
+  accent-color: var(--gold-1);
+}
+
+.ct-consent {
+  padding: 14px 16px;
+  background: rgba(230, 184, 118, 0.18);
+  border-radius: 4px;
+}
+
+.ct-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-top: 8px;
+}
+.ct-actions .btn {
+  appearance: none;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+  padding: 13px 22px;
+  border-radius: 4px;
+  text-decoration: none;
+  background: linear-gradient(135deg, var(--gold-1), var(--gold-3));
+  color: #fff;
+}
+.ct-actions .btn:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+.ct-actions .btn-ghost {
+  background: transparent;
+  color: var(--gold-1);
+  border: 1px solid rgba(181, 115, 47, 0.45);
+}
+
+.ct-status {
+  min-height: 1.4em;
+  font-size: 0.95rem;
+}
+.ct-status.ok { color: #2f6b3a; }
+.ct-status.err { color: #8b2e2e; }
+
+.ct-aside {
+  margin-top: 36px;
+  padding-top: 28px;
+  border-top: 1px solid rgba(181, 115, 47, 0.25);
+  font-size: 0.95rem;
+  color: rgba(38, 34, 32, 0.75);
+}
+.ct-aside a {
+  color: var(--gold-1);
+}
+
+@media (max-width: 640px) {
+  .ct-type,
+  .ct-row,
+  .ct-interests {
+    grid-template-columns: 1fr;
+  }
+  .ct-hero {
+    padding: 100px 0 36px;
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "name": "lea-qc — 05 Lead Non Qualifié",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lea-qc/non-qualified",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        300
+      ],
+      "webhookId": "lea-qc-non-qualified"
+    },
+    {
+      "parameters": {
+        "jsCode": "const p = $input.first().json.body || $input.first().json;\nconst action = p.crm_action || p.statut || '';\n\nconst odooUrl = ($env.ODOO_URL || 'https://intellixcrm.com').replace(/\\/$/, '');\nlet odoo = {};\ntry {\n  const res = await this.helpers.httpRequest({\n    method: 'POST',\n    url: odooUrl + '/doorway/api/lea-qc/non-qualified',\n    body: {\n      jsonrpc: '2.0',\n      method: 'call',\n      params: { tenant_api_key: $env.DOORWAY_TENANT_API_KEY, ...p, crm_action: action },\n      id: Date.now(),\n    },\n    json: true,\n  });\n  odoo = res.result || res;\n} catch (e) {\n  odoo = { error: (e.message || String(e)).slice(0, 200) };\n}\n\nreturn [{ json: { ok: true, action, odoo } }];"
+      },
+      "name": "Non Qualified",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Non Qualified",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [
+    {
+      "name": "lea-qc"
+    },
+    {
+      "name": "sofia"
+    }
+  ]
+}

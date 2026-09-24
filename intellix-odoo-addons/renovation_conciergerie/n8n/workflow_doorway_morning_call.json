@@ -1,0 +1,108 @@
+{
+  "name": "Doorway — Appel matin (leads hors heures)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "morning-call-schedule",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "mc1-webhook",
+      "name": "1 Webhook planifier",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 300],
+      "webhookId": "doorway-morning-call-schedule"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json;\nconst body = raw.body || raw;\nfunction torontoNow() {\n  return new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Toronto' }));\n}\nfunction minutesUntilNextMorningOpen(openHour) {\n  const now = torontoNow();\n  const target = new Date(now);\n  target.setSeconds(0, 0);\n  const day = now.getDay();\n  const hour = now.getHours();\n  const isBiz = (d) => d >= 1 && d <= 6;\n  const oh = parseInt(openHour || 9, 10);\n  if (isBiz(day) && hour < oh) {\n    target.setHours(oh, 0, 0, 0);\n  } else {\n    let c = new Date(now);\n    c.setDate(c.getDate() + 1);\n    c.setHours(oh, 0, 0, 0);\n    while (!isBiz(c.getDay())) c.setDate(c.getDate() + 1);\n    target.setTime(c.getTime());\n  }\n  let m = Math.round((target - now) / 60000);\n  return m < 1 ? 1 : m;\n}\nconst pipeline = (body.pipeline || 'immo').toLowerCase();\nconst openHour = pipeline === 'energie' ? 8 : 9;\nreturn [{ json: {\n  ...body,\n  pipeline,\n  open_hour: openHour,\n  wait_minutes: minutesUntilNextMorningOpen(openHour),\n  scheduled_at: new Date().toISOString()\n}}];"
+      },
+      "id": "mc2-calc",
+      "name": "2 Calc attente matin",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [260, 300]
+    },
+    {
+      "parameters": {
+        "amount": "={{ $json.wait_minutes }}",
+        "unit": "minutes"
+      },
+      "id": "mc3-wait",
+      "name": "3 Wait jusqu'à 9h",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [520, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const b = $('2 Calc attente matin').first().json;\nconst pipeline = b.pipeline;\nlet lead = {};\ntry {\n  if (pipeline === 'immo') {\n    lead = await this.helpers.httpRequest({\n      method: 'GET',\n      url: `https://intellixcrm.com/api/immo/lead/${b.lead_id}`,\n      headers: { 'X-Immo-Webhook-Token': '{{META_IMMO_WEBHOOK_TOKEN}}' },\n      json: true,\n    });\n  } else if (pipeline === 'haidly') {\n    lead = await this.helpers.httpRequest({\n      method: 'GET',\n      url: `https://intellixcrm.com/api/haidly/lead/${b.lead_id}`,\n      headers: { 'X-Haidly-Webhook-Token': '{{HAIDLY_WEBHOOK_TOKEN}}' },\n      json: true,\n    });\n  } else if (pipeline === 'energie') {\n    lead = await this.helpers.httpRequest({\n      method: 'GET',\n      url: `https://intellixcrm.com/api/energie/lead/${b.lead_id}`,\n      headers: { 'X-Energie-Webhook-Token': '{{ENERGIE_WEBHOOK_TOKEN}}' },\n      json: true,\n    });\n  }\n} catch (e) {}\nconst dnc = lead.do_not_call || lead.immo_do_not_call || lead.haidly_do_not_call || lead.energie_do_not_call;\nconst nowStr = new Date().toLocaleString('en-US', { timeZone: 'America/Toronto' });\nconst h = new Date(nowStr).getHours();\nconst day = new Date(nowStr).getDay();\nconst endH = pipeline === 'energie' ? 20 : 19;\nconst startH = pipeline === 'energie' ? 8 : 9;\nconst canCall = !dnc && day >= 1 && day <= 6 && h >= startH && h < endH;\nreturn [{ json: { ...b, ...lead, can_call: canCall, skip_reason: dnc ? 'dnc' : (!canCall ? 'outside_hours' : '') } }];"
+      },
+      "id": "mc4-check",
+      "name": "4 Vérif DNC + heures",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [780, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.can_call }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "mc5-if",
+      "name": "5 Peut appeler?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1040, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const b = $input.first().json;\nconst apiKey = '{{ELEVENLABS_API_KEY}}';\nconst pipeline = b.pipeline;\nlet agentId = b.agent_id || '';\nlet phId = b.elevenlabs_phone_number_id || '';\nif (pipeline === 'immo') {\n  agentId = agentId || b.elevenlabs_agent_id_immo || '';\n} else if (pipeline === 'haidly') {\n  agentId = agentId || b.elevenlabs_agent_id_haidly || '';\n} else if (pipeline === 'energie') {\n  agentId = agentId || b.elevenlabs_agent_id_energie || '';\n}\nif (!agentId || !phId || !b.phone) {\n  return [{ json: { ...b, call_skipped: true, reason: 'missing_ids' } }];\n}\nconst first = (b.first_name || b.lead_name || 'there').split(' ')[0];\nlet dyn = b.dynamic_variables || {};\nif (pipeline === 'immo') {\n  dyn = { lead_name: first, property_address: b.full_address || b.property_address || '', selling_timeline: b.selling_timeline || '', lead_id_odoo: String(b.lead_id || ''), ...dyn };\n} else if (pipeline === 'haidly') {\n  dyn = { lead_name: first, project_type: b.project_type || 'multi', city: b.city || '', budget_range: b.budget_range || '', property_type: b.property_type || '', lead_id_odoo: String(b.lead_id || ''), ...dyn };\n} else if (pipeline === 'energie') {\n  dyn = { lead_name: first, lead_site: b.energie_site_source || b.site || '', lead_city: b.city || b.lead_city || '', current_heating: b.current_heating || '', project_type: b.project_type || '', lead_id_odoo: String(b.lead_id || ''), ...dyn };\n}\nconst res = await this.helpers.httpRequest({\n  method: 'POST',\n  url: 'https://api.elevenlabs.io/v1/convai/twilio/outbound-call',\n  headers: { 'xi-api-key': apiKey, 'Content-Type': 'application/json' },\n  body: {\n    agent_id: agentId,\n    agent_phone_number_id: phId,\n    to_number: b.phone,\n    telephony_call_config: { ringing_timeout_secs: 25 },\n    conversation_initiation_client_data: { dynamic_variables: dyn }\n  },\n  json: true,\n});\nreturn [{ json: { ...b, ...res, call_started: true, morning_call: true } }];"
+      },
+      "id": "mc6-call",
+      "name": "6 Appel matin ElevenLabs",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1300, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "const b = $('6 Appel matin ElevenLabs').first().json;\nconst pipeline = b.pipeline;\nif (!b.lead_id) return [{ json: b }];\nif (pipeline === 'immo') {\n  await this.helpers.httpRequest({ method: 'POST', url: 'https://intellixcrm.com/api/immo/lead/update', headers: { 'X-Immo-Webhook-Token': '{{META_IMMO_WEBHOOK_TOKEN}}', 'Content-Type': 'application/json' }, body: { lead_id: b.lead_id, increment_call_attempt: true, next_action: 'Appel matin J+0 (hors heures)' }, json: true });\n} else if (pipeline === 'haidly') {\n  await this.helpers.httpRequest({ method: 'POST', url: 'https://intellixcrm.com/api/haidly/lead/update', headers: { 'X-Haidly-Webhook-Token': '{{HAIDLY_WEBHOOK_TOKEN}}', 'Content-Type': 'application/json' }, body: { lead_id: b.lead_id, increment_call_attempt: true }, json: true });\n} else if (pipeline === 'energie') {\n  await this.helpers.httpRequest({ method: 'POST', url: 'https://intellixcrm.com/api/energie/lead/update', headers: { 'X-Energie-Webhook-Token': '{{ENERGIE_WEBHOOK_TOKEN}}', 'Content-Type': 'application/json' }, body: { lead_id: b.lead_id, increment_call_attempt: true }, json: true });\n}\nreturn [{ json: b }];"
+      },
+      "id": "mc7-odoo",
+      "name": "7 Odoo étape appelé",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1560, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "const b = $('2 Calc attente matin').first().json;\nconst called = $('6 Appel matin ElevenLabs').first()?.json || {};\nconst pipeline = b.pipeline;\nconst nurtureUrl = {\n  immo: '{{N8N_WEBHOOK_BASE}}/webhook/immo-nurture-start',\n  haidly: '{{N8N_WEBHOOK_BASE}}/webhook/haidly-nurture-start',\n  energie: '{{N8N_WEBHOOK_BASE}}/webhook/energie-nurture-start'\n}[pipeline];\nif (!nurtureUrl || pipeline === 'energie') return [{ json: { ...b, nurture_skipped: pipeline === 'energie' } }];\nconst payload = {\n  lead_id: b.lead_id,\n  phone: b.phone,\n  first_name: b.first_name,\n  score: 'warm',\n  call_answered: false,\n  skip_initial_call: false,\n  morning_call_done: true,\n  total_call_attempts: 1\n};\nif (pipeline === 'immo') {\n  payload.full_address = b.full_address || b.property_address || '';\n} else if (pipeline === 'haidly') {\n  payload.project_type = b.project_type;\n  payload.city = b.city;\n}\ntry {\n  await this.helpers.httpRequest({ method: 'POST', url: nurtureUrl, headers: { 'Content-Type': 'application/json' }, body: payload, json: true });\n} catch (e) {}\nreturn [{ json: { ...b, nurture_started: true } }];"
+      },
+      "id": "mc8-nurture",
+      "name": "8 Démarrer nurture post-appel",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1820, 200]
+    }
+  ],
+  "connections": {
+    "1 Webhook planifier": { "main": [[{ "node": "2 Calc attente matin", "type": "main", "index": 0 }]] },
+    "2 Calc attente matin": { "main": [[{ "node": "3 Wait jusqu'à 9h", "type": "main", "index": 0 }]] },
+    "3 Wait jusqu'à 9h": { "main": [[{ "node": "4 Vérif DNC + heures", "type": "main", "index": 0 }]] },
+    "4 Vérif DNC + heures": { "main": [[{ "node": "5 Peut appeler?", "type": "main", "index": 0 }]] },
+    "5 Peut appeler?": { "main": [[{ "node": "6 Appel matin ElevenLabs", "type": "main", "index": 0 }], []] },
+    "6 Appel matin ElevenLabs": { "main": [[{ "node": "7 Odoo étape appelé", "type": "main", "index": 0 }]] },
+    "7 Odoo étape appelé": { "main": [[{ "node": "8 Démarrer nurture post-appel", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "tags": [{ "name": "doorway" }, { "name": "morning-call" }]
+}

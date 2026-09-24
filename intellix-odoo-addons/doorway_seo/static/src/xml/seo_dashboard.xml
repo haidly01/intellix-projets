@@ -1,0 +1,509 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="doorway_seo.Dashboard" owl="1">
+        <div class="o_action o_intellix_client_action dseo_app">
+            <t t-if="state.loading">
+                <div class="dseo_loading">
+                    <i class="fa fa-spinner fa-spin"/><span>Chargement de l'assistant SEO…</span>
+                </div>
+            </t>
+            <t t-else="">
+                <!-- =============== Barre supérieure =============== -->
+                <header class="dseo_topbar">
+                    <div class="dseo_brand">
+                        <span class="dseo_brand__mark"><i class="fa fa-line-chart"/></span>
+                        <span class="dseo_brand__name">SEO IA</span>
+                    </div>
+
+                    <div class="dseo_search">
+                        <i class="fa fa-search"/>
+                        <input type="text" t-model="state.search" placeholder="Rechercher une page…"/>
+                    </div>
+
+                    <nav class="dseo_nav">
+                        <button t-att-class="'dseo_navtab' + (state.tab === 'pages' ? ' dseo_navtab--active' : '')" t-on-click="() => this.setTab('pages')"><i class="fa fa-file-o"/> <span>On-page</span></button>
+                        <button t-att-class="'dseo_navtab' + (state.tab === 'backlinks' ? ' dseo_navtab--active' : '')" t-on-click="() => this.setTab('backlinks')"><i class="fa fa-link"/> <span>Backlinks</span></button>
+                        <button t-att-class="'dseo_navtab' + (state.tab === 'citations' ? ' dseo_navtab--active' : '')" t-on-click="() => this.setTab('citations')"><i class="fa fa-map-marker"/> <span>Citations</span></button>
+                        <button t-att-class="'dseo_navtab' + (state.tab === 'keywords' ? ' dseo_navtab--active' : '')" t-on-click="() => this.setTab('keywords')"><i class="fa fa-key"/> <span>Mots-clés</span></button>
+                        <button t-att-class="'dseo_navtab' + (state.tab === 'tracking' ? ' dseo_navtab--active' : '')" t-on-click="() => this.setTab('tracking')"><i class="fa fa-line-chart"/> <span>Suivi</span></button>
+                    </nav>
+
+                    <div class="dseo_topactions">
+                        <span class="dseo_spin" t-if="state.busy"><i class="fa fa-spinner fa-spin"/></span>
+                        <span class="dseo_credit" title="Audit et propositions gratuits ; appliquer en ligne consomme un crédit.">
+                            <i class="fa fa-bolt"/> <span t-esc="state.data.credit_balance"/> cr.
+                        </span>
+                        <span t-att-class="'dseo_iconpill ' + (state.data.claude_available ? 'dseo_iconpill--on' : 'dseo_iconpill--off')" t-att-title="state.data.claude_available ? 'Claude connecté' : 'Claude non configuré'"><i class="fa fa-magic"/></span>
+                        <span t-att-class="'dseo_iconpill ' + (state.data.brightdata_available ? 'dseo_iconpill--on' : 'dseo_iconpill--off')" t-att-title="state.data.brightdata_available ? 'Bright Data actif' : 'Bright Data inactif'"><i class="fa fa-database"/></span>
+                        <button type="button" class="dseo_iconbtn" t-att-class="state.showBrief ? 'dseo_iconbtn--active' : ''" title="Profil / brief de l'entreprise" t-on-click="() => this.toggleBrief()"><i class="fa fa-sliders"/></button>
+                        <button type="button" class="dseo_iconbtn" title="Nouvel espace SEO" t-on-click="() => this.newSession()"><i class="fa fa-plus"/></button>
+                    </div>
+                </header>
+
+                <!-- =============== Tiroir « brief / profil » =============== -->
+                <div class="dseo_brief" t-if="state.showBrief">
+                    <div class="dseo_brief__grid">
+                        <div>
+                            <label class="dseo_label">Nom de l'entreprise</label>
+                            <input type="text" class="form-control form-control-sm" t-model="state.brief.business_name" t-on-change="() => this.saveBrief()"/>
+                        </div>
+                        <div>
+                            <label class="dseo_label">Activité / niche</label>
+                            <input type="text" class="form-control form-control-sm" t-model="state.brief.niche" t-on-change="() => this.saveBrief()" placeholder="rénovation cuisine"/>
+                        </div>
+                        <div>
+                            <label class="dseo_label">Zone géo</label>
+                            <input type="text" class="form-control form-control-sm" t-model="state.brief.geo" t-on-change="() => this.saveBrief()" placeholder="Montréal"/>
+                        </div>
+                        <div>
+                            <label class="dseo_label">Mot-clé cible principal</label>
+                            <input type="text" class="form-control form-control-sm" t-model="state.brief.target_keyword" t-on-change="() => this.saveBrief()" placeholder="rénovation cuisine Montréal"/>
+                        </div>
+                        <div>
+                            <label class="dseo_label">Langue</label>
+                            <input type="text" class="form-control form-control-sm" t-model="state.brief.language" t-on-change="() => this.saveBrief()" placeholder="fr"/>
+                        </div>
+                        <div>
+                            <label class="dseo_label">Site web</label>
+                            <input type="text" class="form-control form-control-sm" t-model="state.brief.website_url" t-on-change="() => this.saveBrief()"/>
+                        </div>
+                        <div class="dseo_brief__wide">
+                            <label class="dseo_label">Description de l'activité</label>
+                            <textarea class="form-control form-control-sm" rows="2" t-model="state.brief.description" t-on-change="() => this.saveBrief()"/>
+                        </div>
+                    </div>
+                    <div class="dseo_brief__foot">
+                        <span class="dseo_links">
+                            <a href="#" t-on-click.prevent="() => this.openUrl(state.data.sitemap.sitemap_url)"><i class="fa fa-sitemap"/> sitemap.xml</a>
+                            <a href="#" t-on-click.prevent="() => this.openUrl(state.data.sitemap.robots_url)"><i class="fa fa-file-text-o"/> robots.txt</a>
+                        </span>
+                        <span class="dseo_notice"><i class="fa fa-shield"/> <span t-esc="state.data.white_hat_notice"/></span>
+                    </div>
+                </div>
+
+                <!-- =============== Corps : contenu + assistant =============== -->
+                <div class="dseo_body">
+                    <main class="dseo_content">
+
+                        <!-- ===================== ON-PAGE ===================== -->
+                        <t t-if="state.tab === 'pages'">
+                            <section class="dseo_hero">
+                                <!-- Carte score (gauge) -->
+                                <div class="dseo_card dseo_gaugecard">
+                                    <div class="dseo_card__label">Score SEO</div>
+                                    <div class="dseo_gauge" t-att-style="gaugeStyle">
+                                        <div class="dseo_gauge__hole">
+                                            <span class="dseo_gauge__num" t-esc="overallScore"/>
+                                            <span class="dseo_gauge__unit">/ 100</span>
+                                        </div>
+                                    </div>
+                                    <p class="dseo_gauge__cap" t-esc="gaugeCaption"/>
+                                    <div class="dseo_urlentry">
+                                        <label class="dseo_label">Site / URL à analyser</label>
+                                        <div class="dseo_urlrow">
+                                            <i class="fa fa-globe"/>
+                                            <input type="text" t-model="state.brief.website_url" t-on-change="() => this.saveBrief()" placeholder="https://votre-site.com"/>
+                                        </div>
+                                    </div>
+                                    <button class="dseo_btn dseo_btn--primary dseo_btn--block" t-att-disabled="state.busy" t-on-click="() => this.analyzeSite()">
+                                        <i class="fa fa-refresh"/> Analyser le site
+                                    </button>
+                                    <button class="dseo_btn dseo_btn--ghost dseo_btn--block" t-att-disabled="state.busy or !state.data.claude_available" t-on-click="() => this.optimizeAll()">
+                                        <i class="fa fa-magic"/> Optimiser toutes les pages
+                                    </button>
+                                    <div class="dseo_gauge__legend">
+                                        <span><i class="dseo_led" style="background:#2f6bff"/> Technique</span>
+                                        <span><i class="dseo_led" style="background:#14b8a6"/> Contenu</span>
+                                        <span><i class="dseo_led" style="background:#7c3aed"/> Autorité</span>
+                                    </div>
+                                </div>
+
+                                <!-- Cartes de métriques -->
+                                <div class="dseo_metrics">
+                                    <div class="dseo_sechead">
+                                        <h2>Résultats de l'audit</h2>
+                                        <span class="dseo_sechead__sub">
+                                            <t t-if="pages.length"><t t-esc="pages.length"/> page(s) analysée(s)</t>
+                                            <t t-else="">Aucune page analysée</t>
+                                        </span>
+                                    </div>
+                                    <t t-if="!pages.length">
+                                        <div class="dseo_empty">Cliquez sur « Analyser le site » pour calculer votre score et vos métriques SEO.</div>
+                                    </t>
+                                    <div t-else="" class="dseo_grid">
+                                        <t t-foreach="metricCards" t-as="mc" t-key="mc.key">
+                                            <div class="dseo_metric">
+                                                <div class="dseo_metric__top">
+                                                    <span class="dseo_metric__icon"><i t-att-class="'fa ' + mc.icon"/></span>
+                                                    <span t-att-class="'dseo_pill dseo_pill--' + mc.pill"/>
+                                                </div>
+                                                <div class="dseo_metric__label" t-esc="mc.label"/>
+                                                <div class="dseo_metric__value" t-esc="mc.value"/>
+                                                <div class="dseo_metric__sub" t-esc="mc.sub"/>
+                                            </div>
+                                        </t>
+                                    </div>
+                                    <div class="dseo_dots" t-if="pages.length">
+                                        <span class="dseo_dot dseo_dot--active"/><span class="dseo_dot"/><span class="dseo_dot"/>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <!-- Liste des pages -->
+                            <section class="dseo_section" t-if="pages.length">
+                                <div class="dseo_sechead">
+                                    <h2>Détail par page</h2>
+                                    <span class="dseo_sechead__sub"><t t-esc="filteredPages.length"/> affichée(s)</span>
+                                </div>
+                                <t t-if="!filteredPages.length">
+                                    <div class="dseo_empty">Aucune page ne correspond à « <t t-esc="state.search"/> ».</div>
+                                </t>
+                                <div class="dseo_cardgrid">
+                                    <t t-foreach="filteredPages" t-as="page" t-key="page.id">
+                                        <div class="dseo_card dseo_pagecard">
+                                            <div class="dseo_card__head">
+                                                <div class="dseo_card__title">
+                                                    <a href="#" t-on-click.prevent="() => this.openUrl(page.url)"><i class="fa fa-external-link"/> <span t-esc="page.page_name"/></a>
+                                                    <small t-esc="page.url"/>
+                                                </div>
+                                                <div t-att-class="'dseo_scorechip ' + scoreClass(page.score)"><span t-esc="page.score"/><small>/100</small></div>
+                                            </div>
+                                            <div class="dseo_card__body">
+                                                <div class="dseo_keyword">
+                                                    <label>Mot-clé cible</label>
+                                                    <input type="text" class="form-control form-control-sm" t-att-value="page.target_keyword" t-on-change="(ev) => this.setPageKeyword(page.id, ev)"/>
+                                                </div>
+                                                <t t-if="page.issues.length">
+                                                    <ul class="dseo_issues">
+                                                        <t t-foreach="page.issues" t-as="issue" t-key="issue_index">
+                                                            <li><i class="fa fa-exclamation-circle"/> <span t-esc="issue"/></li>
+                                                        </t>
+                                                    </ul>
+                                                </t>
+                                                <t t-if="page.suggested_meta_title or page.suggested_meta_description">
+                                                    <div class="dseo_proposal">
+                                                        <div><strong>Meta title proposé :</strong> <span t-esc="page.suggested_meta_title"/></div>
+                                                        <div><strong>Meta description :</strong> <span t-esc="page.suggested_meta_description"/></div>
+                                                        <div t-if="page.suggested_keywords"><strong>Mots-clés :</strong> <span t-esc="page.suggested_keywords"/></div>
+                                                        <div t-if="page.suggestions" class="dseo_pre"><strong>Pistes :</strong><br/><span t-esc="page.suggestions"/></div>
+                                                        <details t-if="page.suggested_jsonld">
+                                                            <summary>Données structurées JSON-LD</summary>
+                                                            <pre t-esc="page.suggested_jsonld"/>
+                                                        </details>
+                                                    </div>
+                                                </t>
+                                                <div t-if="page.last_error" class="dseo_err"><i class="fa fa-warning"/> <span t-esc="page.last_error"/></div>
+                                            </div>
+                                            <div class="dseo_card__foot">
+                                                <span t-att-class="'dseo_pill dseo_pill--text ' + stateClass(page.state)" t-esc="stateLabel(page.state)"/>
+                                                <span class="dseo_grow"/>
+                                                <button class="dseo_btn dseo_btn--ghost dseo_btn--sm" t-att-disabled="state.busy or !state.data.claude_available" t-on-click="() => this.optimizePage(page.id)"><i class="fa fa-magic"/> Proposer</button>
+                                                <button class="dseo_btn dseo_btn--success dseo_btn--sm" t-att-disabled="state.busy or !(page.suggested_meta_title or page.suggested_meta_description)" t-on-click="() => this.applyPage(page.id)">
+                                                    <i class="fa fa-rocket"/>
+                                                    <t t-if="page.apply_charged"> Réappliquer</t>
+                                                    <t t-else=""> Appliquer (<t t-esc="state.data.apply_cost"/> cr.)</t>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </div>
+                            </section>
+                        </t>
+
+                        <!-- ===================== BACKLINKS ===================== -->
+                        <t t-if="state.tab === 'backlinks'">
+                            <div class="dseo_notice dseo_notice--block"><i class="fa fa-shield"/> <span t-esc="state.data.white_hat_notice"/></div>
+                            <div class="dseo_sechead">
+                                <h2>Opportunités de backlinks</h2>
+                                <button class="dseo_btn dseo_btn--primary dseo_btn--sm" t-att-disabled="state.busy or !state.data.claude_available" t-on-click="() => this.generateBacklinks()"><i class="fa fa-search"/> Trouver des opportunités</button>
+                            </div>
+                            <t t-if="!state.data.backlinks.length">
+                                <div class="dseo_empty">Aucune cible. Renseignez l'activité/zone (bouton profil) puis « Trouver des opportunités ».</div>
+                            </t>
+                            <div class="dseo_cardgrid">
+                                <t t-foreach="state.data.backlinks" t-as="bl" t-key="bl.id">
+                                    <div class="dseo_card dseo_listcard">
+                                        <div class="dseo_card__head">
+                                            <span class="dseo_avatar" t-att-style="avatarStyle(bl.name)" t-esc="initials(bl.name)"/>
+                                            <div class="dseo_card__title">
+                                                <a t-if="bl.url" href="#" t-on-click.prevent="() => this.openUrl(bl.url)"><span t-esc="bl.name"/></a>
+                                                <span t-else="" t-esc="bl.name"/>
+                                                <small t-esc="bl.target_type"/>
+                                            </div>
+                                            <select class="form-select form-select-sm dseo_statussel" t-on-change="(ev) => this.setBacklinkStatus(bl.id, ev)">
+                                                <option value="a_contacter" t-att-selected="bl.status === 'a_contacter'">À contacter</option>
+                                                <option value="contacte" t-att-selected="bl.status === 'contacte'">Contacté</option>
+                                                <option value="obtenu" t-att-selected="bl.status === 'obtenu'">Obtenu</option>
+                                                <option value="refuse" t-att-selected="bl.status === 'refuse'">Refusé</option>
+                                            </select>
+                                        </div>
+                                        <div class="dseo_card__body">
+                                            <div t-if="bl.approach"><strong>Approche :</strong> <span t-esc="bl.approach"/></div>
+                                            <div t-if="bl.rationale" class="dseo_muted"><strong>Pertinence :</strong> <span t-esc="bl.rationale"/></div>
+                                            <t t-if="bl.outreach_body">
+                                                <div class="dseo_proposal">
+                                                    <div><strong>Objet :</strong> <span t-esc="bl.outreach_subject"/></div>
+                                                    <div class="dseo_pre" t-esc="bl.outreach_body"/>
+                                                    <div t-if="bl.mail_template_id" class="dseo_muted"><i class="fa fa-envelope"/> Modèle d'email créé (mail.template).</div>
+                                                </div>
+                                            </t>
+                                            <div t-if="bl.last_error" class="dseo_err"><i class="fa fa-warning"/> <span t-esc="bl.last_error"/></div>
+                                        </div>
+                                        <div class="dseo_card__foot">
+                                            <span class="dseo_grow"/>
+                                            <button class="dseo_btn dseo_btn--ghost dseo_btn--sm" t-att-disabled="state.busy or !state.data.claude_available" t-on-click="() => this.generateOutreach(bl.id)"><i class="fa fa-pencil"/> Générer l'email d'approche</button>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </t>
+
+                        <!-- ===================== CITATIONS ===================== -->
+                        <t t-if="state.tab === 'citations'">
+                            <div class="dseo_card dseo_napbox">
+                                <div class="dseo_napbox__title"><i class="fa fa-id-card-o"/> Fiche NAP (cohérence nom / adresse / téléphone)</div>
+                                <div class="dseo_brief__grid">
+                                    <div><label class="dseo_label">Nom</label><input type="text" class="form-control form-control-sm" t-model="state.nap.name" t-on-change="() => this.saveNap()"/></div>
+                                    <div><label class="dseo_label">Téléphone</label><input type="text" class="form-control form-control-sm" t-model="state.nap.phone" t-on-change="() => this.saveNap()"/></div>
+                                    <div class="dseo_brief__wide"><label class="dseo_label">Adresse</label><input type="text" class="form-control form-control-sm" t-model="state.nap.address" t-on-change="() => this.saveNap()"/></div>
+                                    <div><label class="dseo_label">Ville</label><input type="text" class="form-control form-control-sm" t-model="state.nap.city" t-on-change="() => this.saveNap()"/></div>
+                                    <div><label class="dseo_label">Code postal</label><input type="text" class="form-control form-control-sm" t-model="state.nap.postal_code" t-on-change="() => this.saveNap()"/></div>
+                                    <div><label class="dseo_label">Pays / région</label><input type="text" class="form-control form-control-sm" t-model="state.nap.country" t-on-change="() => this.saveNap()"/></div>
+                                    <div><label class="dseo_label">Catégories</label><input type="text" class="form-control form-control-sm" t-model="state.nap.categories" t-on-change="() => this.saveNap()"/></div>
+                                </div>
+                            </div>
+
+                            <div class="dseo_sechead">
+                                <h2>Citations / annuaires</h2>
+                                <div class="dseo_sechead__actions">
+                                    <button class="dseo_btn dseo_btn--primary dseo_btn--sm" t-att-disabled="state.busy" t-on-click="() => this.seedCitations(true)"><i class="fa fa-star"/> Annuaires prioritaires</button>
+                                    <button class="dseo_btn dseo_btn--ghost dseo_btn--sm" t-att-disabled="state.busy" t-on-click="() => this.seedCitations(false)"><i class="fa fa-list"/> Tous</button>
+                                    <select class="form-select form-select-sm dseo_addsel" t-on-change="(ev) => this.addCitation(ev)">
+                                        <option value="">+ Ajouter un annuaire…</option>
+                                        <t t-foreach="state.data.uncited_directories" t-as="dir" t-key="dir.id">
+                                            <option t-att-value="dir.id"><t t-esc="dir.name"/> (<t t-esc="dir.region"/>)</option>
+                                        </t>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <t t-if="!state.data.citations.length">
+                                <div class="dseo_empty">Aucune citation. Préparez les annuaires prioritaires pour commencer.</div>
+                            </t>
+                            <div class="dseo_cardgrid">
+                                <t t-foreach="state.data.citations" t-as="cit" t-key="cit.id">
+                                    <div class="dseo_card dseo_listcard">
+                                        <div class="dseo_card__head">
+                                            <span class="dseo_avatar" t-att-style="avatarStyle(cit.directory.name)" t-esc="initials(cit.directory.name)"/>
+                                            <div class="dseo_card__title">
+                                                <a t-if="cit.directory.url" href="#" t-on-click.prevent="() => this.openUrl(cit.directory.url)"><span t-esc="cit.directory.name"/></a>
+                                                <span t-else="" t-esc="cit.directory.name"/>
+                                                <small><t t-esc="cit.directory.region"/> · <t t-esc="cit.directory.category"/></small>
+                                            </div>
+                                            <select class="form-select form-select-sm dseo_statussel" t-on-change="(ev) => this.setCitationStatus(cit.id, ev)">
+                                                <option value="a_soumettre" t-att-selected="cit.status === 'a_soumettre'">À soumettre</option>
+                                                <option value="soumis" t-att-selected="cit.status === 'soumis'">Soumis</option>
+                                                <option value="en_ligne" t-att-selected="cit.status === 'en_ligne'">En ligne</option>
+                                                <option value="a_corriger" t-att-selected="cit.status === 'a_corriger'">À corriger</option>
+                                            </select>
+                                        </div>
+                                        <div class="dseo_card__body">
+                                            <div t-if="cit.directory.format_hint" class="dseo_muted"><i class="fa fa-info-circle"/> <span t-esc="cit.directory.format_hint"/></div>
+                                            <t t-if="cit.business_description">
+                                                <div class="dseo_proposal">
+                                                    <div t-if="cit.tagline"><strong>Accroche :</strong> <span t-esc="cit.tagline"/></div>
+                                                    <div t-if="cit.short_description"><strong>Courte :</strong> <span t-esc="cit.short_description"/></div>
+                                                    <div class="dseo_pre" t-esc="cit.business_description"/>
+                                                    <div t-if="cit.categories"><strong>Catégories :</strong> <span t-esc="cit.categories"/></div>
+                                                    <div t-if="cit.keywords"><strong>Mots-clés :</strong> <span t-esc="cit.keywords"/></div>
+                                                    <div t-if="cit.notes" class="dseo_muted"><strong>Notes :</strong> <span t-esc="cit.notes"/></div>
+                                                </div>
+                                            </t>
+                                            <div t-if="cit.last_error" class="dseo_err"><i class="fa fa-warning"/> <span t-esc="cit.last_error"/></div>
+                                        </div>
+                                        <div class="dseo_card__foot">
+                                            <span class="dseo_grow"/>
+                                            <button class="dseo_btn dseo_btn--ghost dseo_btn--sm" t-att-disabled="state.busy or !state.data.claude_available" t-on-click="() => this.generateCitation(cit.id)"><i class="fa fa-magic"/> Générer le contenu</button>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </t>
+
+                        <!-- ===================== MOTS-CLÉS ===================== -->
+                        <t t-if="state.tab === 'keywords'">
+                            <div class="dseo_sechead">
+                                <h2>Recherche de mots-clés</h2>
+                                <span class="dseo_freebadge"><i class="fa fa-gift"/> Gratuit (aucun crédit)</span>
+                            </div>
+                            <div class="dseo_toolbar">
+                                <input type="text" class="form-control form-control-sm dseo_seed" t-model="state.keywordSeed" placeholder="mot-clé ou sujet (ex: rénovation cuisine)"/>
+                                <button class="dseo_btn dseo_btn--primary dseo_btn--sm" t-att-disabled="state.busy or !state.data.claude_available" t-on-click="() => this.researchKeywords()"><i class="fa fa-search"/> Générer des idées</button>
+                                <button class="dseo_btn dseo_btn--ghost dseo_btn--sm" t-att-disabled="state.busy or !state.data.keyword_ideas.length" t-on-click="() => this.saveSelectedKeywords()"><i class="fa fa-plus"/> Suivre la sélection</button>
+                            </div>
+
+                            <div t-if="!state.data.keyword_volume_available" class="dseo_warnbox">
+                                <i class="fa fa-info-circle"/> Volumes/CPC/difficulté réels indisponibles : configurer DataForSEO (login/mot de passe). Paramètres <code>doorway_seo.dataforseo_login</code> + <code>doorway_seo.dataforseo_password</code>. En attendant, les volumes sont marqués « estimé ».
+                            </div>
+                            <div t-if="state.data.keyword_volume_available" class="dseo_freebadge">
+                                <i class="fa fa-database"/> Métriques réelles via <span t-esc="state.data.volume_provider"/>.
+                            </div>
+                            <div t-if="!state.data.serp_available" class="dseo_warnbox">
+                                <i class="fa fa-info-circle"/> Bright Data SERP non configuré : idées générées par l'IA, mais sans enrichissement SERP (recherches associées, PAA, autocomplétion, domaines en tête).
+                            </div>
+
+                            <!-- Signaux SERP réels -->
+                            <t t-if="state.data.keyword_research and state.data.keyword_research.serp_used">
+                                <div class="dseo_signals">
+                                    <div class="dseo_card dseo_signalcol" t-if="state.data.keyword_research.related.length">
+                                        <h5><i class="fa fa-random"/> Recherches associées</h5>
+                                        <ul><t t-foreach="state.data.keyword_research.related" t-as="r" t-key="r_index"><li t-esc="r"/></t></ul>
+                                    </div>
+                                    <div class="dseo_card dseo_signalcol" t-if="state.data.keyword_research.paa.length">
+                                        <h5><i class="fa fa-question-circle"/> People Also Ask</h5>
+                                        <ul><t t-foreach="state.data.keyword_research.paa" t-as="q" t-key="q_index"><li t-esc="q"/></t></ul>
+                                    </div>
+                                    <div class="dseo_card dseo_signalcol" t-if="state.data.keyword_research.autocomplete.length">
+                                        <h5><i class="fa fa-keyboard-o"/> Autocomplétion</h5>
+                                        <ul><t t-foreach="state.data.keyword_research.autocomplete" t-as="a" t-key="a_index"><li t-esc="a"/></t></ul>
+                                    </div>
+                                    <div class="dseo_card dseo_signalcol" t-if="state.data.keyword_research.top_domains.length">
+                                        <h5><i class="fa fa-trophy"/> Domaines en tête <small t-if="state.data.keyword_research.difficulty_label">· difficulté : <span t-esc="state.data.keyword_research.difficulty_label"/> (<span t-esc="state.data.keyword_research.difficulty"/>)</small></h5>
+                                        <ul><t t-foreach="state.data.keyword_research.top_domains" t-as="d" t-key="d_index"><li t-esc="d"/></t></ul>
+                                    </div>
+                                </div>
+                            </t>
+
+                            <t t-if="!state.data.keyword_ideas.length">
+                                <div class="dseo_empty">Aucune idée. Saisissez une amorce puis « Générer des idées ».</div>
+                            </t>
+                            <div t-if="state.data.keyword_ideas.length" class="dseo_card dseo_tablecard">
+                                <table class="dseo_table">
+                                    <thead>
+                                        <tr><th></th><th>Mot-clé</th><th>Intention</th><th>Volume</th><th>CPC</th><th>Concur.</th><th>Difficulté</th><th>Thème</th><th></th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="state.data.keyword_ideas" t-as="idea" t-key="idea.id">
+                                            <tr>
+                                                <td><input type="checkbox" t-att-checked="state.selectedIdeas[idea.id]" t-on-change="() => this.toggleIdea(idea.id)"/></td>
+                                                <td><strong t-esc="idea.keyword"/><div t-if="idea.rationale" class="dseo_muted dseo_small" t-esc="idea.rationale"/></td>
+                                                <td><span class="dseo_pill dseo_pill--text dseo_pill--neutral" t-esc="idea.intent"/></td>
+                                                <td><span t-att-class="idea.volume_source === 'estimate' ? 'dseo_muted' : ''" t-esc="idea.volume_label"/></td>
+                                                <td><span t-if="idea.cpc" t-esc="idea.cpc.toFixed(2) + ' $'"/><span t-else="" class="dseo_muted">—</span></td>
+                                                <td><span t-if="idea.competition" t-esc="idea.competition"/><span t-else="" class="dseo_muted">—</span></td>
+                                                <td>
+                                                    <span t-if="idea.difficulty" t-esc="idea.difficulty_label + ' (' + idea.difficulty + ')'"/>
+                                                    <span t-else="" class="dseo_muted" t-esc="idea.difficulty_label"/>
+                                                    <div t-if="idea.top_domains" class="dseo_muted dseo_small" t-esc="idea.top_domains"/>
+                                                </td>
+                                                <td><span class="dseo_muted" t-esc="idea.group"/></td>
+                                                <td>
+                                                    <button class="dseo_btn dseo_btn--ghost dseo_btn--icon" t-att-disabled="state.busy or !state.data.serp_available" title="Analyser la difficulté via le SERP" t-on-click="() => this.analyzeIdea(idea.id)"><i class="fa fa-bar-chart"/></button>
+                                                    <span t-if="idea.saved" class="dseo_pill dseo_pill--good dseo_pill--text" title="Suivi"><i class="fa fa-check"/></span>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </t>
+
+                        <!-- ===================== SUIVI ===================== -->
+                        <t t-if="state.tab === 'tracking'">
+                            <div class="dseo_sechead">
+                                <h2>Suivi de positionnement</h2>
+                                <span class="dseo_freebadge"><i class="fa fa-gift"/> Gratuit (aucun crédit)</span>
+                            </div>
+                            <div t-if="!state.data.serp_available" class="dseo_warnbox">
+                                <i class="fa fa-exclamation-triangle"/> Configurez Bright Data SERP pour le suivi en direct (paramètres <code>doorway_seo.brightdata_api_key</code> + <code>doorway_seo.brightdata_serp_zone</code>). Vous pouvez tout de même ajouter des mots-clés à suivre ; les positions se rempliront dès que le SERP sera disponible (manuel ou cron quotidien).
+                            </div>
+
+                            <div class="dseo_card dseo_addtrack">
+                                <input type="text" class="form-control form-control-sm" t-model="state.newTracked.keyword" placeholder="mot-clé à suivre"/>
+                                <input type="text" class="form-control form-control-sm" t-model="state.newTracked.target_url" placeholder="domaine/URL (défaut: site)"/>
+                                <input type="text" class="form-control form-control-sm" t-model="state.newTracked.location" placeholder="localisation"/>
+                                <input type="text" class="form-control form-control-sm dseo_cc" t-model="state.newTracked.country_code" placeholder="gl (ca)"/>
+                                <select class="form-select form-select-sm dseo_dev" t-model="state.newTracked.device">
+                                    <option value="desktop">Ordi</option>
+                                    <option value="mobile">Mobile</option>
+                                </select>
+                                <button class="dseo_btn dseo_btn--primary dseo_btn--sm" t-att-disabled="state.busy" t-on-click="() => this.addTracked()"><i class="fa fa-plus"/> Ajouter</button>
+                                <span class="dseo_grow"/>
+                                <button class="dseo_btn dseo_btn--ghost dseo_btn--sm" t-att-disabled="state.busy or !state.data.tracked_keywords.length" t-on-click="() => this.refreshAllTracked()"><i class="fa fa-refresh"/> Rafraîchir</button>
+                            </div>
+
+                            <t t-if="!state.data.tracked_keywords.length">
+                                <div class="dseo_empty">Aucun mot-clé suivi. Ajoutez-en un, ou enregistrez-en depuis l'onglet Mots-clés.</div>
+                            </t>
+                            <div class="dseo_cardgrid">
+                                <t t-foreach="state.data.tracked_keywords" t-as="tk" t-key="tk.id">
+                                    <div class="dseo_card dseo_trackcard">
+                                        <div class="dseo_card__head">
+                                            <div class="dseo_card__title">
+                                                <strong t-esc="tk.keyword"/>
+                                                <small><t t-esc="tk.target_url or 'site de l’espace'"/><t t-if="tk.location"> · <t t-esc="tk.location"/></t> · <t t-esc="tk.device"/></small>
+                                            </div>
+                                            <div class="dseo_rankbox">
+                                                <span class="dseo_pos" t-esc="posLabel(tk.current_position)"/>
+                                                <span t-att-class="'dseo_delta ' + deltaClass(tk.delta_dir)">
+                                                    <i t-att-class="deltaIcon(tk.delta_dir)"/>
+                                                    <t t-if="tk.delta_dir === 'up' or tk.delta_dir === 'down'"><t t-esc="Math.abs(tk.delta)"/></t>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="dseo_card__body">
+                                            <div class="dseo_trackmeta">
+                                                <span>Meilleure : <strong t-esc="posLabel(tk.best_position)"/></span>
+                                                <span>Précédente : <t t-esc="posLabel(tk.previous_position)"/></span>
+                                                <span t-if="tk.last_checked">Contrôle : <t t-esc="tk.last_checked"/></span>
+                                                <a t-if="tk.last_url" href="#" t-on-click.prevent="() => this.openUrl(tk.last_url)"><i class="fa fa-external-link"/> URL classée</a>
+                                            </div>
+                                            <div t-if="tk.features and tk.features.length" class="dseo_features">
+                                                <t t-foreach="tk.features" t-as="ft" t-key="ft_index"><span class="dseo_chip" t-esc="ft"/></t>
+                                            </div>
+                                            <t t-if="sparkPoints(tk.history)">
+                                                <svg class="dseo_spark" viewBox="0 0 220 48" preserveAspectRatio="none">
+                                                    <polyline t-att-points="sparkPoints(tk.history)" fill="none" stroke="#2f6bff" stroke-width="2"/>
+                                                </svg>
+                                                <div class="dseo_small dseo_muted"><t t-esc="tk.history.length"/> relevé(s) · plus haut = meilleure position</div>
+                                            </t>
+                                            <div t-else="" class="dseo_small dseo_muted">Pas encore assez d'historique pour une courbe (≥ 2 relevés classés).</div>
+                                            <div t-if="tk.last_error" class="dseo_warnline"><i class="fa fa-info-circle"/> <span t-esc="tk.last_error"/></div>
+                                        </div>
+                                        <div class="dseo_card__foot">
+                                            <span class="dseo_grow"/>
+                                            <button class="dseo_btn dseo_btn--ghost dseo_btn--sm" t-att-disabled="state.busy" t-on-click="() => this.refreshTracked(tk.id)"><i class="fa fa-refresh"/> Rafraîchir</button>
+                                            <button class="dseo_btn dseo_btn--danger dseo_btn--icon" t-att-disabled="state.busy" t-on-click="() => this.deleteTracked(tk.id)"><i class="fa fa-trash"/></button>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </t>
+                    </main>
+
+                    <!-- =============== Assistant (chat) =============== -->
+                    <aside class="dseo_chat dseo_card">
+                        <div class="dseo_chat__header"><span class="dseo_chat__avatar"><i class="fa fa-comments"/></span> <span>Assistant SEO — Léa</span></div>
+                        <div class="dseo_chat__thread">
+                            <t t-foreach="state.data.messages" t-as="msg" t-key="msg.id">
+                                <div t-att-class="'dseo_msg dseo_msg--' + msg.role">
+                                    <div class="dseo_msg__bubble" t-esc="msg.content"/>
+                                </div>
+                            </t>
+                            <div t-if="state.busy" class="dseo_msg dseo_msg--assistant">
+                                <div class="dseo_msg__bubble"><i class="fa fa-spinner fa-spin"/> Léa travaille…</div>
+                            </div>
+                        </div>
+                        <div class="dseo_chat__input">
+                            <textarea class="form-control" rows="2" t-model="state.chatInput" t-on-keydown="(ev) => this.onKeydown(ev)" placeholder="ex: « optimise toutes les pages pour rénovation cuisine Montréal », « trouve des backlinks », « prépare les citations »…"/>
+                            <div class="dseo_chat__hint">Entrée pour envoyer · Maj+Entrée pour un saut de ligne</div>
+                            <button type="button" class="dseo_btn dseo_btn--primary dseo_btn--block" t-att-disabled="state.busy" t-on-click="() => this.sendChat()"><i class="fa fa-paper-plane"/> Envoyer</button>
+                        </div>
+                    </aside>
+                </div>
+            </t>
+        </div>
+    </t>
+
+</templates>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- CTA communication : en-tête (lisibles) plutôt que stat buttons grisés -->
+    <record id="crm_lead_view_form_messaging_actions" model="ir.ui.view">
+        <field name="name">crm.lead.form.messaging.actions.renovation</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_open_email_composer"
+                        type="object"
+                        string="Email"
+                        class="btn-secondary"
+                        icon="fa-envelope"
+                        invisible="type == 'lead'"
+                        title="Composer un courriel au client"/>
+                <button name="action_open_email_composer_with_attachments"
+                        type="object"
+                        string="Email + PJ"
+                        class="btn-secondary"
+                        icon="fa-paperclip"
+                        invisible="type == 'lead'"
+                        title="Courriel avec photos et plans du lead"/>
+                <button name="action_open_sms_composer"
+                        type="object"
+                        string="SMS"
+                        class="btn-secondary"
+                        icon="fa-comment"
+                        invisible="type == 'lead'"
+                        title="Composer un SMS"/>
+                <button name="action_send_default_email_template"
+                        type="object"
+                        string="Email rapide"
+                        class="btn-secondary"
+                        icon="fa-paper-plane"
+                        invisible="type == 'lead'"
+                        title="Envoyer le gabarit email par défaut"/>
+                <button name="action_send_default_sms_template"
+                        type="object"
+                        string="SMS rapide"
+                        class="btn-secondary"
+                        icon="fa-bolt"
+                        invisible="type == 'lead'"
+                        title="Envoyer le gabarit SMS par défaut"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Libellé français pour le devis (sale_crm) -->
+    <record id="crm_lead_view_form_sale_quotation_fr" model="ir.ui.view">
+        <field name="name">crm.lead.form.sale.quotation.fr</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="sale_crm.crm_case_form_view_oppor"/>
+        <field name="arch" type="xml">
+            <button name="action_sale_quotations_new" position="attributes">
+                <attribute name="string">Nouveau devis</attribute>
+                <attribute name="title">Créer et envoyer un devis</attribute>
+            </button>
+            <button name="action_view_sale_quotation" position="attributes">
+                <attribute name="string">Devis</attribute>
+            </button>
+        </field>
+    </record>
+
+    <record id="action_mail_template_crm_lead" model="ir.actions.act_window">
+        <field name="name">Gabarits Email Leads</field>
+        <field name="res_model">mail.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('model_id.model', '=', 'crm.lead')]</field>
+        <field name="context" eval="{'default_model_id': ref('crm.model_crm_lead')}"/>
+    </record>
+
+    <record id="action_sms_template_crm_lead" model="ir.actions.act_window">
+        <field name="name">Gabarits SMS Leads</field>
+        <field name="res_model">sms.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('model_id.model', '=', 'crm.lead')]</field>
+        <field name="context" eval="{'default_model_id': ref('crm.model_crm_lead')}"/>
+    </record>
+
+    <menuitem id="menu_partner_message_templates_root"
+              name="Gabarits messages"
+              parent="menu_partner_root"
+              sequence="30"
+              groups="base.group_system"/>
+
+    <menuitem id="menu_partner_mail_templates"
+              name="Gabarits Email"
+              parent="menu_partner_message_templates_root"
+              action="action_mail_template_crm_lead"
+              sequence="10"
+              groups="base.group_system"/>
+
+    <menuitem id="menu_partner_sms_templates"
+              name="Gabarits SMS"
+              parent="menu_partner_message_templates_root"
+              action="action_sms_template_crm_lead"
+              sequence="20"
+              groups="base.group_system"/>
+
+    <record id="menu_partner_message_templates_root" model="ir.ui.menu">
+        <field name="group_ids" eval="[(6, 0, [ref('base.group_system')])]"/>
+    </record>
+    <record id="menu_partner_mail_templates" model="ir.ui.menu">
+        <field name="group_ids" eval="[(6, 0, [ref('base.group_system')])]"/>
+    </record>
+    <record id="menu_partner_sms_templates" model="ir.ui.menu">
+        <field name="group_ids" eval="[(6, 0, [ref('base.group_system')])]"/>
+    </record>
+</odoo>

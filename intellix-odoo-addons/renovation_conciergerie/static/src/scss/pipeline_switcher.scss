@@ -1,0 +1,14 @@
+// Empêche la barre de recherche de chevaucher les onglets de pipeline
+// (style pilules Intellix : intellix_crm.scss)
+.o_control_panel:has(.o_doorway_pipeline_btn) {
+    .o_control_panel_main {
+        flex-wrap: wrap !important;
+        row-gap: .5rem;
+    }
+
+    .o_control_panel_main_buttons {
+        flex-wrap: wrap;
+        row-gap: .25rem;
+        column-gap: .25rem;
+    }
+}

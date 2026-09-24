@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="tag_portail_client" model="crm.tag">
+    <field name="name">Portail client JT</field>
+    <field name="color" eval="4"/>
+  </record>
+</odoo>

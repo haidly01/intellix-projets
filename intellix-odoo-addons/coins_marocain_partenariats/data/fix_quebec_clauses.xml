@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <function model="coins.entente" name="_fix_quebec_clauses_upgrade"/>
+</odoo>

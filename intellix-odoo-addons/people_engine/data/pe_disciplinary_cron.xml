@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="cron_pe_disciplinary_auto_detect" model="ir.cron">
+        <field name="name">PE — Détection disciplinaire &amp; alertes</field>
+        <field name="model_id" ref="model_pe_supervisor_alert"/>
+        <field name="state">code</field>
+        <field name="code">model.sudo().cron_auto_detect()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

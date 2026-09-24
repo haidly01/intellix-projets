@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IntelliX — Support · Ticket Détail + AI Copilot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #050508; font-family: 'Inter', sans-serif; color: #f0f0fa; padding: 40px 24px; }
+
+.page-title { text-align: center; margin-bottom: 48px; }
+.page-title h1 { font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; }
+.page-title h1 span { background: linear-gradient(90deg, #6366f1, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.page-title p { font-size: 13px; color: #9898b8; }
+
+.screen-sep { height: 48px; display: flex; align-items: center; justify-content: center; gap: 16px; margin: 0 0 24px; }
+.screen-sep::before, .screen-sep::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.06); }
+.screen-sep span { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: #5a5a7a; white-space: nowrap; }
+
+.screen { max-width: 1300px; margin: 0 auto 56px; border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 32px 80px rgba(0,0,0,0.6); }
+.screen-bar { background: #0a0a14; border-bottom: 1px solid rgba(255,255,255,0.07); padding: 10px 18px; display: flex; align-items: center; gap: 12px; }
+.screen-bar-dots { display: flex; gap: 5px; }
+.screen-bar-dots span { width: 10px; height: 10px; border-radius: 50%; }
+.screen-bar-dots span:nth-child(1) { background: #ef4444; }
+.screen-bar-dots span:nth-child(2) { background: #f59e0b; }
+.screen-bar-dots span:nth-child(3) { background: #10b981; }
+.screen-bar-url { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 4px 12px; font-size: 11px; color: #5a5a7a; font-family: monospace; }
+.screen-bar-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #8b5cf6; }
+
+/* TOPNAV */
+.topnav { background: #12102a; padding: 0 20px; display: flex; align-items: center; gap: 0; height: 46px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.topnav-grid { width: 26px; height: 26px; display: grid; grid-template-columns: 1fr 1fr; gap: 3px; margin-right: 14px; cursor: pointer; padding: 4px; }
+.topnav-grid div { background: rgba(255,255,255,0.4); border-radius: 2px; }
+.topnav-section { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 700; color: #f0f0fa; margin-right: 24px; }
+.topnav-links { display: flex; align-items: center; gap: 0; }
+.topnav-link { padding: 0 16px; height: 46px; display: flex; align-items: center; font-size: 12px; color: rgba(255,255,255,0.6); cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; transition: all 0.2s; }
+.topnav-link:hover { color: #fff; }
+.topnav-link.active { color: #fff; border-bottom-color: #8b5cf6; }
+.topnav-right { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+.topnav-badge { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 100px; }
+.badge-indigo { background: #6366f1; color: #fff; }
+.badge-green { background: #10b981; color: #fff; }
+.topnav-avatar { width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, #f59e0b, #fb923c); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
+.topnav-company { font-size: 11px; color: rgba(255,255,255,0.5); }
+
+/* SUBBAR */
+.subbar { background: #0e0c22; padding: 10px 20px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+.btn-new { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: #fff; border: none; border-radius: 7px; padding: 7px 16px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+.subbar-title { font-size: 13px; font-weight: 600; color: #f0f0fa; }
+.subbar-search { flex: 1; max-width: 320px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09); border-radius: 7px; padding: 6px 12px; font-size: 12px; color: #9898b8; display: flex; align-items: center; gap: 8px; }
+.subbar-search input { background: none; border: none; outline: none; color: #f0f0fa; font-size: 12px; font-family: 'Inter', sans-serif; width: 100%; }
+.subbar-right { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+.view-btn { width: 30px; height: 30px; border-radius: 6px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.view-btn.active { background: rgba(99,102,241,0.15); border-color: rgba(99,102,241,0.3); }
+.view-btn svg { width: 13px; height: 13px; stroke: #9898b8; fill: none; }
+.view-btn.active svg { stroke: #818cf8; }
+
+/* KPI BAR */
+.kpi-bar { background: #0a0a18; padding: 12px 20px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+.kpi-item { padding: 8px 16px; text-align: center; border-right: 1px solid rgba(255,255,255,0.06); }
+.kpi-item:last-child { border-right: none; }
+.kpi-val { font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; line-height: 1; margin-bottom: 3px; }
+.kpi-lbl { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: #5a5a7a; }
+
+/* KANBAN */
+.kanban { background: #0a0a12; padding: 16px 20px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; min-height: 520px; }
+.kanban-col { background: rgba(255,255,255,0.02); border-radius: 10px; overflow: hidden; }
+.kanban-col-header { padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.06); }
+.kanban-col-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; display: flex; align-items: center; gap: 6px; }
+.kanban-count { background: rgba(255,255,255,0.08); color: #9898b8; font-size: 10px; font-weight: 700; padding: 1px 7px; border-radius: 100px; }
+.kanban-add { width: 22px; height: 22px; border-radius: 5px; background: rgba(255,255,255,0.05); border: none; color: #5a5a7a; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; }
+.kanban-cards { padding: 10px 8px; display: flex; flex-direction: column; gap: 8px; }
+
+/* TICKET CARD */
+.ticket-card { background: #0f0f1e; border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 12px; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; }
+.ticket-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; }
+.ticket-card.p-critical::before { background: #ef4444; }
+.ticket-card.p-high::before { background: #f59e0b; }
+.ticket-card.p-medium::before { background: #6366f1; }
+.ticket-card.p-low::before { background: #10b981; }
+.ticket-card:hover { border-color: rgba(139,92,246,0.3); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+.ticket-id { font-size: 9px; font-weight: 700; color: #5a5a7a; letter-spacing: 0.1em; margin-bottom: 5px; display: flex; align-items: center; justify-content: space-between; }
+.ticket-title { font-size: 12px; font-weight: 600; color: #f0f0fa; margin-bottom: 5px; line-height: 1.4; }
+.ticket-client { font-size: 11px; color: #9898b8; margin-bottom: 8px; }
+.ticket-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+.ticket-tag { font-size: 9px; font-weight: 600; padding: 2px 6px; border-radius: 4px; }
+.tag-bug { background: rgba(239,68,68,0.12); color: #f87171; }
+.tag-config { background: rgba(99,102,241,0.12); color: #818cf8; }
+.tag-onboard { background: rgba(6,182,212,0.12); color: #22d3ee; }
+.tag-billing { background: rgba(245,158,11,0.12); color: #fbbf24; }
+.tag-ai { background: rgba(139,92,246,0.12); color: #a78bfa; }
+.tag-urgent { background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.25); }
+.ticket-footer { display: flex; align-items: center; justify-content: space-between; }
+.ticket-avatar { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; color: #fff; }
+.ticket-time { font-size: 10px; color: #5a5a7a; }
+.ticket-sla { font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 4px; }
+.sla-ok { background: rgba(16,185,129,0.1); color: #34d399; }
+.sla-warn { background: rgba(245,158,11,0.1); color: #fbbf24; }
+.sla-breach { background: rgba(239,68,68,0.1); color: #f87171; }
+.ai-flag { position: absolute; top: 8px; right: 8px; width: 16px; height: 16px; background: linear-gradient(135deg, #6366f1, #8b5cf6); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 8px; }
+
+/* COL COLORS */
+.col-nouveau .kanban-col-header { border-top: 2px solid #6366f1; }
+.col-encours .kanban-col-header { border-top: 2px solid #f59e0b; }
+.col-attente .kanban-col-header { border-top: 2px solid #06b6d4; }
+.col-resolu .kanban-col-header { border-top: 2px solid #10b981; }
+.col-ferme .kanban-col-header { border-top: 2px solid #5a5a7a; }
+
+/* ═══════════════════ ÉCRAN 2 — TICKET DÉTAIL ═══════════════════ */
+.ticket-layout { display: grid; grid-template-columns: 1fr 400px; background: #0a0a12; min-height: 700px; }
+
+/* LEFT — TICKET DETAIL */
+.ticket-main { padding: 24px; border-right: 1px solid rgba(255,255,255,0.07); overflow: hidden; }
+.ticket-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; }
+.ticket-ref { font-size: 11px; font-weight: 700; color: #5a5a7a; letter-spacing: 0.1em; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+.ticket-main-title { font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 6px; }
+.ticket-pipeline { display: flex; align-items: center; gap: 0; margin-bottom: 20px; }
+.pipe-step { padding: 7px 16px; font-size: 11px; font-weight: 600; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); cursor: pointer; white-space: nowrap; }
+.pipe-step:first-child { border-radius: 7px 0 0 7px; }
+.pipe-step:last-child { border-radius: 0 7px 7px 0; }
+.pipe-step.active { background: linear-gradient(135deg, #6366f1, #8b5cf6); border-color: transparent; color: #fff; }
+.pipe-step.done { background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.2); color: #34d399; }
+.pipe-arrow { font-size: 10px; color: #5a5a7a; margin: 0 -1px; z-index: 1; }
+
+/* FORM GRID */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+.form-group { display: flex; flex-direction: column; gap: 4px; }
+.form-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #5a5a7a; }
+.form-val { background: #141424; border: 1px solid rgba(255,255,255,0.08); border-radius: 7px; padding: 8px 12px; font-size: 12px; color: #f0f0fa; }
+.form-val.placeholder { color: #5a5a7a; }
+.priority-stars { display: flex; gap: 3px; }
+.star { font-size: 14px; }
+.star.on { color: #f59e0b; }
+.star.off { color: #2a2a3a; }
+
+/* TABS */
+.tabs { display: flex; gap: 0; border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: 16px; }
+.tab { padding: 8px 18px; font-size: 12px; font-weight: 600; color: #9898b8; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; }
+.tab.active { color: #8b5cf6; border-bottom-color: #8b5cf6; }
+.tab-badge { background: rgba(99,102,241,0.15); color: #818cf8; font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 100px; margin-left: 4px; }
+
+/* DESCRIPTION */
+.desc-area { background: #141424; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 14px; min-height: 80px; font-size: 12px; color: #9898b8; margin-bottom: 20px; line-height: 1.6; }
+
+/* TIMELINE */
+.timeline { display: flex; flex-direction: column; gap: 0; }
+.timeline-item { display: flex; gap: 12px; padding-bottom: 16px; position: relative; }
+.timeline-item::before { content: ''; position: absolute; left: 15px; top: 28px; bottom: 0; width: 1px; background: rgba(255,255,255,0.06); }
+.timeline-item:last-child::before { display: none; }
+.timeline-avatar { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+.timeline-bubble { flex: 1; background: #141424; border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 10px 12px; }
+.timeline-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
+.timeline-author { font-size: 11px; font-weight: 600; }
+.timeline-time { font-size: 10px; color: #5a5a7a; }
+.timeline-text { font-size: 12px; color: #9898b8; line-height: 1.6; }
+.timeline-system { background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.04); }
+.timeline-system .timeline-text { color: #5a5a7a; font-size: 11px; }
+
+/* MSG BAR */
+.msg-bar { display: flex; align-items: center; gap: 8px; padding: 14px 0 0; border-top: 1px solid rgba(255,255,255,0.07); margin-top: 16px; }
+.msg-btn { padding: 7px 14px; border-radius: 7px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; border: none; }
+.msg-btn-primary { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: #fff; }
+.msg-btn-ghost { background: transparent; color: #9898b8; border: 1px solid rgba(255,255,255,0.1); }
+
+/* RIGHT — AI COPILOT */
+.copilot { background: #0c0b1e; border-left: 1px solid rgba(139,92,246,0.15); display: flex; flex-direction: column; }
+.copilot-header { padding: 16px 18px; border-bottom: 1px solid rgba(255,255,255,0.07); display: flex; align-items: center; gap: 10px; }
+.copilot-icon { width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, #6366f1, #8b5cf6); display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
+.copilot-title { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 700; }
+.copilot-sub { font-size: 10px; color: #9898b8; }
+.copilot-refresh { margin-left: auto; width: 28px; height: 28px; border-radius: 6px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+
+/* COPILOT TABS */
+.copilot-tabs { display: flex; border-bottom: 1px solid rgba(255,255,255,0.07); }
+.copilot-tab { flex: 1; padding: 8px; font-size: 11px; font-weight: 600; text-align: center; color: #9898b8; cursor: pointer; border-bottom: 2px solid transparent; }
+.copilot-tab.active { color: #a78bfa; border-bottom-color: #8b5cf6; }
+
+.copilot-body { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+
+/* DIAGNOSTIC CARD */
+.diag-card { border-radius: 10px; overflow: hidden; }
+.diag-card-header { padding: 10px 14px; display: flex; align-items: center; gap: 8px; }
+.diag-card-header .diag-icon { font-size: 14px; }
+.diag-card-title { font-size: 12px; font-weight: 700; }
+.diag-card-sub { font-size: 10px; margin-top: 1px; }
+.diag-card-body { padding: 10px 14px 12px; }
+.diag-card-text { font-size: 11px; line-height: 1.65; margin-bottom: 10px; }
+.diag-actions { display: flex; flex-direction: column; gap: 5px; }
+.diag-btn { border-radius: 6px; padding: 7px 12px; font-size: 11px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; border: none; width: 100%; text-align: left; display: flex; align-items: center; gap: 6px; }
+
+/* Card violet — Diagnostic résumé */
+.diag-summary { background: rgba(99,102,241,0.08); border: 1px solid rgba(99,102,241,0.2); }
+.diag-summary .diag-card-header { background: rgba(99,102,241,0.12); }
+.diag-summary .diag-card-title { color: #818cf8; }
+.diag-summary .diag-card-sub { color: rgba(129,140,248,0.7); }
+.diag-summary .diag-card-text { color: #c4c4e0; }
+.diag-summary .diag-btn-primary { background: #6366f1; color: #fff; }
+.diag-summary .diag-btn-ghost { background: rgba(255,255,255,0.04); color: #9898b8; border: 1px solid rgba(255,255,255,0.1); }
+
+/* Card indigo — Compte Odoo */
+.diag-odoo { background: rgba(139,92,246,0.07); border: 1px solid rgba(139,92,246,0.18); }
+.diag-odoo .diag-card-header { background: rgba(139,92,246,0.1); }
+.diag-odoo .diag-card-title { color: #a78bfa; }
+.diag-odoo .diag-card-sub { color: rgba(167,139,250,0.7); }
+.diag-odoo .diag-card-text { color: #c4c4e0; }
+.diag-odoo .diag-btn-primary { background: #8b5cf6; color: #fff; }
+.diag-odoo .diag-btn-ghost { background: rgba(255,255,255,0.04); color: #9898b8; border: 1px solid rgba(255,255,255,0.1); }
+
+/* Card cyan — Campagnes */
+.diag-campaigns { background: rgba(6,182,212,0.06); border: 1px solid rgba(6,182,212,0.16); }
+.diag-campaigns .diag-card-header { background: rgba(6,182,212,0.08); }
+.diag-campaigns .diag-card-title { color: #22d3ee; }
+.diag-campaigns .diag-card-sub { color: rgba(34,211,238,0.7); }
+.diag-campaigns .diag-card-text { color: #c4c4e0; }
+.diag-campaigns .diag-btn-primary { background: #06b6d4; color: #fff; }
+.diag-campaigns .diag-btn-ghost { background: rgba(255,255,255,0.04); color: #9898b8; border: 1px solid rgba(255,255,255,0.1); }
+
+/* Card orange — Crédits */
+.diag-credits { background: rgba(245,158,11,0.06); border: 1px solid rgba(245,158,11,0.15); }
+.diag-credits .diag-card-header { background: rgba(245,158,11,0.08); }
+.diag-credits .diag-card-title { color: #fbbf24; }
+.diag-credits .diag-card-sub { color: rgba(251,191,36,0.7); }
+.diag-credits .diag-card-text { color: #c4c4e0; }
+.diag-credits .diag-btn-primary { background: #f59e0b; color: #fff; }
+.diag-credits .diag-btn-ghost { background: rgba(255,255,255,0.04); color: #9898b8; border: 1px solid rgba(255,255,255,0.1); }
+
+/* COPILOT FOOTER */
+.copilot-footer { padding: 12px 16px; border-top: 1px solid rgba(255,255,255,0.07); display: flex; gap: 8px; }
+.copilot-input { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09); border-radius: 7px; padding: 7px 10px; font-size: 11px; color: #9898b8; font-family: 'Inter', sans-serif; }
+.copilot-send { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: #fff; border: none; border-radius: 7px; padding: 7px 12px; font-size: 11px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+
+/* SUGGEST REPLY */
+.suggest-replies { display: flex; flex-direction: column; gap: 6px; }
+.suggest-reply { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 9px 12px; font-size: 11px; color: #c4c4e0; line-height: 1.5; cursor: pointer; transition: all 0.2s; display: flex; align-items: flex-start; gap: 8px; }
+.suggest-reply:hover { border-color: rgba(139,92,246,0.3); background: rgba(139,92,246,0.05); }
+.suggest-reply-icon { font-size: 12px; flex-shrink: 0; margin-top: 1px; }
+.suggest-reply-use { margin-left: auto; font-size: 10px; color: #8b5cf6; font-weight: 600; white-space: nowrap; flex-shrink: 0; }
+
+/* STATUS DOTS */
+.status-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; margin-right: 4px; }
+.dot-green { background: #10b981; }
+.dot-orange { background: #f59e0b; }
+.dot-red { background: #ef4444; }
+.dot-blue { background: #6366f1; }
+.dot-gray { background: #5a5a7a; }
+</style>
+</head>
+<body>
+<!-- ═══════════════════════════════════════════════ -->
+<!-- ÉCRAN 2 — TICKET DÉTAIL + AI COPILOT           -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="screen-sep"><span>Écran 2 — Ticket Détail + AI Copilot amélioré</span></div>
+<div class="screen">
+  <div class="screen-bar">
+    <div class="screen-bar-dots"><span></span><span></span><span></span></div>
+    <div class="screen-bar-url">intellixcrm.com/odoo/support/SUP-00001</div>
+    <div class="screen-bar-label">Ticket SUP-00001</div>
+  </div>
+
+  <!-- TOPNAV -->
+  <div class="topnav">
+    <div class="topnav-grid"><div></div><div></div><div></div><div></div></div>
+    <span class="topnav-section">Support</span>
+    <div class="topnav-links">
+      <div class="topnav-link active">Tickets</div>
+      <div class="topnav-link">Command Center</div>
+      <div class="topnav-link">SLA & Priorités</div>
+      <div class="topnav-link">Configuration</div>
+    </div>
+    <div class="topnav-right">
+      <span class="topnav-badge badge-indigo">1364</span>
+      <span class="topnav-badge badge-green">103</span>
+      <span class="topnav-company">Digital Doorway SARL</span>
+      <div class="topnav-avatar">K</div>
+    </div>
+  </div>
+
+  <!-- SUBBAR -->
+  <div class="subbar">
+    <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:#9898b8;cursor:pointer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><polyline points="15 18 9 12 15 6"/></svg>
+      Tickets support
+    </div>
+    <span style="color:#5a5a7a;font-size:12px">/</span>
+    <span style="font-size:12px;font-weight:600;color:#f0f0fa">SUP-00001</span>
+    <div style="margin-left:auto;display:flex;gap:6px">
+      <span style="font-size:11px;color:#5a5a7a">1 / 12</span>
+      <button class="msg-btn-ghost" style="padding:5px 8px;border-radius:5px;font-size:11px;cursor:pointer">←</button>
+      <button class="msg-btn-ghost" style="padding:5px 8px;border-radius:5px;font-size:11px;cursor:pointer">→</button>
+    </div>
+  </div>
+
+  <div class="ticket-layout">
+
+    <!-- LEFT -->
+    <div class="ticket-main">
+      <div class="ticket-header">
+        <div style="flex:1">
+          <div class="ticket-ref">
+            SUP-00001
+            <span class="ticket-tag tag-onboard">Onboarding</span>
+            <span class="ticket-tag tag-config">Config</span>
+            <span class="ticket-sla sla-warn">SLA 3h restantes</span>
+          </div>
+          <div class="ticket-main-title">Onboarding — Configuration initiale</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-shrink:0">
+          <button class="msg-btn msg-btn-ghost" style="font-size:11px;padding:6px 12px">Lancer diagnostic</button>
+          <button class="msg-btn msg-btn-primary" style="font-size:11px;padding:6px 12px">Résoudre</button>
+        </div>
+      </div>
+
+      <!-- PIPELINE -->
+      <div class="ticket-pipeline" style="margin-bottom:20px">
+        <div class="pipe-step done">✓ Nouveau</div>
+        <div class="pipe-step active">En cours</div>
+        <div class="pipe-step">En attente client</div>
+        <div class="pipe-step">Résolu</div>
+        <div class="pipe-step">Fermé</div>
+      </div>
+
+      <!-- FORM GRID -->
+      <div class="form-grid">
+        <div class="form-group">
+          <div class="form-label">Partenaire client</div>
+          <div class="form-val">Digital Doorway SARL</div>
+        </div>
+        <div class="form-group">
+          <div class="form-label">Assigné à</div>
+          <div class="form-val" style="display:flex;align-items:center;gap:8px">
+            <div class="ticket-avatar" style="background:linear-gradient(135deg,#f59e0b,#fb923c);width:22px;height:22px;font-size:10px">K</div>
+            Karine Barmaki
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="form-label">Utilisateur concerné</div>
+          <div class="form-val">Tous les utilisateurs</div>
+        </div>
+        <div class="form-group">
+          <div class="form-label">Origine probable</div>
+          <div class="form-val placeholder">Non déterminé</div>
+        </div>
+        <div class="form-group">
+          <div class="form-label">Catégorie</div>
+          <div class="form-val placeholder">Sélectionner...</div>
+        </div>
+        <div class="form-group">
+          <div class="form-label">Company</div>
+          <div class="form-val">Agence Doorway Inc.</div>
+        </div>
+        <div class="form-group">
+          <div class="form-label">Priorité</div>
+          <div class="form-val" style="padding:6px 12px">
+            <div class="priority-stars">
+              <span class="star on">★</span>
+              <span class="star off">★</span>
+              <span class="star off">★</span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="form-label">Date création</div>
+          <div class="form-val">17 juin 2026 · 09h21</div>
+        </div>
+      </div>
+
+      <!-- TABS -->
+      <div class="tabs">
+        <div class="tab active">Description</div>
+        <div class="tab">AnyDesk</div>
+        <div class="tab">Fichiers joints <span class="tab-badge">2</span></div>
+        <div class="tab">Historique <span class="tab-badge">4</span></div>
+      </div>
+
+      <!-- DESC -->
+      <div class="desc-area">
+        Le client Digital Doorway SARL vient d'être activé sur IntelliX. Besoin de configurer les accès utilisateurs, connecter les campagnes VICIdial actives et valider le setup des agents IA (Léa ext. 86013, Alex ext. 86023). AnyDesk non configuré — session distante impossible pour l'instant.
+      </div>
+
+      <!-- TIMELINE -->
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#5a5a7a;margin-bottom:12px">Activité</div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-avatar" style="background:linear-gradient(135deg,#f59e0b,#fb923c)">K</div>
+          <div class="timeline-bubble">
+            <div class="timeline-header">
+              <span class="timeline-author">Karine Barmaki</span>
+              <span class="timeline-time">Aujourd'hui · 09h21</span>
+            </div>
+            <div class="timeline-text">Ticket créé. Partenaire : Agence Doorway Inc. → Digital Doorway SARL. Démarrage de la configuration initiale.</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-avatar" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);font-size:10px">🤖</div>
+          <div class="timeline-bubble timeline-system">
+            <div class="timeline-header">
+              <span class="timeline-author" style="color:#818cf8">AI Copilot — Diagnostic automatique</span>
+              <span class="timeline-time">Aujourd'hui · 09h22</span>
+            </div>
+            <div class="timeline-text">Diagnostic lancé : 4 points identifiés — Compte Odoo sans utilisateur lié, 5 campagnes en état ready/active, crédits IA introuvables, AnyDesk non configuré.</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-avatar" style="background:linear-gradient(135deg,#f59e0b,#fb923c)">K</div>
+          <div class="timeline-bubble">
+            <div class="timeline-header">
+              <span class="timeline-author">Karine Barmaki</span>
+              <span class="timeline-time">Aujourd'hui · 08h45</span>
+            </div>
+            <div class="timeline-text">Ticket support IntelliX créé pour suivi onboarding client.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MSG BAR -->
+      <div class="msg-bar">
+        <button class="msg-btn msg-btn-primary">Envoyer message</button>
+        <button class="msg-btn msg-btn-ghost">Note interne</button>
+        <button class="msg-btn msg-btn-ghost">Activité</button>
+      </div>
+    </div>
+
+    <!-- RIGHT — AI COPILOT -->
+    <div class="copilot">
+      <div class="copilot-header">
+        <div class="copilot-icon">🤖</div>
+        <div>
+          <div class="copilot-title">AI Copilot</div>
+          <div class="copilot-sub">Analyse Claude · SUP-00001 · Mis à jour il y a 2min</div>
+        </div>
+        <div class="copilot-refresh">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#9898b8" stroke-width="2" style="width:13px;height:13px"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        </div>
+      </div>
+
+      <div class="copilot-tabs">
+        <div class="copilot-tab active">Diagnostic</div>
+        <div class="copilot-tab">Réponses suggérées</div>
+        <div class="copilot-tab">Résumé</div>
+      </div>
+
+      <div class="copilot-body">
+
+        <!-- CARD 1 — RÉSUMÉ GLOBAL -->
+        <div class="diag-card diag-summary">
+          <div class="diag-card-header">
+            <span class="diag-icon">🔍</span>
+            <div>
+              <div class="diag-card-title">Diagnostic — Résumé</div>
+              <div class="diag-card-sub">Probable côté client · 4 points</div>
+            </div>
+          </div>
+          <div class="diag-card-body">
+            <div class="diag-card-text">Compte Odoo : aucun utilisateur lié — vérifier accès / invitation. Campagnes : SoumissionEntrepreneurs QC Rénovation (ready, ADL=1), MaisonRecherchee QC Vendeurs (ready, ADL=1), TEST Karine IntelliX Canada (active, ADL=1), ISO SALAMANCA (active, ADL=1), ISO ESP (paused, ADL=1.5). Crédits IA : compte introuvable. AnyDesk : ID non renseigné — session distante impossible.</div>
+            <div class="diag-actions">
+              <button class="diag-btn diag-btn-primary">🔍 Inspecter le diagnostic</button>
+              <button class="diag-btn diag-btn-ghost">Appliquer le correctif automatique</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 2 — COMPTE ODOO -->
+        <div class="diag-card diag-odoo">
+          <div class="diag-card-header">
+            <span class="diag-icon">👤</span>
+            <div>
+              <div class="diag-card-title">Compte Odoo</div>
+              <div class="diag-card-sub">Suggestion corrective</div>
+            </div>
+          </div>
+          <div class="diag-card-body">
+            <div class="diag-card-text">Aucun utilisateur lié au compte Digital Doorway SARL. Envoyer une invitation email ou créer manuellement depuis Paramètres → Utilisateurs.</div>
+            <div class="diag-actions">
+              <button class="diag-btn diag-btn-primary">✓ Approuver le correctif</button>
+              <button class="diag-btn diag-btn-ghost">Appliquer le correctif</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 3 — CAMPAGNES -->
+        <div class="diag-card diag-campaigns">
+          <div class="diag-card-header">
+            <span class="diag-icon">📞</span>
+            <div>
+              <div class="diag-card-title">Campagnes VICIdial</div>
+              <div class="diag-card-sub">5 campagnes détectées</div>
+            </div>
+          </div>
+          <div class="diag-card-body">
+            <div class="diag-card-text">2 campagnes en état <strong style="color:#22d3ee">ready</strong> (ADL=1), 2 <strong style="color:#10b981">active</strong>, 1 <strong style="color:#9898b8">paused</strong>. Valider que les listes de leads sont chargées et que les agents sont connectés avant activation.</div>
+            <div class="diag-actions">
+              <button class="diag-btn diag-btn-primary">📋 Voir les campagnes</button>
+              <button class="diag-btn diag-btn-ghost">Valider la config</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 4 — CRÉDITS IA -->
+        <div class="diag-card diag-credits">
+          <div class="diag-card-header">
+            <span class="diag-icon">💳</span>
+            <div>
+              <div class="diag-card-title">Crédits IA</div>
+              <div class="diag-card-sub">Compte introuvable</div>
+            </div>
+          </div>
+          <div class="diag-card-body">
+            <div class="diag-card-text">Aucun portefeuille de crédits IA lié à Digital Doorway SARL. Les agents IA (Léa, Alex) ne pourront pas effectuer d'appels. Créer un compte crédits et définir le plan (Pilot 199€/mois ou à la consommation).</div>
+            <div class="diag-actions">
+              <button class="diag-btn diag-btn-primary">💳 Créer le compte crédits</button>
+              <button class="diag-btn diag-btn-ghost">Assigner plan existant</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- COPILOT FOOTER -->
+      <div style="padding:10px 16px;border-top:1px solid rgba(255,255,255,0.07)">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#5a5a7a;margin-bottom:8px">Réponses suggérées au client</div>
+        <div class="suggest-replies">
+          <div class="suggest-reply">
+            <span class="suggest-reply-icon">📧</span>
+            <span>"Bonjour, nous avons identifié 4 points à configurer pour finaliser votre onboarding. Je m'en occupe maintenant et vous confirme dans l'heure."</span>
+            <span class="suggest-reply-use">Utiliser →</span>
+          </div>
+          <div class="suggest-reply">
+            <span class="suggest-reply-icon">🔗</span>
+            <span>"Pouvez-vous me communiquer votre ID AnyDesk pour que je puisse accéder à votre poste et finaliser la configuration à distance ?"</span>
+            <span class="suggest-reply-use">Utiliser →</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="copilot-footer">
+        <input class="copilot-input" placeholder="Poser une question à Claude sur ce ticket...">
+        <button class="copilot-send">Envoyer</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div style="text-align:center;margin-top:32px;padding-bottom:24px">
+  <p style="font-size:11px;color:#5a5a7a">IntelliX CRM · Module Support · Maquette UI/UX · Juin 2026 · Référence développement Odoo 19</p>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_employee_form_dossier" model="ir.ui.view">
+        <field name="name">hr.employee.form.dossier</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_internships" type="object"
+                        class="oe_stat_button" icon="fa-graduation-cap"
+                        invisible="not internship_count"
+                        groups="hr.group_hr_user">
+                    <field name="internship_count" widget="statinfo" string="Stages"/>
+                </button>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Dossier Administratif" name="dossier_administratif"
+                      groups="hr.group_hr_user">
+                    <group>
+                        <group string="Identité &amp; état civil">
+                            <field name="x_cin_number"/>
+                            <field name="x_cin_expiry_date"/>
+                            <field name="x_birth_place"/>
+                            <field name="country_of_birth"/>
+                            <field name="marital" string="Situation familiale"/>
+                            <field name="children" string="Nombre d'enfants"/>
+                        </group>
+                        <group string="CNSS &amp; mutuelle">
+                            <field name="x_cnss_number"/>
+                            <field name="x_cnss_affiliation_date"/>
+                            <field name="x_mutuelle_provider"/>
+                            <field name="x_mutuelle_contract_number"/>
+                            <field name="x_cimr_number"/>
+                            <field name="x_cimr_rate"/>
+                            <field name="x_cimr_employer_rate"/>
+                        </group>
+                    </group>
+                    <group string="Résidence">
+                        <group>
+                            <label for="private_street" string="Adresse personnelle"/>
+                            <div class="o_address_format">
+                                <field name="private_street" placeholder="Rue..." class="o_address_street"/>
+                                <field name="private_street2" placeholder="Complément..." class="o_address_street"/>
+                                <field name="private_city" placeholder="Ville" class="o_address_city"/>
+                                <field name="private_state_id" class="o_address_state" placeholder="Province"
+                                    options="{'no_open': True, 'no_create': True}"
+                                    domain="[('id', 'in', allowed_country_state_ids)]"/>
+                            <field name="allowed_country_state_ids" invisible="1"/>
+                                <field name="private_zip" placeholder="Code postal" class="o_address_zip"/>
+                                <field name="private_country_id" placeholder="Pays" class="o_address_country"
+                                    options="{'no_open': True, 'no_create': True}"/>
+                            </div>
+                            <field name="x_residence_neighborhood"/>
+                            <field name="private_phone"/>
+                        </group>
+                        <group string="Contact d'urgence">
+                            <field name="x_emergency_contact_name"/>
+                            <field name="x_emergency_contact_relation"/>
+                            <field name="x_emergency_contact_phone" widget="phone"/>
+                        </group>
+                    </group>
+                    <group string="Dossier médical"
+                           groups="intellix_hr_dossier.group_medical_data">
+                        <group>
+                            <field name="x_blood_type"/>
+                            <field name="x_last_medical_visit_date"/>
+                            <field name="x_next_medical_visit_date"/>
+                        </group>
+                        <group>
+                            <field name="x_medical_conditions" colspan="2" nolabel="1"
+                                   placeholder="Antécédents, allergies, restrictions…"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

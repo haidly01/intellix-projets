@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <template id="portal_home" name="JT Portal — Accueil">
+    <t t-call="jt_client_portal.portal_layout">
+      <div class="jt-hero">
+        <h1>Bonjour, <t t-out="client.first_name or client.full_name"/> 👋</h1>
+        <p class="jt-hero-sub">Bienvenue dans votre espace personnel Jason Thomas Assurance</p>
+      </div>
+
+      <div class="jt-kpi-grid">
+        <div class="jt-kpi-card">
+          <div class="jt-kpi-number"><t t-out="nb_polices"/></div>
+          <div class="jt-kpi-label">Polices en force</div>
+        </div>
+        <div class="jt-kpi-card">
+          <div class="jt-kpi-number"><t t-out="'{:,.0f} $'.format(total_capital)"/></div>
+          <div class="jt-kpi-label">Capital assuré total</div>
+        </div>
+        <a t-attf-href="/portail/#{token}/contact" class="jt-kpi-card jt-kpi-action">
+          <div class="jt-kpi-icon">📞</div>
+          <div class="jt-kpi-label">Contacter Jason</div>
+        </a>
+        <a href="/intellix/rdv/jason" class="jt-kpi-card jt-kpi-action" target="_blank" rel="noopener">
+          <div class="jt-kpi-icon">📅</div>
+          <div class="jt-kpi-label">Prendre rendez-vous</div>
+        </a>
+      </div>
+
+      <section class="jt-section">
+        <h2>Mes couvertures</h2>
+        <div class="jt-police-list">
+          <t t-foreach="polices_en_force" t-as="p">
+            <a t-attf-href="/portail/#{token}/police/#{p.id}" class="jt-police-card">
+              <div class="jt-police-institution"><t t-out="p.institution"/></div>
+              <div class="jt-police-product"><t t-out="p.product"/></div>
+              <div class="jt-police-montant"><t t-out="'{:,.0f} $'.format(p.face_amount or 0)"/></div>
+              <div class="jt-police-status jt-status-force">En force</div>
+            </a>
+          </t>
+        </div>
+        <a t-attf-href="/portail/#{token}/polices" class="jt-btn-secondary">Voir toutes mes polices →</a>
+      </section>
+    </t>
+  </template>
+</odoo>

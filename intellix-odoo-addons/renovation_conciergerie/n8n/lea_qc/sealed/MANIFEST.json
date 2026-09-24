@@ -1,0 +1,24 @@
+{
+  "sealed_at": "2026-06-13T19:25:09Z",
+  "tag": "lea-qc-sealed-20260613-stabilization",
+  "notes": "Rollback listen delays 1.0/0.7/1.2 + GREETING proprietaire before objections; keep n8n-first + objection library; HANGUP_AFTER_AUDIO: jouer clip closing avant break hangup",
+  "files": {
+    "conversation_sofia_process.js": {
+      "sha256": "9205d2396b8a455601fd7b9753de0163f294fb3b9817a10b352c0268756fb0d7",
+      "bytes": 18432
+    },
+    "lea_qc_config.js": {
+      "sha256": "13707333cf5402eafef9a2b7af632403613087845d46a0db7dd0b9d8e10113de",
+      "bytes": 9448
+    },
+    "n8n_lea_qc.agi": {
+      "sha256": "83de317ce5f8807c96f1c468546937c81683da990e72aa56588d4c4599f631cc",
+      "bytes": 42615
+    },
+    "extensions_qc_ia.conf": {
+      "path": "/etc/asterisk/extensions_qc_ia.conf",
+      "sha256": "8c97a1b9378fa1a908dd3eb0a28ea421e121b9313408a7eb6bb6b02950b86228",
+      "lea_context": "86013@lea-qc-bridge"
+    }
+  }
+}

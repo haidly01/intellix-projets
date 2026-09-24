@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <delete model="ir.actions.act_window" id="action_dashboard_employee"/>
+
+    <record id="action_dashboard_employee" model="ir.actions.server">
+        <field name="name">Mon tableau de bord</field>
+        <field name="model_id" ref="model_pe_employee_profile"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_my_profile()</field>
+    </record>
+
+    <record id="view_dashboard_employee_form" model="ir.ui.view">
+        <field name="name">pe.dashboard.employee</field>
+        <field name="model">pe.employee.profile</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <form create="false" delete="false" class="pe-rh-theme">
+                <sheet>
+                    <div class="row">
+                        <div class="col-12 col-lg-4">
+                            <h2>Mon score</h2>
+                            <field name="score_global" widget="progressbar" options="{'max_value': 100}" readonly="1"/>
+                            <field name="score_trend" widget="badge" readonly="1"/>
+                        </div>
+                        <div class="col-12 col-lg-8">
+                            <group>
+                                <field name="score_performance" readonly="1"/>
+                                <field name="score_engagement" readonly="1"/>
+                                <field name="score_growth" readonly="1"/>
+                            </group>
+                        </div>
+                    </div>
+                    <separator string="Métriques du mois"/>
+                    <group>
+                        <group string="CRM">
+                            <field name="crm_leads_assigned" readonly="1"/>
+                            <field name="crm_conversion_rate" readonly="1"/>
+                            <field name="crm_revenue_generated" readonly="1"/>
+                        </group>
+                        <group string="Projet">
+                            <field name="project_tasks_assigned" readonly="1"/>
+                            <field name="project_ontime_rate" readonly="1"/>
+                        </group>
+                        <group string="IA">
+                            <field name="ia_calls_made" readonly="1"/>
+                            <field name="ia_avg_quality_score" readonly="1"/>
+                        </group>
+                    </group>
+                    <separator string="Mes objectifs"/>
+                    <field name="objective_ids" readonly="1">
+                        <list>
+                            <field name="name"/>
+                            <field name="achievement_rate" widget="progressbar"/>
+                            <field name="status"/>
+                        </list>
+                    </field>
+                    <separator string="Historique (6 derniers scores)"/>
+                    <field name="score_history_ids" readonly="1">
+                        <list>
+                            <field name="period_end"/>
+                            <field name="score_global"/>
+                            <field name="trend"/>
+                        </list>
+                    </field>
+                    <separator string="Mes évaluations"/>
+                    <field name="evaluation_ids" readonly="1" domain="[('status', 'in', ['communicated', 'completed'])]"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

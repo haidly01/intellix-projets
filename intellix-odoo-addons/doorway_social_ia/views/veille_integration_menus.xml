@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="doorway_social_ia.menu_social_root" model="ir.ui.menu">
+        <field name="name">Réseaux sociaux</field>
+        <field name="action" eval="'ir.actions.client,%d' % ref('action_social_home_triage')"/>
+    </record>
+
+    <!-- Veille sociale : section fonctionnalité sous Réseaux sociaux -->
+    <menuitem id="menu_social_veille"
+              name="Veille sociale"
+              parent="menu_social_root"
+              sequence="40"/>
+
+    <record id="doorway_veille_sociale.menu_veille_dashboard" model="ir.ui.menu">
+        <field name="parent_id" ref="menu_social_veille"/>
+        <field name="sequence" eval="1"/>
+    </record>
+    <record id="doorway_veille_sociale.menu_veille_dashboard_live" model="ir.ui.menu">
+        <field name="parent_id" ref="menu_social_veille"/>
+        <field name="sequence" eval="2"/>
+    </record>
+    <record id="doorway_veille_sociale.menu_veille_signaux" model="ir.ui.menu">
+        <field name="parent_id" ref="menu_social_veille"/>
+        <field name="sequence" eval="10"/>
+    </record>
+    <record id="doorway_veille_sociale.menu_veille_communaute" model="ir.ui.menu">
+        <field name="parent_id" ref="menu_social_veille"/>
+        <field name="sequence" eval="20"/>
+    </record>
+    <record id="doorway_veille_sociale.menu_veille_config" model="ir.ui.menu">
+        <field name="parent_id" ref="menu_social_veille"/>
+        <field name="sequence" eval="90"/>
+    </record>
+
+    <!-- Masquer l'ancienne application racine Veille Sociale -->
+    <record id="doorway_veille_sociale.menu_veille_root" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="doorway_veille_sociale.menu_veille_sources_root" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+
+</odoo>

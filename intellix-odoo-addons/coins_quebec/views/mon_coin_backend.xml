@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_cq_moderation_fiches" model="ir.actions.act_window">
+        <field name="name">Modération fiches Mon Coin</field>
+        <field name="res_model">coins.quebec.partenariat</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('publish_state', '=', 'moderation')]</field>
+        <field name="context">{}</field>
+    </record>
+    <record id="action_cq_mon_coin_demo" model="ir.actions.act_url">
+        <field name="name">Démo Mon Coin</field>
+        <field name="url">/mon-coin/demo</field>
+        <field name="target">new</field>
+    </record>
+    <record id="action_cq_boost_requests" model="ir.actions.act_window">
+        <field name="name">Demandes de boost</field>
+        <field name="res_model">coins.quebec.boost.request</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="view_cq_boost_list" model="ir.ui.view">
+        <field name="name">coins.quebec.boost.request.list</field>
+        <field name="model">coins.quebec.boost.request</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="create_date"/>
+                <field name="name"/>
+                <field name="partenariat_id"/>
+                <field name="kind"/>
+                <field name="state"/>
+                <field name="lead_ref"/>
+            </list>
+        </field>
+    </record>
+</odoo>

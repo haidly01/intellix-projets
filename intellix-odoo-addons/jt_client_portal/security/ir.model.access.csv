@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_jt_portal_access_user,jt.portal.access.user,model_jt_portal_access,base.group_user,1,1,1,0
+access_jt_portal_access_manager,jt.portal.access.manager,model_jt_portal_access,base.group_system,1,1,1,1

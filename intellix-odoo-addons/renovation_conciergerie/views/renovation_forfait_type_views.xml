@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_renovation_secteur_tarif_list" model="ir.ui.view">
+        <field name="name">renovation.secteur.tarif.list</field>
+        <field name="model">renovation.secteur.tarif</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="secteur"/>
+                <field name="prix_par_lead"/>
+                <field name="currency_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_renovation_forfait_type_list" model="ir.ui.view">
+        <field name="name">renovation.forfait.type.list</field>
+        <field name="model">renovation.forfait.type</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="secteur"/>
+                <field name="leads_inclus"/>
+                <field name="prix"/>
+                <field name="categories_services_ids" widget="many2many_tags"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_renovation_forfait_type_form" model="ir.ui.view">
+        <field name="name">renovation.forfait.type.form</field>
+        <field name="model">renovation.forfait.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="secteur"/>
+                        <field name="leads_inclus"/>
+                        <field name="prix" readonly="1"/>
+                        <field name="currency_id" invisible="1"/>
+                        <field name="categories_services_ids" widget="many2many_tags"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_renovation_forfait_credit_list" model="ir.ui.view">
+        <field name="name">renovation.forfait.credit.list</field>
+        <field name="model">renovation.forfait.credit</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="date_short" string="Date"/>
+                <field name="leads_signed" string="Leads"/>
+                <field name="motif" widget="badge"
+                       decoration-success="motif == 'promotion'"
+                       decoration-warning="motif == 'retard'"/>
+                <field name="cree_par" string="Par"/>
+                <field name="forfait_id"/>
+                <field name="note"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_renovation_forfait_credit_form" model="ir.ui.view">
+        <field name="name">renovation.forfait.credit.form</field>
+        <field name="model">renovation.forfait.credit</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="forfait_id" invisible="context.get('default_forfait_id')"/>
+                        <field name="nombre_leads"/>
+                        <field name="motif"/>
+                        <field name="date"/>
+                        <field name="note"/>
+                        <field name="cree_par"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_renovation_secteur_tarif" model="ir.actions.act_window">
+        <field name="name">Tarifs par secteur</field>
+        <field name="res_model">renovation.secteur.tarif</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <record id="action_renovation_forfait_type" model="ir.actions.act_window">
+        <field name="name">Types de forfait</field>
+        <field name="res_model">renovation.forfait.type</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_renovation_secteur_tarif"
+              name="Tarifs par secteur"
+              parent="menu_renovation_config"
+              action="action_renovation_secteur_tarif"
+              sequence="20"
+              groups="base.group_system"/>
+
+    <menuitem id="menu_renovation_forfait_type"
+              name="Types de forfait"
+              parent="menu_renovation_config"
+              action="action_renovation_forfait_type"
+              sequence="21"
+              groups="base.group_system"/>
+</odoo>

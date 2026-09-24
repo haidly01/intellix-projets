@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pe_evaluation_tree" model="ir.ui.view">
+        <field name="name">pe.evaluation.tree</field>
+        <field name="model">pe.evaluation</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="evaluation_type"/>
+                <field name="evaluator_id"/>
+                <field name="status" widget="badge"/>
+                <field name="recommendation"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pe_evaluation_form" model="ir.ui.view">
+        <field name="name">pe.evaluation.form</field>
+        <field name="model">pe.evaluation</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit_for_hr_review" type="object" string="Soumettre RH" invisible="status != 'draft'"/>
+                    <button name="action_hr_approve" type="object" string="Valider RH" invisible="status != 'pending_review'" groups="people_engine.group_hr"/>
+                    <button name="action_dg_approve" type="object" string="Approuver DG" invisible="status != 'pending_approval'" groups="people_engine.group_admin"/>
+                    <button name="action_complete" type="object" string="Compléter" invisible="status not in ('approved', 'communicated')" groups="people_engine.group_hr"/>
+                    <field name="status" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="profile_id"/>
+                        <field name="employee_id"/>
+                        <field name="evaluation_type"/>
+                        <field name="evaluator_id"/>
+                        <field name="period_start"/>
+                        <field name="period_end"/>
+                    </group>
+                    <group string="Scores PE">
+                        <field name="pe_score_at_evaluation"/>
+                        <field name="pe_score_previous"/>
+                        <field name="pe_trend"/>
+                        <field name="manual_score"/>
+                        <field name="recommendation"/>
+                    </group>
+                    <group string="Qualitatif">
+                        <field name="strengths"/>
+                        <field name="improvements"/>
+                        <field name="action_plan"/>
+                    </group>
+                    <group string="Knowledge Engine (référence)" groups="people_engine.group_hr">
+                        <div class="alert alert-warning" colspan="2">
+                            <p>Informations à titre informatif — ne constituent pas des conseils juridiques.</p>
+                        </div>
+                        <field name="legal_jurisdiction_code"/>
+                        <button name="action_suggest_legal_articles" type="object" string="Suggérer articles" class="btn-secondary"/>
+                        <field name="legal_article_ids" widget="many2many_tags" nolabel="1"/>
+                    </group>
+                    <group string="Validation" groups="people_engine.group_hr">
+                        <field name="legal_basis" required="evaluation_type == 'disciplinary'"/>
+                        <field name="hr_reviewer_id"/>
+                        <field name="hr_comments"/>
+                        <field name="dg_approver_id"/>
+                        <field name="dg_comments"/>
+                    </group>
+                    <group string="Employé">
+                        <field name="employee_acknowledged"/>
+                        <field name="employee_comments"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_pe_evaluation" model="ir.actions.act_window">
+        <field name="name">Évaluations</field>
+        <field name="res_model">pe.evaluation</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('status', 'in', ['pending_review', 'pending_approval', 'draft'])]</field>
+    </record>
+
+    <record id="action_pe_evaluation_all" model="ir.actions.act_window">
+        <field name="name">Toutes les évaluations</field>
+        <field name="res_model">pe.evaluation</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

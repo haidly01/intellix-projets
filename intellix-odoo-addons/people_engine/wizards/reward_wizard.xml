@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_pe_reward_wizard" model="ir.actions.act_window">
+        <field name="name">Attribuer une récompense</field>
+        <field name="res_model">pe.reward.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

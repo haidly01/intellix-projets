@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_crm_lead_form_coins_envoyer_signature" model="ir.ui.view">
+        <field name="name">crm.lead.form.coins.envoyer.signature</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="view_crm_lead_form_coins_partenariat"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_coins_creer_entente']" position="before">
+                <field name="coins_show_envoyer_signature" invisible="1"/>
+            </xpath>
+            <xpath expr="//button[@name='action_coins_creer_entente']" position="after">
+                <button name="action_envoyer_pour_signature"
+                        type="object"
+                        string="Envoyer pour signature"
+                        class="btn-primary"
+                        invisible="not coins_show_envoyer_signature"
+                        title="Génère le lien /sign/contract et envoie l'entente standard hébergement (Karine Barmaki). Distinct de la prospection et du suivi rencontre."/>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_crm_lead_form_coins_envoyer_signature_fiche" model="ir.ui.view">
+        <field name="name">crm.lead.form.coins.envoyer.signature.fiche</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="view_crm_lead_form_coins_partenariat_fiche"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_coins_creer_entente']" position="before">
+                <field name="coins_show_envoyer_signature" invisible="1"/>
+            </xpath>
+            <xpath expr="//button[@name='action_coins_creer_entente']" position="after">
+                <button name="action_envoyer_pour_signature"
+                        type="object"
+                        string="Envoyer pour signature"
+                        class="btn-primary"
+                        invisible="not coins_show_envoyer_signature"
+                        title="Génère le lien /sign/contract et envoie l'entente standard hébergement (Karine Barmaki). Distinct de la prospection et du suivi rencontre."/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="tv_display_template" name="People Engine TV Dashboard">
+        <html lang="fr">
+            <head>
+                <meta charset="UTF-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+                <title>People Engine — Dashboard équipe</title>
+                <style>
+                    body { font-family: system-ui, sans-serif; background: #0A0A0F; color: #FAFAF8; margin: 0; }
+                    .tv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 24px; min-height: 100vh; box-sizing: border-box; }
+                    .tv-header { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; }
+                    .team-score-big { font-size: 72px; font-weight: 800; color: #00D4AA; }
+                    .panel { background: rgba(255,255,255,0.04); border-radius: 16px; padding: 24px; }
+                    .leaderboard-item { display: flex; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 20px; }
+                    .badge-item { padding: 10px; margin-bottom: 8px; background: rgba(255,255,255,0.05); border-radius: 8px; }
+                </style>
+            </head>
+            <body>
+                <div class="tv-grid">
+                    <div class="tv-header">
+                        <div>
+                            <div style="opacity:0.5;text-transform:uppercase;font-size:12px;">Score moyen équipe</div>
+                            <div class="team-score-big" id="team-score">--</div>
+                            <div style="opacity:0.5;">/100</div>
+                        </div>
+                        <div style="text-align:right;">
+                            <div style="font-size:28px;font-weight:700;">People Engine</div>
+                            <div id="clock" style="opacity:0.5;font-size:24px;">--:--</div>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <div style="opacity:0.5;text-transform:uppercase;font-size:12px;margin-bottom:12px;">Classement</div>
+                        <div id="leaderboard"/>
+                    </div>
+                    <div class="panel">
+                        <div style="opacity:0.5;text-transform:uppercase;font-size:12px;margin-bottom:12px;">Reconnaissances</div>
+                        <div id="badges-feed"/>
+                    </div>
+                </div>
+                <script>
+                    const TOKEN = "<t t-esc='token'/>";
+                    const REFRESH_MS = <t t-esc='refresh_interval'/> * 1000;
+                    async function refreshData() {
+                        const r = await fetch('/people-engine/tv/data/' + TOKEN, { method: 'POST' });
+                        const data = await r.json();
+                        if (data.error) return;
+                        if (data.team_score) document.getElementById('team-score').textContent = (data.team_score.avg_score || 0).toFixed(1);
+                        document.getElementById('leaderboard').innerHTML = (data.leaderboard || []).map((p, i) =>
+                            '&lt;div class="leaderboard-item"&gt;&lt;span&gt;' + ['🥇','🥈','🥉','4.','5.'][i] + '&lt;/span&gt;&lt;span style="flex:1;margin-left:12px"&gt;' + p.name + '&lt;/span&gt;&lt;strong&gt;' + p.score + '&lt;/strong&gt;&lt;/div&gt;'
+                        ).join('');
+                        document.getElementById('badges-feed').innerHTML = (data.recent_badges || []).map(b =>
+                            '&lt;div class="badge-item"&gt;' + b.icon + ' &lt;strong&gt;' + b.employee_name + '&lt;/strong&gt; — ' + b.badge_name + '&lt;/div&gt;'
+                        ).join('');
+                    }
+                    function tickClock() {
+                        document.getElementById('clock').textContent = new Date().toLocaleTimeString('fr-CA', {hour:'2-digit', minute:'2-digit'});
+                    }
+                    refreshData(); tickClock();
+                    setInterval(refreshData, REFRESH_MS);
+                    setInterval(tickClock, 1000);
+                </script>
+            </body>
+        </html>
+    </template>
+</odoo>

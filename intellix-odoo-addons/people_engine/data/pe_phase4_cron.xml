@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="cron_pe_sync_presence" model="ir.cron">
+        <field name="name">PE — Sync présence temps réel</field>
+        <field name="model_id" ref="model_pe_presence_service"/>
+        <field name="state">code</field>
+        <field name="code">model.sudo().sync_all_presence()</field>
+        <field name="interval_number">2</field>
+        <field name="interval_type">minutes</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <record id="cron_pe_recalc_payslip" model="ir.cron">
+        <field name="name">PE — Recalcul paie temps réel</field>
+        <field name="model_id" ref="model_pe_payslip_live"/>
+        <field name="state">code</field>
+        <field name="code">model.sudo().recalculer_tous()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <record id="cron_pe_resume_presence" model="ir.cron">
+        <field name="name">PE — Résumé présence journalier</field>
+        <field name="model_id" ref="model_pe_presence_summary"/>
+        <field name="state">code</field>
+        <field name="code">model.sudo().generer_resumes_hier()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <record id="cron_pe_analyse_appels" model="ir.cron">
+        <field name="name">PE — Analyse appels Claude (nuit)</field>
+        <field name="model_id" ref="model_pe_coaching_call"/>
+        <field name="state">code</field>
+        <field name="code">model.sudo().analyser_appels_non_traites()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

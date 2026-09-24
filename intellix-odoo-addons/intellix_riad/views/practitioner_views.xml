@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_riad_practitioner_list" model="ir.ui.view">
+        <field name="name">intellix.riad.practitioner.list</field>
+        <field name="model">intellix.riad.practitioner</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="kind"/>
+                <field name="establishment_id"/>
+                <field name="type_ids" widget="many2many_tags"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_riad_practitioner_form" model="ir.ui.view">
+        <field name="name">intellix.riad.practitioner.form</field>
+        <field name="model">intellix.riad.practitioner</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="kind"/>
+                        <field name="establishment_id"/>
+                        <field name="partner_id"/>
+                        <field name="type_ids" widget="many2many_tags"/>
+                        <field name="pe_profile_id"/>
+                        <field name="active"/>
+                        <field name="notes"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_riad_practitioner" model="ir.actions.act_window">
+        <field name="name">Prestataires</field>
+        <field name="res_model">intellix.riad.practitioner</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

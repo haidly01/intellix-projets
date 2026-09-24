@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="product_category_intellix" model="product.category">
+        <field name="name">Intellix</field>
+    </record>
+    <record id="product_category_intellix_call_center" model="product.category">
+        <field name="name">Call Center</field>
+        <field name="parent_id" ref="product_category_intellix"/>
+    </record>
+    <record id="product_category_intellix_ia" model="product.category">
+        <field name="name">Crédits IA</field>
+        <field name="parent_id" ref="product_category_intellix"/>
+    </record>
+
+    <record id="uom_intellix_user_month" model="uom.uom">
+        <field name="name">Utilisateur/Mois</field>
+        <field name="relative_factor" eval="1.0"/>
+    </record>
+</odoo>

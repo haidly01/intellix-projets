@@ -1,0 +1,359 @@
+/* Coins Marocain — planner séjour (drawer) */
+.cm-planner-root[hidden] { display: none !important; }
+
+.cm-planner-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: rgba(44, 38, 32, 0.45);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.cm-planner-root.on .cm-planner-backdrop { opacity: 1; }
+
+.cm-planner-panel {
+  position: fixed;
+  z-index: 81;
+  display: flex;
+  flex-direction: column;
+  background: #f5efe3;
+  color: #2c2620;
+  box-shadow: -12px 0 40px rgba(44, 38, 32, 0.22);
+  outline: none;
+  /* mobile: bottom sheet */
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: auto;
+  max-height: min(92vh, 860px);
+  border-radius: 22px 22px 0 0;
+  transform: translateY(110%);
+  transition: transform 0.28s ease;
+}
+.cm-planner-root.on .cm-planner-panel { transform: translateY(0); }
+
+@media (min-width: 768px) {
+  .cm-planner-panel {
+    left: auto;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: min(440px, 100vw);
+    max-height: none;
+    border-radius: 0;
+    transform: translateX(105%);
+  }
+  .cm-planner-root.on .cm-planner-panel { transform: translateX(0); }
+}
+
+.cm-planner-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 20px 22px 12px;
+  border-bottom: 1px solid #e0d4bf;
+  flex-shrink: 0;
+}
+.cm-planner-head h2 {
+  margin: 0;
+  font-family: "Cormorant Garamond", Cardo, Georgia, serif;
+  font-size: 1.55rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #2c2620;
+}
+.cm-planner-head p {
+  margin: 6px 0 0;
+  font-size: 0.88rem;
+  line-height: 1.4;
+  color: #7d7364;
+  max-width: 32ch;
+}
+.cm-planner-close {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: #2c2620;
+  font-size: 1.75rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+.cm-planner-close:hover { background: rgba(44, 38, 32, 0.06); }
+
+.cm-planner-body {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px 22px 28px;
+  flex: 1;
+}
+
+.cm-planner-block { margin-bottom: 22px; }
+.cm-planner-label {
+  display: block;
+  margin: 0 0 10px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #7d7364;
+}
+
+/* Calendar */
+.cm-planner-cal-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.cm-planner-cal-nav button {
+  appearance: none;
+  border: 1px solid #e0d4bf;
+  background: #fff;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  color: #2c2620;
+}
+.cm-planner-cal-nav button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.cm-planner-cal-title {
+  font-family: "Cormorant Garamond", Cardo, Georgia, serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+.cm-planner-cal-range {
+  font-size: 0.88rem;
+  color: #7d7364;
+  margin: 0 0 12px;
+  min-height: 1.3em;
+}
+.cm-planner-cal-range strong { color: #2c2620; font-weight: 600; }
+
+.cm-planner-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+.cm-planner-dow {
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #7d7364;
+  padding: 4px 0 8px;
+}
+.cm-planner-day {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  color: #2c2620;
+  position: relative;
+}
+.cm-planner-day:hover:not(:disabled):not(.out) {
+  background: rgba(184, 137, 63, 0.12);
+}
+.cm-planner-day:disabled,
+.cm-planner-day.out {
+  color: #c4b8a4;
+  cursor: default;
+}
+.cm-planner-day.in-range {
+  background: rgba(184, 137, 63, 0.16);
+  border-radius: 0;
+}
+.cm-planner-day.start,
+.cm-planner-day.end {
+  background: #b8893f;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 10px;
+}
+.cm-planner-day.start.in-range { border-radius: 10px 0 0 10px; }
+.cm-planner-day.end.in-range { border-radius: 0 10px 10px 0; }
+.cm-planner-day.start.end { border-radius: 10px; }
+
+/* Chips */
+.cm-planner-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.cm-planner-chip {
+  appearance: none;
+  border: 1px solid #e0d4bf;
+  background: #fff;
+  color: #2c2620;
+  font: inherit;
+  font-size: 0.88rem;
+  padding: 9px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.cm-planner-chip:hover { border-color: #b8893f; }
+.cm-planner-chip.on {
+  background: #b8893f;
+  border-color: #b8893f;
+  color: #fff;
+  font-weight: 600;
+}
+.cm-planner-chip[aria-pressed="mixed"] {
+  background: rgba(184, 137, 63, 0.18);
+  border-color: #b8893f;
+}
+
+/* Form fields */
+.cm-planner-fields {
+  display: grid;
+  gap: 12px;
+}
+.cm-planner-fields--guests {
+  max-width: 220px;
+}
+.cm-planner-fields--guests input {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid rgba(138, 79, 34, 0.28);
+  border-radius: 10px;
+  padding: 11px 12px;
+  font: inherit;
+  font-size: 0.95rem;
+  color: #262220;
+  background: #fff;
+}
+.cm-planner-fields--guests input:focus {
+  outline: none;
+  border-color: #b8893f;
+}
+.cm-planner-fields label {
+  display: grid;
+  gap: 6px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #2c2620;
+}
+.cm-planner-fields input[type="text"],
+.cm-planner-fields input[type="tel"],
+.cm-planner-fields input[type="email"],
+.cm-planner-fields input[type="number"] {
+  appearance: none;
+  border: 1px solid #e0d4bf;
+  background: #fff;
+  border-radius: 11px;
+  padding: 12px 14px;
+  font: inherit;
+  font-size: 0.95rem;
+  color: #2c2620;
+}
+.cm-planner-fields input[type="text"]:focus,
+.cm-planner-fields input[type="tel"]:focus,
+.cm-planner-fields input[type="email"]:focus,
+.cm-planner-fields input[type="number"]:focus {
+  outline: 2px solid rgba(184, 137, 63, 0.45);
+  outline-offset: 1px;
+  border-color: #b8893f;
+}
+.cm-planner-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.88rem;
+  font-weight: 400;
+  color: #7d7364;
+  margin-top: 4px;
+  cursor: pointer;
+  line-height: 1.4;
+}
+.cm-planner-consent input[type="checkbox"] {
+  appearance: auto;
+  -webkit-appearance: checkbox;
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  margin: 2px 0 0;
+  padding: 0;
+  border: 1.5px solid #8a4f22;
+  border-radius: 4px;
+  background: #fff;
+  accent-color: #b8893f;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.cm-planner-actions {
+  display: grid;
+  gap: 10px;
+  margin-top: 8px;
+}
+.cm-planner-submit {
+  appearance: none;
+  border: 0;
+  background: #b8893f;
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 14px 18px;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(184, 137, 63, 0.28);
+}
+.cm-planner-submit:disabled {
+  opacity: 0.55;
+  cursor: default;
+  box-shadow: none;
+}
+.cm-planner-wa {
+  appearance: none;
+  display: block;
+  text-align: center;
+  border: 1px solid #e0d4bf;
+  background: transparent;
+  color: #2c2620;
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 13px 18px;
+  border-radius: 12px;
+  text-decoration: none;
+  cursor: pointer;
+}
+.cm-planner-wa:hover { border-color: #b8893f; }
+
+.cm-planner-status {
+  margin: 10px 0 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  min-height: 1.3em;
+}
+.cm-planner-status.ok { color: #2f6b4f; }
+.cm-planner-status.err { color: #a33; }
+
+/* Header CTA — show on mobile too (shorter label via JS / CSS) */
+.cm-devis-cta.cm-planner-cta {
+  display: inline-flex;
+  font-size: 0.82rem;
+  padding: 9px 12px;
+}
+@media (min-width: 720px) {
+  .cm-devis-cta.cm-planner-cta {
+    font-size: 0.92rem;
+    padding: 11px 16px;
+  }
+}
+@media (max-width: 380px) {
+  .cm-devis-cta.cm-planner-cta { padding: 9px 10px; font-size: 0.78rem; }
+}

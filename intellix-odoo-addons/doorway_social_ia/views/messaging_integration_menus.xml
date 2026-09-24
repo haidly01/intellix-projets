@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_social_accounts_linkedin_gmb" model="ir.actions.act_window">
+        <field name="name">Comptes LinkedIn &amp; GMB</field>
+        <field name="res_model">doorway.social.account</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[('platform', 'in', ['linkedin', 'gmb'])]</field>
+        <field name="context">{'default_platform': 'linkedin'}</field>
+    </record>
+
+    <record id="action_channel_config_social" model="ir.actions.act_window">
+        <field name="name">Canaux OAuth sociaux</field>
+        <field name="res_model">doorway.channel.config</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('canal', 'in', ['linkedin', 'gmb'])]</field>
+    </record>
+
+    <menuitem id="menu_messaging_social_section"
+              name="Réseaux sociaux"
+              parent="doorway_messaging.menu_messaging_root"
+              sequence="25"/>
+
+    <menuitem id="menu_messaging_social_inbox"
+              name="Messages &amp; commentaires"
+              parent="menu_messaging_social_section"
+              action="action_social_inbox_unified"
+              sequence="10"/>
+
+    <menuitem id="menu_messaging_social_accounts"
+              name="Comptes LinkedIn &amp; GMB"
+              parent="menu_messaging_social_section"
+              action="action_social_accounts_linkedin_gmb"
+              sequence="20"/>
+
+    <menuitem id="menu_messaging_social_channels"
+              name="Canaux OAuth (LinkedIn / GMB)"
+              parent="menu_messaging_social_section"
+              action="action_channel_config_social"
+              sequence="30"
+              groups="base.group_system"/>
+</odoo>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="ir_cron_driven_b2b_sms" model="ir.cron">
+        <field name="name">Alex Driven B2B — relances SMS J+2/J+5</field>
+        <field name="model_id" ref="model_driven_b2b_sms_queue"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_send_pending()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

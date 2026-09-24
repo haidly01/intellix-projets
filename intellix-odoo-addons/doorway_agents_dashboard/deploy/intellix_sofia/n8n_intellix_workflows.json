@@ -1,0 +1,671 @@
+{
+  "meta": {
+    "name": "Intellix — Sofia CC Maroc (6 workflows)",
+    "version": "1.0.0",
+    "stack": "n8n + Deepgram + Claude + ElevenLabs + Odoo + WhatsApp Meta",
+    "whatsapp_sender": "+212660159177",
+    "import_order": [
+      "WF6 — Onboarding (désactivé au départ)",
+      "WF5 — Post démo",
+      "WF4 — Gestion no-show",
+      "WF3 — Rappel H-30",
+      "WF2 — Booking démo",
+      "WF1 — Prospection sortante"
+    ],
+    "env_required": [
+      "ODOO_URL=https://intellixcrm.com",
+      "ODOO_API_KEY",
+      "ANTHROPIC_API_KEY",
+      "DEEPGRAM_API_KEY",
+      "ELEVENLABS_API_KEY",
+      "ELEVENLABS_VOICE_ID=FqF9IZCNgkSbGVwutMcg",
+      "WHATSAPP_PHONE_ID",
+      "WHATSAPP_TOKEN",
+      "WHATSAPP_SENDER_E164=212660159177",
+      "STORAGE_BUCKET_URL=https://intellixcrm.com/sofia-tts",
+      "CAL_COM_URL",
+      "DOORWAY_AGENTS_WEBHOOK_KEY",
+      "N8N_BASE_URL=https://n8n.intellixcrm.com"
+    ]
+  },
+  "workflows": [
+    {
+      "name": "Intellix WF1 — Prospection sortante",
+      "active": false,
+      "tags": ["intellix", "sofia", "whatsapp", "prospection"],
+      "nodes": [
+        {
+          "id": "wf1-trigger",
+          "name": "Trigger — Lead Odoo tag À prospecter",
+          "type": "n8n-nodes-base.webhook",
+          "typeVersion": 2,
+          "position": [0, 300],
+          "parameters": {
+            "httpMethod": "POST",
+            "path": "intellix/prospection-start",
+            "responseMode": "onReceived"
+          },
+          "notes": "Odoo envoie : lead_id, prenom, phone, email, nom_centre"
+        },
+        {
+          "id": "wf1-wa-check",
+          "name": "Vérifier WhatsApp valide",
+          "type": "n8n-nodes-base.httpRequest",
+          "typeVersion": 4.2,
+          "position": [260, 300],
+          "parameters": {
+            "method": "POST",
+            "url": "=https://graph.facebook.com/v21.0/{{ $env.WHATSAPP_PHONE_ID }}/contacts",
+            "sendHeaders": true,
+            "headerParameters": {
+              "parameters": [
+                {"name": "Authorization", "value": "=Bearer {{ $env.WHATSAPP_TOKEN }}"}
+              ]
+            },
+            "sendBody": true,
+            "specifyBody": "json",
+            "jsonBody": "={\"blocking\": \"wait\", \"contacts\": [\"{{ $json.body.phone }}\"], \"force_check\": true}"
+          },
+          "notes": "Si wa_id absent → tag Odoo WhatsApp invalide + stop"
+        },
+        {
+          "id": "wf1-if-wa",
+          "name": "WhatsApp OK ?",
+          "type": "n8n-nodes-base.if",
+          "typeVersion": 2,
+          "position": [520, 300],
+          "parameters": {
+            "conditions": {
+              "string": [
+                {
+                  "value1": "={{ $json.contacts[0].status }}",
+                  "operation": "equal",
+                  "value2": "valid"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "wf1-tag-invalid",
+          "name": "Tag Odoo WhatsApp invalide",
+          "type": "n8n-nodes-base.httpRequest",
+          "typeVersion": 4.2,
+          "position": [780, 480],
+          "parameters": {
+            "method": "POST",
+            "url": "={{ $env.ODOO_URL }}/json/2/crm.lead/write",
+            "authentication": "genericCredentialType",
+            "genericAuthType": "httpHeaderAuth",
+            "sendBody": true,
+            "specifyBody": "json",
+            "jsonBody": "={\"ids\": [{{ $('Trigger — Lead Odoo tag À prospecter').item.json.body.lead_id }}], \"vals\": {\"tag_ids\": [[4, {{ $env.ODOO_TAG_WHATSAPP_INVALID }}]]}}"
+          }
+        },
+        {
+          "id": "wf1-tts-j1",
+          "name": "ElevenLabs vocal J1",
+          "type": "n8n-nodes-base.httpRequest",
+          "typeVersion": 4.2,
+          "position": [780, 200],
+          "parameters": {
+            "method": "POST",
+            "url": "https://api.elevenlabs.io/v1/text-to-speech/{{ $env.ELEVENLABS_VOICE_ID }}",
+            "sendHeaders": true,
+            "headerParameters": {
+              "parameters": [
+                {"name": "xi-api-key", "value": "={{ $env.ELEVENLABS_API_KEY }}"},
+                {"name": "Content-Type", "value": "application/json"}
+              ]
+            },
+            "sendBody": true,
+            "specifyBody": "json",
+            "jsonBody": "={\"text\": \"Bonjour {{ $('Trigger — Lead Odoo tag À prospecter').item.json.body.prenom }} ! Je suis Sofia d'Intellix. Question rapide : analysez-vous 100% de vos appels en temps réel ? Je vous envoie quelque chose juste après ce message.\", \"model_id\": \"eleven_multilingual_v2\"}",
+            "options": {"response": {"response": {"responseFormat": "file"}}}
+          }
+        },
+        {
+          "id": "wf1-upload-audio",
+          "name": "Upload audio → URL publique",
+          "type": "n8n-nodes-base.code",
+          "typeVersion": 2,
+          "position": [1040, 200],
+          "parameters": {
+            "jsCode": "// Upload binaire vers STORAGE_BUCKET_URL ou S3\n// Retourne { audio_url, prenom, phone, lead_id }\nconst lead = $('Trigger — Lead Odoo tag À prospecter').first().json.body;\nconst bucket = ($env.STORAGE_BUCKET_URL || '').replace(/\\/$/, '');\nconst fname = `intellix-j1-${lead.lead_id}-${Date.now()}.mp3`;\nreturn [{ json: { ...lead, audio_url: `${bucket}/${fname}`, wa_audio_link: `${bucket}/${fname}` } }];"
+          }
+        },
+        {
+          "id": "wf1-wa-vocal-j1",
+          "name": "WhatsApp vocal J1 9h00",
+          "type": "n8n-nodes-base.httpRequest",
+          "typeVersion": 4.2,
+          "position": [1300, 200],
+          "parameters": {
+            "method": "POST",
+            "url": "=https://graph.facebook.com/v21.0/{{ $env.WHATSAPP_PHONE_ID }}/messages",
+            "sendHeaders": true,
+            "headerParameters": {
+              "parameters": [
+                {"name": "Authorization", "value": "=Bearer {{ $env.WHATSAPP_TOKEN }}"}
+              ]
+            },
+            "sendBody": true,
+            "specifyBody": "json",
+            "jsonBody": "={\"messaging_product\": \"whatsapp\", \"to\": \"{{ $json.phone }}\", \"type\": \"audio\", \"audio\": {\"link\": \"{{ $json.audio_url }}\"}}"
+          },
+          "notes": "Planifier 9h00 J1 via n8n Schedule ou Wait until"
+        },
+        {
+          "id": "wf1-wa-text-j1",
+          "name": "WhatsApp texte J1 9h01",
+          "type": "n8n-nodes-base.httpRequest",
+          "typeVersion": 4.2,
+          "position": [1560, 200],
+          "parameters": {
+            "method": "POST",
+            "url": "=https://graph.facebook.com/v21.0/{{ $env.WHATSAPP_PHONE_ID }}/messages",
+            "sendHeaders": true,
+            "headerParameters": {
+              "parameters": [
+                {"name": "Authorization", "value": "=Bearer {{ $env.WHATSAPP_TOKEN }}"}
+              ]
+            },
+            "sendBody": true,
+            "specifyBody": "json",
+            "jsonBody": "={\"messaging_product\": \"whatsapp\", \"to\": \"{{ $json.phone }}\", \"type\": \"text\", \"text\": {\"body\": \"📹 Voici comment un centre à Casablanca a réduit ses coûts de 40% → {{ $env.DEMO_VIDEO_URL }}\"}}"
+          }
+        },
+        {
+          "id": "wf1-wait-48h",
+          "name": "Wait 48h",
+          "type": "n8n-nodes-base.wait",
+          "typeVersion": 1.1,
+          "position": [1820, 200],
+          "parameters": {"amount": 48, "unit": "hours"}
+        },
+        {
+          "id": "wf1-check-reply",
+          "name": "Réponse reçue Odoo ?",
+          "type": "n8n-nodes-base.httpRequest",
+          "typeVersion": 4.2,
+          "position": [2080, 200],
+          "parameters": {
+            "method": "POST",
+            "url": "={{ $env.ODOO_URL }}/json/2/crm.lead/read",
+            "sendBody": true,
+            "specifyBody": "json",
+            "jsonBody": "={\"ids\": [{{ $json.lead_id }}], \"fields\": [\"message_ids\", \"tag_ids\"]}"
+          }
+        },
+        {
+          "id": "wf1-relance-j3",
+          "name": "Vocal relance J3 10h00",
+          "type": "n8n-nodes-base.code",
+          "typeVersion": 2,
+          "position": [2340, 120],
+          "parameters": {
+            "jsCode": "// Si pas de réponse : ElevenLabs + WhatsApp vocal J3\n// Texte : Bonjour {prenom}, Sofia d'Intellix. On démarre 3 nouveaux centres cette semaine à Casablanca. 15 minutes cette semaine ?\nreturn $input.all();"
+          }
+        },
+        {
+          "id": "wf1-wait-48h-2",
+          "name": "Wait 48h (J5)",
+          "type": "n8n-nodes-base.wait",
+          "typeVersion": 1.1,
+          "position": [2600, 120],
+          "parameters": {"amount": 48, "unit": "hours"}
+        },
+        {
+          "id": "wf1-closing-j5",
+          "name": "Texte final J5 11h00",
+          "type": "n8n-nodes-base.httpRequest",
+          "typeVersion": 4.2,
+          "position": [2860, 120],
+          "parameters": {
+            "method": "POST",
+            "url": "=https://graph.facebook.com/v21.0/{{ $env.WHATSAPP_PHONE_ID }}/messages",
+            "sendBody": true,
+            "specifyBody": "json",
+            "jsonBody": "={\"messaging_product\": \"whatsapp\", \"to\": \"{{ $json.phone }}\", \"type\": \"text\", \"text\": {\"body\": \"1️⃣ Voir comment vos concurrents automatisent → répondez OUI\\n2️⃣ Pas une priorité maintenant → répondez STOP\"}}"
+          }
+        },
+        {
+          "id": "wf1-route-oui-stop",
+          "name": "Route OUI / STOP / silence",
+          "type": "n8n-nodes-base.switch",
+          "typeVersion": 3,
+          "position": [3120, 120],
+          "parameters": {
+            "rules": {
+              "values": [
+                {"outputKey": "OUI", "conditions": {"string": [{"value1": "={{ $json.reply }}", "operation": "contains", "value2": "OUI"}]}},
+                {"outputKey": "STOP", "conditions": {"string": [{"value1": "={{ $json.reply }}", "operation": "contains", "value2": "STOP"}]}}
+              ]
+            }
+          },
+          "notes": "OUI → WF2 | STOP → tag Do Not Contact | silence J+10 → archiver"
+        }
+      ],
+      "connections": {
+        "Trigger — Lead Odoo tag À prospecter": {"main": [[{"node": "Vérifier WhatsApp valide", "type": "main", "index": 0}]]},
+        "Vérifier WhatsApp valide": {"main": [[{"node": "WhatsApp OK ?", "type": "main", "index": 0}]]},
+        "WhatsApp OK ?": {"main": [[{"node": "ElevenLabs vocal J1", "type": "main", "index": 0}], [{"node": "Tag Odoo WhatsApp invalide", "type": "main", "index": 0}]]},
+        "ElevenLabs vocal J1": {"main": [[{"node": "Upload audio → URL publique", "type": "main", "index": 0}]]},
+        "Upload audio → URL publique": {"main": [[{"node": "WhatsApp vocal J1 9h00", "type": "main", "index": 0}]]},
+        "WhatsApp vocal J1 9h00": {"main": [[{"node": "WhatsApp texte J1 9h01", "type": "main", "index": 0}]]},
+        "WhatsApp texte J1 9h01": {"main": [[{"node": "Wait 48h", "type": "main", "index": 0}]]},
+        "Wait 48h": {"main": [[{"node": "Réponse reçue Odoo ?", "type": "main", "index": 0}]]},
+        "Réponse reçue Odoo ?": {"main": [[{"node": "Vocal relance J3 10h00", "type": "main", "index": 0}]]},
+        "Vocal relance J3 10h00": {"main": [[{"node": "Wait 48h (J5)", "type": "main", "index": 0}]]},
+        "Wait 48h (J5)": {"main": [[{"node": "Texte final J5 11h00", "type": "main", "index": 0}]]},
+        "Texte final J5 11h00": {"main": [[{"node": "Route OUI / STOP / silence", "type": "main", "index": 0}]]}
+      }
+    },
+    {
+      "name": "Intellix WF2 — Booking démo",
+      "active": false,
+      "tags": ["intellix", "booking", "calendrier"],
+      "nodes": [
+        {
+          "id": "wf2-trigger",
+          "name": "Webhook OUI_DEMO",
+          "type": "n8n-nodes-base.webhook",
+          "typeVersion": 2,
+          "position": [0, 300],
+          "parameters": {
+            "httpMethod": "POST",
+            "path": "intellix/booking-demo",
+            "responseMode": "lastNode"
+          },
+          "notes": "Trigger depuis Sofia (intent OUI_DEMO) ou message WhatsApp OUI"
+        },
+        {
+          "id": "wf2-cal-odoo",
+          "name": "Créer événement calendrier Odoo",
+          "type": "n8n-nodes-base.httpRequest",
+          "typeVersion": 4.2,
+          "position": [280, 300],
+          "parameters": {
+            "method": "POST",
+            "url": "={{ $env.ODOO_URL }}/json/2/calendar.event/create",
+            "sendBody": true,
+            "specifyBody": "json",
+            "jsonBody": "={\"vals\": {\"name\": \"Démo Intellix — {{ $json.body.prenom }} {{ $json.body.nom_centre }}\", \"duration\": 0.167, \"description\": \"Tag: Démo Intellix\\nProspect: {{ $json.body.prenom }}\", \"partner_ids\": [[6, 0, [{{ $json.body.partner_id }}]]]}}"
+          },
+          "notes": "Durée 10 min = 0.167h. Assigner calendrier Zakaria."
+        },
+        {
+          "id": "wf2-wa-confirm",
+          "name": "WhatsApp confirmation créneau",
+          "type": "n8n-nodes-base.httpRequest",
+          "typeVersion": 4.2,
+          "position": [560, 300],
+          "parameters": {
+            "method": "POST",
+            "url": "=https://graph.facebook.com/v21.0/{{ $env.WHATSAPP_PHONE_ID }}/messages",
+            "sendBody": true,
+            "specifyBody": "json",
+            "jsonBody": "={\"messaging_product\": \"whatsapp\", \"to\": \"{{ $json.body.phone }}\", \"type\": \"text\", \"text\": {\"body\": \"Super {{ $json.body.prenom }} ! Choisissez votre créneau ici : {{ $env.CAL_COM_URL }} — Je prépare quelque chose de spécifique pour votre centre.\"}}"
+          }
+        },
+        {
+          "id": "wf2-trigger-wf3",
+          "name": "Déclencher WF3 rappel H-30",
+          "type": "n8n-nodes-base.httpRequest",
+          "typeVersion": 4.2,
+          "position": [840, 220],
+          "parameters": {
+            "method": "POST",
+            "url": "={{ $env.N8N_BASE_URL }}/webhook/intellix/reminder-h30-arm",
+            "sendBody": true,
+            "specifyBody": "json",
+            "jsonBody": "={{ JSON.stringify($json.body) }}"
+          }
+        },
+        {
+          "id": "wf2-trigger-wf4",
+          "name": "Déclencher WF4 no-show H+15",
+          "type": "n8n-nodes-base.httpRequest",
+          "typeVersion": 4.2,
+          "position": [840, 380],
+          "parameters": {
+            "method": "POST",
+            "url": "={{ $env.N8N_BASE_URL }}/webhook/intellix/noshow-arm",
+            "sendBody": true,
+            "specifyBody": "json",
+            "jsonBody": "={{ JSON.stringify($json.body) }}"
+          }
+        }
+      ],
+      "connections": {
+        "Webhook OUI_DEMO": {"main": [[{"node": "Créer événement calendrier Odoo", "type": "main", "index": 0}]]},
+        "Créer événement calendrier Odoo": {"main": [[{"node": "WhatsApp confirmation créneau", "type": "main", "index": 0}]]},
+        "WhatsApp confirmation créneau": {"main": [[{"node": "Déclencher WF3 rappel H-30", "type": "main", "index": 0}, {"node": "Déclencher WF4 no-show H+15", "type": "main", "index": 0}]]}
+      }
+    },
+    {
+      "name": "Intellix WF3 — Rappel H-30",
+      "active": false,
+      "tags": ["intellix", "rappel", "demo"],
+      "nodes": [
+        {
+          "id": "wf3-arm",
+          "name": "Arm H-30",
+          "type": "n8n-nodes-base.webhook",
+          "typeVersion": 2,
+          "position": [0, 300],
+          "parameters": {"httpMethod": "POST", "path": "intellix/reminder-h30-arm"}
+        },
+        {
+          "id": "wf3-wait",
+          "name": "Wait until H-30",
+          "type": "n8n-nodes-base.wait",
+          "typeVersion": 1.1,
+          "position": [260, 300],
+          "parameters": {"resume": "specificTime", "dateTime": "={{ $json.body.event_start_minus_30 }}"}
+        },
+        {
+          "id": "wf3-odoo-read",
+          "name": "Lire prospect Odoo",
+          "type": "n8n-nodes-base.httpRequest",
+          "typeVersion": 4.2,
+          "position": [520, 300],
+          "parameters": {
+            "method": "POST",
+            "url": "={{ $env.ODOO_URL }}/json/2/crm.lead/read",
+            "jsonBody": "={\"ids\": [{{ $json.body.lead_id }}], \"fields\": [\"contact_name\", \"x_nom_centre\", \"x_nb_agents_estime\"]}"
+          }
+        },
+        {
+          "id": "wf3-tts",
+          "name": "ElevenLabs rappel H-30",
+          "type": "n8n-nodes-base.code",
+          "typeVersion": 2,
+          "position": [780, 300],
+          "parameters": {
+            "jsCode": "const p = $json;\nconst text = `Bonjour ${p.prenom} ! Sofia d'Intellix. Votre démonstration personnalisée commence dans 30 minutes. J'ai préparé quelque chose de spécifique pour ${p.nom_centre}. À tout à l'heure !`;\nreturn [{ json: { ...p, tts_text: text } }];"
+          }
+        },
+        {
+          "id": "wf3-wa",
+          "name": "WhatsApp vocal H-30",
+          "type": "n8n-nodes-base.httpRequest",
+          "typeVersion": 4.2,
+          "position": [1040, 300],
+          "parameters": {
+            "method": "POST",
+            "url": "=https://graph.facebook.com/v21.0/{{ $env.WHATSAPP_PHONE_ID }}/messages",
+            "jsonBody": "={\"messaging_product\": \"whatsapp\", \"to\": \"{{ $json.phone }}\", \"type\": \"audio\", \"audio\": {\"link\": \"{{ $json.audio_url }}\"}}"
+          }
+        },
+        {
+          "id": "wf3-log",
+          "name": "Log Odoo rappel envoyé",
+          "type": "n8n-nodes-base.httpRequest",
+          "typeVersion": 4.2,
+          "position": [1300, 300],
+          "parameters": {
+            "method": "POST",
+            "url": "={{ $env.ODOO_URL }}/json/2/crm.lead/message_post",
+            "jsonBody": "={\"id\": {{ $json.lead_id }}, \"body\": \"✅ Rappel H-30 envoyé\", \"message_type\": \"comment\"}"
+          }
+        }
+      ],
+      "connections": {
+        "Arm H-30": {"main": [[{"node": "Wait until H-30", "type": "main", "index": 0}]]},
+        "Wait until H-30": {"main": [[{"node": "Lire prospect Odoo", "type": "main", "index": 0}]]},
+        "Lire prospect Odoo": {"main": [[{"node": "ElevenLabs rappel H-30", "type": "main", "index": 0}]]},
+        "ElevenLabs rappel H-30": {"main": [[{"node": "WhatsApp vocal H-30", "type": "main", "index": 0}]]},
+        "WhatsApp vocal H-30": {"main": [[{"node": "Log Odoo rappel envoyé", "type": "main", "index": 0}]]}
+      }
+    },
+    {
+      "name": "Intellix WF4 — Gestion no-show",
+      "active": false,
+      "tags": ["intellix", "noshow"],
+      "nodes": [
+        {
+          "id": "wf4-arm",
+          "name": "Arm H+15",
+          "type": "n8n-nodes-base.webhook",
+          "typeVersion": 2,
+          "position": [0, 300],
+          "parameters": {"httpMethod": "POST", "path": "intellix/noshow-arm"}
+        },
+        {
+          "id": "wf4-wait",
+          "name": "Wait H+15 après début",
+          "type": "n8n-nodes-base.wait",
+          "typeVersion": 1.1,
+          "position": [260, 300],
+          "parameters": {"resume": "specificTime", "dateTime": "={{ $json.body.event_start_plus_15 }}"}
+        },
+        {
+          "id": "wf4-check",
+          "name": "Statut événement Odoo",
+          "type": "n8n-nodes-base.httpRequest",
+          "typeVersion": 4.2,
+          "position": [520, 300],
+          "parameters": {
+            "method": "POST",
+            "url": "={{ $env.ODOO_URL }}/json/2/calendar.event/read",
+            "jsonBody": "={\"ids\": [{{ $json.body.event_id }}], \"fields\": [\"name\", \"x_demo_status\"]}"
+          },
+          "notes": "Champ x_demo_status : Tenu | Absent — à créer ou utiliser description"
+        },
+        {
+          "id": "wf4-if-held",
+          "name": "Démo tenue ?",
+          "type": "n8n-nodes-base.if",
+          "typeVersion": 2,
+          "position": [780, 300],
+          "parameters": {
+            "conditions": {"string": [{"value1": "={{ $json.x_demo_status }}", "operation": "equal", "value2": "Tenu"}]}
+          }
+        },
+        {
+          "id": "wf4-wa-text",
+          "name": "WhatsApp replanification",
+          "type": "n8n-nodes-base.httpRequest",
+          "typeVersion": 4.2,
+          "position": [1040, 420],
+          "parameters": {
+            "jsonBody": "={\"messaging_product\": \"whatsapp\", \"to\": \"{{ $json.phone }}\", \"type\": \"text\", \"text\": {\"body\": \"{{ $json.prenom }}, pas de souci ! On replanifie quand vous voulez : {{ $env.CAL_COM_URL }} 😊\"}}"
+          }
+        },
+        {
+          "id": "wf4-tag",
+          "name": "Tag Odoo No-show",
+          "type": "n8n-nodes-base.httpRequest",
+          "typeVersion": 4.2,
+          "position": [1300, 420],
+          "parameters": {
+            "jsonBody": "={\"ids\": [{{ $json.lead_id }}], \"vals\": {\"tag_ids\": [[4, {{ $env.ODOO_TAG_NOSHOW }}]]}}"
+          }
+        }
+      ],
+      "connections": {
+        "Arm H+15": {"main": [[{"node": "Wait H+15 après début", "type": "main", "index": 0}]]},
+        "Wait H+15 après début": {"main": [[{"node": "Statut événement Odoo", "type": "main", "index": 0}]]},
+        "Statut événement Odoo": {"main": [[{"node": "Démo tenue ?", "type": "main", "index": 0}]]},
+        "Démo tenue ?": {"main": [[], [{"node": "WhatsApp replanification", "type": "main", "index": 0}]]},
+        "WhatsApp replanification": {"main": [[{"node": "Tag Odoo No-show", "type": "main", "index": 0}]]}
+      }
+    },
+    {
+      "name": "Intellix WF5 — Post démo",
+      "active": false,
+      "tags": ["intellix", "devis", "closing"],
+      "nodes": [
+        {
+          "id": "wf5-trigger",
+          "name": "Trigger démo tenue",
+          "type": "n8n-nodes-base.webhook",
+          "typeVersion": 2,
+          "position": [0, 300],
+          "parameters": {"httpMethod": "POST", "path": "intellix/post-demo"}
+        },
+        {
+          "id": "wf5-pick-template",
+          "name": "Choisir modèle devis",
+          "type": "n8n-nodes-base.code",
+          "typeVersion": 2,
+          "position": [260, 300],
+          "parameters": {
+            "jsCode": "const n = parseInt($json.body.nb_agents_estime || 0, 10);\nlet tpl = 'Call Center — 50 agents';\nif (n <= 10) tpl = 'Call Center — 10 agents';\nelse if (n <= 30) tpl = 'Call Center — 30 agents';\nreturn [{ json: { ...$json.body, quote_template_name: tpl } }];"
+          },
+          "notes": "Modèles Odoo intellix_catalog : Call Center — 10/30/50 agents"
+        },
+        {
+          "id": "wf5-create-quote",
+          "name": "Créer devis Odoo",
+          "type": "n8n-nodes-base.httpRequest",
+          "typeVersion": 4.2,
+          "position": [520, 300],
+          "parameters": {
+            "method": "POST",
+            "url": "={{ $env.ODOO_URL }}/json/2/sale.order/create_from_template",
+            "jsonBody": "={\"template_name\": \"{{ $json.quote_template_name }}\", \"partner_id\": {{ $json.partner_id }}, \"lead_id\": {{ $json.lead_id }}}"
+          },
+          "notes": "Endpoint custom ou sale.order.onchange via JSON-2 API Odoo 19"
+        },
+        {
+          "id": "wf5-wa-devis",
+          "name": "WhatsApp lien devis",
+          "type": "n8n-nodes-base.httpRequest",
+          "typeVersion": 4.2,
+          "position": [780, 300],
+          "parameters": {
+            "jsonBody": "={\"messaging_product\": \"whatsapp\", \"to\": \"{{ $json.phone }}\", \"type\": \"text\", \"text\": {\"body\": \"Bonjour {{ $json.prenom }}, comme convenu voici votre devis personnalisé : {{ $json.quote_portal_url }} — Valable 15 jours.\"}}"
+          }
+        },
+        {
+          "id": "wf5-wait-24h",
+          "name": "Wait 24h",
+          "type": "n8n-nodes-base.wait",
+          "typeVersion": 1.1,
+          "position": [1040, 300],
+          "parameters": {"amount": 24, "unit": "hours"}
+        },
+        {
+          "id": "wf5-relance-vocal",
+          "name": "Vocal relance devis",
+          "type": "n8n-nodes-base.code",
+          "typeVersion": 2,
+          "position": [1300, 300],
+          "parameters": {
+            "jsCode": "return [{ json: { tts: `Bonjour ${$json.prenom} ! Vous avez eu le temps de regarder le devis ?` } }];"
+          }
+        },
+        {
+          "id": "wf5-closing",
+          "name": "Texte closing J+3",
+          "type": "n8n-nodes-base.httpRequest",
+          "typeVersion": 4.2,
+          "position": [1560, 300],
+          "parameters": {
+            "jsonBody": "={\"text\": {\"body\": \"On démarre cette semaine ou vous préférez le mois prochain ? Dites-moi juste {{ $json.prenom }} 🙂\"}}"
+          }
+        }
+      ],
+      "connections": {
+        "Trigger démo tenue": {"main": [[{"node": "Choisir modèle devis", "type": "main", "index": 0}]]},
+        "Choisir modèle devis": {"main": [[{"node": "Créer devis Odoo", "type": "main", "index": 0}]]},
+        "Créer devis Odoo": {"main": [[{"node": "WhatsApp lien devis", "type": "main", "index": 0}]]},
+        "WhatsApp lien devis": {"main": [[{"node": "Wait 24h", "type": "main", "index": 0}]]},
+        "Wait 24h": {"main": [[{"node": "Vocal relance devis", "type": "main", "index": 0}]]},
+        "Vocal relance devis": {"main": [[{"node": "Texte closing J+3", "type": "main", "index": 0}]]}
+      }
+    },
+    {
+      "name": "Intellix WF6 — Onboarding",
+      "active": false,
+      "tags": ["intellix", "onboarding"],
+      "nodes": [
+        {
+          "id": "wf6-trigger",
+          "name": "Trigger devis signé",
+          "type": "n8n-nodes-base.webhook",
+          "typeVersion": 2,
+          "position": [0, 300],
+          "parameters": {"httpMethod": "POST", "path": "intellix/onboarding"}
+        },
+        {
+          "id": "wf6-tasks",
+          "name": "Créer tâches projet Odoo",
+          "type": "n8n-nodes-base.code",
+          "typeVersion": 2,
+          "position": [280, 300],
+          "parameters": {
+            "jsCode": "const tasks = [\n  '[ ] Configuration espace client (J1)',\n  '[ ] Import contacts (J1)',\n  '[ ] Session clonage voix Sofia (J2)',\n  '[ ] Formation managers 2h (J3)',\n  '[ ] Lancement première campagne (S1)'\n];\nreturn [{ json: { ...$json.body, project_tasks: tasks } }];"
+          }
+        },
+        {
+          "id": "wf6-wa-welcome",
+          "name": "WhatsApp vocal bienvenue",
+          "type": "n8n-nodes-base.httpRequest",
+          "typeVersion": 4.2,
+          "position": [560, 300],
+          "parameters": {
+            "jsonBody": "={\"type\": \"audio\", \"audio\": {\"link\": \"{{ $json.welcome_audio_url }}\"}}"
+          }
+        },
+        {
+          "id": "wf6-email-tech",
+          "name": "Email équipe technique",
+          "type": "n8n-nodes-base.emailSend",
+          "typeVersion": 2,
+          "position": [840, 300],
+          "parameters": {
+            "subject": "=Nouveau client — {{ $json.nom_centre }}",
+            "text": "=Fiche client Odoo lead #{{ $json.lead_id }}"
+          }
+        },
+        {
+          "id": "wf6-tag-active",
+          "name": "Tag Client actif",
+          "type": "n8n-nodes-base.httpRequest",
+          "typeVersion": 4.2,
+          "position": [1120, 300],
+          "parameters": {
+            "jsonBody": "={\"ids\": [{{ $json.lead_id }}], \"vals\": {\"tag_ids\": [[4, {{ $env.ODOO_TAG_CLIENT_ACTIF }}]]}}"
+          }
+        }
+      ],
+      "connections": {
+        "Trigger devis signé": {"main": [[{"node": "Créer tâches projet Odoo", "type": "main", "index": 0}]]},
+        "Créer tâches projet Odoo": {"main": [[{"node": "WhatsApp vocal bienvenue", "type": "main", "index": 0}]]},
+        "WhatsApp vocal bienvenue": {"main": [[{"node": "Email équipe technique", "type": "main", "index": 0}]]},
+        "Email équipe technique": {"main": [[{"node": "Tag Client actif", "type": "main", "index": 0}]]}
+      }
+    },
+    {
+      "name": "Intellix — Conversation Engine Sofia (téléphonie)",
+      "active": false,
+      "tags": ["intellix", "sofia", "vicidial", "deepgram", "claude"],
+      "nodes": [
+        {
+          "id": "ce-wh",
+          "name": "Webhook Conversation Intellix",
+          "type": "n8n-nodes-base.webhook",
+          "typeVersion": 2,
+          "position": [0, 300],
+          "parameters": {"httpMethod": "POST", "path": "intellix/conversation"}
+        },
+        {
+          "id": "ce-engine",
+          "name": "Sofia FR Engine",
+          "type": "n8n-nodes-base.code",
+          "typeVersion": 2,
+          "position": [300, 300],
+          "parameters": {
+            "jsCode": "/**\n * Moteur Sofia Intellix CC — FR Maroc\n * Deepgram STT → Claude Haiku → ElevenLabs TTS URL\n * Intents : OUI_DEMO | NON_INTERESSE | RAPPELER_PLUS_TARD | MAUVAIS_NUMERO\n */\nconst ev = $input.first().json.body || $input.first().json;\nconst sd = $getWorkflowStaticData('global');\nif (!sd.sofia_cc_sessions) sd.sofia_cc_sessions = {};\nconst sid = ev.call_sid || 'unknown';\nlet session = sd.sofia_cc_sessions[sid] || { etape: 'ouverture', transcript_log: [], data: { prenom: ev.prenom || 'bonjour' } };\n// ... implémenter state machine (voir sofia_agent_config.json)\nreturn [{ json: { action: 'play_audio', audio_url: `${$env.STORAGE_BUCKET_URL}/sofia_cc_ouverture.mp3`, session, call_sid: sid } }];"
+          }
+        }
+      ],
+      "connections": {
+        "Webhook Conversation Intellix": {"main": [[{"node": "Sofia FR Engine", "type": "main", "index": 0}]]}
+      }
+    }
+  ]
+}

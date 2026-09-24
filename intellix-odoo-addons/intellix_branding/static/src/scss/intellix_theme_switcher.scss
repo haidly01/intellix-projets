@@ -1,0 +1,26 @@
+// Intellix — commutateur de thème (soleil/lune) dans la barre systray
+.o_doorway_theme_switcher {
+    .o_doorway_theme_btn {
+        background: transparent !important;
+        border: none !important;
+        color: var(--ix-text-inverse, #ffffff) !important;
+        font-size: 1.05rem;
+        line-height: 1;
+        padding: 0 0.55rem;
+        cursor: pointer;
+        border-radius: var(--ix-radius-btn, 6px);
+        transition: background 0.15s ease;
+
+        &:hover,
+        &:focus {
+            background: rgba(255, 255, 255, 0.14) !important;
+            color: var(--ix-text-inverse, #ffffff) !important;
+            box-shadow: none !important;
+        }
+
+        i {
+            display: inline-block;
+            vertical-align: middle;
+        }
+    }
+}

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Libellé métier Doorway sur le champ natif Odoo 19 (expected_revenue × probability). -->
+    <record id="crm.field_crm_lead__prorated_revenue" model="ir.model.fields">
+        <field name="field_description">Revenu pondéré</field>
+    </record>
+
+    <record id="crm_case_kanban_view_leads_prorated_revenue" model="ir.ui.view">
+        <field name="name">crm.lead.kanban.prorated.revenue</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
+        <field name="priority">35</field>
+        <field name="arch" type="xml">
+            <xpath expr="//kanban" position="inside">
+                <field name="prorated_revenue"/>
+            </xpath>
+            <xpath expr="//progressbar[@sum_field='expected_revenue']" position="attributes">
+                <attribute name="sum_field">prorated_revenue</attribute>
+                <attribute name="help">Total du revenu pondéré par colonne (revenu attendu × probabilité).</attribute>
+            </xpath>
+            <xpath expr="//div[hasclass('o_kanban_card_crm_lead_revenue')]" position="inside">
+                <div class="text-muted small" invisible="not prorated_revenue">
+                    <field name="prorated_revenue" string="Revenu pondéré" widget="monetary"
+                           options="{'currency_field': 'company_currency'}"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="crm_lead_view_tree_prorated_revenue" model="ir.ui.view">
+        <field name="name">crm.lead.list.prorated.revenue</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_tree_view_oppor"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='expected_revenue']" position="after">
+                <field name="prorated_revenue" string="Revenu pondéré" sum="Revenu pondéré"
+                       optional="show" widget="monetary"
+                       options="{'currency_field': 'company_currency'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="crm_lead_view_form_prorated_revenue" model="ir.ui.view">
+        <field name="name">crm.lead.form.prorated.revenue</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='expected_revenue']" position="after">
+                <field name="prorated_revenue" string="Revenu pondéré" widget="monetary"
+                       options="{'currency_field': 'company_currency'}" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

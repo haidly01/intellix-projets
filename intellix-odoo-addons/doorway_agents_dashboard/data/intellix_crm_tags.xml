@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="crm_tag_a_prospecter" model="crm.tag">
+        <field name="name">À prospecter</field>
+    </record>
+    <record id="crm_tag_whatsapp_invalide" model="crm.tag">
+        <field name="name">WhatsApp invalide</field>
+    </record>
+    <record id="crm_tag_do_not_contact" model="crm.tag">
+        <field name="name">Do Not Contact</field>
+    </record>
+    <record id="crm_tag_pas_interesse" model="crm.tag">
+        <field name="name">Pas intéressé</field>
+    </record>
+    <record id="crm_tag_demo_intellix" model="crm.tag">
+        <field name="name">Démo Intellix</field>
+    </record>
+    <record id="crm_tag_noshow" model="crm.tag">
+        <field name="name">No-show</field>
+    </record>
+    <record id="crm_tag_client_actif" model="crm.tag">
+        <field name="name">Client actif</field>
+    </record>
+    <record id="crm_tag_invalide" model="crm.tag">
+        <field name="name">Invalide</field>
+    </record>
+    <record id="crm_tag_rappel" model="crm.tag">
+        <field name="name">Rappel programmé</field>
+    </record>
+</odoo>

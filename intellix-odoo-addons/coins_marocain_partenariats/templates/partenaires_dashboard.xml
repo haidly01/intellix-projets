@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_home_coins_partenaires" name="Portal My Home: Dashboard partenaires"
+              inherit_id="portal.portal_my_home" priority="40">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
+            <t t-set="portal_client_category_enable" t-value="True"/>
+        </xpath>
+        <div id="portal_client_category" position="inside">
+            <t t-if="not request.env.user.has_group('renovation_conciergerie.group_renovation_partner')">
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="icon" t-value="'/portal/static/src/img/portal-addresses.svg'"/>
+                    <t t-set="title">Tableau de bord partenaires</t>
+                    <t t-set="url" t-value="'/my/finance-itex'"/>
+                    <t t-set="text">Finance · ITEX — chiffres live (lecture seule)</t>
+                    <t t-set="config_card" t-value="True"/>
+                </t>
+            </t>
+        </div>
+    </template>
+
+    <template id="portal_partenaires_dashboard" name="Dashboard partenaires ITEX (live)">
+        <t t-set="period" t-value="period or 30"/>
+        <t t-set="stats" t-value="stats or {}"/>
+        <t t-set="partner_name" t-value="partner_name or 'Partenaire'"/>
+        <t t-set="initials" t-value="initials or 'IX'"/>
+        <html lang="fr">
+        <head>
+            <meta charset="UTF-8"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+            <meta name="robots" content="noindex"/>
+            <title>Finance — Espace Partenaire ITEX</title>
+            <link rel="preconnect" href="https://fonts.googleapis.com"/>
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
+            <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+            <link rel="stylesheet" href="/coins_marocain_partenariats/static/src/css/partenaires_dashboard.css"/>
+        </head>
+        <body class="ix-itex-dash">
+        <div class="shell">
+
+          <aside class="sidebar">
+            <div class="brand">
+              <div class="brand-mark"/>
+              <div>
+                <div class="brand-name">Finance</div>
+                <div class="brand-sub">ITEX · Espace Partenaire</div>
+              </div>
+            </div>
+            <ul class="navlist">
+              <li>
+                <a class="active" href="/my/finance-itex">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>
+                  Tableau de bord
+                </a>
+              </li>
+              <li>
+                <a href="/my/leads">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+                  Mes leads
+                </a>
+              </li>
+              <li>
+                <a href="/my/visites">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/></svg>
+                  Mes visites
+                </a>
+              </li>
+              <li>
+                <a href="/my/devis-ventes">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 5H4v14h16V5h-5M9 5v0a3 3 0 0 1 6 0v0M9 5h6"/></svg>
+                  Devis &amp; ventes
+                </a>
+              </li>
+            </ul>
+            <div class="sidebar-foot">
+              <strong>Réseau ITEX</strong>
+              Québec · multi-secteurs · lecture seule
+            </div>
+          </aside>
+
+          <main class="ix-main">
+            <div class="topbar">
+              <div>
+                <h1>Tableau de bord partenaires</h1>
+                <div class="sub">
+                  Membres, opportunités et ventes · source
+                  <t t-esc="stats.get('members_source') or '—'"/>
+                  · au <t t-esc="stats.get('as_of') or '—'"/>
+                </div>
+              </div>
+              <div class="partner-pill">
+                <div class="avatar" t-esc="initials"/>
+                <div>
+                  <div class="name" t-esc="partner_name"/>
+                  <div class="role">Accès partenaire · lecture seule</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="period-tabs">
+              <a t-attf-href="/my/finance-itex/7"
+                 t-attf-class="#{'active' if period == 7 else ''}">7 jours</a>
+              <a t-attf-href="/my/finance-itex/30"
+                 t-attf-class="#{'active' if period == 30 else ''}">30 jours</a>
+              <a t-attf-href="/my/finance-itex/90"
+                 t-attf-class="#{'active' if period == 90 else ''}">90 jours</a>
+            </div>
+
+            <div class="kpis">
+              <div class="kpi">
+                <div class="label">Membres actifs</div>
+                <div class="val" t-esc="stats.get('members_active') if stats.get('members_active') is not None else 0"/>
+                <div class="delta">période <t t-esc="period"/> j</div>
+              </div>
+              <div class="kpi">
+                <div class="label">À renouveler</div>
+                <div class="val" t-esc="stats.get('members_renew') if stats.get('members_renew') is not None else 0"/>
+                <div class="delta">ententes</div>
+              </div>
+              <div class="kpi">
+                <div class="label">Opportunités CRM</div>
+                <div class="val" t-esc="stats.get('crm_opportunities') if stats.get('crm_opportunities') is not None else 0"/>
+                <div class="delta">sur la période</div>
+              </div>
+              <div class="kpi">
+                <div class="label">Devis générés</div>
+                <div class="val" t-esc="stats.get('sale_orders') if stats.get('sale_orders') is not None else 0"/>
+                <div class="delta">sur la période</div>
+              </div>
+            </div>
+
+            <div class="grid">
+              <div class="ix-panel card">
+                <div class="card-head">
+                  <div>
+                    <h2>Mes leads</h2>
+                    <div class="hint">Opportunités récentes (fenêtre <t t-esc="period"/> j)</div>
+                  </div>
+                  <span class="badge live">● Temps réel</span>
+                </div>
+                <t t-if="not stats.get('recent_leads')">
+                  <div class="empty">
+                    <div class="t">Aucun lead sur la période</div>
+                    <div class="s">Les nouvelles opportunités apparaîtront ici automatiquement.</div>
+                  </div>
+                </t>
+                <table t-else="">
+                  <thead>
+                    <tr>
+                      <th>Opportunité</th>
+                      <th>Services</th>
+                      <th>Ville</th>
+                      <th>Statut</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr t-foreach="stats.get('recent_leads') or []" t-as="lead">
+                      <td class="t-name" t-esc="lead.get('name') or '—'"/>
+                      <td t-esc="lead.get('services') or '—'"/>
+                      <td t-esc="lead.get('city') or '—'"/>
+                      <td>
+                        <span t-attf-class="status-tag #{lead.get('status_kind') or 'renew'}"
+                              t-esc="lead.get('status') or '—'"/>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="ix-panel card">
+                <div class="card-head">
+                  <div>
+                    <h2>Membres par catégorie</h2>
+                    <div class="hint">Répartition du réseau partenaire</div>
+                  </div>
+                </div>
+                <div class="cat-list">
+                  <t t-foreach="stats.get('categories') or []" t-as="cat">
+                    <div class="cat-row">
+                      <span class="cat-name" t-esc="cat.get('label') or '—'"/>
+                      <div class="cat-bar-track">
+                        <div class="cat-bar-fill" t-attf-style="width:#{cat.get('pct') or 0}%"/>
+                      </div>
+                      <span class="cat-n" t-esc="cat.get('count') if cat.get('count') is not None else 0"/>
+                    </div>
+                  </t>
+                </div>
+                <div class="readiness-note">
+                  Catégories à 0 = prêtes à se remplir — pas d’erreur.
+                </div>
+              </div>
+            </div>
+
+            <div class="ix-panel card" style="margin-top:16px;">
+              <div class="card-head">
+                <div>
+                  <h2>Mes visites</h2>
+                  <div class="hint">Rendez-vous planifiés avec des membres</div>
+                </div>
+              </div>
+              <div class="empty">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+                <div class="t">Aucune visite planifiée</div>
+                <div class="s">Les visites confirmées avec vos membres apparaîtront ici automatiquement.</div>
+              </div>
+            </div>
+          </main>
+        </div>
+        </body>
+        </html>
+    </template>
+</odoo>

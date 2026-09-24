@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="pack_starter" model="doorway.credit.pack">
+        <field name="name">Pack Starter</field>
+        <field name="price_usd">50</field>
+        <field name="credits_amount">50</field>
+        <field name="bonus_percent">0</field>
+        <field name="description">50 USD de crédits IA — idéal pour démarrer.</field>
+    </record>
+    <record id="pack_pro" model="doorway.credit.pack">
+        <field name="name">Pack Pro</field>
+        <field name="price_usd">150</field>
+        <field name="credits_amount">165</field>
+        <field name="bonus_percent">10</field>
+        <field name="description">150 USD → 165 USD de crédits (+10% bonus).</field>
+    </record>
+    <record id="pack_agence" model="doorway.credit.pack">
+        <field name="name">Pack Agence</field>
+        <field name="price_usd">500</field>
+        <field name="credits_amount">575</field>
+        <field name="bonus_percent">15</field>
+        <field name="description">500 USD → 575 USD de crédits (+15% bonus).</field>
+    </record>
+</odoo>

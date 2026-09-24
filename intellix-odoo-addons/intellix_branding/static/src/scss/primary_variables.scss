@@ -1,0 +1,64 @@
+// Intellix — variables SCSS Odoo (mode sombre par défaut, aligné intellix_tokens)
+$o-community-color: #6366f1 !default;
+$o-brand-primary: #6366f1 !default;
+$o-enterprise-color: #6366f1 !default;
+$o-enterprise-primary-color: #6366f1 !default;
+$o-brand-odoo: $o-brand-primary !default;
+$o-action: #6366f1 !default;
+$o-main-link-color: #818cf8 !default;
+
+$o-webclient-background-color: #0a0a1a !default;
+$o-view-background-color: #1a1a2e !default;
+$o-gray-100: #1a1a2e !default;
+$o-gray-200: #1e293b !default;
+$o-gray-300: #334155 !default;
+$o-gray-400: #475569 !default;
+$o-gray-500: #64748b !default;
+$o-gray-600: #94a3b8 !default;
+$o-gray-700: #cbd5e1 !default;
+$o-gray-800: #e2e8f0 !default;
+$o-gray-900: #f8fafc !default;
+
+$o-main-text-color: #ffffff !default;
+$o-main-headings-color: #ffffff !default;
+$o-main-color-muted: #b8c5d6 !default;
+
+$border-color: #1e293b !default;
+$o-form-lightsecondary: #334155 !default;
+$o-shadow-color: #000000 !default;
+
+// Menu burger / apps sidebar
+$o-burger-base-bg: #0a0a1a !default;
+$o-burger-base-color: #ffffff !default;
+$o-burger-topbar-bg: #1a1a2e !default;
+$o-burger-topbar-color: #ffffff !default;
+
+// Dropdowns Bootstrap (menus navbar)
+$dropdown-bg: #1a1a2e !default;
+$dropdown-color: #ffffff !default;
+$dropdown-link-color: #ffffff !default;
+$dropdown-link-hover-color: #818cf8 !default;
+$dropdown-link-hover-bg: #252542 !default;
+$dropdown-link-active-color: #ffffff !default;
+$dropdown-link-active-bg: #2e2e52 !default;
+$dropdown-border-color: #1e293b !default;
+$dropdown-divider-bg: #1e293b !default;
+
+// Panneau latéral (Société, Département, filtres search_panel)
+$o-list-group-active-color: #f1f5f9 !default;
+$o-list-group-active-bg: #2e2e52 !default;
+
+// Onglets notebook (évite fond blanc + texte clair illisible)
+$nav-tabs-link-active-bg: #1e1e32 !default;
+$nav-tabs-link-active-color: #f1f5f9 !default;
+$nav-tabs-link-hover-border-color: #334155 !default;
+$nav-tabs-border-color: #334155 !default;
+
+// Navbar — fond uni (évite 2 teintes : brand vs sections)
+// Navbar Odoo (évite #71639e community ; dégradé fin dans intellix_navbar.scss)
+$o-navbar-background: #6366f1 !default;
+$o-navbar-border-bottom: transparent !default;
+$o-navbar-entry-bg--hover: rgba(255, 255, 255, 0.12) !default;
+$o-navbar-entry-bg--active: rgba(255, 255, 255, 0.18) !default;
+$o-navbar-entry-color: #ffffff !default;
+$o-navbar-brand-color: #ffffff !default;

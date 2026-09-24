@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_community_post_list" model="ir.ui.view">
+        <field name="name">doorway.community.post.list</field>
+        <field name="model">doorway.community.post</field>
+        <field name="arch" type="xml">
+            <list string="Publications communauté">
+                <field name="date_publication"/>
+                <field name="plateforme"/>
+                <field name="type_contenu"/>
+                <field name="titre_post"/>
+                <field name="statut_publication" widget="badge"/>
+                <field name="genere_par_ia" optional="hide"/>
+                <field name="publie_par" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_community_post_form" model="ir.ui.view">
+        <field name="name">doorway.community.post.form</field>
+        <field name="model">doorway.community.post</field>
+        <field name="arch" type="xml">
+            <form string="Publication communauté">
+                <header>
+                    <button name="action_generer_caption_ia" type="object"
+                            string="Générer caption IA" class="btn-primary"/>
+                    <field name="statut_publication" widget="statusbar"
+                           statusbar_visible="brouillon,approuve,publie,annule"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="plateforme"/>
+                            <field name="type_contenu"/>
+                            <field name="titre_post"/>
+                            <field name="date_publication"/>
+                            <field name="publie_par"/>
+                        </group>
+                        <group>
+                            <field name="signal_id"/>
+                            <field name="lead_id"/>
+                            <field name="task_id" readonly="1"/>
+                            <field name="visuel_url" widget="url"/>
+                            <field name="hashtags"/>
+                            <field name="genere_par_ia" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Contenu">
+                        <field name="caption" nolabel="1" placeholder="Texte de la publication…"/>
+                    </group>
+                    <group string="IA" invisible="not genere_par_ia">
+                        <field name="prompt_utilise" nolabel="1" readonly="1"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_community_post_kanban" model="ir.ui.view">
+        <field name="name">doorway.community.post.kanban</field>
+        <field name="model">doorway.community.post</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="statut_publication" class="o_kanban_small_column">
+                <field name="plateforme"/>
+                <field name="type_contenu"/>
+                <field name="titre_post"/>
+                <field name="date_publication"/>
+                <field name="statut_publication"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_content">
+                            <strong><field name="titre_post"/></strong>
+                            <div class="text-muted small">
+                                <field name="plateforme"/> · <field name="type_contenu"/>
+                            </div>
+                            <div t-if="record.date_publication.value" class="small mt-1">
+                                <i class="fa fa-calendar"/> <field name="date_publication"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_community_post_calendar" model="ir.ui.view">
+        <field name="name">doorway.community.post.calendar</field>
+        <field name="model">doorway.community.post</field>
+        <field name="arch" type="xml">
+            <calendar string="Calendrier publications" date_start="date_publication"
+                      color="plateforme" mode="month" quick_create="0">
+                <field name="titre_post"/>
+                <field name="plateforme"/>
+                <field name="type_contenu"/>
+                <field name="statut_publication"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="view_community_post_search" model="ir.ui.view">
+        <field name="name">doorway.community.post.search</field>
+        <field name="model">doorway.community.post</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="titre_post"/>
+                <field name="caption"/>
+                <filter name="filter_brouillon" string="Brouillon"
+                        domain="[('statut_publication', '=', 'brouillon')]"/>
+                <filter name="filter_approuve" string="Approuvé"
+                        domain="[('statut_publication', '=', 'approuve')]"/>
+                <filter name="filter_publie" string="Publié"
+                        domain="[('statut_publication', '=', 'publie')]"/>
+                <group>
+                    <filter name="group_plateforme" string="Plateforme"
+                            context="{'group_by': 'plateforme'}"/>
+                    <filter name="group_statut" string="Statut"
+                            context="{'group_by': 'statut_publication'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_community_post_calendar" model="ir.actions.act_window">
+        <field name="name">Calendrier publications</field>
+        <field name="res_model">doorway.community.post</field>
+        <field name="view_mode">calendar,kanban,list,form</field>
+        <field name="search_view_id" ref="view_community_post_search"/>
+    </record>
+
+    <record id="action_community_post_all" model="ir.actions.act_window">
+        <field name="name">Toutes les publications</field>
+        <field name="res_model">doorway.community.post</field>
+        <field name="view_mode">kanban,list,calendar,form</field>
+        <field name="search_view_id" ref="view_community_post_search"/>
+    </record>
+
+    <record id="action_community_post_new" model="ir.actions.act_window">
+        <field name="name">Nouveau post</field>
+        <field name="res_model">doorway.community.post</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+    </record>
+</odoo>

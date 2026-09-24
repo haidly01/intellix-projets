@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_cq_dashboard_form" model="ir.ui.view">
+        <field name="name">coins.quebec.dashboard.form</field>
+        <field name="model">coins.quebec.dashboard</field>
+        <field name="arch" type="xml">
+            <form create="0" edit="0" delete="0" class="o_cq_dashboard">
+                <sheet>
+                    <div class="o_cq_banner">Coins Québec · CAD · TPS 5 % + TVQ 9,975 %</div>
+                    <div class="o_cq_dash_title">Tableau de bord</div>
+                    <div class="o_cq_dash_source"><field name="tax_label" nolabel="1"/></div>
+                    <div class="o_cq_kpis">
+                        <div class="o_cq_kpi">
+                            <div class="o_cq_kpi_label">Partenariats</div>
+                            <div class="o_cq_kpi_value"><field name="partenariat_count" nolabel="1"/></div>
+                            <div class="o_cq_kpi_sub">
+                                <field name="nouveau_count" nolabel="1"/> nouveau ·
+                                <field name="contacte_count" nolabel="1"/> contacté
+                            </div>
+                        </div>
+                        <div class="o_cq_kpi">
+                            <div class="o_cq_kpi_label">En RDV</div>
+                            <div class="o_cq_kpi_value"><field name="en_rdv_count" nolabel="1"/></div>
+                            <div class="o_cq_kpi_sub">
+                                <field name="rdv_upcoming_count" nolabel="1"/> à venir ·
+                                <field name="rdv_count" nolabel="1"/> avec réunion
+                            </div>
+                        </div>
+                        <div class="o_cq_kpi">
+                            <div class="o_cq_kpi_label">Hébergement</div>
+                            <div class="o_cq_kpi_value"><field name="hebergement_count" nolabel="1"/></div>
+                            <div class="o_cq_kpi_sub"><field name="spa_count" nolabel="1"/> spas</div>
+                        </div>
+                        <div class="o_cq_kpi">
+                            <div class="o_cq_kpi_label">Restaurants</div>
+                            <div class="o_cq_kpi_value"><field name="resto_count" nolabel="1"/></div>
+                            <div class="o_cq_kpi_sub"><field name="activite_count" nolabel="1"/> activités</div>
+                        </div>
+                        <div class="o_cq_kpi">
+                            <div class="o_cq_kpi_label">Suivis partenariats</div>
+                            <div class="o_cq_kpi_value"><field name="suivi_count" nolabel="1"/></div>
+                            <div class="o_cq_kpi_sub">
+                                <field name="present_count" nolabel="1"/> RDV validés Martin
+                            </div>
+                        </div>
+                        <div class="o_cq_kpi">
+                            <div class="o_cq_kpi_label">Voyageurs</div>
+                            <div class="o_cq_kpi_value"><field name="voyageur_count" nolabel="1"/></div>
+                            <div class="o_cq_kpi_sub">Pipeline voyageurs</div>
+                        </div>
+                    </div>
+                    <div class="o_cq_kpi_note"><field name="ops_note" nolabel="1"/></div>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="name" invisible="1"/>
+                    <field name="property_count" invisible="1"/>
+                    <field name="reservation_count" invisible="1"/>
+                    <div class="o_cq_dash_actions">
+                        <button name="action_open_pipeline_partenariats" type="object" string="Partenariats" class="btn btn-primary"/>
+                        <button name="action_open_en_rdv" type="object" string="En RDV" class="btn btn-secondary"/>
+                        <button name="action_open_suivis" type="object" string="Suivis partenariats" class="btn btn-secondary"/>
+                        <button name="action_open_presents" type="object" string="RDV validés Martin" class="btn btn-secondary"/>
+                        <button name="action_open_rdv" type="object" string="RDV planifiés" class="btn btn-secondary"/>
+                        <button name="action_open_hebergement" type="object" string="Hébergement" class="btn btn-secondary"/>
+                        <button name="action_open_restos" type="object" string="Restaurants" class="btn btn-secondary"/>
+                        <button name="action_open_activites" type="object" string="Activités" class="btn btn-secondary"/>
+                        <button name="action_open_spas" type="object" string="Spas" class="btn btn-secondary"/>
+                        <button name="action_open_pipeline_voyageurs" type="object" string="Voyageurs" class="btn btn-secondary"/>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_cq_dashboard" model="ir.actions.server">
+        <field name="name">Tableau de bord Coins Québec</field>
+        <field name="model_id" ref="model_coins_quebec_dashboard"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open()</field>
+    </record>
+
+    <!-- Ancienne entrée CQ /odoo/cq-itex : désactivée. Maquette ITEX = Finance. -->
+    <record id="action_cq_itex_dashboard" model="ir.actions.client">
+        <field name="name">Dashboard ITEX (retiré de Coins Québec)</field>
+        <field name="tag">coins_partenaires_dashboard</field>
+        <field name="path" eval="False"/>
+    </record>
+</odoo>

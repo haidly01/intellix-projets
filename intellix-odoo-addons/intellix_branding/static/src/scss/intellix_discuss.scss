@@ -1,0 +1,309 @@
+// Intellix — module Discussion (Discuss)
+.o_web_client.o_intellix_branded:has(.o-mail-Discuss) {
+    --mail-Discuss-surface-dark: var(--ix-surface);
+}
+
+.o_web_client.o_intellix_branded {
+    .o-mail-Discuss {
+        background-color: var(--ix-bg) !important;
+        color: var(--ix-text);
+        border-color: var(--ix-border) !important;
+    }
+
+    .o-mail-DiscussContent-core {
+        background-color: var(--ix-bg) !important;
+        color: var(--ix-text);
+    }
+
+    .o-mail-DiscussContent-header {
+        background-color: var(--ix-surface) !important;
+        border-color: var(--ix-border) !important;
+        color: var(--ix-text);
+    }
+
+    .o-mail-DiscussContent-threadName,
+    .o-mail-DiscussContent-header .text-muted {
+        color: var(--ix-text) !important;
+    }
+
+    .o-mail-DiscussContent-headerActionsGroup {
+        background-color: var(--ix-surface-elevated) !important;
+        outline-color: var(--ix-border) !important;
+    }
+
+    .o-mail-DiscussContent-headerActions button {
+        color: var(--ix-text-muted) !important;
+
+        &:not(.o-isActive):hover,
+        &.o-isActive {
+            background-color: rgba(99, 102, 241, 0.15) !important;
+        }
+    }
+
+    .o-mail-discussSidebarBgColor,
+    .o-mail-DiscussSidebar {
+        background-color: var(--ix-surface) !important;
+        border-color: var(--ix-border) !important;
+        color: var(--ix-text);
+    }
+
+    .o-mail-DiscussSidebar-item {
+        color: var(--ix-text) !important;
+
+        &:hover {
+            background-color: var(--ix-surface-hover) !important;
+        }
+
+        &.o-active {
+            background-color: rgba(99, 102, 241, 0.18) !important;
+            outline-color: var(--ix-primary) !important;
+        }
+    }
+
+    .o-mail-DiscussSidebarCategory-title,
+    .o-mail-DiscussSidebarChannel-itemName {
+        color: var(--ix-text) !important;
+    }
+
+    .o-mail-DiscussSearch-inputContainer {
+        background-color: var(--ix-surface-elevated) !important;
+        border-color: var(--ix-border) !important;
+        color: var(--ix-text);
+    }
+
+    .o-mail-Composer {
+        background-color: var(--ix-surface) !important;
+        border-color: var(--ix-border) !important;
+    }
+
+    .o-mail-Composer-input,
+    .o-mail-Composer textarea,
+    .o-mail-Composer .o-mail-Composer-inputContainer {
+        background-color: var(--ix-surface-elevated) !important;
+        color: var(--ix-text) !important;
+        border-color: var(--ix-border) !important;
+    }
+
+    .o-mail-Message-author strong {
+        color: var(--ix-text) !important;
+    }
+
+    .o-mail-Message-date,
+    .o-mail-Message-sidebar {
+        color: var(--ix-text-muted) !important;
+    }
+
+    .o-discuss-separator {
+        color: var(--ix-text-muted) !important;
+        border-color: var(--ix-border) !important;
+    }
+
+    // Bulles — fonds sombres + texte clair (évite blanc sur bleu pâle illisible)
+    .o-mail-Message-bubble {
+        &.o-blue {
+            --o-message-bubble-bg: var(--ix-surface-elevated);
+            --o-message-bubble-border-color: var(--ix-border);
+            background-color: var(--ix-surface-elevated) !important;
+            border-color: var(--ix-border) !important;
+        }
+
+        &.o-green {
+            --o-message-bubble-bg: rgba(99, 102, 241, 0.32);
+            --o-message-bubble-border-color: var(--ix-primary);
+            background-color: rgba(99, 102, 241, 0.32) !important;
+            border-color: var(--ix-primary) !important;
+        }
+
+        &.o-orange {
+            --o-message-bubble-bg: rgba(245, 158, 11, 0.2);
+            --o-message-bubble-border-color: var(--ix-warning);
+            background-color: rgba(245, 158, 11, 0.2) !important;
+            border-color: var(--ix-warning) !important;
+        }
+    }
+
+    .o-mail-Message-bubbleTail {
+        &.o-blue .o-mail-Message-bubbleTailBg {
+            color: var(--ix-surface-elevated) !important;
+        }
+
+        &.o-blue .o-mail-Message-bubbleTailBorder {
+            color: var(--ix-border) !important;
+        }
+
+        &.o-green .o-mail-Message-bubbleTailBg {
+            color: rgba(99, 102, 241, 0.32) !important;
+        }
+
+        &.o-green .o-mail-Message-bubbleTailBorder {
+            color: var(--ix-primary) !important;
+        }
+
+        &.o-orange .o-mail-Message-bubbleTailBg {
+            color: rgba(245, 158, 11, 0.2) !important;
+        }
+
+        &.o-orange .o-mail-Message-bubbleTailBorder {
+            color: var(--ix-warning) !important;
+        }
+    }
+
+    .o-mail-Message:has(.o-mail-Message-bubble) {
+        .o-discuss-text-body,
+        .o-mail-Message-body,
+        .o-mail-Message-richBody,
+        .o-mail-Message-richBody p,
+        .o-mail-Message-richBody span,
+        .o-mail-Message-richBody div {
+            color: var(--ix-text) !important;
+        }
+
+        a {
+            color: var(--ix-primary-light) !important;
+        }
+    }
+
+    // Messages système / notifications
+    .o-mail-NotificationMessage,
+    .o-mail-NotificationMessage .text-muted {
+        color: var(--ix-text-muted) !important;
+    }
+
+    // Erreurs techniques (stack traces) dans le fil
+    .o-mail-Message-richBody pre,
+    .o-mail-Message-body pre,
+    .o-mail-Message-richBody code,
+    .o-mail-Message-body code {
+        background-color: var(--ix-bg) !important;
+        color: #e2e8f0 !important;
+        border: 1px solid var(--ix-border);
+        border-radius: var(--ix-radius-btn);
+        padding: 0.5rem 0.75rem;
+    }
+
+    .bg-view {
+        background-color: var(--ix-surface-elevated) !important;
+        color: var(--ix-text) !important;
+    }
+
+    .alert-info,
+    .alert-warning {
+        background-color: var(--ix-surface-elevated) !important;
+        border-color: var(--ix-border) !important;
+        color: var(--ix-text) !important;
+    }
+
+    // Boîte de réception — lignes de notification (évite texte bleu pâle sur fond clair)
+    .o-mail-NotificationItem {
+        background-color: var(--ix-surface-elevated) !important;
+        border-color: var(--ix-border) !important;
+        color: var(--ix-text) !important;
+
+        &:hover,
+        &.o-active {
+            background-color: var(--ix-surface-hover) !important;
+            backdrop-filter: none !important;
+            outline-color: var(--ix-primary) !important;
+        }
+
+        &.text-muted,
+        &.opacity-50 {
+            color: var(--ix-text-muted) !important;
+            opacity: 1 !important;
+        }
+    }
+
+    .o-mail-NotificationItem-name {
+        color: var(--ix-text) !important;
+        font-weight: 600;
+    }
+
+    .o-mail-NotificationItem-text,
+    .o-mail-NotificationItem-date,
+    .o-mail-NotificationItem-counter {
+        color: var(--ix-text-muted) !important;
+    }
+
+    .o-mail-NotificationItem.o-interest .o-mail-NotificationItem-name,
+    .o-mail-NotificationItem.o-interest .o-mail-NotificationItem-text {
+        color: var(--ix-text) !important;
+    }
+
+    .o-mail-NotificationItem .bg-view {
+        background-color: var(--ix-surface) !important;
+        color: var(--ix-text) !important;
+    }
+
+    .o-mail-DiscussContent .list-group-item {
+        background-color: transparent !important;
+        border-color: var(--ix-border) !important;
+    }
+
+    .o-mail-DiscussContent-header .btn-link,
+    .o-mail-DiscussContent-header button {
+        color: var(--ix-text) !important;
+    }
+
+    // Boîte de réception / starred / history — cartes message (mail.box)
+    // Odoo applique $o-view-background-color (clair) sur .o-card alors que le thème
+    // Intellix force un texte clair → illisible sans ce bloc.
+    .o-mail-Message.o-card {
+        --mail-MessageCardList-cardBodyBg: var(--ix-surface-elevated);
+        background-color: var(--ix-surface-elevated) !important;
+        border-color: var(--ix-border) !important;
+        color: var(--ix-text) !important;
+
+        .o-mail-Message-date,
+        .o-mail-Message-author,
+        .o-mail-Message-author strong,
+        .o-mail-Message-body,
+        .o-mail-Message-richBody,
+        .o-mail-Message-richBody p,
+        .o-mail-Message-richBody span,
+        .o-mail-Message-richBody div,
+        .o-discuss-text-body {
+            color: var(--ix-text) !important;
+        }
+
+        .o-mail-Message-date,
+        .text-muted,
+        .text-500,
+        .text-600,
+        .opacity-50,
+        .opacity-75 {
+            color: var(--ix-text-muted) !important;
+            opacity: 1 !important;
+        }
+
+        a,
+        a.o_message_redirect,
+        a.o_mail_redirect {
+            color: var(--ix-primary-light) !important;
+        }
+
+        &:hover {
+            background-color: var(--ix-surface-hover) !important;
+        }
+    }
+
+    .o-mail-MessageCardList .card {
+        --border-opacity: 1;
+        border-color: var(--ix-border) !important;
+        background-color: transparent !important;
+    }
+
+    .o-mail-MessageCardList .card-body {
+        background-color: var(--ix-surface-elevated) !important;
+        color: var(--ix-text) !important;
+    }
+
+    .o-mail-DateSection .text-muted {
+        color: var(--ix-text-muted) !important;
+        opacity: 1 !important;
+    }
+
+    .o-mail-Thread-empty,
+    .o-mail-Thread .btn-link {
+        color: var(--ix-text-muted) !important;
+    }
+}

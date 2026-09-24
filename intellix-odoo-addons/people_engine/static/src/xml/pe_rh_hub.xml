@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="people_engine.PeRhHub">
+        <div class="pe-rh-hub o_action o_intellix_client_action">
+            <!-- ░░ Sidebar navy slim (avatar + colonne d'icônes) ░░ -->
+            <aside class="pe-rh-hub__sidebar">
+                <div class="pe-rh-hub__side-avatar">
+                    <span class="pe-rh-hub__avatar pe-rh-hub__avatar--lg">
+                        <img t-if="avatarUrl" t-att-src="avatarUrl" alt="avatar"/>
+                        <span t-else="" class="pe-rh-hub__avatar-initials" t-esc="initials"/>
+                    </span>
+                </div>
+                <nav class="pe-rh-hub__rail">
+                    <button type="button" class="pe-rh-hub__rail-btn pe-rh-hub__rail-btn--active" title="Hub RH">
+                        <i class="fa fa-th-large"/>
+                    </button>
+                    <button type="button" class="pe-rh-hub__rail-btn" title="Mon profil" t-on-click="openDashboardEmployee">
+                        <i class="fa fa-user-o"/>
+                    </button>
+                    <button type="button" class="pe-rh-hub__rail-btn" title="Performance" t-on-click="openDashboardEmployee">
+                        <i class="fa fa-bullseye"/>
+                    </button>
+                    <button type="button" class="pe-rh-hub__rail-btn" title="Formation" t-on-click="openTraining">
+                        <i class="fa fa-graduation-cap"/>
+                    </button>
+                    <button type="button" class="pe-rh-hub__rail-btn" title="Ma fiche de paie" t-on-click="openPayslip">
+                        <i class="fa fa-credit-card"/>
+                    </button>
+                    <button type="button" class="pe-rh-hub__rail-btn" title="Documents juridiques" t-on-click="openDashboardEmployee">
+                        <i class="fa fa-balance-scale"/>
+                    </button>
+                    <button type="button" class="pe-rh-hub__rail-btn" title="Actualiser" t-on-click="load">
+                        <i class="fa fa-refresh"/>
+                    </button>
+                </nav>
+                <div class="pe-rh-hub__rail-foot">
+                    <span class="pe-rh-hub__rail-brand"><i class="fa fa-bolt"/></span>
+                </div>
+            </aside>
+
+            <!-- ░░ Contenu principal ░░ -->
+            <div class="pe-rh-hub__content">
+                <header class="pe-rh-hub__topbar">
+                    <div class="pe-rh-hub__greeting">
+                        <h1>
+                            Bonjour, <t t-esc="firstName"/><span class="pe-rh-hub__spark">✨</span>
+                        </h1>
+                        <p class="pe-rh-hub__subtitle">Voici votre aperçu du jour</p>
+                    </div>
+                    <div class="pe-rh-hub__topbar-actions">
+                        <button type="button" class="pe-rh-hub__pill-btn" t-on-click="openManagementReview">
+                            <i class="fa fa-comment-o"/> Avis de la direction
+                        </button>
+                    </div>
+                </header>
+                <div class="pe-rh-hub__accent"/>
+
+                <div class="pe-rh-hub__scroll">
+                    <t t-if="state.loading">
+                        <div class="pe-rh-hub__loading"><i class="fa fa-spinner fa-spin"/> Chargement…</div>
+                    </t>
+                    <t t-elif="state.error">
+                        <div class="pe-rh-hub__error">Profil RH indisponible (<t t-esc="state.error"/>).</div>
+                    </t>
+                    <t t-else="">
+                        <!-- ── Rangée de 4 KPI ── -->
+                        <section class="pe-rh-hub__kpis">
+                            <article class="pe-rh-hub__kpi">
+                                <span class="pe-rh-hub__kpi-ic pe-rh-hub__kpi-ic--indigo"><i class="fa fa-plane"/></span>
+                                <div class="pe-rh-hub__kpi-body">
+                                    <span class="pe-rh-hub__kpi-label">Jours de congé restants</span>
+                                    <strong class="pe-rh-hub__kpi-value" t-esc="leaveLabel"/>
+                                </div>
+                            </article>
+                            <article class="pe-rh-hub__kpi">
+                                <span class="pe-rh-hub__kpi-ic pe-rh-hub__kpi-ic--teal"><i class="fa fa-clock-o"/></span>
+                                <div class="pe-rh-hub__kpi-body">
+                                    <span class="pe-rh-hub__kpi-label">Heures ce mois</span>
+                                    <strong class="pe-rh-hub__kpi-value" t-esc="hoursLabel"/>
+                                </div>
+                            </article>
+                            <article class="pe-rh-hub__kpi">
+                                <span class="pe-rh-hub__kpi-ic pe-rh-hub__kpi-ic--purple"><i class="fa fa-bolt"/></span>
+                                <div class="pe-rh-hub__kpi-body">
+                                    <span class="pe-rh-hub__kpi-label">Score performance</span>
+                                    <strong class="pe-rh-hub__kpi-value" t-esc="scoreLabel"/>
+                                </div>
+                            </article>
+                            <article class="pe-rh-hub__kpi">
+                                <span class="pe-rh-hub__kpi-ic pe-rh-hub__kpi-ic--orange"><i class="fa fa-calendar-check-o"/></span>
+                                <div class="pe-rh-hub__kpi-body">
+                                    <span class="pe-rh-hub__kpi-label">Prochaine évaluation</span>
+                                    <strong class="pe-rh-hub__kpi-value pe-rh-hub__kpi-value--sm" t-esc="nextEvalLabel"/>
+                                </div>
+                            </article>
+                        </section>
+
+                        <!-- ── Rangée médiane : Performance + Plan de développement ── -->
+                        <section class="pe-rh-hub__row pe-rh-hub__row--2">
+                            <article class="pe-rh-hub__card">
+                                <header class="pe-rh-hub__card-head">
+                                    <h2>Performance</h2>
+                                    <span class="pe-rh-hub__card-tag" t-esc="state.performance.band or 'Score global'"/>
+                                </header>
+                                <t t-if="perfChart.hasData">
+                                    <div class="pe-rh-hub__chart">
+                                        <svg viewBox="0 0 100 40" preserveAspectRatio="none" class="pe-rh-hub__chart-svg">
+                                            <defs>
+                                                <linearGradient id="peRhPerfGrad" x1="0" y1="0" x2="0" y2="1">
+                                                    <stop offset="0%" stop-color="#6366f1" stop-opacity="0.35"/>
+                                                    <stop offset="100%" stop-color="#6366f1" stop-opacity="0"/>
+                                                </linearGradient>
+                                            </defs>
+                                            <polygon t-att-points="perfChart.area" fill="url(#peRhPerfGrad)"/>
+                                            <polyline t-att-points="perfChart.line" fill="none" stroke="#4f46e5" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+                                        </svg>
+                                    </div>
+                                </t>
+                                <t t-else="">
+                                    <div class="pe-rh-hub__empty">
+                                        <i class="fa fa-line-chart"/>
+                                        <span>Pas encore d'historique de performance</span>
+                                    </div>
+                                </t>
+                            </article>
+
+                            <article class="pe-rh-hub__card">
+                                <header class="pe-rh-hub__card-head">
+                                    <h2>Plan de développement</h2>
+                                    <button type="button" class="pe-rh-hub__icon-btn pe-rh-hub__icon-btn--ghost" title="Formation" t-on-click="openTraining"><i class="fa fa-arrow-right"/></button>
+                                </header>
+                                <t t-if="devItems.length">
+                                    <div class="pe-rh-hub__plan">
+                                        <div class="pe-rh-hub__plan-row" t-foreach="devItems" t-as="item" t-key="item_index">
+                                            <div class="pe-rh-hub__plan-top">
+                                                <span class="pe-rh-hub__plan-name" t-esc="item.name"/>
+                                                <span class="pe-rh-hub__plan-pct"><t t-esc="item.percent"/>%</span>
+                                            </div>
+                                            <div class="pe-rh-hub__bar">
+                                                <div class="pe-rh-hub__bar-fill" t-att-style="'width:' + (item.percent || 0) + '%'"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                                <t t-else="">
+                                    <div class="pe-rh-hub__empty">
+                                        <i class="fa fa-graduation-cap"/>
+                                        <span>Aucun parcours de développement actif</span>
+                                    </div>
+                                </t>
+                            </article>
+                        </section>
+
+                        <!-- ── Rangée basse : Paie + Documents légaux ── -->
+                        <section class="pe-rh-hub__row pe-rh-hub__row--2">
+                            <article class="pe-rh-hub__card pe-rh-hub__card--pay">
+                                <header class="pe-rh-hub__card-head">
+                                    <h2>Paie</h2>
+                                    <span class="pe-rh-hub__card-tag">Mois courant</span>
+                                </header>
+                                <t t-if="payrollLabel">
+                                    <strong class="pe-rh-hub__pay-amount" t-esc="payrollLabel"/>
+                                    <p class="pe-rh-hub__pay-sub">Net estimé</p>
+                                </t>
+                                <t t-else="">
+                                    <strong class="pe-rh-hub__pay-amount pe-rh-hub__pay-amount--muted">—</strong>
+                                    <p class="pe-rh-hub__pay-sub">Fiche du mois non encore calculée</p>
+                                </t>
+                                <button type="button" class="pe-rh-hub__link-btn" t-att-disabled="hasPayslip ? undefined : 'disabled'" t-on-click="openPayslip">
+                                    <i class="fa fa-download"/> Télécharger fiche
+                                </button>
+                            </article>
+
+                            <article class="pe-rh-hub__card">
+                                <header class="pe-rh-hub__card-head">
+                                    <h2>Documents légaux</h2>
+                                    <span class="pe-rh-hub__card-tag"><t t-esc="state.hrDocs.legal_articles or 0"/> réf.</span>
+                                </header>
+                                <t t-if="legalDocs.length">
+                                    <div class="pe-rh-hub__docs">
+                                        <div class="pe-rh-hub__doc-row" t-foreach="legalDocs" t-as="doc" t-key="doc_index">
+                                            <div class="pe-rh-hub__doc-info">
+                                                <strong t-esc="doc.title"/>
+                                                <small t-esc="doc.category"/>
+                                            </div>
+                                            <span t-att-class="'pe-rh-hub__toggle ' + (doc.current ? 'pe-rh-hub__toggle--on' : '')" t-att-title="doc.current ? 'À jour' : 'À réviser'">
+                                                <span class="pe-rh-hub__toggle-knob"/>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </t>
+                                <t t-else="">
+                                    <div class="pe-rh-hub__empty">
+                                        <i class="fa fa-balance-scale"/>
+                                        <span>Aucun document juridique disponible</span>
+                                    </div>
+                                </t>
+                            </article>
+                        </section>
+                    </t>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <!-- ════════ Vue d'ensemble RH (superviseur / global) ════════ -->
+    <t t-name="people_engine.PeRhGlobal">
+        <div class="pe-rh-hub pe-rh-hub--global o_action o_intellix_client_action">
+            <aside class="pe-rh-hub__sidebar">
+                <div class="pe-rh-hub__side-avatar">
+                    <span class="pe-rh-hub__avatar pe-rh-hub__avatar--lg"><i class="fa fa-users"/></span>
+                </div>
+                <nav class="pe-rh-hub__rail">
+                    <button type="button" class="pe-rh-hub__rail-btn pe-rh-hub__rail-btn--active" title="Vue d'ensemble">
+                        <i class="fa fa-th-large"/>
+                    </button>
+                    <button type="button" class="pe-rh-hub__rail-btn" title="Mon tableau de bord" t-on-click="openPersonalHub">
+                        <i class="fa fa-user-o"/>
+                    </button>
+                    <button type="button" class="pe-rh-hub__rail-btn" title="Équipe (détail)" t-on-click="openTeamDetail">
+                        <i class="fa fa-users"/>
+                    </button>
+                    <button type="button" class="pe-rh-hub__rail-btn" title="Évaluations" t-on-click="openEvaluations">
+                        <i class="fa fa-clipboard"/>
+                    </button>
+                    <button type="button" class="pe-rh-hub__rail-btn" title="Vue RH détaillée" t-on-click="openHrDashboard">
+                        <i class="fa fa-table"/>
+                    </button>
+                    <button type="button" class="pe-rh-hub__rail-btn" title="Actualiser" t-on-click="load">
+                        <i class="fa fa-refresh"/>
+                    </button>
+                </nav>
+                <div class="pe-rh-hub__rail-foot">
+                    <span class="pe-rh-hub__rail-brand"><i class="fa fa-bolt"/></span>
+                </div>
+            </aside>
+
+            <div class="pe-rh-hub__content">
+                <header class="pe-rh-hub__topbar">
+                    <div class="pe-rh-hub__greeting">
+                        <h1>Vue d'ensemble RH<span class="pe-rh-hub__spark">✨</span></h1>
+                        <p class="pe-rh-hub__subtitle" t-esc="scopeLabel"/>
+                    </div>
+                    <div class="pe-rh-hub__topbar-actions">
+                        <button type="button" class="pe-rh-hub__pill-btn" t-on-click="openHrDashboard">
+                            <i class="fa fa-table"/> Vue RH détaillée
+                        </button>
+                    </div>
+                </header>
+                <div class="pe-rh-hub__accent"/>
+
+                <div class="pe-rh-hub__scroll">
+                    <t t-if="state.loading">
+                        <div class="pe-rh-hub__loading"><i class="fa fa-spinner fa-spin"/> Chargement…</div>
+                    </t>
+                    <t t-elif="state.error">
+                        <div class="pe-rh-hub__error">Vue d'ensemble indisponible (<t t-esc="state.error"/>).</div>
+                    </t>
+                    <t t-elif="state.empty">
+                        <div class="pe-rh-hub__empty">
+                            <i class="fa fa-users"/>
+                            <span>Aucun collaborateur visible dans votre périmètre</span>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <!-- ── KPI globaux ── -->
+                        <section class="pe-rh-hub__kpis">
+                            <article class="pe-rh-hub__kpi">
+                                <span class="pe-rh-hub__kpi-ic pe-rh-hub__kpi-ic--indigo"><i class="fa fa-users"/></span>
+                                <div class="pe-rh-hub__kpi-body">
+                                    <span class="pe-rh-hub__kpi-label">Effectif</span>
+                                    <strong class="pe-rh-hub__kpi-value" t-esc="state.kpis.headcount"/>
+                                </div>
+                            </article>
+                            <article class="pe-rh-hub__kpi">
+                                <span class="pe-rh-hub__kpi-ic pe-rh-hub__kpi-ic--purple"><i class="fa fa-bolt"/></span>
+                                <div class="pe-rh-hub__kpi-body">
+                                    <span class="pe-rh-hub__kpi-label">Score moyen</span>
+                                    <strong class="pe-rh-hub__kpi-value" t-esc="avgScoreLabel"/>
+                                </div>
+                            </article>
+                            <article class="pe-rh-hub__kpi">
+                                <span class="pe-rh-hub__kpi-ic pe-rh-hub__kpi-ic--teal"><i class="fa fa-graduation-cap"/></span>
+                                <div class="pe-rh-hub__kpi-body">
+                                    <span class="pe-rh-hub__kpi-label">Parcours actifs</span>
+                                    <strong class="pe-rh-hub__kpi-value" t-esc="state.kpis.active_paths"/>
+                                </div>
+                            </article>
+                            <article class="pe-rh-hub__kpi">
+                                <span class="pe-rh-hub__kpi-ic pe-rh-hub__kpi-ic--orange"><i class="fa fa-clipboard"/></span>
+                                <div class="pe-rh-hub__kpi-body">
+                                    <span class="pe-rh-hub__kpi-label">Évaluations en attente</span>
+                                    <strong class="pe-rh-hub__kpi-value" t-esc="state.kpis.pending_eval"/>
+                                </div>
+                            </article>
+                        </section>
+
+                        <!-- ── Performance équipe + Répartition par niveau ── -->
+                        <section class="pe-rh-hub__row pe-rh-hub__row--2">
+                            <article class="pe-rh-hub__card">
+                                <header class="pe-rh-hub__card-head">
+                                    <h2>Performance de l'équipe</h2>
+                                    <span class="pe-rh-hub__card-tag">Top scores</span>
+                                </header>
+                                <t t-if="state.scoreBars.length">
+                                    <div class="pe-rh-hub__barchart">
+                                        <div class="pe-rh-hub__barcol" t-foreach="state.scoreBars" t-as="bar" t-key="bar_index">
+                                            <div class="pe-rh-hub__barcol-track">
+                                                <div class="pe-rh-hub__barcol-fill" t-att-style="'height:' + (bar.value || 0) + '%'"/>
+                                            </div>
+                                            <span class="pe-rh-hub__barcol-label" t-esc="bar.label"/>
+                                        </div>
+                                    </div>
+                                </t>
+                                <t t-else="">
+                                    <div class="pe-rh-hub__empty"><i class="fa fa-bar-chart"/><span>Pas de scores disponibles</span></div>
+                                </t>
+                            </article>
+
+                            <article class="pe-rh-hub__card">
+                                <header class="pe-rh-hub__card-head">
+                                    <h2>Répartition par niveau</h2>
+                                    <span class="pe-rh-hub__card-tag"><t t-esc="state.kpis.headcount"/> pers.</span>
+                                </header>
+                                <div class="pe-rh-hub__plan">
+                                    <div class="pe-rh-hub__plan-row" t-foreach="state.bands" t-as="band" t-key="band.key">
+                                        <div class="pe-rh-hub__plan-top">
+                                            <span class="pe-rh-hub__plan-name" t-esc="band.label"/>
+                                            <span class="pe-rh-hub__plan-pct"><t t-esc="band.count"/> · <t t-esc="band.pct"/>%</span>
+                                        </div>
+                                        <div class="pe-rh-hub__bar">
+                                            <div t-att-class="'pe-rh-hub__bar-fill pe-rh-hub__bar-fill--' + band.key" t-att-style="'width:' + (band.pct || 0) + '%'"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </article>
+                        </section>
+
+                        <!-- ── Paie équipe + Top performers ── -->
+                        <section class="pe-rh-hub__row pe-rh-hub__row--2">
+                            <article class="pe-rh-hub__card pe-rh-hub__card--pay">
+                                <header class="pe-rh-hub__card-head">
+                                    <h2>Paie équipe</h2>
+                                    <span class="pe-rh-hub__card-tag">Mois courant</span>
+                                </header>
+                                <t t-if="payrollLabel">
+                                    <strong class="pe-rh-hub__pay-amount" t-esc="payrollLabel"/>
+                                    <p class="pe-rh-hub__pay-sub">
+                                        Net estimé · <t t-esc="state.payroll.headcount_paid"/> fiche(s) ·
+                                        <t t-esc="state.payroll.hours"/> h cumulées
+                                    </p>
+                                </t>
+                                <t t-else="">
+                                    <strong class="pe-rh-hub__pay-amount pe-rh-hub__pay-amount--muted">—</strong>
+                                    <p class="pe-rh-hub__pay-sub">Aucune fiche de paie calculée ce mois</p>
+                                </t>
+                                <button type="button" class="pe-rh-hub__link-btn" t-on-click="generatePayrollBulletins">
+                                    <i class="fa fa-file-text-o"/> Générer bulletins paie
+                                </button>
+                                <button type="button" class="pe-rh-hub__link-btn" t-on-click="openHrDashboard">
+                                    <i class="fa fa-arrow-right"/> Détail RH
+                                </button>
+                            </article>
+
+                            <article class="pe-rh-hub__card">
+                                <header class="pe-rh-hub__card-head">
+                                    <h2>Top performers</h2>
+                                    <span class="pe-rh-hub__card-tag">Classement</span>
+                                    <button type="button" class="pe-rh-hub__pill-btn pe-rh-hub__pill-btn--sm" t-on-click="toggleLeaderSort">Tri score/nom</button>
+                                </header>
+                                <t t-if="state.topPerformers.length">
+                                    <div class="pe-rh-hub__rank">
+                                        <div class="pe-rh-hub__rank-row" t-foreach="sortedTopPerformers" t-as="perf" t-key="perf_index">
+                                            <span class="pe-rh-hub__rank-pos" t-esc="perf_index + 1"/>
+                                            <span class="pe-rh-hub__avatar pe-rh-hub__avatar--sm">
+                                                <img t-if="avatarOf(perf.id)" t-att-src="avatarOf(perf.id)" alt="avatar"/>
+                                                <span t-else="" class="pe-rh-hub__avatar-initials" t-esc="initialsOf(perf.name)"/>
+                                            </span>
+                                            <div class="pe-rh-hub__rank-info">
+                                                <strong t-esc="perf.name"/>
+                                                <small t-esc="perf.band"/>
+                                            </div>
+                                            <span class="pe-rh-hub__rank-score"><t t-esc="perf.score"/></span>
+                                        </div>
+                                    </div>
+                                </t>
+                                <t t-else="">
+                                    <div class="pe-rh-hub__empty"><i class="fa fa-trophy"/><span>Aucun classement disponible</span></div>
+                                </t>
+                            </article>
+                        </section>
+                    </t>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

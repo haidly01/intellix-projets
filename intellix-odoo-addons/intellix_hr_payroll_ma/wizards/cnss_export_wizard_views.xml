@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_cnss_export_wizard_form" model="ir.ui.view">
+        <field name="name">cnss.export.wizard.form</field>
+        <field name="model">cnss.export.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Export CNSS / Damancom">
+                <group>
+                    <field name="company_id"/>
+                    <field name="month"/>
+                    <field name="year"/>
+                </group>
+                <group invisible="not file_data">
+                    <field name="file_name" invisible="1"/>
+                    <field name="file_data" filename="file_name"/>
+                </group>
+                <footer>
+                    <button name="action_export" type="object" string="Générer CSV" class="btn-primary"/>
+                    <button name="action_download" type="object" string="Télécharger"
+                            invisible="not file_data" class="btn-secondary"/>
+                    <button string="Fermer" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="action_cnss_export_wizard" model="ir.actions.act_window">
+        <field name="name">Export CNSS / Damancom</field>
+        <field name="res_model">cnss.export.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="view_ir9421_export_wizard_form" model="ir.ui.view">
+        <field name="name">ir9421.export.wizard.form</field>
+        <field name="model">ir9421.export.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Export état 9421 IR">
+                <group>
+                    <field name="company_id"/>
+                    <field name="year"/>
+                </group>
+                <group invisible="not file_data">
+                    <field name="file_name" invisible="1"/>
+                    <field name="file_data" filename="file_name"/>
+                </group>
+                <footer>
+                    <button name="action_export" type="object" string="Générer CSV" class="btn-primary"/>
+                    <button name="action_download" type="object" string="Télécharger"
+                            invisible="not file_data" class="btn-secondary"/>
+                    <button string="Fermer" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="action_ir9421_export_wizard" model="ir.actions.act_window">
+        <field name="name">Export état 9421 IR</field>
+        <field name="res_model">ir9421.export.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+      ITEX = crm.lead partagé + vues dédiées (comme Driven).
+      Pas de modèle coins.itex.* (le bug CQ venait du partage des vues CM).
+      Ces vues sont primaires : elles n'héritent PAS du formulaire partenariat CM.
+    -->
+    <!--
+      Forme dédiée ITEX — NE PAS laisser en priority basse :
+      ir.ui.view.default_view(crm.lead, form) prenait cette vue (prio 7)
+      pour TOUT crm.lead (Réno, CM, Driven) faute de view_id form.
+      Priority 90 : les actions ITEX la pinent encore via view_ids.
+    -->
+    <record id="view_itex_lead_form" model="ir.ui.view">
+        <field name="name">crm.lead.form.itex</field>
+        <field name="model">crm.lead</field>
+        <field name="priority">90</field>
+        <field name="arch" type="xml">
+            <form string="Fiche ITEX">
+                <header>
+                    <button name="action_itex_prepare_initial_payment"
+                            type="object"
+                            string="Créer paiement 500 $"
+                            class="btn-secondary"
+                            invisible="itex_payment_confirmed"/>
+                    <button name="action_itex_capture_initial_payment"
+                            type="object"
+                            string="Ouvrir transaction adhésion"
+                            class="btn-primary"
+                            invisible="not itex_initial_transaction_id or itex_payment_confirmed"/>
+                    <field name="stage_id" widget="statusbar"
+                           options="{'clickable': '1', 'fold_field': 'fold'}"/>
+                </header>
+                <sheet>
+                    <field name="team_id" invisible="1"/>
+                    <field name="type" invisible="1"/>
+                    <field name="finance_brand" invisible="1"/>
+                    <field name="coins_fiche_type" invisible="1"/>
+                    <field name="itex_payment_confirmed" invisible="1"/>
+                    <field name="itex_initial_transaction_id" invisible="1"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="partner_name" placeholder="Nom de l'entreprise"/>
+                        </h1>
+                        <h2>
+                            <field name="name" placeholder="Intitulé interne"/>
+                        </h2>
+                    </div>
+                    <group>
+                        <group string="Entreprise">
+                            <field name="itex_secteur" placeholder="Ex. imprimerie, clinique, garage"/>
+                            <field name="finance_province"/>
+                            <field name="finance_lang"/>
+                        </group>
+                        <group string="Contact">
+                            <field name="contact_name" string="Contact"/>
+                            <field name="phone" string="Téléphone"/>
+                            <field name="email_from" string="Email"/>
+                        </group>
+                    </group>
+                    <group string="Rappel Alex ITEX">
+                        <group>
+                            <field name="finance_callback_datetime"/>
+                            <field name="finance_callback_source"/>
+                            <field name="finance_callback_set" readonly="1"/>
+                            <field name="finance_callback_due" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="finance_callback_comment"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Entonnoir (8 étapes)">
+                            <field name="itex_funnel_stage"/>
+                            <field name="itex_lost_subtype"
+                                   invisible="itex_funnel_stage != 'perdu'"/>
+                            <field name="itex_date_relance"
+                                   invisible="itex_funnel_stage != 'reporte'"/>
+                            <field name="itex_relance_due" readonly="1"/>
+                            <field name="itex_relance_count" readonly="1"/>
+                        </group>
+                        <group string="Paiement">
+                            <field name="itex_payment_status" readonly="1"/>
+                            <field name="itex_initial_amount"/>
+                            <field name="itex_monthly_amount"/>
+                            <field name="itex_next_monthly_date"/>
+                        </group>
+                    </group>
+                    <group string="Documentation demandée / reçue">
+                        <field name="itex_document_ids" nolabel="1" colspan="2">
+                            <list editable="bottom">
+                                <field name="name" string="Document"/>
+                                <field name="status" string="Statut"/>
+                            </list>
+                        </field>
+                    </group>
+                    <group string="Préférences d'échange">
+                        <field name="itex_service_offered_ids" widget="many2many_tags"
+                               string="Services offerts"/>
+                        <field name="itex_service_sought_ids" widget="many2many_tags"
+                               string="Services recherchés"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!--
+      Cloison sur la form CRM partagée (crm.crm_lead_view_form).
+      finance_brand / team_id déjà stockés — pas de ref() JS.
+      ITEX team = 112. Visible seulement si marque ITEX ou équipe ITEX.
+    -->
+    <record id="view_crm_lead_form_itex_sections" model="ir.ui.view">
+        <field name="name">crm.lead.form.itex.sections</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="priority">16</field>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <field name="itex_payment_confirmed" invisible="1"/>
+                <field name="itex_initial_transaction_id" invisible="1"/>
+                <button name="action_itex_prepare_initial_payment"
+                        type="object"
+                        string="Créer paiement 500 $"
+                        class="btn-secondary"
+                        invisible="itex_payment_confirmed or (finance_brand != 'itex' and team_id != 112)"/>
+                <button name="action_itex_capture_initial_payment"
+                        type="object"
+                        string="Ouvrir transaction adhésion"
+                        class="btn-primary"
+                        invisible="not itex_initial_transaction_id or itex_payment_confirmed or (finance_brand != 'itex' and team_id != 112)"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="ITEX" name="itex_sections"
+                      invisible="finance_brand != 'itex' and team_id != 112">
+                    <group>
+                        <group string="Entonnoir (8 étapes)">
+                            <field name="itex_funnel_stage"/>
+                            <field name="itex_lost_subtype"
+                                   invisible="itex_funnel_stage != 'perdu'"/>
+                            <field name="itex_date_relance"
+                                   invisible="itex_funnel_stage != 'reporte'"/>
+                            <field name="itex_relance_due" readonly="1"/>
+                            <field name="itex_relance_count" readonly="1"/>
+                        </group>
+                        <group string="Paiement adhésion / mensualité">
+                            <field name="itex_payment_status" readonly="1"/>
+                            <field name="itex_initial_amount"/>
+                            <field name="itex_monthly_amount"/>
+                            <field name="itex_next_monthly_date"/>
+                        </group>
+                    </group>
+                    <group string="Documentation demandée / reçue">
+                        <field name="itex_document_ids" nolabel="1" colspan="2">
+                            <list editable="bottom">
+                                <field name="name" string="Document"/>
+                                <field name="status" string="Statut"/>
+                            </list>
+                        </field>
+                    </group>
+                    <group string="Préférences d'échange">
+                        <field name="itex_service_offered_ids" widget="many2many_tags"
+                               string="Services offerts"/>
+                        <field name="itex_service_sought_ids" widget="many2many_tags"
+                               string="Services recherchés"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_itex_funnel_kanban" model="ir.ui.view">
+        <field name="name">crm.lead.kanban.itex.funnel</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" eval="False"/>
+        <field name="mode">primary</field>
+        <field name="priority">7</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="stage_id"
+                    class="o_coins_pipeline_kanban o_coins_pipeline_itex o_kanban_small_column"
+                    records_draggable="true"
+                    groups_draggable="false"
+                    group_create="false"
+                    group_delete="false"
+                    quick_create="true">
+                <field name="stage_id" readonly="0"/>
+                <field name="itex_funnel_stage"/>
+                <field name="itex_payment_confirmed"/>
+                <field name="itex_payment_status"/>
+                <field name="itex_date_relance"/>
+                <field name="itex_relance_due"/>
+                <field name="itex_lost_subtype"/>
+                <field name="itex_secteur"/>
+                <field name="finance_callback_due"/>
+                <field name="finance_callback_set"/>
+                <field name="finance_callback_datetime"/>
+                <field name="partner_name"/>
+                <field name="contact_name"/>
+                <field name="name"/>
+                <templates>
+                    <t t-name="card">
+                        <div t-attf-class="o_coins_lead_card {{ record.itex_payment_confirmed.raw_value and 'won' or ((record.finance_callback_due.raw_value or record.itex_relance_due.raw_value) and 'hot' or '') }}">
+                            <div class="o_coins_lead_name">
+                                <t t-if="record.partner_name.raw_value">
+                                    <field name="partner_name"/>
+                                </t>
+                                <t t-else="">
+                                    <field name="name"/>
+                                </t>
+                            </div>
+                            <div class="o_coins_lead_sub">
+                                <field name="contact_name"/>
+                                <t t-if="record.itex_secteur.raw_value">
+                                    · <field name="itex_secteur"/>
+                                </t>
+                            </div>
+                            <div class="o_coins_lead_meta">
+                                <span t-if="record.finance_callback_due.raw_value"
+                                      class="o_coins_badge o_coins_badge_cat">Rappel dû</span>
+                                <span t-elif="record.finance_callback_set.raw_value"
+                                      class="o_coins_badge o_coins_badge_manual">Rappel posé</span>
+                                <span t-if="record.itex_relance_due.raw_value"
+                                      class="o_coins_badge o_coins_badge_cat">À relancer</span>
+                                <span t-if="record.itex_payment_confirmed.raw_value"
+                                      class="o_coins_badge o_coins_badge_comm">Paiement confirmé</span>
+                                <span t-elif="record.itex_funnel_stage.raw_value == 'paiement_initial'"
+                                      class="o_coins_badge o_coins_badge_manual">Paiement en attente</span>
+                                <span t-if="record.itex_lost_subtype.raw_value == 'sans_reponse'"
+                                      class="o_coins_badge">Sans réponse</span>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_itex_lead_list" model="ir.ui.view">
+        <field name="name">crm.lead.list.itex</field>
+        <field name="model">crm.lead</field>
+        <field name="priority">7</field>
+        <field name="arch" type="xml">
+            <list create="1">
+                <field name="name"/>
+                <field name="partner_name" string="Entreprise"/>
+                <field name="contact_name" string="Contact"/>
+                <field name="phone"/>
+                <field name="email_from"/>
+                <field name="itex_secteur"/>
+                <field name="stage_id"/>
+                <field name="itex_funnel_stage"/>
+                <field name="itex_payment_status"/>
+                <field name="itex_date_relance"/>
+                <field name="itex_relance_due"/>
+                <field name="finance_callback_set" string="Rappel"/>
+                <field name="finance_callback_datetime"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_itex_lead_search" model="ir.ui.view">
+        <field name="name">crm.lead.search.itex</field>
+        <field name="model">crm.lead</field>
+        <field name="priority">7</field>
+        <field name="arch" type="xml">
+            <search string="Leads ITEX">
+                <field name="name"/>
+                <field name="partner_name"/>
+                <field name="contact_name"/>
+                <field name="phone"/>
+                <field name="email_from"/>
+                <field name="itex_secteur"/>
+                <filter name="itex_a_relancer" string="À relancer"
+                        domain="[('itex_relance_due', '=', True)]"/>
+                <filter name="itex_reporte" string="Reporté"
+                        domain="[('itex_funnel_stage', '=', 'reporte')]"/>
+                <filter name="itex_nouveau" string="Nouveau / à pitcher"
+                        domain="[('itex_funnel_stage', '=', 'nouveau')]"/>
+                <filter name="itex_paiement" string="Paiement initial"
+                        domain="[('itex_funnel_stage', '=', 'paiement_initial')]"/>
+                <filter name="itex_adherent" string="Adhérent"
+                        domain="[('itex_funnel_stage', '=', 'adherent')]"/>
+                <separator/>
+                <filter name="callback_set" string="Rappel Alex posé"
+                        domain="[('finance_callback_set', '=', True)]"/>
+                <filter name="callback_due" string="Rappel Alex dû"
+                        domain="[('finance_callback_due', '=', True)]"/>
+                <separator/>
+                <filter name="group_stage" string="Étape" context="{'group_by': 'stage_id'}"/>
+                <filter name="group_itex_stage" string="Étape ITEX" context="{'group_by': 'itex_funnel_stage'}"/>
+                <filter name="group_secteur" string="Secteur" context="{'group_by': 'itex_secteur'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_finance_itex_leads" model="ir.actions.act_window">
+        <field name="name">Finance — leads ITEX</field>
+        <field name="path">fin-itex</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="view_id" ref="view_itex_funnel_kanban"/>
+        <field name="search_view_id" ref="view_itex_lead_search"/>
+        <field name="domain" eval="[('team_id', '=', ref('intellix_finance.crm_team_itex')), ('type', 'in', ('lead', 'opportunity'))]"/>
+        <field name="context" eval="{
+            'default_type': 'opportunity',
+            'default_team_id': ref('intellix_finance.crm_team_itex'),
+            'default_itex_funnel_stage': 'nouveau',
+            'default_coins_fiche_type': False,
+            'renovation_active_pipeline_team_id': ref('intellix_finance.crm_team_itex'),
+            'show_user_team_stages': 0,
+            'finance_pipeline': 'itex',
+        }"/>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'sequence': 1, 'view_mode': 'kanban', 'view_id': ref('view_itex_funnel_kanban')}),
+            (0, 0, {'sequence': 2, 'view_mode': 'list', 'view_id': ref('view_itex_lead_list')}),
+            (0, 0, {'sequence': 3, 'view_mode': 'form', 'view_id': ref('view_itex_lead_form')})]"/>
+        <field name="help" type="html"><p>Entonnoir ITEX à 8 étapes — équipe ITEX uniquement.</p></field>
+    </record>
+
+    <record id="action_finance_callbacks_itex" model="ir.actions.act_window">
+        <field name="name">Finance — rappels Alex ITEX</field>
+        <field name="path">fin-itex-rappels</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain" eval="[('team_id', '=', ref('intellix_finance.crm_team_itex')), ('finance_callback_set', '=', True)]"/>
+        <field name="context" eval="{
+            'default_type': 'opportunity',
+            'default_team_id': ref('intellix_finance.crm_team_itex'),
+            'default_finance_callback_source': 'alex_itex',
+            'search_default_callback_due': 1,
+        }"/>
+        <field name="search_view_id" ref="view_itex_lead_search"/>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'sequence': 1, 'view_mode': 'list', 'view_id': ref('view_finance_callback_list')}),
+            (0, 0, {'sequence': 2, 'view_mode': 'form', 'view_id': ref('view_itex_lead_form')})]"/>
+        <field name="help" type="html"><p>Rappels Alex ITEX liés au lead. Le routeur campagne ne mappe pas encore Alex ITEX — cette liste est prête.</p></field>
+    </record>
+
+    <function model="crm.lead" name="_itex_ensure_funnel"/>
+</odoo>

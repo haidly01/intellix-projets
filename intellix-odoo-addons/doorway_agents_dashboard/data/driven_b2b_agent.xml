@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="0">
+    <record id="agent_alex_driven_b2b_qc" model="doorway.agent.profile">
+        <field name="name">Alex · Qualification Driven B2B PME QC</field>
+        <field name="provider">n8n</field>
+        <field name="external_agent_id">driven-b2b-qc-2026</field>
+        <field name="pipeline">driven</field>
+        <field name="agent_type">outbound</field>
+        <field name="language">fr</field>
+        <field name="voice_gender">male</field>
+        <field name="default_volet">cold_call</field>
+        <field name="timezone">America/Toronto</field>
+        <field name="status">active</field>
+        <field name="allow_human_transfer" eval="False"/>
+        <field name="system_prompt">Alex — qualification PME Québec pour financement Driven (10K$-500K$). Q1 ancienneté 6 mois+, Q2 revenus 100K$+, Q3 compte entreprise. Campagne DW_QCB2B, ext 86023. SMS J+0/J+2/J+5 driven.ca/partners/agence-doorway.</field>
+    </record>
+
+    <record id="agent_alex_driven_phone" model="doorway.agent.phone.number">
+        <field name="agent_id" ref="agent_alex_driven_b2b_qc"/>
+        <field name="name">Africa-Con QC — Door_App0 (B2B)</field>
+        <field name="phone_number">+15817058118</field>
+        <field name="phone_source">manual</field>
+        <field name="usage">outbound</field>
+        <field name="is_primary" eval="True"/>
+    </record>
+
+    <record id="agent_alex_driven_b2b_qc" model="doorway.agent.profile">
+        <field name="default_phone_number_id" ref="agent_alex_driven_phone"/>
+    </record>
+
+    <record id="agent_alex_driven_volet" model="doorway.agent.volet">
+        <field name="agent_id" ref="agent_alex_driven_b2b_qc"/>
+        <field name="sequence">10</field>
+        <field name="code">cold_call</field>
+        <field name="prompt_hint">Prospection B2B QC Driven — financement PME — campagne DW_QCB2B</field>
+    </record>
+</odoo>

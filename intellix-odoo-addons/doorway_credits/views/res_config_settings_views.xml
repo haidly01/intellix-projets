@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_doorway_credits" model="ir.ui.view">
+        <field name="name">res.config.settings.doorway.credits</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base_setup.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app string="Doorway Crédits" name="doorway_credits">
+                    <block title="Stripe">
+                        <setting string="Clé secrète Stripe">
+                            <field name="doorway_stripe_secret_key" password="True"/>
+                        </setting>
+                        <setting string="Clé publique Stripe">
+                            <field name="doorway_stripe_publishable_key"/>
+                        </setting>
+                        <setting string="Webhook secret">
+                            <field name="doorway_stripe_webhook_secret" password="True"/>
+                        </setting>
+                        <setting string="Price ID abonnement (89$/user)">
+                            <field name="doorway_stripe_subscription_price_id"/>
+                        </setting>
+                        <setting string="Crédits d'essai (USD)">
+                            <field name="doorway_trial_credits"/>
+                        </setting>
+                    </block>
+                    <block title="Paywall — coûts par action">
+                        <setting string="Coût publication site (crédits)">
+                            <field name="doorway_cost_site_publish"/>
+                        </setting>
+                        <setting string="Coût envoi mailing (crédits)">
+                            <field name="doorway_cost_email_send"/>
+                        </setting>
+                        <setting string="Coût application SEO en ligne (crédits)">
+                            <field name="doorway_cost_seo_publish"/>
+                        </setting>
+                        <setting string="Coût publication réseau social (crédits)">
+                            <field name="doorway_cost_social_publish"/>
+                        </setting>
+                    </block>
+                    <block title="Paiements hors-ligne (manuels)">
+                        <setting string="Email Interac (destinataire)" help="Adresse Interac où les clients envoient leur virement (Canada/Québec).">
+                            <field name="doorway_interac_email"/>
+                        </setting>
+                        <setting string="IBAN / RIB" help="Coordonnées bancaires pour virement SEPA (France).">
+                            <field name="doorway_rib_iban"/>
+                        </setting>
+                        <setting string="BIC / SWIFT">
+                            <field name="doorway_rib_bic"/>
+                        </setting>
+                        <setting string="Bénéficiaire">
+                            <field name="doorway_rib_beneficiary"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

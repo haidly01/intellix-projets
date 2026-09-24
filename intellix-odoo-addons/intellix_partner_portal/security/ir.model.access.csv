@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_intellix_partner_lead_bloc_user,intellix.partner.lead.bloc user,model_intellix_partner_lead_bloc,base.group_user,1,1,1,1
+access_intellix_partner_lead_mandate_user,intellix.partner.lead.mandate user,model_intellix_partner_lead_mandate,base.group_user,1,1,1,1
+access_intellix_partner_lead_attempt_user,intellix.partner.lead.attempt user,model_intellix_partner_lead_attempt,base.group_user,1,1,1,1
+access_intellix_partner_lead_bloc_portal,intellix.partner.lead.bloc portal,model_intellix_partner_lead_bloc,base.group_portal,1,0,0,0
+access_intellix_partner_lead_mandate_portal,intellix.partner.lead.mandate portal,model_intellix_partner_lead_mandate,base.group_portal,1,1,0,0
+access_intellix_partner_lead_attempt_portal,intellix.partner.lead.attempt portal,model_intellix_partner_lead_attempt,base.group_portal,1,1,1,1
+access_renovation_service_category_portal,renovation.service.category portal,renovation_conciergerie.model_renovation_service_category,base.group_portal,1,0,0,0
+access_intellix_partner_lead_activity_user,intellix.partner.lead.activity user,model_intellix_partner_lead_activity,base.group_user,1,1,1,1
+access_intellix_partner_lead_activity_portal,intellix.partner.lead.activity portal,model_intellix_partner_lead_activity,base.group_portal,1,1,1,0

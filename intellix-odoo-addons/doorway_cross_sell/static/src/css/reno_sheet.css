@@ -1,0 +1,156 @@
+.o_reno_revenue_row {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+}
+.o_reno_form_grid {
+    margin-top: 8px;
+    padding: 8px 4px 18px;
+    border-bottom: 1px solid #e4e7eb;
+}
+.o_reno_meta_field {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+}
+.o_reno_bool_row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 28px;
+}
+.o_reno_bool_row .o_field_boolean,
+.o_reno_bool_row .o_boolean_toggle,
+.o_reno_bool_row input[type="checkbox"] {
+    pointer-events: auto !important;
+    opacity: 1 !important;
+    position: relative;
+    z-index: 2;
+}
+.o_reno_bool_row .form-check-input {
+    width: 2.2em;
+    height: 1.15em;
+    cursor: pointer;
+    accent-color: #EC6A2B;
+}
+.o_reno_bool_row .form-check-input:checked {
+    background-color: #EC6A2B;
+    border-color: #EC6A2B;
+}
+.o_reno_bool_caption {
+    font-size: 13px;
+    font-weight: 700;
+    color: #3B8256;
+}
+.o_reno_bool_caption_off {
+    color: #8B94A0;
+    font-weight: 600;
+}
+.o_reno_cs_origin_badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+}
+.o_reno_cs_origin_badge::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+}
+.o_reno_cs_origin_toiture { background: #fbf1e3; color: #b8722a; }
+.o_reno_cs_origin_immobilier { background: #eef1fc; color: #3b5fc2; }
+.o_reno_cs_origin_thermopompe { background: #eaf6ef; color: #2f8a5b; }
+.o_reno_cs_origin_isolation { background: #e8f4f8; color: #2a7a8c; }
+.o_reno_cs_origin_portes { background: #f6efe8; color: #8a5a32; }
+.o_reno_cs_origin_reno { background: #fde9dd; color: #c6551f; }
+.o_reno_cs_origin_cuisine { background: #f7efe6; color: #9a5b24; }
+.o_reno_cs_origin_badge .o_field_widget,
+.o_reno_cs_checklist_title .o_field_widget,
+.o_reno_cs_q.o_field_widget,
+.o_reno_cs_to.o_field_widget {
+    width: auto;
+    min-width: 0;
+    max-width: 100%;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+.o_reno_cs_origin_badge .o_input,
+.o_reno_cs_checklist_title .o_input,
+.o_reno_cs_q .o_input,
+.o_reno_cs_to .o_input {
+    border: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    outline: none !important;
+    color: inherit !important;
+    pointer-events: none;
+}
+.o_reno_cs_item .o_field_boolean,
+.o_reno_cs_item .o_field_boolean input,
+.o_reno_cs_item .o_field_boolean .form-check-input,
+.o_reno_cs_item .o_field_boolean .form-check-label {
+    pointer-events: auto !important;
+    opacity: 1 !important;
+    cursor: pointer;
+}
+.o_reno_cs_item .o_field_boolean .form-check-input,
+.o_reno_cs_item input[type="checkbox"] {
+    width: 1.15em;
+    height: 1.15em;
+    min-width: 1.15em;
+    margin-top: 2px;
+    border: 1.5px solid #8B94A0 !important;
+    background: #fff !important;
+    accent-color: #EC6A2B;
+}
+.o_reno_cs_item .form-check-input:checked,
+.o_reno_cs_item input[type="checkbox"]:checked {
+    background-color: #EC6A2B !important;
+    border-color: #EC6A2B !important;
+}
+.o_reno_cs_item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: #fafafa;
+    border: 1px solid #e4dee2;
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+}
+.o_reno_cs_item .o_field_widget {
+    flex: 0 0 auto;
+}
+.o_reno_cs_q {
+    flex: 1;
+    font-size: 13px;
+}
+.o_reno_cs_item:has(.o_reno_cs_to_hypo:not(.d-none)) {
+    border-color: #d8c9d5;
+    background: #f9f5f8;
+}
+.o_reno_cs_to {
+    font-size: 10.5px;
+    font-weight: 700;
+    color: #c6551f;
+    background: #fde9dd;
+    padding: 3px 8px;
+    border-radius: 20px;
+    white-space: nowrap;
+    margin-top: 2px;
+}
+.o_reno_cs_item_hypo {
+    border-color: #d8c9d5;
+    background: #f9f5f8;
+}
+.o_reno_cs_to_hypo {
+    background: #e9dde6;
+}

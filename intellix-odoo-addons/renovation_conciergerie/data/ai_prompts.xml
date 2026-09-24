@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <function model="renovation.ai.prompt" name="_seed_defaults"/>
+</odoo>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_sales" name="Portail — Devis &amp; ventes">
+        <t t-call="intellix_partner_portal.ipp_portal_layout">
+            <div class="topbar">
+                <div>
+                    <h1>Devis &amp; ventes</h1>
+                    <div class="sub">Commandes liées à votre compte — lecture seule</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <t t-if="not orders">
+                    <div class="empty">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 5H4v14h16V5h-5M9 5v0a3 3 0 0 1 6 0v0M9 5h6"/></svg>
+                        <div class="t">Aucun devis pour le moment</div>
+                        <div class="s">Les devis et commandes rattachés à votre compte partenaire apparaîtront ici.</div>
+                    </div>
+                </t>
+                <table t-else="">
+                    <thead>
+                        <tr>
+                            <th>Référence</th>
+                            <th>Client</th>
+                            <th>Date</th>
+                            <th>Montant</th>
+                            <th>Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="orders" t-as="order">
+                            <td class="t-name" t-esc="order.name"/>
+                            <td t-esc="order.partner_id.name or '—'"/>
+                            <td t-esc="order.date_order"/>
+                            <td class="mono" t-esc="order.amount_total"/>
+                            <td>
+                                <span t-attf-class="status-tag #{'active' if order.state in ('sale','done') else 'renew'}"
+                                      t-esc="order.state"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_reddit_oauth_code_wizard" model="ir.ui.view">
+        <field name="name">doorway.reddit.oauth.code.wizard.form</field>
+        <field name="model">doorway.reddit.oauth.code.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Code OAuth Reddit">
+                <group>
+                    <field name="redirect_uri"/>
+                    <field name="code" placeholder="coller le code depuis l'URL Reddit"/>
+                </group>
+                <footer>
+                    <button name="action_exchange_code" type="object"
+                            string="Échanger le code" class="btn-primary"/>
+                    <button special="cancel" string="Annuler"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

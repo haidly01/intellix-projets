@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="course_agents_ia_basics" model="pe.course">
+        <field name="title">Formation Agent IA de Qualification — Marché France</field>
+        <field name="category">ia_tools</field>
+        <field name="course_type">internal</field>
+        <field name="duration_hours">6.0</field>
+        <field name="difficulty">intermediate</field>
+        <field name="points_on_completion">60</field>
+        <field name="description">Formation complète pour configurer et optimiser un agent IA de qualification téléphonique sur le marché France — 6 modules interactifs (script, voix, conformité, n8n, KPIs, cas pratiques).</field>
+        <field name="content_url">/people_engine/static/src/html/formation_agent_ia_qualification_fr.html</field>
+    </record>
+</odoo>

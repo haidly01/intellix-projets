@@ -1,0 +1,65 @@
+# -*- coding: utf-8 -*-
+{
+    "name": "Doorway — Réseaux Sociaux IA",
+    "version": "19.0.2.4.4",
+    "category": "Marketing",
+    "summary": "Calendrier éditorial IA, posts multi-plateformes, inbox unifiée",
+    "description": """
+        Module unique Réseaux Sociaux IA pour Intellix CRM.
+        Comptes · Créer (calendrier/post) · Calendrier · Messages.
+        Note : les modules Odoo Enterprise social.* ne sont pas sur ce serveur ;
+        ce module fournit ses propres modèles (doorway.social.*).
+    """,
+    "author": "Agence Doorway",
+    "depends": [
+        "crm",
+        "mail",
+        "base_setup",
+        "intellix_branding",
+        "doorway_agents_dashboard",
+        "doorway_veille_sociale",
+        "doorway_messaging",
+        "doorway_credits",
+    ],
+    "data": [
+        "security/social_security.xml",
+        "security/ir.model.access.csv",
+        "data/default_best_times.xml",
+        "data/whatsapp_haidly_config.xml",
+        "data/cron_heygen_polling.xml",
+        "data/cron_analytics_sync.xml",
+        "data/cron_inbox_sync.xml",
+        "data/cron_publish_scheduled.xml",
+        "data/cron_tiktok_publish_status.xml",
+        "data/tiktok_brand_accounts.xml",
+        "views/social_account_views.xml",
+        "views/social_wizard_views.xml",
+        "views/social_connect_wizard_views.xml",
+        "views/social_tiktok_wizard_views.xml",
+        "views/veille_tiktok_sources.xml",
+        "views/social_post_views.xml",
+        "views/social_inbox_views.xml",
+        "views/menu_items.xml",
+        "views/messaging_integration_menus.xml",
+        "views/veille_integration_menus.xml",
+        "views/channel_config_social_views.xml",
+    ],
+    "assets": {
+        "web.assets_backend": [
+            "doorway_social_ia/static/src/css/doorway_social.css",
+            "doorway_social_ia/static/src/css/social_inbox.css",
+            "doorway_social_ia/static/src/css/social_composer.css",
+            "doorway_social_ia/static/src/css/social_home_dashboard.css",
+            "doorway_social_ia/static/src/js/social_inbox.js",
+            "doorway_social_ia/static/src/js/social_composer.js",
+            "doorway_social_ia/static/src/js/social_home_dashboard.js",
+            "doorway_social_ia/static/src/xml/social_inbox.xml",
+            "doorway_social_ia/static/src/xml/social_composer.xml",
+            "doorway_social_ia/static/src/xml/social_home_dashboard.xml",
+        ],
+    },
+    "installable": True,
+    "application": True,
+    "post_init_hook": "post_init_hook",
+    "license": "LGPL-3",
+}

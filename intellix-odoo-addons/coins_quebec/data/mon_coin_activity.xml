@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="mail_activity_boost_radio" model="mail.activity.type">
+        <field name="name">Boost Radio CQ</field>
+        <field name="icon">fa-bullhorn</field>
+        <field name="delay_count">1</field>
+    </record>
+    <record id="mail_activity_boost_vedette" model="mail.activity.type">
+        <field name="name">Boost Vedette CQ</field>
+        <field name="icon">fa-star</field>
+        <field name="delay_count">1</field>
+    </record>
+    <record id="mail_activity_boost_influenceurs" model="mail.activity.type">
+        <field name="name">Boost Influenceurs CQ</field>
+        <field name="icon">fa-users</field>
+        <field name="delay_count">1</field>
+    </record>
+    <record id="mail_activity_boost_reseaux" model="mail.activity.type">
+        <field name="name">Boost Réseaux CQ</field>
+        <field name="icon">fa-share-alt</field>
+        <field name="delay_count">1</field>
+    </record>
+    <record id="mail_activity_boost_itex" model="mail.activity.type">
+        <field name="name">Boost ITEX CQ</field>
+        <field name="icon">fa-handshake-o</field>
+        <field name="delay_count">1</field>
+    </record>
+    <record id="mail_activity_boost_driven" model="mail.activity.type">
+        <field name="name">Boost Driven CQ</field>
+        <field name="icon">fa-briefcase</field>
+        <field name="delay_count">1</field>
+    </record>
+</odoo>

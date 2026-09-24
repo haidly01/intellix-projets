@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem
+        id="menu_intellix_account_ma_config"
+        name="Configuration Maroc"
+        parent="account.menu_finance_configuration"
+        sequence="95"
+        groups="account.group_account_manager"/>
+
+    <menuitem
+        id="menu_intellix_analytic_modules"
+        name="Modules Intellix (analytique)"
+        parent="menu_intellix_account_ma_config"
+        action="analytic.action_account_analytic_account_form"
+        sequence="10"
+        groups="account.group_account_manager"/>
+
+    <menuitem
+        id="menu_intellix_fiscal_positions_ma"
+        name="Positions fiscales Maroc"
+        parent="menu_intellix_account_ma_config"
+        action="account.action_account_fiscal_position_form"
+        sequence="20"
+        groups="account.group_account_manager"/>
+</odoo>

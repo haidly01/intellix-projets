@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_coins_partenariat_kpi_daily_list" model="ir.ui.view">
+        <field name="name">coins.partenariat.kpi.daily.list</field>
+        <field name="model">coins.partenariat.kpi.daily</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="date"/>
+                <field name="user_id"/>
+                <field name="appels_composes"/>
+                <field name="conversations_completees"/>
+                <field name="notes"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_coins_partenariat_kpi_daily_search" model="ir.ui.view">
+        <field name="name">coins.partenariat.kpi.daily.search</field>
+        <field name="model">coins.partenariat.kpi.daily</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="user_id"/>
+                <field name="date"/>
+                <filter name="today" string="Aujourd'hui"
+                        domain="[('date', '=', context_today())]"/>
+                <group>
+                    <filter name="group_user" string="Commercial"
+                            context="{'group_by': 'user_id'}"/>
+                    <filter name="group_date" string="Date"
+                            context="{'group_by': 'date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_coins_partenariat_kpi_daily" model="ir.actions.act_window">
+        <field name="name">Activité quotidienne</field>
+        <field name="res_model">coins.partenariat.kpi.daily</field>
+        <field name="view_mode">list</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Saisir les appels composés et les conversations du jour</p>
+            <p>Deux compteurs distincts — ne pas fusionner. Objectifs par défaut : 100 appels / 40 conversations.</p>
+        </field>
+    </record>
+
+    <record id="view_coins_partenariat_kpi_settings_form" model="ir.ui.view">
+        <field name="name">coins.partenariat.kpi.settings.form</field>
+        <field name="model">coins.partenariat.kpi.settings</field>
+        <field name="arch" type="xml">
+            <form string="Objectifs KPI partenariats">
+                <group>
+                    <group string="Objectifs appels / conversations (ajustables)">
+                        <field name="target_appels_jour"/>
+                        <field name="target_conversations_jour"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_save" type="object" string="Enregistrer" class="btn-primary"/>
+                    <button string="Fermer" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_coins_partenariat_kpi_settings" model="ir.actions.act_window">
+        <field name="name">Objectifs KPI</field>
+        <field name="res_model">coins.partenariat.kpi.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="action_coins_equipe_kpi_dashboard" model="ir.actions.client">
+        <field name="name">KPI équipe partenariats</field>
+        <field name="tag">coins_equipe_kpi_dashboard</field>
+    </record>
+</odoo>

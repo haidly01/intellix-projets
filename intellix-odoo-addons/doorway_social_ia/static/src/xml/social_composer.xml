@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="doorway_social_ia.Composer" owl="1">
+        <div class="dw-composer o_intellix_client_action">
+
+            <div t-if="state.loading" class="dw-composer-loading">
+                <i class="fa fa-spinner fa-spin"/> Chargement du composer…
+            </div>
+
+            <div t-else="" class="dw-composer-grid">
+
+                <!-- ============ ÉDITEUR ============ -->
+                <div class="dw-composer-editor">
+                    <div class="dw-composer-header">
+                        <h2><i class="fa fa-pencil-square-o"/> Créer une publication</h2>
+                        <button class="btn btn-sm btn-light" t-on-click="openCalendar">
+                            <i class="fa fa-calendar"/> Calendrier
+                        </button>
+                    </div>
+
+                    <!-- Marque / pipeline -->
+                    <div class="dw-field">
+                        <label>Marque / Pipeline</label>
+                        <select class="form-select" t-model="state.pipelineId">
+                            <t t-foreach="state.teams" t-as="team" t-key="team.id">
+                                <option t-att-value="team.id"><t t-esc="team.name"/></option>
+                            </t>
+                        </select>
+                    </div>
+
+                    <!-- Partager sur -->
+                    <div class="dw-field">
+                        <label>Partager sur</label>
+                        <div class="dw-accounts">
+                            <t t-if="!state.accounts.length">
+                                <div class="dw-empty-accounts">
+                                    Aucun compte connecté.
+                                    Facebook / Instagram : <strong>Paramètres → Connecter tous Meta</strong>.
+                                    TikTok : <strong>Paramètres → Connecter un compte TikTok</strong>
+                                    (une autorisation par marque).
+                                </div>
+                            </t>
+                            <t t-foreach="state.accounts" t-as="acc" t-key="acc.id">
+                                <label t-att-class="'dw-account-pill ' + (isAccountSelected(acc.id) ? 'active' : '') + (acc.connection_state !== 'connected' ? ' disconnected' : '')">
+                                    <input type="checkbox"
+                                           t-att-checked="isAccountSelected(acc.id)"
+                                           t-on-change="() => this.toggleAccount(acc.id)"/>
+                                    <i t-att-class="'fa ' + this.accountIcon(acc.platform)"/>
+                                    <span t-esc="acc.name"/>
+                                    <span t-if="acc.connection_state !== 'connected'" class="dw-badge-off">non connecté</span>
+                                </label>
+                            </t>
+                            <label t-att-class="'dw-account-pill ' + (state.threadsEnabled ? 'active' : '')">
+                                <input type="checkbox" t-model="state.threadsEnabled"/>
+                                <i class="fa fa-at"/>
+                                <span>Threads (aperçu)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Contenu multimédia -->
+                    <div class="dw-field">
+                        <label>Contenu multimédia
+                            <span class="dw-hint">Photos / vidéos — Instagram : 10 images max</span>
+                        </label>
+                        <input type="file" multiple="multiple" class="d-none"
+                               t-ref="fileInput"
+                               accept="image/*,video/*"
+                               t-on-change="onFileChange"/>
+                        <button class="btn btn-outline-primary btn-sm" t-on-click="triggerUpload">
+                            <i class="fa fa-photo"/> Ajouter une photo/vidéo
+                        </button>
+                        <div t-if="state.media.length" class="dw-media-strip">
+                            <t t-foreach="state.media" t-as="m" t-key="m_index">
+                                <div class="dw-media-thumb">
+                                    <video t-if="m.isVideo" t-att-src="m.dataUrl" muted="muted"/>
+                                    <img t-else="" t-att-src="m.dataUrl" t-att-alt="m.name"/>
+                                    <button class="dw-media-remove"
+                                            t-on-click="() => this.removeMedia(m_index)">×</button>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+
+                    <!-- Texte -->
+                    <div class="dw-field">
+                        <label>Texte</label>
+                        <textarea class="form-control" rows="5"
+                                  placeholder="Que voulez-vous partager ?"
+                                  t-model="state.caption"/>
+                    </div>
+                    <div class="dw-field">
+                        <label>Hashtags</label>
+                        <input type="text" class="form-control"
+                               placeholder="#renovation #haidly"
+                               t-model="state.hashtags"/>
+                    </div>
+
+                    <!-- Format + confidentialité -->
+                    <div class="dw-field-row">
+                        <div class="dw-field">
+                            <label>Format</label>
+                            <select class="form-select" t-model="state.postFormat">
+                                <option value="publication">Publication</option>
+                                <option value="reel">Reel / Shorts</option>
+                                <option value="story">Story</option>
+                                <option value="carrousel">Carrousel</option>
+                            </select>
+                        </div>
+                        <div class="dw-field">
+                            <label>Confidentialité</label>
+                            <select class="form-select" t-model="state.privacy">
+                                <option value="public">Public</option>
+                                <option value="limited">Limité</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Programmation -->
+                    <div class="dw-field">
+                        <label class="dw-schedule-toggle">
+                            <input type="checkbox" t-att-checked="state.scheduleEnabled"
+                                   t-on-change="toggleSchedule"/>
+                            Programmer une publication
+                        </label>
+                        <div t-if="state.scheduleEnabled" class="dw-schedule">
+                            <input type="datetime-local" class="form-control"
+                                   t-on-input="onScheduleInput"/>
+                            <div class="dw-besttimes">
+                                <span class="dw-hint">Moments où votre audience est la plus active</span>
+                                <div class="dw-besttime-pills">
+                                    <t t-foreach="bestTimeSuggestions()" t-as="bt" t-key="bt_index">
+                                        <button t-att-class="'dw-besttime ' + (state.scheduledDate === bt.value ? 'active' : '')"
+                                                t-on-click="() => this.pickBestTime(bt.value)">
+                                            <t t-esc="bt.label"/>
+                                        </button>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div t-if="state.warning" class="dw-warning">
+                        <i class="fa fa-exclamation-triangle"/> <t t-esc="state.warning"/>
+                    </div>
+
+                    <div class="dw-credit-note">
+                        <i class="fa fa-coins"/>
+                        Solde : <t t-esc="state.creditBalance"/> crédit(s).
+                        Composer, prévisualiser et enregistrer en brouillon sont gratuits ;
+                        publier consomme <t t-esc="state.publishCost"/> crédit(s).
+                    </div>
+                    <div class="dw-composer-actions">
+                        <button class="btn btn-light" t-on-click="schedule"
+                                t-att-disabled="state.saving">
+                            <t t-if="state.scheduleEnabled">Programmer</t>
+                            <t t-else="">Enregistrer brouillon</t>
+                        </button>
+                        <button class="btn btn-primary" t-on-click="publish"
+                                t-att-disabled="state.saving">
+                            <i t-if="state.saving" class="fa fa-spinner fa-spin"/>
+                            Publier maintenant
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ============ APERÇU ============ -->
+                <div class="dw-composer-preview">
+                    <div class="dw-preview-tabs">
+                        <button t-att-class="'dw-tab ' + (state.activePreview === 'facebook' ? 'active' : '')"
+                                t-on-click="() => this.setPreview('facebook')">
+                            <i class="fa fa-facebook"/> Facebook
+                        </button>
+                        <button t-att-class="'dw-tab ' + (state.activePreview === 'instagram' ? 'active' : '')"
+                                t-on-click="() => this.setPreview('instagram')">
+                            <i class="fa fa-instagram"/> Instagram
+                        </button>
+                        <button t-att-class="'dw-tab ' + (state.activePreview === 'tiktok' ? 'active' : '')"
+                                t-on-click="() => this.setPreview('tiktok')">
+                            <i class="fa fa-play-circle"/> TikTok
+                        </button>
+                        <button t-att-class="'dw-tab ' + (state.activePreview === 'threads' ? 'active' : '')"
+                                t-on-click="() => this.setPreview('threads')">
+                            <i class="fa fa-at"/> Threads
+                        </button>
+                    </div>
+
+                    <!-- FACEBOOK -->
+                    <div t-if="state.activePreview === 'facebook'" class="dw-fb-card">
+                        <div class="dw-fb-head">
+                            <div class="dw-avatar"><i class="fa fa-home"/></div>
+                            <div>
+                                <div class="dw-fb-name"><t t-esc="brandName"/></div>
+                                <div class="dw-fb-meta">À l'instant · <i class="fa fa-globe"/></div>
+                            </div>
+                        </div>
+                        <div class="dw-fb-text" t-esc="previewCaption || 'Votre texte apparaîtra ici…'"/>
+                        <div t-if="images.length" t-att-class="'dw-fb-media count-' + (images.length > 4 ? 'many' : images.length)">
+                            <t t-foreach="images.slice(0, 5)" t-as="img" t-key="img_index">
+                                <div class="dw-fb-media-cell">
+                                    <img t-att-src="img.dataUrl"/>
+                                    <span t-if="img_index === 4 and images.length > 5" class="dw-more">+<t t-esc="images.length - 5"/></span>
+                                </div>
+                            </t>
+                        </div>
+                        <video t-if="videos.length" class="dw-fb-video" controls="controls" t-att-src="videos[0].dataUrl"/>
+                        <div t-if="!images.length and !videos.length" class="dw-media-placeholder">
+                            <i class="fa fa-picture-o"/>
+                        </div>
+                        <div class="dw-fb-actions">
+                            <span><i class="fa fa-thumbs-o-up"/> J'aime</span>
+                            <span><i class="fa fa-comment-o"/> Commenter</span>
+                            <span><i class="fa fa-share"/> Partager</span>
+                        </div>
+                    </div>
+
+                    <!-- INSTAGRAM -->
+                    <div t-if="state.activePreview === 'instagram'" class="dw-ig-card">
+                        <div class="dw-ig-head">
+                            <div class="dw-ig-avatar"/>
+                            <div class="dw-ig-name"><t t-esc="igHandle"/></div>
+                            <i class="fa fa-ellipsis-h ms-auto"/>
+                        </div>
+                        <div class="dw-ig-media">
+                            <img t-if="images.length" t-att-src="images[0].dataUrl"/>
+                            <video t-elif="videos.length" t-att-src="videos[0].dataUrl" muted="muted"/>
+                            <div t-else="" class="dw-media-placeholder"><i class="fa fa-camera"/></div>
+                            <span t-if="images.length > 1" class="dw-ig-count">1/<t t-esc="images.length"/></span>
+                        </div>
+                        <div class="dw-ig-actions">
+                            <i class="fa fa-heart-o"/><i class="fa fa-comment-o"/><i class="fa fa-paper-plane-o"/>
+                        </div>
+                        <div class="dw-ig-caption">
+                            <strong t-esc="igHandle"/> <t t-esc="previewCaption"/>
+                        </div>
+                    </div>
+
+                    <!-- TIKTOK -->
+                    <div t-if="state.activePreview === 'tiktok'" class="dw-ig-card">
+                        <div class="dw-ig-head">
+                            <div class="dw-ig-avatar"/>
+                            <div class="dw-ig-name"><t t-esc="brandName"/></div>
+                            <i class="fa fa-play-circle ms-auto"/>
+                        </div>
+                        <div class="dw-ig-media">
+                            <video t-if="videos.length" t-att-src="videos[0].dataUrl" muted="muted"/>
+                            <div t-else="" class="dw-media-placeholder">
+                                <i class="fa fa-video-camera"/>
+                                <div class="small mt-2">TikTok exige une vidéo</div>
+                            </div>
+                        </div>
+                        <div class="dw-ig-caption">
+                            <t t-esc="previewCaption || 'Légende TikTok…'"/>
+                        </div>
+                    </div>
+
+                    <!-- THREADS -->
+                    <div t-if="state.activePreview === 'threads'" class="dw-th-card">
+                        <div class="dw-th-head">
+                            <div class="dw-th-avatar"/>
+                            <div class="dw-th-name"><t t-esc="igHandle"/> <span class="dw-th-time">· maintenant</span></div>
+                        </div>
+                        <div class="dw-th-text" t-esc="previewCaption || 'Votre texte apparaîtra ici…'"/>
+                        <div t-if="images.length" class="dw-th-media">
+                            <img t-att-src="images[0].dataUrl"/>
+                        </div>
+                        <div class="dw-th-actions">
+                            <i class="fa fa-heart-o"/><i class="fa fa-comment-o"/><i class="fa fa-retweet"/><i class="fa fa-paper-plane-o"/>
+                        </div>
+                    </div>
+
+                    <div t-if="!hasConnectedSelection" class="dw-connect-hint">
+                        <i class="fa fa-plug"/>
+                        Connectez un compte Meta pour publier (token manquant).
+                        La publication sera enregistrée en brouillon / programmée.
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </t>
+
+</templates>

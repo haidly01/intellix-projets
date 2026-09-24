@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pe_profile_onboarding_wizard_form" model="ir.ui.view">
+        <field name="name">pe.profile.onboarding.wizard.form</field>
+        <field name="model">pe.profile.onboarding.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Assistant onboarding" class="pe-rh-theme o_pe_onboarding_wizard">
+                <group>
+                    <group string="Collaborateur">
+                        <field name="profile_id" readonly="1"/>
+                        <field name="employee_id" invisible="1"/>
+                        <field name="pe_access"/>
+                    </group>
+                    <group string="Rémunération">
+                        <field name="salaire_base"/>
+                        <field name="devise_remuneration"/>
+                        <field name="variable_prime_template_id" string="Template prime"/>
+                        <field name="montant_variable" string="Montant variable"/>
+                        <field name="description_variable" string="Modalités primes"/>
+                    </group>
+                </group>
+                <group string="Contrat">
+                    <group>
+                        <field name="contract_type"/>
+                        <field name="date_start"/>
+                    </group>
+                    <group>
+                        <field name="date_end" invisible="contract_type != 'cdd'" required="contract_type == 'cdd'"/>
+                        <field name="send_arrival_pack"/>
+                        <field name="copy_objectives"/>
+                    </group>
+                </group>
+                <group string="Objectifs contractuels" invisible="not copy_objectives">
+                    <field name="objectifs_text" nolabel="1" colspan="2"/>
+                </group>
+                <div class="text-muted">
+                    Le stade cycle de vie sera positionné sur <strong>Arrivée / Onboarding</strong>.
+                    Un contrat brouillon sera créé et relié au profil.
+                </div>
+                <footer>
+                    <button name="action_confirm" type="object" string="Valider l'onboarding" class="btn-primary"/>
+                    <button string="Annuler" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

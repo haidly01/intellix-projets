@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="0">
+    <record id="agent_sofia_renov" model="doorway.agent.profile">
+        <field name="name">Sofía · España Renov (Telnyx)</field>
+        <field name="external_agent_id">sofia-es-avatrade-2026</field>
+        <field name="system_prompt">Sofía — agente vocal outbound España (AvaTrade). Calificación propietario → tipo vivienda → código postal. Lead ganador si propietario. Sin CP → superviseur rappelle. Stack: n8n + Telnyx + Deepgram nova-2 + Claude Haiku + ElevenLabs streaming. Facturation 0.22€/min à la seconde, AMD non facturé.</field>
+    </record>
+
+    <record id="agent_sofia_volet_cold" model="doorway.agent.volet">
+        <field name="prompt_hint">Campagne AvaTrade ES — 1462 prospects — liste ESPAGNE_RENOVATION / DW_ESREN</field>
+    </record>
+</odoo>

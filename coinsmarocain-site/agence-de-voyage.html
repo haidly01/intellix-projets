@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="/favicon.ico?v=cm126" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32.png?v=cm126">
+  <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png?v=cm126">
+  <title>Coins Marocain — Partenariat Agences de Voyage</title>
+  <meta name="description" content="Partenariat agences de voyage à Marrakech : lieux d'exception pour groupes, mariages et événements — complément à vos forfaits Maroc, commissions séparées, accompagnement sur place.">
+  <link rel="canonical" href="https://coinsmarocain.com/agence-de-voyage">
+  <meta property="og:title" content="Coins Marocain — Partenariat Agences de Voyage">
+  <meta property="og:description" content="Un lieu d'exception à ajouter à vos forfaits Maroc. Partenariat pour agences de voyage — groupes, mariages et événements.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://coinsmarocain.com/agence-de-voyage">
+  <meta property="og:image" content="https://coinsmarocain.com/assets/img/evenements/evt-villa-piscine-cactus.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+  :root {
+    --cream: #faf6ee;
+    --gold-1: #b5732f;
+    --gold-2: #e6b876;
+    --gold-3: #8a4f22;
+    --charcoal: #262220;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--cream);
+    color: var(--charcoal);
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+    line-height: 1.65;
+  }
+
+  .site-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 22px 50px 0;
+  }
+  .site-top a.brand {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--gold-3);
+    text-decoration: none;
+  }
+  .site-top a.back {
+    font-size: 0.85rem;
+    color: var(--gold-1);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+  }
+  .site-top a.back:hover { color: var(--charcoal); }
+
+  .page { max-width: 780px; margin: 0 auto; padding: 40px 50px 60px; }
+
+  h1, h2, h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    margin: 0 0 14px 0;
+    color: var(--charcoal);
+  }
+
+  h1 { font-size: 44px; letter-spacing: 0.5px; }
+  h2 { font-size: 30px; margin-top: 46px; border-bottom: 1px solid var(--gold-2); padding-bottom: 10px; }
+  h3 { font-size: 20px; font-weight: 700; color: var(--gold-3); }
+
+  .kicker {
+    font-family: 'Jost', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-size: 12px;
+    color: var(--gold-1);
+    margin-bottom: 10px;
+  }
+
+  .hero {
+    text-align: center;
+    padding: 70px 40px 50px;
+    background: linear-gradient(180deg, var(--gold-2) 0%, var(--cream) 100%);
+    border-radius: 4px;
+  }
+  .hero h1 { font-size: 42px; }
+  .hero p.sub { font-size: 18px; font-style: italic; color: var(--gold-3); margin-top: 8px; }
+
+  .gold-line { width: 70px; height: 2px; background: var(--gold-1); margin: 24px auto; }
+
+  p { margin: 0 0 16px 0; font-size: 16px; }
+
+  ul { padding-left: 0; list-style: none; margin: 20px 0; }
+  li { position: relative; padding-left: 26px; margin-bottom: 14px; font-size: 16px; }
+  li::before { content: "—"; position: absolute; left: 0; color: var(--gold-1); font-weight: 600; }
+
+  .card {
+    background: #fff;
+    border: 1px solid var(--gold-2);
+    border-radius: 6px;
+    padding: 28px 30px;
+    margin: 22px 0;
+  }
+
+  .split { display: flex; gap: 18px; margin: 30px 0; flex-wrap: wrap; }
+  .split-col {
+    flex: 1;
+    min-width: 220px;
+    background: #fff;
+    border-top: 3px solid var(--gold-1);
+    padding: 22px 20px;
+    border-radius: 4px;
+  }
+  .split-col h3 { font-size: 17px; margin-bottom: 10px; }
+  .split-col p { font-size: 14px; margin: 0; }
+  .split-col ul { margin: 10px 0 0 0; }
+  .split-col li { font-size: 14px; margin-bottom: 8px; }
+
+  .three-step { display: flex; gap: 18px; margin: 30px 0; flex-wrap: wrap; }
+  .step { flex: 1; min-width: 200px; background: #fff; border-top: 3px solid var(--gold-1); padding: 22px 18px; border-radius: 4px; }
+  .step .num { font-family: 'Cormorant Garamond', serif; font-size: 34px; font-weight: 700; color: var(--gold-2); display: block; margin-bottom: 6px; }
+  .step h3 { font-size: 17px; margin-bottom: 8px; }
+  .step p { font-size: 14px; margin: 0; }
+
+  .highlight { background: var(--charcoal); color: var(--cream); border-radius: 6px; padding: 26px 30px; margin: 26px 0; }
+  .highlight h3 { color: var(--gold-2); }
+  .highlight p { color: var(--cream); margin-bottom: 8px; }
+
+  .cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 28px 0 8px;
+  }
+  .btn {
+    display: inline-block;
+    padding: 14px 22px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 15px;
+    letter-spacing: 0.02em;
+  }
+  .btn-primary { background: var(--gold-1); color: #fff; }
+  .btn-primary:hover { background: var(--gold-3); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--gold-3);
+    border: 1px solid var(--gold-2);
+  }
+  .btn-ghost:hover { border-color: var(--gold-1); color: var(--charcoal); }
+
+  .page-footer { text-align: center; margin-top: 60px; padding-top: 30px; border-top: 1px solid var(--gold-2); }
+  .page-footer .brand { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 700; color: var(--gold-3); }
+  .page-footer p { font-size: 14px; color: var(--gold-1); }
+  .page-footer p.tagline { font-size: 12px; color: var(--charcoal); opacity: 0.7; margin-top: 8px; }
+  .page-footer a { color: var(--gold-1); }
+
+  @media (max-width: 720px) {
+    .site-top, .page { padding-left: 22px; padding-right: 22px; }
+    .hero { padding: 48px 22px 36px; }
+    .hero h1 { font-size: 32px; }
+  }
+
+  @media print {
+    body { background: #fff; }
+    .page { padding: 20px 10px; }
+    .hero { background: var(--cream); }
+    .site-top, .cta-row { display: none; }
+  }
+  </style>
+</head>
+<body>
+  <div class="site-top">
+    <a class="brand" href="/">Coins Marocain</a>
+    <a class="back" href="/">← Accueil</a>
+  </div>
+
+  <div class="page">
+
+  <div class="hero">
+    <div class="kicker">Coins Marocain · Marrakech</div>
+    <h1>Un lieu d'exception à ajouter<br>à vos forfaits Maroc</h1>
+    <p class="sub">Partenariat Agences de Voyage — Groupes, Mariages &amp; Événements</p>
+    <div class="gold-line"></div>
+  </div>
+
+  <h2>Qui sommes-nous</h2>
+  <p>Coins Marocain connecte les visiteurs aux plus beaux lieux de Marrakech — riads d'exception, villas privatisées, spas, événements privés. On ne vend pas de voyage : on donne accès à des lieux sélectionnés, souvent peu ou pas disponibles ailleurs, pour les groupes qui cherchent plus qu'un hébergement standard.</p>
+
+  <h2>Pourquoi une collaboration, pas une concurrence</h2>
+  <p>Votre expertise, c'est le voyage complet : vol, forfait, logistique, accompagnement. La nôtre, c'est le lieu et l'expérience sur place pour les groupes, mariages et événements. Deux métiers complémentaires, pas deux offres qui se chevauchent.</p>
+  <div class="split">
+    <div class="split-col">
+      <h3>Ce que vous faites déjà</h3>
+      <ul>
+        <li>Vol et transport</li>
+        <li>Forfaits et circuits</li>
+        <li>Accompagnement voyageur</li>
+        <li>Relation client de bout en bout</li>
+      </ul>
+    </div>
+    <div class="split-col">
+      <h3>Ce qu'on apporte</h3>
+      <ul>
+        <li>Accès à des lieux d'exception (riad 8 suites, terrain 500 pers)</li>
+        <li>Lieux intimistes pour événements restreints (8-30 pers)</li>
+        <li>Coordination locale de l'événement sur place</li>
+        <li>Fiche prête à intégrer à vos forfaits existants</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Notre lieu phare pour les groupes</h2>
+  <div class="card">
+    <p><strong>Un riad-maison d'hôte de type boutique hôtel</strong>, pensé pour les célébrations d'envergure :</p>
+    <ul>
+      <li>8 suites pour l'hébergement du groupe</li>
+      <li>Terrain pouvant accueillir jusqu'à 500 invités</li>
+      <li>Hammam, 2 salles de massage, salon de coiffure sur place</li>
+      <li>Piscine de 17 mètres, bar à piscine, terrasses</li>
+      <li>Ouverture officielle en septembre</li>
+    </ul>
+  </div>
+
+  <h2>Comment on collabore</h2>
+  <div class="three-step">
+    <div class="step">
+      <span class="num">1</span>
+      <h3>On vous outille</h3>
+      <p>Fiche complète du lieu (photos, capacité, tarifs, disponibilités) prête à intégrer à votre offre Maroc existante.</p>
+    </div>
+    <div class="step">
+      <span class="num">2</span>
+      <h3>Vous référez, on référence</h3>
+      <p>Vos groupes cherchant un lieu d'exception passent par nous ; nos clients cherchant un voyage complet passent par vous.</p>
+    </div>
+    <div class="step">
+      <span class="num">3</span>
+      <h3>Commissions séparées</h3>
+      <p>Chacun garde sa marge dans son couloir — vous sur le voyage, nous sur le lieu. Pas de partage à négocier sur la même part.</p>
+    </div>
+  </div>
+
+  <div class="highlight">
+    <h3>Accompagnement sur place</h3>
+    <p>Une accompagnatrice canadienne bilingue accueille vos groupes à l'aéroport et reste présente tout le séjour, pour un déroulement fluide du début à la fin — un complément à votre propre accompagnement, pas un remplacement.</p>
+  </div>
+
+  <h2>Prochaine étape</h2>
+  <p>On se cale un appel pour voir si un lieu de ce type manque à votre offre Maroc actuelle, et comment on pourrait l'intégrer simplement à vos forfaits groupe.</p>
+  <div class="cta-row">
+    <a class="btn btn-primary" href="https://wa.me/212660159177?text=Bonjour%20Coins%20Marocain%2C%20je%20suis%20une%20agence%20de%20voyage%20et%20je%20souhaite%20discuter%20d%27un%20partenariat%20lieux%20%2F%20forfaits%20Maroc." target="_blank" rel="noopener noreferrer">Écrire sur WhatsApp</a>
+    <a class="btn btn-ghost" href="mailto:info@coinsmarocain.com?subject=Partenariat%20Agence%20de%20voyage%20Coins%20Marocain">info@coinsmarocain.com</a>
+    <a class="btn btn-ghost" href="/villas-riads-marrakech">Voir les forfaits</a>
+  </div>
+
+  <div class="page-footer">
+    <div class="brand">Coins Marocain</div>
+    <p><a href="https://coinsmarocain.com">coinsmarocain.com</a></p>
+    <p class="tagline">Programme partenariat wedding planners &amp; organisateurs · Programme d'affiliation créateurs de contenu</p>
+    <p style="margin-top:8px"><a href="/wedding-planner">Wedding planner</a> · <a href="/affiliation">Affiliation</a> · <a href="/">Accueil</a></p>
+  </div>
+
+  </div>
+  <script src="/assets/cookies.js?v=cm148" defer></script>
+</body>
+</html>

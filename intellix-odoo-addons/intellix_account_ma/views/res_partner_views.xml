@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_billing_company" model="ir.ui.view">
+        <field name="name">res.partner.form.billing.company</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='sales_purchases']//group[@name='sale']" position="inside">
+                <field name="x_billing_company_id"
+                       options="{'no_create': True}"
+                       groups="account.group_account_invoice"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

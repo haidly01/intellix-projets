@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="doorway_leads_bruts.ExtracteurConfigurateur">
+        <div class="ix-cfg o_action">
+            <header class="ix-cfg__header">
+                <h1 class="ix-cfg__title">Configurateur de campagne</h1>
+                <p class="ix-cfg__subtitle">Configurez une extraction de leads en 4 étapes — sans toucher au code.</p>
+            </header>
+
+            <!-- Indicateur d'étapes -->
+            <div class="ix-cfg__steps">
+                <t t-foreach="[1,2,3,4]" t-as="s" t-key="s">
+                    <div t-attf-class="ix-cfg__step {{ state.step === s ? 'is-active' : '' }} {{ state.step > s ? 'is-done' : '' }}">
+                        <span class="ix-cfg__step-num"><t t-esc="s"/></span>
+                        <span class="ix-cfg__step-label">
+                            <t t-if="s === 1">Campagne</t>
+                            <t t-if="s === 2">Sources</t>
+                            <t t-if="s === 3">Récapitulatif</t>
+                            <t t-if="s === 4">Déploiement</t>
+                        </span>
+                    </div>
+                </t>
+            </div>
+
+            <div class="ix-cfg__panel">
+
+                <!-- ============ ÉTAPE 1 : Informations campagne ============ -->
+                <t t-if="state.step === 1">
+                    <h2 class="ix-cfg__panel-title">1. Informations de la campagne</h2>
+                    <div class="ix-cfg__grid">
+                        <label class="ix-cfg__field ix-cfg__field--full">
+                            <span>Nom de la campagne *</span>
+                            <input type="text" t-model="state.campaign.nom_campagne" placeholder="Assurance Gironde T1"/>
+                        </label>
+                        <label class="ix-cfg__field">
+                            <span>Pays</span>
+                            <select t-model="state.campaign.pays">
+                                <option t-foreach="pays" t-as="p" t-key="p.value" t-att-value="p.value"><t t-esc="p.label"/></option>
+                            </select>
+                        </label>
+                        <label class="ix-cfg__field">
+                            <span>Secteur</span>
+                            <select t-model="state.campaign.secteur">
+                                <option t-foreach="secteurs" t-as="sec" t-key="sec.value" t-att-value="sec.value"><t t-esc="sec.label"/></option>
+                            </select>
+                        </label>
+                        <label class="ix-cfg__field">
+                            <span>Zone (département, ville, région)</span>
+                            <input type="text" t-model="state.campaign.zone" placeholder="33 / Bordeaux"/>
+                        </label>
+                        <label class="ix-cfg__field">
+                            <span>Cible</span>
+                            <input type="text" t-model="state.campaign.cible" placeholder="primo-accédants, dirigeants PME…"/>
+                        </label>
+                        <label class="ix-cfg__field">
+                            <span>Objectif leads</span>
+                            <input type="number" t-model.number="state.campaign.objectif_leads" min="1"/>
+                        </label>
+                        <label class="ix-cfg__field">
+                            <span>Budget mensuel (€)</span>
+                            <input type="number" t-model.number="state.campaign.budget_mensuel" min="0"/>
+                        </label>
+                        <label class="ix-cfg__field">
+                            <span>Fréquence</span>
+                            <select t-model.number="state.campaign.frequence_heures">
+                                <option t-foreach="frequences" t-as="f" t-key="f.value" t-att-value="f.value"><t t-esc="f.label"/></option>
+                            </select>
+                        </label>
+                        <label class="ix-cfg__field">
+                            <span>Signal d'intention (optionnel)</span>
+                            <input type="text" t-model="state.campaign.signal_intention" placeholder="achat_immobilier…"/>
+                        </label>
+                        <label class="ix-cfg__field ix-cfg__field--full">
+                            <span>Notes pour l'IA (contexte client)</span>
+                            <textarea t-model="state.campaign.notes_client" rows="3" placeholder="Contexte, contraintes, objectifs spécifiques…"/>
+                        </label>
+                    </div>
+                    <div class="ix-cfg__actions">
+                        <button class="ix-cfg__btn ix-cfg__btn--primary" t-on-click="nextFromStep1">Continuer →</button>
+                    </div>
+                </t>
+
+                <!-- ============ ÉTAPE 2 : Sources ============ -->
+                <t t-if="state.step === 2">
+                    <h2 class="ix-cfg__panel-title">2. Sources d'extraction</h2>
+
+                    <div class="ix-cfg__advice">
+                        <div class="ix-cfg__advice-head">
+                            <div>
+                                <strong>Recommandation IA</strong>
+                                <p class="ix-cfg__muted">Claude analyse votre demande et présélectionne les meilleures sources.</p>
+                            </div>
+                            <button class="ix-cfg__btn ix-cfg__btn--accent" t-on-click="recommandationIA" t-att-disabled="state.loadingAdvice">
+                                <t t-if="state.loadingAdvice">Analyse…</t>
+                                <t t-else="">✨ Recommandation IA</t>
+                            </button>
+                        </div>
+                        <t t-if="state.advice">
+                            <div class="ix-cfg__advice-body">
+                                <p t-if="state.advice.strategie_ciblage"><strong>Stratégie :</strong> <t t-esc="state.advice.strategie_ciblage"/></p>
+                                <div class="ix-cfg__tags" t-if="state.advice.mots_cles_recherche">
+                                    <span class="ix-cfg__tag" t-foreach="state.advice.mots_cles_recherche" t-as="kw" t-key="kw_index"><t t-esc="kw"/></span>
+                                </div>
+                                <p class="ix-cfg__warn" t-if="state.advice.avertissements and state.advice.avertissements.length">
+                                    ⚠️ <t t-esc="state.advice.avertissements.join(' · ')"/>
+                                </p>
+                            </div>
+                        </t>
+                        <t t-elif="state.adviceMessage">
+                            <p class="ix-cfg__muted ix-cfg__advice-msg"><t t-esc="state.adviceMessage"/></p>
+                        </t>
+                    </div>
+
+                    <t t-if="state.loadingSources">
+                        <p class="ix-cfg__muted">Chargement des sources…</p>
+                    </t>
+                    <t t-elif="state.sources.length === 0">
+                        <p class="ix-cfg__muted">Aucune source disponible pour ce pays / secteur.</p>
+                    </t>
+                    <div class="ix-cfg__sources" t-else="">
+                        <t t-foreach="state.sources" t-as="src" t-key="src.registry_id">
+                            <article t-attf-class="ix-cfg__source {{ isSelected(src) ? 'is-selected' : '' }}" t-on-click="() => this.toggleSource(src)">
+                                <div class="ix-cfg__source-top">
+                                    <input type="checkbox" t-att-checked="isSelected(src)" t-on-click.stop="() => this.toggleSource(src)"/>
+                                    <h3 class="ix-cfg__source-name"><t t-esc="src.label"/></h3>
+                                </div>
+                                <p class="ix-cfg__source-desc"><t t-esc="src.description"/></p>
+                                <div class="ix-cfg__source-meta">
+                                    <span class="ix-cfg__stars">
+                                        <t t-foreach="stars(src.qualite).full" t-as="x" t-key="'f'+x">★</t><t t-foreach="stars(src.qualite).empty" t-as="y" t-key="'e'+y">☆</t>
+                                    </span>
+                                    <span t-attf-class="ix-cfg-badge {{ coutBadge(src).cls }}"><t t-esc="coutBadge(src).label"/></span>
+                                    <span class="ix-cfg-badge ix-cfg-badge--signal" t-if="src.signal_intention">Signal d'intention</span>
+                                    <span class="ix-cfg-badge ix-cfg-badge--free" t-if="src.gratuit">Gratuit</span>
+                                </div>
+                            </article>
+                        </t>
+                    </div>
+
+                    <div class="ix-cfg__actions">
+                        <button class="ix-cfg__btn" t-on-click="() => this.backTo(1)">← Retour</button>
+                        <span class="ix-cfg__count"><t t-esc="state.selectedIds.length"/> source(s) sélectionnée(s)</span>
+                        <button class="ix-cfg__btn ix-cfg__btn--primary" t-on-click="nextFromStep2">Continuer →</button>
+                    </div>
+                </t>
+
+                <!-- ============ ÉTAPE 3 : Récapitulatif + tarif ============ -->
+                <t t-if="state.step === 3">
+                    <h2 class="ix-cfg__panel-title">3. Récapitulatif &amp; estimation</h2>
+                    <div class="ix-cfg__recap">
+                        <div class="ix-cfg__recap-block">
+                            <h3>Campagne</h3>
+                            <ul>
+                                <li><span>Nom</span><strong><t t-esc="state.campaign.nom_campagne"/></strong></li>
+                                <li><span>Pays / Secteur</span><strong><t t-esc="state.campaign.pays"/> · <t t-esc="state.campaign.secteur"/></strong></li>
+                                <li><span>Zone</span><strong><t t-esc="state.campaign.zone || '—'"/></strong></li>
+                                <li><span>Cible</span><strong><t t-esc="state.campaign.cible || '—'"/></strong></li>
+                                <li><span>Objectif</span><strong><t t-esc="state.campaign.objectif_leads"/> leads</strong></li>
+                                <li><span>Fréquence</span><strong><t t-esc="state.campaign.frequence_heures"/> h</strong></li>
+                            </ul>
+                        </div>
+                        <div class="ix-cfg__recap-block">
+                            <h3>Sources (<t t-esc="selectedSources.length"/>)</h3>
+                            <ul>
+                                <li t-foreach="selectedSources" t-as="src" t-key="src.registry_id">
+                                    <span><t t-esc="src.label"/></span>
+                                    <strong t-esc="coutBadge(src).label"/>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="ix-cfg__price">
+                        <div class="ix-cfg__price-item">
+                            <span>Objectif leads</span>
+                            <strong><t t-esc="tarif.objectif"/></strong>
+                        </div>
+                        <div class="ix-cfg__price-item">
+                            <span>Coût estimé / lead</span>
+                            <strong><t t-esc="tarif.cout"/> €</strong>
+                        </div>
+                        <div class="ix-cfg__price-item ix-cfg__price-item--hl">
+                            <span>Budget opérationnel estimé</span>
+                            <strong><t t-esc="tarif.totalOps"/> €</strong>
+                        </div>
+                    </div>
+
+                    <div class="ix-cfg__actions">
+                        <button class="ix-cfg__btn" t-on-click="() => this.backTo(2)">← Retour</button>
+                        <button class="ix-cfg__btn ix-cfg__btn--primary" t-on-click="deploy">🚀 Générer la campagne</button>
+                    </div>
+                </t>
+
+                <!-- ============ ÉTAPE 4 : Déploiement ============ -->
+                <t t-if="state.step === 4">
+                    <h2 class="ix-cfg__panel-title">4. Déploiement</h2>
+                    <t t-if="state.deploying">
+                        <div class="ix-cfg__loading">
+                            <div class="ix-cfg__spinner"/>
+                            <p>Génération du workflow n8n en cours…</p>
+                        </div>
+                    </t>
+                    <t t-elif="state.deployResult and state.deployResult.success">
+                        <div class="ix-cfg__success">
+                            <div class="ix-cfg__success-icon">✓</div>
+                            <h3>Campagne créée !</h3>
+                            <p class="ix-cfg__muted">Le workflow a été créé dans n8n en mode <strong>INACTIF</strong>. Vérifiez-le puis activez-le.</p>
+                            <div class="ix-cfg__wf">
+                                <div><span>Workflow</span><strong><t t-esc="state.deployResult.workflow_name"/></strong></div>
+                                <div><span>ID n8n</span><strong><t t-esc="state.deployResult.workflow_id"/></strong></div>
+                            </div>
+                            <div class="ix-cfg__actions ix-cfg__actions--center">
+                                <button class="ix-cfg__btn ix-cfg__btn--accent" t-on-click="openWorkflow" t-if="state.deployResult.n8n_url">Ouvrir dans n8n ↗</button>
+                                <button class="ix-cfg__btn" t-on-click="voirCampagnes">Voir les campagnes</button>
+                                <button class="ix-cfg__btn ix-cfg__btn--primary" t-on-click="nouvelleCampagne">+ Nouvelle campagne</button>
+                            </div>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <div class="ix-cfg__error">
+                            <div class="ix-cfg__error-icon">!</div>
+                            <h3>Déploiement incomplet</h3>
+                            <p t-if="state.deployResult"><t t-esc="state.deployResult.message"/></p>
+                            <p class="ix-cfg__muted">La campagne a été enregistrée. Configurez la clé API n8n (Réglages IA &amp; n8n) puis régénérez-la.</p>
+                            <div class="ix-cfg__actions ix-cfg__actions--center">
+                                <button class="ix-cfg__btn" t-on-click="() => this.backTo(3)">← Retour au récapitulatif</button>
+                                <button class="ix-cfg__btn" t-on-click="voirCampagnes">Voir les campagnes</button>
+                                <button class="ix-cfg__btn ix-cfg__btn--primary" t-on-click="nouvelleCampagne">+ Nouvelle campagne</button>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+
+            </div>
+        </div>
+    </t>
+</templates>

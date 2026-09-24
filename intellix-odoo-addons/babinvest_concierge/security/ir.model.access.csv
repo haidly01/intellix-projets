@@ -1,0 +1,15 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_babinvest_market_user,babinvest.market.user,model_babinvest_market,group_babinvest_user,1,0,0,0
+access_babinvest_market_manager,babinvest.market.manager,model_babinvest_market,group_babinvest_manager,1,1,1,1
+access_babinvest_project_user,babinvest.project.user,model_babinvest_project,group_babinvest_user,1,0,0,0
+access_babinvest_project_manager,babinvest.project.manager,model_babinvest_project,group_babinvest_manager,1,1,1,1
+access_babinvest_stage_user,babinvest.concierge.stage.user,model_babinvest_concierge_stage,group_babinvest_user,1,0,0,0
+access_babinvest_stage_manager,babinvest.concierge.stage.manager,model_babinvest_concierge_stage,group_babinvest_manager,1,1,1,1
+access_babinvest_lead_user,babinvest.concierge.lead.user,model_babinvest_concierge_lead,group_babinvest_user,1,1,1,0
+access_babinvest_lead_manager,babinvest.concierge.lead.manager,model_babinvest_concierge_lead,group_babinvest_manager,1,1,1,1
+access_babinvest_visit_user,babinvest.concierge.visit.user,model_babinvest_concierge_visit,group_babinvest_user,1,1,1,0
+access_babinvest_visit_manager,babinvest.concierge.visit.manager,model_babinvest_concierge_visit,group_babinvest_manager,1,1,1,1
+access_babinvest_interaction_user,babinvest.concierge.interaction.user,model_babinvest_concierge_interaction,group_babinvest_user,1,1,1,0
+access_babinvest_interaction_manager,babinvest.concierge.interaction.manager,model_babinvest_concierge_interaction,group_babinvest_manager,1,1,1,1
+access_babinvest_msgtpl_user,babinvest.concierge.message.template.user,model_babinvest_concierge_message_template,group_babinvest_user,1,0,0,0
+access_babinvest_msgtpl_manager,babinvest.concierge.message.template.manager,model_babinvest_concierge_message_template,group_babinvest_manager,1,1,1,1

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_vicidial_qualification_hub" model="ir.actions.client">
+        <field name="name">Qualification CRM</field>
+        <field name="tag">vicidial_qualification_hub_action</field>
+    </record>
+</odoo>

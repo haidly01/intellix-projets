@@ -1,0 +1,48 @@
+// Intellix — backend (onboarding + dashboards Doorway)
+// Shell global : intellix_odoo_shell.scss
+
+.o_doorway_onboarding_wizard,
+.o_pe_onboarding_wizard {
+    font-family: var(--ix-font);
+    color: var(--ix-text);
+
+    .progress-bar {
+        background: var(--ix-gradient-cta) !important;
+        border-radius: var(--ix-radius-pill);
+    }
+
+    .pe-xp-callout {
+        background: linear-gradient(
+            135deg,
+            rgba(99, 102, 241, 0.12),
+            rgba(168, 85, 247, 0.1)
+        ) !important;
+        border: 1px solid var(--ix-border) !important;
+        border-radius: var(--ix-radius-card) !important;
+        color: var(--ix-text);
+    }
+
+    .pe-btn-unlock {
+        background: var(--ix-gradient-cta);
+        border: none;
+        color: var(--ix-text-inverse);
+        border-radius: var(--ix-radius-btn);
+    }
+}
+
+// Dashboard Agents : tokens globaux (détail dans agents.css)
+.doorway-agents-dashboard {
+    --ix-dash-bg: var(--ix-bg);
+    --ix-dash-surface: var(--ix-surface);
+    --ix-dash-surface-hover: var(--ix-surface-hover);
+    --ix-dash-border: var(--ix-border);
+    --ix-dash-text: var(--ix-text);
+    --ix-dash-muted: var(--ix-text-muted);
+    --ix-dash-primary: var(--ix-primary);
+    --ix-dash-primary-glow: rgba(99, 102, 241, 0.45);
+    --ix-dash-cyan: var(--ix-secondary);
+    --ix-dash-success: var(--ix-success);
+    --ix-dash-warning: var(--ix-warning);
+    --ix-dash-danger: var(--ix-danger);
+    --ix-dash-gradient-cta: var(--ix-gradient-cta);
+}

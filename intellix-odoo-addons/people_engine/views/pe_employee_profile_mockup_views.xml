@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pe_employee_profile_form_mockup" model="ir.ui.view">
+        <field name="name">pe.employee.profile.form.mockup</field>
+        <field name="model">pe.employee.profile</field>
+        <field name="inherit_id" ref="people_engine.view_pe_employee_profile_form"/>
+        <field name="priority">1</field>
+        <field name="arch" type="xml">
+            <form position="attributes">
+                <attribute name="class">pe-rh-theme o_pe_employee_mockup_form</attribute>
+            </form>
+
+            <xpath expr="//sheet" position="before">
+                <field name="pe_avatar_initials" invisible="1"/>
+                <field name="pe_score_ring_svg" invisible="1"/>
+                <field name="pe_score_trend_label" invisible="1"/>
+                <field name="pe_hire_date_label" invisible="1"/>
+                <field name="pe_ai_insight_text" invisible="1"/>
+                <field name="pe_type_usager_label" invisible="1"/>
+                <field name="pe_status_display" invisible="1"/>
+                <field name="employee_id" invisible="1"/>
+
+                <div class="pe-emp-action-bar">
+                    <div class="pe-emp-breadcrumb">
+                        <span class="pe-emp-breadcrumb-root">RH / Équipe</span>
+                        <span class="pe-emp-breadcrumb-sep">/</span>
+                        <field name="display_name" readonly="1" class="pe-emp-breadcrumb-name"/>
+                    </div>
+                    <div class="pe-emp-action-buttons d-none d-xl-flex">
+                        <button name="action_refresh_metrics" type="object"
+                                string="Actualiser métriques" class="btn btn-sm pe-emp-btn-purple"
+                                groups="people_engine.group_manager"/>
+                        <button name="action_calculate_score" type="object"
+                                string="Calculer score" class="btn btn-sm pe-emp-btn-violet"
+                                groups="people_engine.group_manager"/>
+                        <button name="action_praise" type="object"
+                                string="Féliciter" class="btn btn-sm pe-emp-btn-ghost"
+                                groups="people_engine.group_hr,people_engine.group_manager"/>
+                        <button name="action_start_coaching" type="object"
+                                string="Coaching IA" class="btn btn-sm pe-emp-btn-ghost"
+                                groups="people_engine.group_manager"/>
+                        <button name="action_open_learning_path_wizard" type="object"
+                                string="Parcours LMS" class="btn btn-sm pe-emp-btn-outline"
+                                groups="people_engine.group_manager"/>
+                        <button name="action_generate_contract_cdd" type="object"
+                                string="Contrat CDD" class="btn btn-sm pe-emp-btn-outline"
+                                groups="people_engine.group_hr"/>
+                        <button name="action_generate_contract_cdi" type="object"
+                                string="Contrat CDI" class="btn btn-sm pe-emp-btn-outline"
+                                groups="people_engine.group_hr"/>
+                    </div>
+                </div>
+
+                <div class="pe-emp-hero">
+                    <div class="pe-emp-hero-inner">
+                        <div class="pe-emp-avatar">
+                            <span class="pe-emp-avatar-initials">
+                                <field name="pe_avatar_initials" readonly="1" nolabel="1"/>
+                            </span>
+                            <span class="pe-emp-avatar-badge" title="Actif">✓</span>
+                        </div>
+                        <div class="pe-emp-info">
+                            <h1 class="pe-emp-name">
+                                <field name="display_name" readonly="1"/>
+                            </h1>
+                            <div class="pe-emp-meta">
+                                <span class="pe-emp-meta-item" invisible="not pe_type_usager_label">
+                                    <i class="fa fa-briefcase" title="Rôle"/>
+                                    <field name="pe_type_usager_label" readonly="1" nolabel="1"/>
+                                </span>
+                                <span class="pe-emp-meta-item" invisible="not department_id">
+                                    <i class="fa fa-building" title="Département"/>
+                                    <field name="department_id" readonly="1"/>
+                                </span>
+                                <span class="pe-emp-meta-item" invisible="not parent_id">
+                                    <i class="fa fa-user" title="Manager"/>
+                                    Manager : <field name="parent_id" readonly="1"/>
+                                </span>
+                                <span class="pe-emp-meta-item" invisible="not pe_hire_date_label">
+                                    <i class="fa fa-calendar" title="Arrivée"/>
+                                    <field name="pe_hire_date_label" readonly="1" nolabel="1"/>
+                                </span>
+                            </div>
+                            <div class="pe-emp-tags">
+                                <span class="pe-emp-tag pe-emp-tag-dept" invisible="not department_id">
+                                    <field name="department_id" readonly="1"/>
+                                </span>
+                                <span class="pe-emp-tag pe-emp-tag-role" invisible="not pe_type_usager_label">
+                                    <field name="pe_type_usager_label" readonly="1" nolabel="1"/>
+                                </span>
+                                <span class="pe-emp-tag pe-emp-tag-surv" invisible="pe_status != 'monitoring'">
+                                    ⚠ <field name="pe_status_display" readonly="1" nolabel="1"/>
+                                </span>
+                                <span class="pe-emp-tag pe-emp-tag-stage" invisible="not lifecycle_stage_id">
+                                    <field name="lifecycle_stage_id" readonly="1"/>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="pe-emp-score-ring">
+                            <field name="pe_score_ring_svg" readonly="1" nolabel="1"
+                                   class="pe-emp-score-ring-html"/>
+                            <div class="pe-emp-score-ring-label">Score global</div>
+                            <field name="pe_score_trend_label" readonly="1" nolabel="1"
+                                   class="pe-emp-score-trend"/>
+                        </div>
+                    </div>
+                    <div class="pe-emp-score-strip">
+                        <div class="pe-emp-score-strip-item">
+                            <div class="pe-emp-score-strip-label">Performance /40</div>
+                            <field name="score_performance" readonly="1" nolabel="1"
+                                   class="pe-emp-score-strip-val pe-emp-color-indigo"/>
+                            <field name="score_performance" widget="progressbar"
+                                   options="{'max_value': 40}" readonly="1" nolabel="1"
+                                   class="pe-emp-score-progress"/>
+                        </div>
+                        <div class="pe-emp-score-strip-item">
+                            <div class="pe-emp-score-strip-label">Engagement /30</div>
+                            <field name="score_engagement" readonly="1" nolabel="1"
+                                   class="pe-emp-score-strip-val pe-emp-color-cyan"/>
+                            <field name="score_engagement" widget="progressbar"
+                                   options="{'max_value': 30}" readonly="1" nolabel="1"
+                                   class="pe-emp-score-progress"/>
+                        </div>
+                        <div class="pe-emp-score-strip-item">
+                            <div class="pe-emp-score-strip-label">Croissance /30</div>
+                            <field name="score_growth" readonly="1" nolabel="1"
+                                   class="pe-emp-score-strip-val pe-emp-color-green"/>
+                            <field name="score_growth" widget="progressbar"
+                                   options="{'max_value': 30}" readonly="1" nolabel="1"
+                                   class="pe-emp-score-progress"/>
+                        </div>
+                        <div class="pe-emp-score-strip-item">
+                            <div class="pe-emp-score-strip-label">Taux objectifs</div>
+                            <div class="pe-emp-score-strip-val pe-emp-color-amber">
+                                <field name="objectives_achievement_pct" readonly="1" nolabel="1"/>%
+                            </div>
+                            <field name="objectives_achievement_pct" widget="progressbar"
+                                   options="{'max_value': 100}" readonly="1" nolabel="1"
+                                   class="pe-emp-score-progress"/>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+
+            <xpath expr="//sheet" position="attributes">
+                <attribute name="class">pe-emp-content-sheet</attribute>
+            </xpath>
+
+            <xpath expr="//chatter" position="before">
+                <div class="pe-emp-ai-insight">
+                    <div class="pe-emp-ai-insight-header">
+                        <span class="pe-emp-ai-insight-icon">🤖</span>
+                        <span class="pe-emp-ai-insight-title">Analyse IA — People Engine</span>
+                    </div>
+                    <field name="pe_ai_insight_text" readonly="1" nolabel="1"
+                           class="pe-emp-ai-insight-text"/>
+                </div>
+            </xpath>
+
+            <xpath expr="//chatter" position="attributes">
+                <attribute name="class">pe-emp-chatter</attribute>
+            </xpath>
+
+            <xpath expr="//notebook" position="attributes">
+                <attribute name="class">pe-emp-tabs</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

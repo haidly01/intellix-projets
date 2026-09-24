@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="0">
+    <!-- Campagnes : voir doorway_vicidial_campaigns/data/campaigns_data.xml -->
+
+    <!-- 12 agents vocaux -->
+    <record id="agent_renov_inbound" model="doorway.agent.ia">
+        <field name="name">Rénovation — Accueil entrant</field>
+        <field name="code">agent_renov_inbound</field>
+        <field name="pipeline">renovation</field>
+        <field name="agent_type">inbound</field>
+        <field name="langue">fr</field>
+        <field name="is_active" eval="True"/>
+        <field name="system_prompt">INTRO (&lt;15 s) : « Bonjour, ici Agence Doorway. Vous avez demandé une soumission réno — 2 minutes pour confirmer votre projet? » Ensuite : qualifie budget et échéancier. Ton chaleureux, québécois, phrases courtes.</field>
+    </record>
+    <record id="agent_renov_outbound" model="doorway.agent.ia">
+        <field name="name">Rénovation — Prospection partenaires</field>
+        <field name="code">agent_renov_outbound</field>
+        <field name="pipeline">renovation</field>
+        <field name="agent_type">outbound</field>
+        <field name="langue">fr</field>
+        <field name="is_active" eval="True"/>
+        <field name="system_prompt">INTRO (&lt;15 s) : « Bonjour, Agence Doorway — on collabore avec des entrepreneurs réno. 2 minutes pour voir si on est un bon fit? » Valeur réseau, qualification rapide.</field>
+    </record>
+    <record id="agent_renov_followup" model="doorway.agent.ia">
+        <field name="name">Rénovation — Suivi post-soumission</field>
+        <field name="code">agent_renov_followup</field>
+        <field name="pipeline">renovation</field>
+        <field name="agent_type">followup</field>
+        <field name="langue">fr</field>
+        <field name="is_active" eval="True"/>
+        <field name="system_prompt">INTRO (&lt;15 s) : « Bonjour, c'est Doorway — suivi de votre dossier réno. Une minute pour la prochaine étape? » Rassure, propose visite/devis/rappel. Phrases courtes.</field>
+    </record>
+
+    <record id="agent_driven_inbound" model="doorway.agent.ia">
+        <field name="name">Driven — Qualification crédit</field>
+        <field name="code">agent_driven_inbound</field>
+        <field name="pipeline">driven</field>
+        <field name="agent_type">inbound</field>
+        <field name="langue">fr</field>
+        <field name="is_active" eval="True"/>
+        <field name="system_prompt">INTRO (&lt;15 s) : « Bonjour, Agence Doorway — votre dossier financement, je confirme quelques infos? » Qualifie score 600+, 6+ mois, ~10k$/mois. Conforme, court.</field>
+    </record>
+    <record id="agent_driven_outbound" model="doorway.agent.ia">
+        <field name="name">Driven — Prospection PME</field>
+        <field name="code">agent_driven_outbound</field>
+        <field name="pipeline">driven</field>
+        <field name="agent_type">outbound</field>
+        <field name="langue">fr</field>
+        <field name="is_active" eval="True"/>
+        <field name="system_prompt">INTRO (&lt;15 s) : « Bonjour, Driven par Doorway — financement PME, 2 minutes? » Valeur claire, RDV si intérêt. Pas de promesses.</field>
+    </record>
+    <record id="agent_driven_followup" model="doorway.agent.ia">
+        <field name="name">Driven — Relance dossiers</field>
+        <field name="code">agent_driven_followup</field>
+        <field name="pipeline">driven</field>
+        <field name="agent_type">followup</field>
+        <field name="langue">fr</field>
+        <field name="is_active" eval="True"/>
+        <field name="system_prompt">INTRO (&lt;15 s) : « Bonjour, suivi Driven — il manque peut-être un document. 1 minute? » Liste pièces, prochaine étape. Court et pro.</field>
+    </record>
+
+    <record id="agent_marketing_inbound" model="doorway.agent.ia">
+        <field name="name">Marketing — Accueil services</field>
+        <field name="code">agent_marketing_inbound</field>
+        <field name="pipeline">marketing</field>
+        <field name="agent_type">inbound</field>
+        <field name="langue">fr</field>
+        <field name="is_active" eval="True"/>
+        <field name="system_prompt">INTRO (&lt;15 s) : « Bonjour, Doorway marketing — vous vouliez parler SEO/pub? 2 minutes? » Identifie besoin et budget. Court.</field>
+    </record>
+    <record id="agent_marketing_outbound" model="doorway.agent.ia">
+        <field name="name">Marketing — Prospection rénovation</field>
+        <field name="code">agent_marketing_outbound</field>
+        <field name="pipeline">marketing</field>
+        <field name="agent_type">outbound</field>
+        <field name="langue">fr</field>
+        <field name="is_active" eval="True"/>
+        <field name="system_prompt">INTRO (&lt;15 s) : « Bonjour, Doorway — on aide les entrepreneurs réno à avoir plus de clients. 2 minutes? » ROI, accompagnement, court.</field>
+    </record>
+    <record id="agent_marketing_followup" model="doorway.agent.ia">
+        <field name="name">Marketing — Suivi propositions</field>
+        <field name="code">agent_marketing_followup</field>
+        <field name="pipeline">marketing</field>
+        <field name="agent_type">followup</field>
+        <field name="langue">fr</field>
+        <field name="is_active" eval="True"/>
+        <field name="system_prompt">INTRO (&lt;15 s) : « Bonjour, suivi de notre proposition marketing — des questions? 2 minutes? » Objections prix, RDV stratégique si oui.</field>
+    </record>
+
+    <record id="agent_assurance_inbound" model="doorway.agent.ia">
+        <field name="name">Assurance — Qualification besoins</field>
+        <field name="code">agent_assurance_inbound</field>
+        <field name="pipeline">assurance</field>
+        <field name="agent_type">inbound</field>
+        <field name="langue">fr</field>
+        <field name="is_active" eval="True"/>
+        <field name="system_prompt">INTRO (&lt;15 s) : « Bonjour, Doorway assurance — on clarifie vos besoins en 2 minutes? » Type de couverture, échéance, coordonnées. Pas de promesse de prime.</field>
+    </record>
+    <record id="agent_assurance_outbound" model="doorway.agent.ia">
+        <field name="name">Assurance — Prospection</field>
+        <field name="code">agent_assurance_outbound</field>
+        <field name="pipeline">assurance</field>
+        <field name="agent_type">outbound</field>
+        <field name="langue">fr</field>
+        <field name="is_active" eval="True"/>
+        <field name="system_prompt">INTRO (&lt;15 s) : « Bonjour, Doorway assurance — protection entreprise/particulier, 2 minutes? » Conformité stricte, pas de prime garantie.</field>
+    </record>
+    <record id="agent_assurance_followup" model="doorway.agent.ia">
+        <field name="name">Assurance — Suivi dossiers</field>
+        <field name="code">agent_assurance_followup</field>
+        <field name="pipeline">assurance</field>
+        <field name="agent_type">followup</field>
+        <field name="langue">fr</field>
+        <field name="is_active" eval="True"/>
+        <field name="system_prompt">INTRO (&lt;15 s) : « Bonjour, suivi assurance Doorway — une minute pour votre dossier? » Pièces manquantes, renouvellement, satisfaction.</field>
+    </record>
+</odoo>

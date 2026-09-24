@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="pe_prime_template_5pct_extra_revenue" model="pe.prime.template">
+        <field name="name">5% revenus extra (objectif mensuel)</field>
+        <field name="description">Commission sur les revenus générés au-delà de l'objectif mensuel — cas type commercial / prospecteur.</field>
+        <field name="calculation_type">percent_extra_revenue</field>
+        <field name="objective_period">monthly</field>
+        <field name="taux_commission">5</field>
+        <field name="montant_variable">0</field>
+        <field name="description_variable">dès atteinte de l'objectif mensuel 5% pour extra des revenus générés</field>
+        <field name="challenges_eligible" eval="True"/>
+    </record>
+
+    <record id="pe_prime_template_fixed_monthly_objective" model="pe.prime.template">
+        <field name="name">Prime fixe à l'objectif mensuel</field>
+        <field name="description">Prime forfaitaire versée lorsque l'objectif mensuel KPI est atteint.</field>
+        <field name="calculation_type">fixed_on_objective</field>
+        <field name="objective_period">monthly</field>
+        <field name="montant_variable">500</field>
+        <field name="taux_commission">0</field>
+        <field name="description_variable">Prime fixe de 500 MAD à l'atteinte de l'objectif mensuel (100% du KPI).</field>
+        <field name="challenges_eligible" eval="True"/>
+    </record>
+</odoo>

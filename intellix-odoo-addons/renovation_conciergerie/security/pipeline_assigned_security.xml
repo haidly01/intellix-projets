@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Vendeur avec pipelines limités : uniquement ses propres leads / devis -->
+    <record id="group_doorway_pipeline_assigned" model="res.groups">
+        <field name="name">Vendeur : pipelines assignés (mes leads)</field>
+        <field name="privilege_id" ref="sales_team.res_groups_privilege_sales"/>
+        <field name="implied_ids" eval="[(4, ref('crm.group_use_lead'))]"/>
+        <field name="comment">Accès CRM et Ventes restreint aux pipelines listés dans « Pipelines CRM assignés ». Ne voit que ses propres leads et commandes (pas les dossiers des autres vendeurs).</field>
+    </record>
+
+    <record id="rule_crm_lead_pipeline_assigned" model="ir.rule">
+        <field name="name">CRM Lead : pipelines assignés (mes leads uniquement)</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="domain_force">['&amp;', ('team_id', 'in', user.doorway_assigned_pipeline_ids.ids), ('user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_doorway_pipeline_assigned'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_mail_activity_pipeline_assigned" model="ir.rule">
+        <field name="name">Activités : pipelines assignés (mes activités)</field>
+        <field name="model_id" ref="mail.model_mail_activity"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_doorway_pipeline_assigned'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_sale_order_pipeline_assigned" model="ir.rule">
+        <field name="name">Commandes : pipelines assignés (mes commandes)</field>
+        <field name="model_id" ref="sale.model_sale_order"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_doorway_pipeline_assigned'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_sale_order_line_pipeline_assigned" model="ir.rule">
+        <field name="name">Lignes de commande : pipelines assignés (mes commandes)</field>
+        <field name="model_id" ref="sale.model_sale_order_line"/>
+        <field name="domain_force">[('order_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_doorway_pipeline_assigned'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_crm_activity_report_pipeline_assigned" model="ir.rule">
+        <field name="name">Rapport activités CRM : pipelines assignés (mes activités)</field>
+        <field name="model_id" ref="crm.model_crm_activity_report"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_doorway_pipeline_assigned'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+</odoo>

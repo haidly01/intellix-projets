@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_jt_portal_access_list" model="ir.ui.view">
+    <field name="name">jt.portal.access.list</field>
+    <field name="model">jt.portal.access</field>
+    <field name="arch" type="xml">
+      <list string="Accès portail">
+        <field name="client_id"/>
+        <field name="email"/>
+        <field name="portal_url" widget="url"/>
+        <field name="is_active"/>
+        <field name="invitation_sent"/>
+        <field name="last_login"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="view_jt_portal_access_form" model="ir.ui.view">
+    <field name="name">jt.portal.access.form</field>
+    <field name="model">jt.portal.access</field>
+    <field name="arch" type="xml">
+      <form string="Accès portail">
+        <header>
+          <button name="generate_token" type="object" string="Générer token" class="btn-secondary"/>
+          <button name="send_invitation" type="object" string="Envoyer invitation" class="btn-primary"/>
+        </header>
+        <sheet>
+          <group>
+            <field name="client_id"/>
+            <field name="email"/>
+            <field name="token" readonly="1"/>
+            <field name="portal_url" widget="url"/>
+            <field name="is_active"/>
+            <field name="invitation_sent"/>
+            <field name="last_login"/>
+            <field name="created_at"/>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <record id="action_jt_portal_access" model="ir.actions.act_window">
+    <field name="name">Accès clients</field>
+    <field name="res_model">jt.portal.access</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+  <record id="action_jt_portal_create_all" model="ir.actions.server">
+    <field name="name">Créer tous les accès portail</field>
+    <field name="model_id" ref="jt_client_portal.model_jt_portal_access"/>
+    <field name="state">code</field>
+    <field name="code">action = env['jt.portal.access'].action_create_all_access()</field>
+  </record>
+
+  <record id="action_jt_portal_send_all" model="ir.actions.server">
+    <field name="name">Envoyer toutes les invitations</field>
+    <field name="model_id" ref="jt_client_portal.model_jt_portal_access"/>
+    <field name="state">code</field>
+    <field name="code">action = env['jt.portal.access'].action_send_all_invitations()</field>
+  </record>
+</odoo>

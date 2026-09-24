@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <record id="activite_cheval_palmeraie" model="coins.activite">
+        <field name="name">Balade à cheval — Palmeraie</field>
+    </record>
+
+    <record id="activite_visite_nocturne" model="coins.activite">
+        <field name="name">Visite nocturne médina</field>
+    </record>
+
+    <record id="activite_rooftop" model="coins.activite">
+        <field name="name">Rooftop / lounge (produit autonome)</field>
+    </record>
+
+    <record id="activite_viator_agafay" model="coins.activite">
+        <field name="name">Désert Agafay — grand format (Viator)</field>
+    </record>
+
+    <record id="activite_viator_montgolfiere" model="coins.activite">
+        <field name="name">Montgolfière Marrakech (Viator)</field>
+    </record>
+
+    <record id="activite_viator_ouzoud" model="coins.activite">
+        <field name="name">Cascades d'Ouzoud (Viator)</field>
+    </record>
+
+    <record id="activite_viator_parapente" model="coins.activite">
+        <field name="name">Parapente Atlas (Viator)</field>
+    </record>
+
+</odoo>

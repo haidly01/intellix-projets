@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_cq_rdv_search" model="ir.ui.view">
+        <field name="name">coins.quebec.rdv.search</field>
+        <field name="model">coins.quebec.rdv</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="RDV" filter_domain="[
+                    '|', '|', '|',
+                    ('name', 'ilike', self),
+                    ('partenariat_id', 'ilike', self),
+                    ('lead_id', 'ilike', self),
+                    ('note', 'ilike', self)]"/>
+                <field name="partenariat_id"/>
+                <field name="lead_id"/>
+                <field name="agent"/>
+                <filter name="filter_agent_leila" string="Leila" domain="[('agent', '=', 'leila')]"/>
+                <filter name="filter_agent_yamina" string="Yamina" domain="[('agent', '=', 'yamina')]"/>
+                <separator/>
+                <filter name="filter_state_propose" string="Proposé" domain="[('state', '=', 'propose')]"/>
+                <filter name="filter_state_confirme" string="Confirmé" domain="[('state', '=', 'confirme')]"/>
+                <filter name="filter_state_effectue" string="Effectué" domain="[('state', '=', 'effectue')]"/>
+                <filter name="filter_state_annule" string="Annulé" domain="[('state', '=', 'annule')]"/>
+                <filter name="filter_state_noshow" string="No-show" domain="[('state', '=', 'no_show')]"/>
+                <separator/>
+                <filter name="filter_pending" string="En attente Martin" domain="[('martin_state', '=', 'pending')]"/>
+                <filter name="filter_validated" string="Validé Martin" domain="[('martin_state', '=', 'validated')]"/>
+                <filter name="filter_rejected" string="Rejeté Martin" domain="[('martin_state', '=', 'rejected')]"/>
+                <separator/>
+                <filter name="filter_start" string="Date du RDV" date="start_at"/>
+                <separator/>
+                <filter name="group_agent" string="Agent" context="{'group_by': 'agent'}"/>
+                <filter name="group_state" string="Statut RDV" context="{'group_by': 'state'}"/>
+                <filter name="group_martin" string="Validation Martin" context="{'group_by': 'martin_state'}"/>
+                <filter name="group_month" string="Mois" context="{'group_by': 'start_at:month'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_cq_rdv_list" model="ir.ui.view">
+        <field name="name">coins.quebec.rdv.list</field>
+        <field name="model">coins.quebec.rdv</field>
+        <field name="arch" type="xml">
+            <list class="o_cq_list" decoration-muted="martin_state == 'rejected'"
+                  decoration-success="martin_state == 'validated'"
+                  decoration-warning="martin_state == 'pending'">
+                <field name="agent"/>
+                <field name="partenariat_id"/>
+                <field name="lead_id" optional="hide"/>
+                <field name="start_at"/>
+                <field name="start_at_display" optional="hide"/>
+                <field name="state"/>
+                <field name="martin_state"/>
+                <field name="validated_at" optional="show"/>
+                <field name="reject_note" optional="hide"/>
+                <field name="can_validate" column_invisible="1"/>
+                <button name="action_martin_validate" type="object" string="Valider"
+                        class="btn-primary o_cq_btn_martin"
+                        invisible="not can_validate"
+                        confirm="Valider ce RDV ? Martin confirme que le rendez-vous est accepté."/>
+                <button name="action_open_reject_wizard" type="object" string="Rejeter"
+                        class="btn-secondary"
+                        invisible="not can_validate"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_cq_rdv_kanban" model="ir.ui.view">
+        <field name="name">coins.quebec.rdv.kanban</field>
+        <field name="model">coins.quebec.rdv</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="martin_state" class="o_cq_pipeline" records_draggable="false">
+                <field name="name"/>
+                <field name="agent"/>
+                <field name="partenariat_id"/>
+                <field name="start_at_display"/>
+                <field name="state"/>
+                <field name="martin_state"/>
+                <field name="can_validate"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="o_cq_card">
+                            <div class="o_cq_card_title"><field name="name"/></div>
+                            <div class="o_cq_card_meta"><field name="agent"/></div>
+                            <div class="o_cq_card_meta"><field name="start_at_display"/></div>
+                            <div class="o_cq_card_stage"><field name="state"/></div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_cq_rdv_form" model="ir.ui.view">
+        <field name="name">coins.quebec.rdv.form</field>
+        <field name="model">coins.quebec.rdv</field>
+        <field name="arch" type="xml">
+            <form class="o_cq_form">
+                <header>
+                    <field name="can_validate" invisible="1"/>
+                    <field name="is_martin_user" invisible="1"/>
+                    <button name="action_martin_validate" type="object" string="Valider"
+                            class="btn-primary o_cq_btn_martin"
+                            invisible="not can_validate"
+                            confirm="Valider ce RDV ? Martin confirme que le rendez-vous est accepté."/>
+                    <button name="action_open_reject_wizard" type="object" string="Rejeter"
+                            class="btn-secondary"
+                            invisible="not can_validate"/>
+                    <field name="state" widget="statusbar" statusbar_visible="propose,confirme,effectue"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="RDV">
+                            <field name="agent"/>
+                            <field name="agent_user_id" readonly="1"/>
+                            <field name="partenariat_id"/>
+                            <field name="lead_id"/>
+                            <field name="start_at"/>
+                            <field name="start_at_display" readonly="1"/>
+                        </group>
+                        <group string="Validation Martin">
+                            <field name="martin_state" readonly="1"/>
+                            <field name="validated_at" readonly="1"/>
+                            <field name="reject_note" readonly="1"
+                                   invisible="martin_state != 'rejected'"/>
+                        </group>
+                    </group>
+                    <group string="Notes">
+                        <field name="note" nolabel="1" placeholder="Contexte pour Martin (établissement, contact, objectif du RDV)."/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_cq_rdv" model="ir.actions.act_window">
+        <field name="name">RDV Leila / Yamina</field>
+        <field name="res_model">coins.quebec.rdv</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_cq_rdv_search"/>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun RDV équipe</p>
+            <p>Leila et Yamina posent ici leurs rendez-vous. Martin les valide.
+               Les créneaux Rosalie / agenda Martin restent un flux séparé.</p>
+        </field>
+    </record>
+
+    <record id="action_cq_rdv_pending" model="ir.actions.act_window">
+        <field name="name">À valider (Martin)</field>
+        <field name="res_model">coins.quebec.rdv</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_cq_rdv_search"/>
+        <field name="context">{'search_default_filter_pending': 1}</field>
+        <field name="domain">[('martin_state', '=', 'pending')]</field>
+    </record>
+
+    <menuitem id="menu_cq_rdv_root"
+              name="RDV équipe"
+              parent="menu_cq_root"
+              action="action_cq_rdv"
+              sequence="6"
+              groups="group_coins_quebec_user,group_coins_quebec_manager"/>
+
+    <menuitem id="menu_cq_rdv_list"
+              name="Tous les RDV"
+              parent="menu_cq_rdv_root"
+              action="action_cq_rdv"
+              sequence="1"
+              groups="group_coins_quebec_user,group_coins_quebec_manager"/>
+
+    <menuitem id="menu_cq_rdv_pending"
+              name="À valider (Martin)"
+              parent="menu_cq_rdv_root"
+              action="action_cq_rdv_pending"
+              sequence="2"
+              groups="group_coins_quebec_user,group_coins_quebec_manager"/>
+</odoo>

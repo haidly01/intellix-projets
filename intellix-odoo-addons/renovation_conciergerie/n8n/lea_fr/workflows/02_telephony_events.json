@@ -1,0 +1,59 @@
+{
+  "name": "Lea FR - Telephony Events",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lea-fr/event",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        300
+      ],
+      "webhookId": "lea-fr-event"
+    },
+    {
+      "parameters": {
+        "jsCode": "const b = $input.first().json.body || $input.first().json;\nconst ev = {\n  event_type: b.event_type || 'recording_ready',\n  call_sid: b.call_sid || b.uniqueid || '',\n  from: b.from || b.phone_number || '',\n  to: b.to || '',\n  recording_url: b.recording_url || b.recording_path || '',\n  recording_b64: b.recording_b64 || '',\n  amd_result: (b.amd_result || 'unknown').toLowerCase(),\n  duration_sec: parseInt(b.duration_sec || b.duration || 0, 10) || 0,\n  provider: 'vicidial',\n  partner_id: b.partner_id || b.lead_id || '',\n  prenom: b.prenom || b.nombre || b.first_name || '',\n  ville: b.ville || b.city || '',\n  campaign: b.campaign || $env.VICIDIAL_CAMPAIGN || 'DW_LEAFR',\n  agent_id: b.agent_id || $env.AGENT_ID || 'lea-fr',\n  raw: b,\n};\n\nconst base = ($env.N8N_WEBHOOK_URL || '').replace(/\\/$/, '');\nconst engine = await this.helpers.httpRequest({\n  method: 'POST',\n  url: base + '/lea-fr/conversation',\n  body: ev,\n  json: true,\n});\nconst out = engine && engine.action ? engine : (Array.isArray(engine) ? engine[0] : { normalized: ev, engine });\n\nif (ev.event_type === 'call_ended' || out.action === 'hangup') {\n  const odooUrl = ($env.ODOO_URL || 'https://intellixcrm.com').replace(/\\/$/, '');\n  const cp = out.crm_payload || {};\n  try {\n    await this.helpers.httpRequest({\n      method: 'POST',\n      url: odooUrl + '/doorway/api/lea-fr/call-ended',\n      body: {\n        jsonrpc: '2.0',\n        method: 'call',\n        params: {\n          tenant_api_key: $env.DOORWAY_TENANT_API_KEY,\n          call_sid: ev.call_sid,\n          duration_sec: ev.duration_sec || cp.duration_sec || 0,\n          amd_result: ev.amd_result,\n          partner_id: cp.partner_id || ev.partner_id,\n          lead_id: cp.lead_id || ev.partner_id,\n          prenom: cp.prenom || ev.prenom,\n          ville: cp.ville || ev.ville,\n          telephone: cp.telephone || ev.to || ev.from,\n          statut: cp.statut || cp.etat_final,\n          etat_final: cp.etat_final || cp.statut,\n          metier: cp.metier,\n          territoire: cp.territoire,\n          generation_actuelle: cp.generation_actuelle,\n          dispo_rdv: cp.dispo_rdv,\n          rdv_pris: cp.rdv_pris,\n          qualification_complete: cp.qualification_complete,\n          transcript: cp.transcript || '',\n          recording_url: cp.recording_url || ev.recording_url,\n          campaign: cp.campaign || ev.campaign || 'DW_LEAFR',\n          agent_id: cp.agent_id || ev.agent_id || 'lea-fr',\n        },\n        id: Date.now(),\n      },\n      json: true,\n      timeout: 15000,\n    });\n  } catch (e) {\n    out.odoo_error = (e.message || String(e)).slice(0, 200);\n  }\n}\nreturn [{ json: out }];"
+      },
+      "name": "Telephony Events",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Telephony Events",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [
+    {
+      "name": "renofacile-fr"
+    },
+    {
+      "name": "sofia"
+    }
+  ],
+  "active": false,
+  "id": "zEu2Vyj3BJXzD6oM"
+}

@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Challenges paie -->
+    <record id="view_pe_payroll_challenge_tree" model="ir.ui.view">
+        <field name="name">pe.payroll.challenge.tree</field>
+        <field name="model">pe.payroll.challenge</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="type_metrique"/>
+                <field name="objectif_valeur"/>
+                <field name="date_debut"/>
+                <field name="date_fin"/>
+                <field name="montant_prime"/>
+                <field name="prime_paliers"/>
+                <field name="cumul_paie"/>
+                <field name="result_count"/>
+                <field name="prime_totale_calculee"/>
+                <field name="statut" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pe_payroll_challenge_form" model="ir.ui.view">
+        <field name="name">pe.payroll.challenge.form</field>
+        <field name="model">pe.payroll.challenge</field>
+        <field name="arch" type="xml">
+            <form string="Challenge paie">
+                <header>
+                    <button name="action_activate" type="object" string="Activer"
+                            class="btn-primary" invisible="statut != 'draft'"/>
+                    <button name="action_finish" type="object" string="Terminer"
+                            invisible="statut != 'active'"/>
+                    <button name="action_recalculate_results" type="object"
+                            string="Recalculer résultats"/>
+                    <button name="action_open_team_ranking" type="object"
+                            string="Classement équipe"/>
+                    <field name="statut" widget="statusbar"
+                           statusbar_visible="draft,active,finished,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Nom du challenge"/></h1>
+                    </div>
+                    <group>
+                        <group string="Objectif">
+                            <field name="type_metrique"/>
+                            <field name="objectif_valeur"/>
+                            <field name="date_debut"/>
+                            <field name="date_fin"/>
+                            <field name="montant_prime"/>
+                            <field name="prime_paliers"/>
+                            <field name="cumul_paie"/>
+                        </group>
+                        <group string="Participants">
+                            <field name="department_pe_id"/>
+                            <field name="department_id"/>
+                            <field name="employee_ids" widget="many2many_tags"/>
+                            <field name="gamification_challenge_id"/>
+                        </group>
+                    </group>
+                    <field name="description" placeholder="Description…"/>
+                    <notebook>
+                        <page string="Résultats agents" name="results">
+                            <field name="resultat_ids" readonly="1">
+                                <list>
+                                    <field name="employee_id"/>
+                                    <field name="valeur_atteinte"/>
+                                    <field name="objectif_valeur"/>
+                                    <field name="pourcentage" widget="progressbar"/>
+                                    <field name="palier_atteint"/>
+                                    <field name="prime_calculee"/>
+                                    <field name="jours_restants"/>
+                                    <field name="statut"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_pe_payroll_challenge_result_tree" model="ir.ui.view">
+        <field name="name">pe.payroll.challenge.result.tree</field>
+        <field name="model">pe.payroll.challenge.result</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="challenge_id"/>
+                <field name="employee_id"/>
+                <field name="type_metrique"/>
+                <field name="valeur_atteinte"/>
+                <field name="objectif_valeur"/>
+                <field name="pourcentage" widget="progressbar"/>
+                <field name="palier_atteint"/>
+                <field name="prime_calculee"/>
+                <field name="prime_potentielle"/>
+                <field name="jours_restants"/>
+                <field name="inclus_paie_id"/>
+                <field name="statut"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pe_payroll_challenge_result_search" model="ir.ui.view">
+        <field name="name">pe.payroll.challenge.result.search</field>
+        <field name="model">pe.payroll.challenge.result</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="employee_id"/>
+                <field name="challenge_id"/>
+                <filter string="En cours" name="active_challenges"
+                        domain="[('challenge_id.statut', '=', 'active')]"/>
+                <group>
+                    <filter string="Challenge" name="group_challenge" context="{'group_by': 'challenge_id'}"/>
+                    <filter string="Agent" name="group_employee" context="{'group_by': 'employee_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_pe_payroll_challenge" model="ir.actions.act_window">
+        <field name="name">Challenges &amp; primes paie</field>
+        <field name="res_model">pe.payroll.challenge</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_pe_payroll_challenge_result_my" model="ir.actions.act_window">
+        <field name="name">Mes challenges</field>
+        <field name="res_model">pe.payroll.challenge.result</field>
+        <field name="view_mode">list</field>
+        <field name="domain">[('employee_id.user_id', '=', uid)]</field>
+        <field name="context">{'search_default_active_challenges': 1}</field>
+    </record>
+
+    <record id="action_pe_payroll_challenge_result_team" model="ir.actions.act_window">
+        <field name="name">Classement challenges équipe</field>
+        <field name="res_model">pe.payroll.challenge.result</field>
+        <field name="view_mode">list</field>
+        <field name="context">{'search_default_active_challenges': 1}</field>
+    </record>
+
+    <menuitem id="menu_pe_payroll_challenges"
+        name="Challenges &amp; primes"
+        parent="menu_pe_payroll_root"
+        action="action_pe_payroll_challenge"
+        sequence="15"
+        groups="people_engine.group_hr"/>
+
+    <menuitem id="menu_pe_payroll_challenge_my"
+        name="Mes challenges"
+        parent="menu_pe_gamification"
+        action="action_pe_payroll_challenge_result_my"
+        sequence="35"
+        groups="people_engine.group_employee"/>
+
+    <menuitem id="menu_pe_payroll_challenge_team"
+        name="Classement challenges"
+        parent="menu_pe_team"
+        action="action_pe_payroll_challenge_result_team"
+        sequence="35"
+        groups="people_engine.group_manager"/>
+</odoo>

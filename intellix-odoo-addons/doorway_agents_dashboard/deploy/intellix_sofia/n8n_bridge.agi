@@ -1,0 +1,183 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+n8n_bridge.agi — Bridge Asterisk/VICIdial → n8n (Sofia Intellix)
+
+Reçoit l'appel ou l'enregistrement post-appel, transmet à n8n,
+récupère l'action (play_audio / hangup / start_session), logue dans Odoo.
+
+Installation :
+  cp n8n_bridge.agi /var/lib/asterisk/agi-bin/
+  chmod +x /var/lib/asterisk/agi-bin/n8n_bridge.agi
+  chown asterisk:asterisk /var/lib/asterisk/agi-bin/n8n_bridge.agi
+
+Variables AGI / channel (set avant AGI) :
+  N8N_WEBHOOK_URL   — défaut : https://n8n.intellixcrm.com/webhook/telephony/vicidial/event
+  AGENT_ID          — défaut : sofia-intellix-cc-fr-maroc
+  CALLID            — défaut : UNIQUEID Asterisk
+  PHONE             — numéro prospect
+  RECORDING_PATH    — chemin WAV/MP3 enregistrement
+  DURATION          — durée en secondes
+  AMD_RESULT        — human | machine | unknown
+  AGI_EVENT         — call_start | recording_ready | call_ended
+  ODOO_WEBHOOK_URL  — défaut : https://intellixcrm.com/api/agents/webhook/n8n
+  ODOO_WEBHOOK_KEY  — X-Doorway-Key (voir DOORWAY_AGENTS_WEBHOOK_KEY)
+"""
+from __future__ import annotations
+
+import json
+import os
+import sys
+import urllib.error
+import urllib.request
+from typing import Any
+
+
+class Agi:
+    """Minimal AGI protocol reader/writer."""
+
+    def __init__(self) -> None:
+        self.env: dict[str, str] = {}
+        while True:
+            line = sys.stdin.readline().strip()
+            if not line:
+                break
+            if ": " in line:
+                key, val = line.split(": ", 1)
+                self.env[key] = val
+
+    def verbose(self, msg: str, level: int = 1) -> None:
+        sys.stdout.write(f'VERBOSE "{msg}" {level}\n')
+        sys.stdout.flush()
+
+    def set_variable(self, name: str, value: str) -> None:
+        safe = value.replace('"', "")
+        sys.stdout.write(f'SET VARIABLE {name} "{safe}"\n')
+        sys.stdout.flush()
+
+    def stream_file(self, filename: str) -> None:
+        sys.stdout.write(f'STREAM FILE {filename} ""\n')
+        sys.stdout.flush()
+        sys.stdin.readline()
+
+    def hangup(self) -> None:
+        sys.stdout.write("HANGUP\n")
+        sys.stdout.flush()
+
+
+def _get(agi: Agi, name: str, default: str = "") -> str:
+    return os.environ.get(name) or agi.env.get(f"agi_{name.lower()}", default) or default
+
+
+def http_post(url: str, payload: dict[str, Any], headers: dict[str, str] | None = None, timeout: int = 25) -> dict[str, Any]:
+    data = json.dumps(payload).encode("utf-8")
+    req = urllib.request.Request(
+        url,
+        data=data,
+        headers={"Content-Type": "application/json", **(headers or {})},
+        method="POST",
+    )
+    with urllib.request.urlopen(req, timeout=timeout) as resp:
+        body = resp.read().decode("utf-8", errors="replace")
+        return json.loads(body) if body.strip() else {}
+
+
+def build_payload(agi: Agi) -> dict[str, Any]:
+    uniqueid = _get(agi, "UNIQUEID", _get(agi, "CALLID"))
+    caller = _get(agi, "CALLERID(num)", _get(agi, "PHONE"))
+    event_type = os.environ.get("AGI_EVENT", "recording_ready")
+    recording = os.environ.get("RECORDING_PATH", "")
+    duration = int(os.environ.get("DURATION", "0") or "0")
+    amd = os.environ.get("AMD_RESULT", "unknown")
+    agent_id = os.environ.get("AGENT_ID", "sofia-intellix-cc-fr-maroc")
+
+    return {
+        "source": "vicidial",
+        "event_type": event_type,
+        "call_sid": uniqueid,
+        "agent_id": agent_id,
+        "stack": "n8n+deepgram+claude+elevenlabs",
+        "from": caller,
+        "to": _get(agi, "DNID"),
+        "phone_number": caller,
+        "recording_url": recording if recording.startswith("http") else "",
+        "recording_path": recording,
+        "duration_sec": duration,
+        "amd_result": amd,
+        "provider": "vicidial",
+        "language": "fr-FR",
+    }
+
+
+def log_odoo(payload: dict[str, Any], engine: dict[str, Any]) -> None:
+    """Log final dans Odoo via webhook agents."""
+    odoo_url = os.environ.get("ODOO_WEBHOOK_URL", "https://intellixcrm.com/api/agents/webhook/n8n")
+    odoo_key = os.environ.get("ODOO_WEBHOOK_KEY", "")
+    if not odoo_key:
+        return
+
+    session = engine.get("session") or {}
+    transcript_log = session.get("transcript_log") or []
+    intent = engine.get("intent") or engine.get("final_intent") or ""
+    body = {
+        "source": "vicidial",
+        "call_id": payload.get("call_sid"),
+        "agent_id": payload.get("agent_id"),
+        "duration_ms": int(payload.get("duration_sec", 0)) * 1000,
+        "transcript": [{"role": "log", "content": line} for line in transcript_log],
+        "transcript_text": "\n".join(transcript_log),
+        "intent": intent,
+        "action_triggered": engine.get("action_triggered", ""),
+        "qualified": bool(engine.get("qualified")),
+        "statut": engine.get("statut", ""),
+        "lead_id_odoo": session.get("data", {}).get("lead_id_odoo"),
+        "pipeline": "intellix_callcenter",
+    }
+    try:
+        http_post(odoo_url, body, headers={"X-Doorway-Key": odoo_key}, timeout=15)
+    except (urllib.error.URLError, json.JSONDecodeError, TimeoutError) as exc:
+        # Non bloquant — log AGI seulement
+        pass
+
+
+def main() -> int:
+    agi = Agi()
+    n8n_url = os.environ.get(
+        "N8N_WEBHOOK_URL",
+        "https://n8n.intellixcrm.com/webhook/telephony/vicidial/event",
+    )
+    payload = build_payload(agi)
+    agi.verbose(f"n8n_bridge → {n8n_url} call={payload.get('call_sid')}")
+
+    try:
+        result = http_post(n8n_url, payload, timeout=30)
+    except (urllib.error.URLError, json.JSONDecodeError, TimeoutError) as exc:
+        agi.verbose(f"n8n_bridge ERREUR: {exc}", 1)
+        agi.set_variable("N8N_ERROR", str(exc))
+        return 1
+
+    engine = result.get("engine") or result
+    agi.set_variable("N8N_RESPONSE", json.dumps(result)[:500])
+
+    action = engine.get("action", "")
+    audio_url = engine.get("audio_url", "")
+
+    if action == "play_audio" and audio_url:
+        # Télécharger ou jouer fichier local si path Asterisk
+        if audio_url.startswith("/var/"):
+            agi.stream_file(audio_url.replace(".wav", "").replace(".mp3", ""))
+        else:
+            agi.verbose(f"Audio URL distant: {audio_url[:80]}", 2)
+
+    if action == "hangup" or engine.get("hangup"):
+        intent = engine.get("intent") or engine.get("final_intent") or ""
+        agi.set_variable("SOFIA_INTENT", intent)
+        agi.set_variable("SOFIA_QUALIFIED", "1" if engine.get("qualified") else "0")
+        log_odoo(payload, engine)
+        agi.hangup()
+
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

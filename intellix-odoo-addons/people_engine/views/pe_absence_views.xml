@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pe_absence_detected_tree" model="ir.ui.view">
+        <field name="name">pe.absence.detected.tree</field>
+        <field name="model">pe.absence.detected</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="statut == 'injustifiee'"
+                  decoration-warning="statut == 'detectee'"
+                  decoration-success="statut in ('justifiee', 'conge_valide')">
+                <field name="name"/>
+                <field name="date_absence"/>
+                <field name="employee_id"/>
+                <field name="statut" widget="badge"
+                       decoration-danger="statut == 'injustifiee'"
+                       decoration-warning="statut == 'detectee'"
+                       decoration-success="statut in ('justifiee', 'conge_valide')"/>
+                <field name="source_detection"/>
+                <field name="heures_deduites"/>
+                <field name="impact_paie"/>
+                <field name="heure_detection"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pe_absence_detected_form" model="ir.ui.view">
+        <field name="name">pe.absence.detected.form</field>
+        <field name="model">pe.absence.detected</field>
+        <field name="arch" type="xml">
+            <form string="Absence détectée">
+                <header>
+                    <button name="action_mark_justifiee" type="object" string="Marquer justifiée"
+                            class="btn-primary" invisible="statut not in ('detectee', 'injustifiee')"
+                            groups="people_engine.group_manager"/>
+                    <button name="action_mark_injustifiee" type="object" string="Marquer injustifiée"
+                            invisible="statut not in ('detectee', 'justifiee')"
+                            groups="people_engine.group_manager"/>
+                    <button name="action_mark_erreur" type="object" string="Erreur système"
+                            invisible="statut in ('erreur_systeme', 'conge_valide')"
+                            groups="people_engine.group_hr"/>
+                    <field name="statut" widget="statusbar"
+                           statusbar_visible="detectee,justifiee,injustifiee,conge_valide"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="employee_id"/>
+                            <field name="date_absence"/>
+                            <field name="heure_detection"/>
+                            <field name="source_detection"/>
+                        </group>
+                        <group>
+                            <field name="motif"/>
+                            <field name="justificatif_id"/>
+                            <field name="incident_id"/>
+                            <field name="impact_paie"/>
+                            <field name="heures_deduites"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_pe_absence_detected_search" model="ir.ui.view">
+        <field name="name">pe.absence.detected.search</field>
+        <field name="model">pe.absence.detected</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="employee_id"/>
+                <field name="date_absence"/>
+                <filter name="detectee" string="En attente" domain="[('statut', '=', 'detectee')]"/>
+                <filter name="injustifiee" string="Injustifiées" domain="[('statut', '=', 'injustifiee')]"/>
+                <group>
+                    <filter name="group_employee" string="Employé" context="{'group_by': 'employee_id'}"/>
+                    <filter name="group_statut" string="Statut" context="{'group_by': 'statut'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_pe_absence_detected" model="ir.actions.act_window">
+        <field name="name">Absences détectées</field>
+        <field name="res_model">pe.absence.detected</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_detectee': 1}</field>
+    </record>
+
+    <menuitem id="menu_pe_absence_detected"
+        name="Absences détectées"
+        parent="menu_pe_disciplinary_root"
+        action="action_pe_absence_detected"
+        sequence="25"
+        groups="people_engine.group_manager,people_engine.group_hr"/>
+
+    <menuitem id="menu_pe_absence_detected_payroll"
+        name="Absences détectées"
+        parent="menu_pe_payroll_root"
+        action="action_pe_absence_detected"
+        sequence="45"
+        groups="people_engine.group_hr"/>
+</odoo>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="ir_cron_callcenter_relance_j2" model="ir.cron">
+        <field name="name">Call Center MA/TN — relance J+2</field>
+        <field name="model_id" ref="model_doorway_callcenter_prospect"/>
+        <field name="state">code</field>
+        <field name="code">model.action_send_j2()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+    <record id="ir_cron_callcenter_relance_j5" model="ir.cron">
+        <field name="name">Call Center MA/TN — relance J+5</field>
+        <field name="model_id" ref="model_doorway_callcenter_prospect"/>
+        <field name="state">code</field>
+        <field name="code">model.action_send_j5()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

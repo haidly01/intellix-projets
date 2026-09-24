@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_riad_comp_riad_list" model="ir.ui.view">
+        <field name="name">intellix.riad.comp.riad.list</field>
+        <field name="model">intellix.riad.comp.riad</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="establishment_id"/>
+                <field name="source_kind"/>
+                <field name="last_rate"/>
+                <field name="last_observed_on"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_riad_comp_riad_form" model="ir.ui.view">
+        <field name="name">intellix.riad.comp.riad.form</field>
+        <field name="model">intellix.riad.comp.riad</field>
+        <field name="arch" type="xml">
+            <form string="Riad comparable">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="establishment_id"/>
+                            <field name="source_kind"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="booking_label"/>
+                            <field name="airbnb_label"/>
+                            <field name="sequence"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="notes" placeholder="Pourquoi ce riad est comparable (Kasbah, 5 chambres, standing…). Extraire uniquement depuis Booking Analytics / Airbnb Insights."/>
+                    </group>
+                    <notebook>
+                        <page string="Saisies" name="rates">
+                            <field name="rate_ids">
+                                <list>
+                                    <field name="observed_on"/>
+                                    <field name="source"/>
+                                    <field name="their_rate"/>
+                                    <field name="our_rate"/>
+                                    <field name="gap_percent"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_riad_comp_rate_list" model="ir.ui.view">
+        <field name="name">intellix.riad.comp.rate.list</field>
+        <field name="model">intellix.riad.comp.rate</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="observed_on"/>
+                <field name="competitor_id"/>
+                <field name="establishment_id" optional="hide"/>
+                <field name="source"/>
+                <field name="their_rate"/>
+                <field name="our_rate"/>
+                <field name="gap_percent"/>
+                <field name="alert_sent" optional="hide"/>
+                <field name="entered_by" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_riad_comp_rate_form" model="ir.ui.view">
+        <field name="name">intellix.riad.comp.rate.form</field>
+        <field name="model">intellix.riad.comp.rate</field>
+        <field name="arch" type="xml">
+            <form string="Saisie tarif comparable">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>Saisie officielle — pas de scraping</h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="competitor_id"/>
+                            <field name="establishment_id" readonly="1"/>
+                            <field name="observed_on"/>
+                            <field name="source"/>
+                        </group>
+                        <group>
+                            <field name="their_rate"/>
+                            <field name="our_rate"/>
+                            <field name="gap_percent"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="stay_nights"/>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="notes" placeholder="Ex. Pace Booking, chambre double, 2 nuits, haute saison"/>
+                        <field name="entered_by"/>
+                        <field name="alert_sent"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_riad_establishment_form_pricing" model="ir.ui.view">
+        <field name="name">intellix.riad.establishment.form.pricing</field>
+        <field name="model">intellix.riad.establishment</field>
+        <field name="inherit_id" ref="view_riad_establishment_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='experience']" position="after">
+                <group string="Tarification Phase 1 — visibilité (pas de connecteur)">
+                    <group>
+                        <field name="pricing_alert_enabled"/>
+                        <field name="pricing_gap_threshold"/>
+                        <field name="pricing_our_reference_rate"/>
+                        <field name="pricing_currency_id" invisible="1"/>
+                    </group>
+                    <group>
+                        <field name="pricing_alert_email"/>
+                        <field name="pricing_n8n_webhook"/>
+                        <field name="pricing_last_alert_at"/>
+                        <field name="pricing_last_reminder_on"/>
+                    </group>
+                    <field name="comp_riad_ids">
+                        <list editable="bottom">
+                            <field name="sequence" widget="handle"/>
+                            <field name="name"/>
+                            <field name="source_kind"/>
+                            <field name="booking_label"/>
+                            <field name="airbnb_label"/>
+                            <field name="active"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_riad_comp_riad" model="ir.actions.act_window">
+        <field name="name">Comp-set (5–10 riads)</field>
+        <field name="res_model">intellix.riad.comp.riad</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_riad_comp_rate_search" model="ir.ui.view">
+        <field name="name">intellix.riad.comp.rate.search</field>
+        <field name="model">intellix.riad.comp.rate</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="competitor_id"/>
+                <field name="establishment_id"/>
+                <field name="source"/>
+                <filter name="alerted" string="Alerte envoyée" domain="[('alert_sent', '=', True)]"/>
+                <group>
+                    <filter name="group_competitor" string="Comparable" context="{'group_by': 'competitor_id'}"/>
+                    <filter name="group_source" string="Source" context="{'group_by': 'source'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_riad_comp_rate" model="ir.actions.act_window">
+        <field name="name">Saisies tarifaires</field>
+        <field name="res_model">intellix.riad.comp.rate</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

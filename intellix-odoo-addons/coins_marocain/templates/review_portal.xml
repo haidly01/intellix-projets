@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="review_portal_unknown" name="Lien avis introuvable">
+        <html lang="fr">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <title>Lien introuvable — Coins Marocain</title>
+                <link rel="stylesheet" href="/coins_marocain/static/src/css/partenaire_portal.css"/>
+            </head>
+            <body>
+                <div class="cm-wrap">
+                    <div class="cm-hero">
+                        <p class="cm-kicker">Coins Marocain</p>
+                        <h1>Ce lien d’avis n’est plus valable</h1>
+                        <p>Écrivez à Yasmine sur WhatsApp si vous voulez laisser un mot.</p>
+                    </div>
+                </div>
+            </body>
+        </html>
+    </template>
+
+    <template id="review_portal_page" name="Laisser un avis Coins">
+        <html lang="fr">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <meta name="robots" content="noindex,nofollow"/>
+                <title>Votre avis — <t t-out="review.property_id.name"/> — Coins Marocain</title>
+                <link rel="preconnect" href="https://fonts.googleapis.com"/>
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
+                <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,500&amp;family=Jost:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+                <link rel="stylesheet" href="/coins_marocain/static/src/css/partenaire_portal.css"/>
+            </head>
+            <body>
+                <div class="cm-wrap">
+                    <header class="cm-hero">
+                        <p class="cm-kicker">Coins Marocain · après le séjour</p>
+                        <h1><t t-out="review.property_id.name"/></h1>
+                        <p>Un mot sincère suffit. Rien n’est publié sans relecture de l’équipe.</p>
+                    </header>
+
+                    <t t-if="published">
+                        <div class="cm-ok">Cet avis est déjà en ligne. Merci.</div>
+                    </t>
+                    <t t-if="submitted and not published">
+                        <div class="cm-ok">
+                            Merci. Votre avis est enregistré — il sera relu avant d’apparaître
+                            sur la fiche. Personne ne le publie à votre place.
+                        </div>
+                    </t>
+                    <t t-if="error">
+                        <div class="cm-err"><t t-out="error"/></div>
+                    </t>
+
+                    <t t-if="not submitted and not published">
+                        <form class="cm-card" method="post" t-attf-action="/avis/{{ token }}">
+                            <input type="hidden" name="csrf_token" t-att-value="csrf_token"/>
+                            <label for="author_name">Votre prénom</label>
+                            <input id="author_name" type="text" name="author_name"
+                                   t-att-value="review.author_name"/>
+                            <label for="note">Note (facultatif)</label>
+                            <select id="note" name="note">
+                                <option value="0">Sans note</option>
+                                <option value="5">5 / 5</option>
+                                <option value="4">4 / 5</option>
+                                <option value="3">3 / 5</option>
+                                <option value="2">2 / 5</option>
+                                <option value="1">1 / 5</option>
+                            </select>
+                            <label for="texte">Votre avis</label>
+                            <textarea id="texte" name="texte" rows="6" required="required"
+                                      placeholder="Ce qui vous a plu, ce qu’il faut savoir avant de réserver…"/>
+                            <button type="submit" class="cm-btn">Envoyer pour relecture</button>
+                        </form>
+                    </t>
+                </div>
+            </body>
+        </html>
+    </template>
+</odoo>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_coins_ambassador_form" model="ir.ui.view">
+        <field name="name">coins.ambassador.form</field>
+        <field name="model">coins.ambassador</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml"><form>
+                <header>
+                    <button name="action_activate" type="object" string="Activer" class="btn-primary" invisible="statut == 'actif'"/>
+                    <field name="statut" widget="statusbar" statusbar_visible="candidat,actif,suspendu"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_referrals" type="object" class="oe_stat_button" icon="fa-users">
+                            <field name="referral_count" widget="statinfo" string="Parrainages"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="code_parrainage"/>
+                            <field name="type_ambassadeur"/>
+                            <field name="origine"/>
+                            <field name="carnet_id"/>
+                        </group>
+                        <group>
+                            <field name="taux_commission"/>
+                            <field name="mode_paiement"/>
+                            <field name="seuil_paiement_minimum"/>
+                            <field name="commission_pending"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Parrainages">
+                            <field name="referral_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="filleul_partner_id"/>
+                                    <field name="statut_commission"/>
+                                    <field name="montant"/>
+                                    <field name="booking_amount"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form></field>
+    </record>
+
+    <record id="view_coins_ambassador_list" model="ir.ui.view">
+        <field name="name">coins.ambassador.list</field>
+        <field name="model">coins.ambassador</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml"><list>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="code_parrainage"/>
+                <field name="statut" widget="badge"/>
+                <field name="type_ambassadeur"/>
+                <field name="origine"/>
+                <field name="referral_count"/>
+                <field name="commission_pending"/>
+                <field name="taux_commission"/>
+            </list></field>
+    </record>
+
+    <record id="view_coins_ambassador_referral_form" model="ir.ui.view">
+        <field name="name">coins.ambassador.referral.form</field>
+        <field name="model">coins.ambassador.referral</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml"><form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="referrer_partner_id"/>
+                            <field name="ambassador_id"/>
+                            <field name="carnet_id"/>
+                            <field name="filleul_partner_id"/>
+                        </group>
+                        <group>
+                            <field name="statut_commission"/>
+                            <field name="booking_amount"/>
+                            <field name="montant"/>
+                            <field name="activite_booking_id"/>
+                            <field name="detente_booking_id"/>
+                            <field name="reservation_id"/>
+                        </group>
+                    </group>
+                    <field name="notes"/>
+                </sheet>
+            </form></field>
+    </record>
+
+    <record id="view_coins_ambassador_referral_list" model="ir.ui.view">
+        <field name="name">coins.ambassador.referral.list</field>
+        <field name="model">coins.ambassador.referral</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml"><list>
+                <field name="name"/>
+                <field name="referrer_partner_id"/>
+                <field name="filleul_partner_id"/>
+                <field name="ambassador_id"/>
+                <field name="statut_commission" widget="badge"/>
+                <field name="montant"/>
+                <field name="booking_amount"/>
+            </list></field>
+    </record>
+
+</odoo>

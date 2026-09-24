@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IntelliX — Vue Équipe RH · Maquette</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #050508; font-family: 'Inter', sans-serif; color: #f0f0fa; padding: 40px 24px; }
+.page-title { text-align: center; margin-bottom: 48px; }
+.page-title h1 { font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; }
+.page-title h1 span { background: linear-gradient(90deg, #6366f1, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.page-title p { font-size: 13px; color: #9898b8; }
+.screen { max-width: 1400px; margin: 0 auto; border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 32px 80px rgba(0,0,0,0.6); }
+.screen-bar { background: #0a0a14; border-bottom: 1px solid rgba(255,255,255,0.07); padding: 10px 18px; display: flex; align-items: center; gap: 12px; }
+.screen-bar-dots { display: flex; gap: 5px; }
+.screen-bar-dots span { width: 10px; height: 10px; border-radius: 50%; }
+.screen-bar-dots span:nth-child(1) { background: #ef4444; }
+.screen-bar-dots span:nth-child(2) { background: #f59e0b; }
+.screen-bar-dots span:nth-child(3) { background: #10b981; }
+.screen-bar-url { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 4px 12px; font-size: 11px; color: #5a5a7a; font-family: monospace; }
+.screen-bar-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #8b5cf6; }
+
+/* TOPNAV */
+.topnav { background: #12102a; padding: 0 20px; display: flex; align-items: center; height: 46px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.topnav-grid { width: 26px; height: 26px; display: grid; grid-template-columns: 1fr 1fr; gap: 3px; margin-right: 14px; padding: 4px; }
+.topnav-grid div { background: rgba(255,255,255,0.4); border-radius: 2px; }
+.topnav-section { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 700; margin-right: 24px; }
+.topnav-links { display: flex; }
+.topnav-link { padding: 0 14px; height: 46px; display: flex; align-items: center; font-size: 12px; color: rgba(255,255,255,0.6); cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; }
+.topnav-link.active { color: #fff; border-bottom-color: #8b5cf6; }
+.topnav-right { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+.topnav-badge { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 100px; }
+.badge-indigo { background: #6366f1; color: #fff; }
+.badge-green { background: #10b981; color: #fff; }
+.topnav-avatar { width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, #f59e0b, #fb923c); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
+
+/* SUBBAR */
+.subbar { background: #0e0c22; padding: 10px 20px; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.btn-primary { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: #fff; border: none; border-radius: 7px; padding: 7px 14px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+.btn-ghost { background: rgba(255,255,255,0.04); color: #9898b8; border: 1px solid rgba(255,255,255,0.09); border-radius: 7px; padding: 7px 14px; font-size: 12px; cursor: pointer; font-family: 'Inter', sans-serif; white-space: nowrap; }
+.subbar-search { flex: 1; max-width: 280px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09); border-radius: 7px; padding: 6px 12px; font-size: 12px; color: #9898b8; display: flex; align-items: center; gap: 8px; }
+.subbar-search input { background: none; border: none; outline: none; color: #f0f0fa; font-size: 12px; font-family: 'Inter', sans-serif; width: 100%; }
+.filter-chips { display: flex; gap: 5px; align-items: center; }
+.chip { font-size: 10px; font-weight: 600; padding: 4px 10px; border-radius: 100px; cursor: pointer; border: 1px solid; white-space: nowrap; }
+.chip-all { background: rgba(99,102,241,0.15); color: #818cf8; border-color: rgba(99,102,241,0.3); }
+.chip-surv { background: rgba(245,158,11,0.1); color: #fbbf24; border-color: rgba(245,158,11,0.2); }
+.chip-essai { background: rgba(6,182,212,0.1); color: #22d3ee; border-color: rgba(6,182,212,0.2); }
+.chip-inactif { background: rgba(239,68,68,0.08); color: #f87171; border-color: rgba(239,68,68,0.15); }
+.view-btns { display: flex; gap: 4px; margin-left: auto; }
+.view-btn { width: 30px; height: 30px; border-radius: 6px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.view-btn.active { background: rgba(99,102,241,0.15); border-color: rgba(99,102,241,0.3); }
+.view-btn svg { width: 13px; height: 13px; stroke: #9898b8; fill: none; stroke-width: 2; }
+.view-btn.active svg { stroke: #818cf8; }
+
+/* PAGE BODY */
+.page-body { background: #0a0a12; padding: 20px; }
+
+/* KPI ROW */
+.kpi-row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-bottom: 20px; }
+.kpi-card { background: #0f0f1e; border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 14px 16px; }
+.kpi-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: #5a5a7a; margin-bottom: 6px; }
+.kpi-val { font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 700; line-height: 1; margin-bottom: 4px; }
+.kpi-trend { font-size: 10px; display: flex; align-items: center; gap: 3px; }
+.trend-up { color: #10b981; }
+.trend-down { color: #ef4444; }
+.trend-neutral { color: #9898b8; }
+.kpi-bar { height: 3px; background: rgba(255,255,255,0.05); border-radius: 2px; margin-top: 6px; overflow: hidden; }
+.kpi-bar-fill { height: 100%; border-radius: 2px; }
+
+/* MAIN GRID */
+.main-grid { display: grid; grid-template-columns: 1fr 320px; gap: 16px; margin-bottom: 16px; }
+
+/* TEAM TABLE */
+.panel { background: #0f0f1e; border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; overflow: hidden; }
+.panel-header { padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.07); display: flex; align-items: center; justify-content: space-between; }
+.panel-title { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.panel-sub { font-size: 11px; color: #9898b8; margin-top: 2px; }
+.panel-actions { display: flex; gap: 6px; }
+.panel-btn { font-size: 11px; font-weight: 600; padding: 5px 10px; border-radius: 6px; cursor: pointer; border: 1px solid rgba(255,255,255,0.09); background: rgba(255,255,255,0.04); color: #9898b8; font-family: 'Inter', sans-serif; }
+
+/* TABLE */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+thead tr { background: #0c0c1c; }
+th { padding: 10px 14px; text-align: left; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #5a5a7a; border-bottom: 1px solid rgba(255,255,255,0.06); white-space: nowrap; cursor: pointer; }
+th:hover { color: #9898b8; }
+td { padding: 11px 14px; font-size: 12px; color: #d0d0e8; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: middle; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(255,255,255,0.015); cursor: pointer; }
+
+/* EMPLOYEE CELL */
+.emp-cell { display: flex; align-items: center; gap: 10px; }
+.emp-mini-avatar { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #fff; flex-shrink: 0; }
+.emp-cell-name { font-size: 12px; font-weight: 600; color: #f0f0fa; margin-bottom: 2px; }
+.emp-cell-role { font-size: 10px; color: #9898b8; }
+
+/* SCORE CELL */
+.score-cell { display: flex; align-items: center; gap: 8px; }
+.score-mini-bar { width: 60px; height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
+.score-mini-fill { height: 100%; border-radius: 2px; }
+.score-num { font-size: 12px; font-weight: 700; min-width: 28px; }
+
+/* STATUS BADGE */
+.status-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 100px; white-space: nowrap; }
+.status-actif { background: rgba(16,185,129,0.1); color: #34d399; border: 1px solid rgba(16,185,129,0.2); }
+.status-surv { background: rgba(245,158,11,0.1); color: #fbbf24; border: 1px solid rgba(245,158,11,0.2); }
+.status-essai { background: rgba(6,182,212,0.1); color: #22d3ee; border: 1px solid rgba(6,182,212,0.2); }
+.status-inactif { background: rgba(239,68,68,0.08); color: #f87171; border: 1px solid rgba(239,68,68,0.15); }
+.status-top { background: rgba(99,102,241,0.12); color: #818cf8; border: 1px solid rgba(99,102,241,0.2); }
+
+/* TREND BADGE */
+.trend-badge { font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; }
+.trend-up-badge { background: rgba(16,185,129,0.1); color: #34d399; }
+.trend-down-badge { background: rgba(239,68,68,0.1); color: #f87171; }
+.trend-flat-badge { background: rgba(255,255,255,0.05); color: #9898b8; }
+
+/* DEPT BADGE */
+.dept-badge { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 100px; background: rgba(99,102,241,0.1); color: #818cf8; border: 1px solid rgba(99,102,241,0.15); white-space: nowrap; }
+
+/* ACTION CELL */
+.action-cell { display: flex; gap: 4px; }
+.action-ico { width: 26px; height: 26px; border-radius: 6px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 12px; }
+.action-ico:hover { background: rgba(139,92,246,0.12); border-color: rgba(139,92,246,0.25); }
+
+/* RIGHT PANELS */
+.right-panels { display: flex; flex-direction: column; gap: 14px; }
+
+/* DISTRIBUTION */
+.distrib-list { display: flex; flex-direction: column; gap: 8px; padding: 14px; }
+.distrib-row { display: flex; align-items: center; gap: 10px; }
+.distrib-label { font-size: 11px; color: #d0d0e8; min-width: 110px; }
+.distrib-bar { flex: 1; height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden; }
+.distrib-fill { height: 100%; border-radius: 3px; }
+.distrib-count { font-size: 11px; font-weight: 700; min-width: 20px; text-align: right; }
+
+/* ALERTS */
+.alert-list { display: flex; flex-direction: column; gap: 8px; padding: 14px; }
+.alert-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+.alert-item:hover { opacity: 0.85; }
+.alert-item.alert-warn { background: rgba(245,158,11,0.07); border: 1px solid rgba(245,158,11,0.18); }
+.alert-item.alert-danger { background: rgba(239,68,68,0.07); border: 1px solid rgba(239,68,68,0.18); }
+.alert-item.alert-info { background: rgba(99,102,241,0.07); border: 1px solid rgba(99,102,241,0.18); }
+.alert-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+.alert-content { flex: 1; }
+.alert-title { font-size: 11px; font-weight: 700; margin-bottom: 2px; }
+.alert-text { font-size: 10px; color: #9898b8; line-height: 1.5; }
+.alert-item.alert-warn .alert-title { color: #fbbf24; }
+.alert-item.alert-danger .alert-title { color: #f87171; }
+.alert-item.alert-info .alert-title { color: #818cf8; }
+
+/* LEADERBOARD */
+.leader-list { display: flex; flex-direction: column; gap: 0; padding: 0 14px; }
+.leader-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.leader-row:last-child { border-bottom: none; }
+.leader-rank { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 700; min-width: 24px; }
+.leader-avatar { width: 28px; height: 28px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; flex-shrink: 0; }
+.leader-name { font-size: 11px; font-weight: 600; flex: 1; }
+.leader-score { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 700; }
+.leader-badge { font-size: 12px; }
+
+/* BOTTOM GRID */
+.bottom-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+/* ONBOARDING PIPELINE */
+.onboard-steps { display: flex; flex-direction: column; gap: 8px; padding: 14px; }
+.onboard-step { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; background: #141428; border: 1px solid rgba(255,255,255,0.06); }
+.onboard-step-num { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; }
+.step-done { background: rgba(16,185,129,0.15); color: #34d399; }
+.step-active { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: #fff; }
+.step-pending { background: rgba(255,255,255,0.06); color: #5a5a7a; }
+.onboard-step-name { font-size: 11px; font-weight: 600; flex: 1; }
+.onboard-step-name.done { color: #9898b8; text-decoration: line-through; }
+.onboard-step-name.active { color: #f0f0fa; }
+.onboard-step-name.pending { color: #5a5a7a; }
+.onboard-step-emp { font-size: 10px; color: #5a5a7a; }
+
+/* PRIME CALENDAR */
+.prime-months { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 14px; }
+.prime-month { background: #141428; border: 1px solid rgba(255,255,255,0.06); border-radius: 7px; padding: 8px; text-align: center; }
+.prime-month-name { font-size: 9px; text-transform: uppercase; letter-spacing: 0.08em; color: #5a5a7a; margin-bottom: 4px; }
+.prime-month-val { font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 700; }
+.prime-month.current { border-color: rgba(245,158,11,0.3); background: rgba(245,158,11,0.06); }
+.prime-month.current .prime-month-name { color: #f59e0b; }
+
+/* PERIODE FILTER */
+.period-btns { display: flex; gap: 4px; }
+.period-btn { font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 5px; cursor: pointer; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.03); color: #9898b8; font-family: 'Inter', sans-serif; }
+.period-btn.active { background: rgba(99,102,241,0.15); border-color: rgba(99,102,241,0.3); color: #818cf8; }
+</style>
+</head>
+<body>
+
+<div class="page-title">
+  <h1>Module <span>RH</span> IntelliX — Vue Équipe & Tableau de bord</h1>
+  <p>Maquette redesignée · People Engine · Scores équipe · Alertes · Leaderboard · Onboarding · Primes</p>
+</div>
+
+<div class="screen">
+  <div class="screen-bar">
+    <div class="screen-bar-dots"><span></span><span></span><span></span></div>
+    <div class="screen-bar-url">intellixcrm.com/odoo/rh/equipe</div>
+    <div class="screen-bar-label">RH · Vue Équipe</div>
+  </div>
+
+  <!-- TOPNAV -->
+  <div class="topnav">
+    <div class="topnav-grid"><div></div><div></div><div></div><div></div></div>
+    <span class="topnav-section">RH</span>
+    <div class="topnav-links">
+      <div class="topnav-link">Vue d'ensemble</div>
+      <div class="topnav-link">Mon tableau de bord</div>
+      <div class="topnav-link active">Équipe</div>
+      <div class="topnav-link">Coaching IA</div>
+      <div class="topnav-link">Formation</div>
+      <div class="topnav-link">Primes</div>
+      <div class="topnav-link">Paie & contrats</div>
+      <div class="topnav-link">Objectifs</div>
+      <div class="topnav-link">Configuration</div>
+    </div>
+    <div class="topnav-right">
+      <span class="topnav-badge badge-indigo">950</span>
+      <span class="topnav-badge badge-green">3</span>
+      <span style="font-size:11px;color:rgba(255,255,255,0.5)">Digital Doorway SARL</span>
+      <div class="topnav-avatar">K</div>
+    </div>
+  </div>
+
+  <!-- SUBBAR -->
+  <div class="subbar">
+    <button class="btn-primary">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:12px;height:12px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Nouvel employé
+    </button>
+    <button class="btn-ghost">🤖 Coaching IA équipe</button>
+    <button class="btn-ghost">📊 Actualiser scores</button>
+    <button class="btn-ghost">📄 Exporter</button>
+    <div class="subbar-search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#5a5a7a" stroke-width="2" style="width:13px;height:13px;flex-shrink:0"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input placeholder="Rechercher un employé...">
+    </div>
+    <div class="filter-chips">
+      <span style="font-size:11px;color:#5a5a7a">Statut :</span>
+      <span class="chip chip-all">Tous (8)</span>
+      <span class="chip chip-surv">Surveillance (2)</span>
+      <span class="chip chip-essai">Essai (3)</span>
+      <span class="chip chip-inactif">Inactif (1)</span>
+    </div>
+    <div class="view-btns">
+      <div class="view-btn active">
+        <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      </div>
+      <div class="view-btn">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-body">
+
+    <!-- KPI ROW -->
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="kpi-label">Total employés</div>
+        <div class="kpi-val" style="color:#818cf8">8</div>
+        <div class="kpi-trend trend-up">↑ +2 ce mois</div>
+        <div class="kpi-bar"><div class="kpi-bar-fill" style="width:100%;background:#6366f1"></div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Score moyen équipe</div>
+        <div class="kpi-val" style="color:#f59e0b">58</div>
+        <div class="kpi-trend trend-down">↓ -4 pts vs mois dernier</div>
+        <div class="kpi-bar"><div class="kpi-bar-fill" style="width:58%;background:#f59e0b"></div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">En surveillance</div>
+        <div class="kpi-val" style="color:#fbbf24">2</div>
+        <div class="kpi-trend trend-neutral">— Stable</div>
+        <div class="kpi-bar"><div class="kpi-bar-fill" style="width:25%;background:#f59e0b"></div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Taux qualification moy.</div>
+        <div class="kpi-val" style="color:#34d399">31<span style="font-size:14px;color:#9898b8">%</span></div>
+        <div class="kpi-trend trend-up">↑ +3% ce mois</div>
+        <div class="kpi-bar"><div class="kpi-bar-fill" style="width:31%;background:#10b981"></div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Primes à verser</div>
+        <div class="kpi-val" style="color:#06b6d4">3</div>
+        <div class="kpi-trend trend-neutral">Juin 2026</div>
+        <div class="kpi-bar"><div class="kpi-bar-fill" style="width:37%;background:#06b6d4"></div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Onboarding en cours</div>
+        <div class="kpi-val" style="color:#a78bfa">3</div>
+        <div class="kpi-trend trend-neutral">Étapes actives</div>
+        <div class="kpi-bar"><div class="kpi-bar-fill" style="width:37%;background:#8b5cf6"></div></div>
+      </div>
+    </div>
+
+    <!-- MAIN GRID -->
+    <div class="main-grid">
+
+      <!-- TABLE ÉQUIPE -->
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">🧑‍💼 Tableau de bord équipe</div>
+            <div class="panel-sub">8 employés · Période 30j · Clic sur ligne → fiche employé</div>
+          </div>
+          <div class="panel-actions">
+            <div class="period-btns">
+              <button class="period-btn">7j</button>
+              <button class="period-btn active">30j</button>
+              <button class="period-btn">90j</button>
+            </div>
+            <button class="panel-btn">↕ Trier</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Employé</th>
+                <th>Département</th>
+                <th>Score ↕</th>
+                <th>Perf /40</th>
+                <th>Engagement /30</th>
+                <th>Taux qual.</th>
+                <th>Statut</th>
+                <th>Tendance</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="emp-cell">
+                    <div class="emp-mini-avatar" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">MB</div>
+                    <div>
+                      <div class="emp-cell-name">Martin Houle</div>
+                      <div class="emp-cell-role">Closer B2B</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="dept-badge">Call Center QC</span></td>
+                <td>
+                  <div class="score-cell">
+                    <div class="score-mini-bar"><div class="score-mini-fill" style="width:84%;background:#10b981"></div></div>
+                    <span class="score-num" style="color:#34d399">84</span>
+                  </div>
+                </td>
+                <td style="color:#34d399;font-weight:600">36</td>
+                <td style="color:#34d399;font-weight:600">27</td>
+                <td style="color:#34d399;font-weight:600">42%</td>
+                <td><span class="status-badge status-actif">● Actif</span></td>
+                <td><span class="trend-badge trend-up-badge">↑ +6</span></td>
+                <td>
+                  <div class="action-cell">
+                    <div class="action-ico">👁</div>
+                    <div class="action-ico">🤖</div>
+                    <div class="action-ico">🎉</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="emp-cell">
+                    <div class="emp-mini-avatar" style="background:linear-gradient(135deg,#f59e0b,#fb923c)">KB</div>
+                    <div>
+                      <div class="emp-cell-name">Karine Barmaki</div>
+                      <div class="emp-cell-role">Fondatrice · Admin</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="dept-badge" style="background:rgba(245,158,11,0.1);color:#fbbf24;border-color:rgba(245,158,11,0.2)">Direction</span></td>
+                <td>
+                  <div class="score-cell">
+                    <div class="score-mini-bar"><div class="score-mini-fill" style="width:78%;background:#6366f1"></div></div>
+                    <span class="score-num" style="color:#818cf8">78</span>
+                  </div>
+                </td>
+                <td style="color:#818cf8;font-weight:600">32</td>
+                <td style="color:#818cf8;font-weight:600">24</td>
+                <td style="color:#818cf8;font-weight:600">38%</td>
+                <td><span class="status-badge status-top">★ Top perf</span></td>
+                <td><span class="trend-badge trend-up-badge">↑ +2</span></td>
+                <td>
+                  <div class="action-cell">
+                    <div class="action-ico">👁</div>
+                    <div class="action-ico">🤖</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="emp-cell">
+                    <div class="emp-mini-avatar" style="background:linear-gradient(135deg,#10b981,#06b6d4)">ZB</div>
+                    <div>
+                      <div class="emp-cell-name">Zakaria Barmaki</div>
+                      <div class="emp-cell-role">Responsable commercial</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="dept-badge" style="background:rgba(6,182,212,0.1);color:#22d3ee;border-color:rgba(6,182,212,0.2)">Maroc</span></td>
+                <td>
+                  <div class="score-cell">
+                    <div class="score-mini-bar"><div class="score-mini-fill" style="width:72%;background:#06b6d4"></div></div>
+                    <span class="score-num" style="color:#22d3ee">72</span>
+                  </div>
+                </td>
+                <td style="color:#22d3ee;font-weight:600">30</td>
+                <td style="color:#22d3ee;font-weight:600">22</td>
+                <td style="color:#22d3ee;font-weight:600">35%</td>
+                <td><span class="status-badge status-actif">● Actif</span></td>
+                <td><span class="trend-badge trend-flat-badge">→ 0</span></td>
+                <td>
+                  <div class="action-cell">
+                    <div class="action-ico">👁</div>
+                    <div class="action-ico">🤖</div>
+                    <div class="action-ico">🎉</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="emp-cell">
+                    <div class="emp-mini-avatar" style="background:linear-gradient(135deg,#8b5cf6,#a855f7)">SA</div>
+                    <div>
+                      <div class="emp-cell-name">Sofia Almeida</div>
+                      <div class="emp-cell-role">Agente call center</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="dept-badge">Call Center QC</span></td>
+                <td>
+                  <div class="score-cell">
+                    <div class="score-mini-bar"><div class="score-mini-fill" style="width:65%;background:#8b5cf6"></div></div>
+                    <span class="score-num" style="color:#a78bfa">65</span>
+                  </div>
+                </td>
+                <td style="color:#a78bfa;font-weight:600">26</td>
+                <td style="color:#a78bfa;font-weight:600">20</td>
+                <td style="color:#a78bfa;font-weight:600">28%</td>
+                <td><span class="status-badge status-essai">◑ Essai</span></td>
+                <td><span class="trend-badge trend-up-badge">↑ +8</span></td>
+                <td>
+                  <div class="action-cell">
+                    <div class="action-ico">👁</div>
+                    <div class="action-ico">🤖</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="emp-cell">
+                    <div class="emp-mini-avatar" style="background:linear-gradient(135deg,#ec4899,#f43f5e)">AM</div>
+                    <div>
+                      <div class="emp-cell-name">Amira Mansouri</div>
+                      <div class="emp-cell-role">Agente call center</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="dept-badge">Call Center QC</span></td>
+                <td>
+                  <div class="score-cell">
+                    <div class="score-mini-bar"><div class="score-mini-fill" style="width:58%;background:#ec4899"></div></div>
+                    <span class="score-num" style="color:#f472b6">58</span>
+                  </div>
+                </td>
+                <td style="color:#f472b6;font-weight:600">22</td>
+                <td style="color:#f472b6;font-weight:600">18</td>
+                <td style="color:#f472b6;font-weight:600">24%</td>
+                <td><span class="status-badge status-essai">◑ Essai</span></td>
+                <td><span class="trend-badge trend-flat-badge">→ +1</span></td>
+                <td>
+                  <div class="action-cell">
+                    <div class="action-ico">👁</div>
+                    <div class="action-ico">🤖</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="emp-cell">
+                    <div class="emp-mini-avatar" style="background:linear-gradient(135deg,#f59e0b,#fbbf24)">YB</div>
+                    <div>
+                      <div class="emp-cell-name">Youssef Benali</div>
+                      <div class="emp-cell-role">Superviseur</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="dept-badge" style="background:rgba(6,182,212,0.1);color:#22d3ee;border-color:rgba(6,182,212,0.2)">Maroc</span></td>
+                <td>
+                  <div class="score-cell">
+                    <div class="score-mini-bar"><div class="score-mini-fill" style="width:45%;background:#f59e0b"></div></div>
+                    <span class="score-num" style="color:#fbbf24">45</span>
+                  </div>
+                </td>
+                <td style="color:#fbbf24;font-weight:600">18</td>
+                <td style="color:#fbbf24;font-weight:600">14</td>
+                <td style="color:#fbbf24;font-weight:600">20%</td>
+                <td><span class="status-badge status-surv">⚠ Surveillance</span></td>
+                <td><span class="trend-badge trend-down-badge">↓ -5</span></td>
+                <td>
+                  <div class="action-cell">
+                    <div class="action-ico">👁</div>
+                    <div class="action-ico">🤖</div>
+                    <div class="action-ico">⚠</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="emp-cell">
+                    <div class="emp-mini-avatar" style="background:linear-gradient(135deg,#6366f1,#06b6d4)">LD</div>
+                    <div>
+                      <div class="emp-cell-name">Leila Dhaoudi</div>
+                      <div class="emp-cell-role">Prospecteur VICIdial</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="dept-badge">Call Center QC</span></td>
+                <td>
+                  <div class="score-cell">
+                    <div class="score-mini-bar"><div class="score-mini-fill" style="width:20%;background:#ef4444"></div></div>
+                    <span class="score-num" style="color:#f87171">20</span>
+                  </div>
+                </td>
+                <td style="color:#f87171;font-weight:600">0</td>
+                <td style="color:#f87171;font-weight:600">0</td>
+                <td style="color:#f87171;font-weight:600">0%</td>
+                <td><span class="status-badge status-surv">⚠ Surveillance</span></td>
+                <td><span class="trend-badge trend-down-badge">↓ -100%</span></td>
+                <td>
+                  <div class="action-cell">
+                    <div class="action-ico">👁</div>
+                    <div class="action-ico">🤖</div>
+                    <div class="action-ico">⚠</div>
+                  </div>
+                </td>
+              </tr>
+              <tr style="opacity:0.5">
+                <td>
+                  <div class="emp-cell">
+                    <div class="emp-mini-avatar" style="background:#1a1a2e;border:1px solid rgba(255,255,255,0.1)">KD</div>
+                    <div>
+                      <div class="emp-cell-name">Karim Daoudi</div>
+                      <div class="emp-cell-role">Agent call center</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="dept-badge">Call Center QC</span></td>
+                <td>
+                  <div class="score-cell">
+                    <div class="score-mini-bar"><div class="score-mini-fill" style="width:0%;background:#5a5a7a"></div></div>
+                    <span class="score-num" style="color:#5a5a7a">—</span>
+                  </div>
+                </td>
+                <td style="color:#5a5a7a">—</td>
+                <td style="color:#5a5a7a">—</td>
+                <td style="color:#5a5a7a">—</td>
+                <td><span class="status-badge status-inactif">✕ Inactif</span></td>
+                <td><span class="trend-badge trend-flat-badge">—</span></td>
+                <td>
+                  <div class="action-cell">
+                    <div class="action-ico">👁</div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- RIGHT PANELS -->
+      <div class="right-panels">
+
+        <!-- LEADERBOARD -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">🏆 Top performers</div>
+          </div>
+          <div class="leader-list">
+            <div class="leader-row">
+              <div class="leader-rank" style="color:#ffd700">1</div>
+              <div class="leader-avatar" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">MB</div>
+              <div class="leader-name">Martin Houle</div>
+              <div class="leader-score" style="color:#34d399">84</div>
+              <div class="leader-badge">🥇</div>
+            </div>
+            <div class="leader-row">
+              <div class="leader-rank" style="color:#c0c0c0">2</div>
+              <div class="leader-avatar" style="background:linear-gradient(135deg,#f59e0b,#fb923c)">KB</div>
+              <div class="leader-name">Karine Barmaki</div>
+              <div class="leader-score" style="color:#818cf8">78</div>
+              <div class="leader-badge">🥈</div>
+            </div>
+            <div class="leader-row">
+              <div class="leader-rank" style="color:#cd7f32">3</div>
+              <div class="leader-avatar" style="background:linear-gradient(135deg,#10b981,#06b6d4)">ZB</div>
+              <div class="leader-name">Zakaria Barmaki</div>
+              <div class="leader-score" style="color:#22d3ee">72</div>
+              <div class="leader-badge">🥉</div>
+            </div>
+            <div class="leader-row">
+              <div class="leader-rank" style="color:#5a5a7a">4</div>
+              <div class="leader-avatar" style="background:linear-gradient(135deg,#8b5cf6,#a855f7)">SA</div>
+              <div class="leader-name">Sofia Almeida</div>
+              <div class="leader-score" style="color:#a78bfa">65</div>
+              <div class="leader-badge">⭐</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ALERTES -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">🔔 Alertes RH</div>
+            <span style="font-size:10px;color:#5a5a7a">3 actives</span>
+          </div>
+          <div class="alert-list">
+            <div class="alert-item alert-danger">
+              <span class="alert-icon">🔴</span>
+              <div class="alert-content">
+                <div class="alert-title">Score Leila Dhaoudi tombé à 0</div>
+                <div class="alert-text">Aucune activité VICIdial détectée depuis 48h. Vérifier la connexion au poste agent.</div>
+              </div>
+            </div>
+            <div class="alert-item alert-warn">
+              <span class="alert-icon">⚠️</span>
+              <div class="alert-content">
+                <div class="alert-title">Youssef Benali — tendance baissière</div>
+                <div class="alert-text">Score en baisse 5 points ce mois. Coaching IA recommandé avant la fin de période.</div>
+              </div>
+            </div>
+            <div class="alert-item alert-info">
+              <span class="alert-icon">📋</span>
+              <div class="alert-content">
+                <div class="alert-title">3 onboardings en attente d'étape</div>
+                <div class="alert-text">Sofia, Amira et Leila ont des documents RH non envoyés.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RÉPARTITION STATUTS -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">📊 Répartition statuts</div>
+          </div>
+          <div class="distrib-list">
+            <div class="distrib-row">
+              <span class="distrib-label" style="color:#34d399">● Actif</span>
+              <div class="distrib-bar"><div class="distrib-fill" style="width:37%;background:#10b981"></div></div>
+              <span class="distrib-count" style="color:#34d399">3</span>
+            </div>
+            <div class="distrib-row">
+              <span class="distrib-label" style="color:#22d3ee">◑ Période essai</span>
+              <div class="distrib-bar"><div class="distrib-fill" style="width:37%;background:#06b6d4"></div></div>
+              <span class="distrib-count" style="color:#22d3ee">3</span>
+            </div>
+            <div class="distrib-row">
+              <span class="distrib-label" style="color:#fbbf24">⚠ Surveillance</span>
+              <div class="distrib-bar"><div class="distrib-fill" style="width:25%;background:#f59e0b"></div></div>
+              <span class="distrib-count" style="color:#fbbf24">2</span>
+            </div>
+            <div class="distrib-row">
+              <span class="distrib-label" style="color:#f87171">✕ Inactif</span>
+              <div class="distrib-bar"><div class="distrib-fill" style="width:12%;background:#ef4444;opacity:0.6"></div></div>
+              <span class="distrib-count" style="color:#f87171">1</span>
+            </div>
+            <div class="distrib-row">
+              <span class="distrib-label" style="color:#818cf8">★ Top performer</span>
+              <div class="distrib-bar"><div class="distrib-fill" style="width:12%;background:#6366f1"></div></div>
+              <span class="distrib-count" style="color:#818cf8">1</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- BOTTOM GRID -->
+    <div class="bottom-grid">
+
+      <!-- ONBOARDING PIPELINE -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">🚀 Pipeline onboarding</div>
+          <span style="font-size:10px;color:#5a5a7a">3 en cours</span>
+        </div>
+        <div class="onboard-steps">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#5a5a7a;margin-bottom:4px">Sofia Almeida</div>
+          <div class="onboard-step">
+            <div class="onboard-step-num step-done">✓</div>
+            <div class="onboard-step-name done">Lettre de bienvenue envoyée</div>
+          </div>
+          <div class="onboard-step">
+            <div class="onboard-step-num step-done">✓</div>
+            <div class="onboard-step-name done">Profil People Engine créé</div>
+          </div>
+          <div class="onboard-step">
+            <div class="onboard-step-num step-active">3</div>
+            <div class="onboard-step-name active">Contrat CDD à signer</div>
+          </div>
+          <div class="onboard-step">
+            <div class="onboard-step-num step-pending">4</div>
+            <div class="onboard-step-name pending">Accès VICIdial à configurer</div>
+          </div>
+          <div class="onboard-step">
+            <div class="onboard-step-num step-pending">5</div>
+            <div class="onboard-step-name pending">Formation Academy à compléter</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRIMES DU MOIS -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">💰 Primes à verser — Juin 2026</div>
+          <span style="font-size:10px;color:#5a5a7a">3 agents éligibles</span>
+        </div>
+        <div style="padding:14px;display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:#141428;border:1px solid rgba(16,185,129,0.2);border-radius:8px">
+            <div style="width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0">MB</div>
+            <div style="flex:1">
+              <div style="font-size:12px;font-weight:600;margin-bottom:2px">Martin Houle</div>
+              <div style="font-size:10px;color:#9898b8">Score 84 · Palier Gold 🥇</div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;color:#34d399">+20%</div>
+              <div style="font-size:10px;color:#9898b8">variable</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:#141428;border:1px solid rgba(99,102,241,0.2);border-radius:8px">
+            <div style="width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#f59e0b,#fb923c);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0">KB</div>
+            <div style="flex:1">
+              <div style="font-size:12px;font-weight:600;margin-bottom:2px">Karine Barmaki</div>
+              <div style="font-size:10px;color:#9898b8">Score 78 · Palier Silver 🥈</div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;color:#818cf8">+10%</div>
+              <div style="font-size:10px;color:#9898b8">variable</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:#141428;border:1px solid rgba(6,182,212,0.2);border-radius:8px">
+            <div style="width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#10b981,#06b6d4);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0">ZB</div>
+            <div style="flex:1">
+              <div style="font-size:12px;font-weight:600;margin-bottom:2px">Zakaria Barmaki</div>
+              <div style="font-size:10px;color:#9898b8">Score 72 · Palier Silver 🥈</div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;color:#22d3ee">+10%</div>
+              <div style="font-size:10px;color:#9898b8">variable</div>
+            </div>
+          </div>
+          <button style="width:100%;margin-top:4px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border:none;border-radius:8px;padding:9px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif">Générer les bulletins de paie →</button>
+        </div>
+      </div>
+
+      <!-- SCORE MOYEN TREND -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">📈 Score moyen équipe</div>
+          <div class="period-btns">
+            <button class="period-btn">7j</button>
+            <button class="period-btn active">30j</button>
+            <button class="period-btn">90j</button>
+          </div>
+        </div>
+        <div style="padding:14px">
+          <div style="display:flex;align-items:flex-end;gap:5px;height:80px;margin-bottom:10px">
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px">
+              <div style="font-size:9px;font-weight:700;color:#818cf8">62</div>
+              <div style="width:100%;background:linear-gradient(0deg,#6366f1,#8b5cf6);border-radius:2px 2px 0 0;height:50px"></div>
+              <div style="font-size:9px;color:#5a5a7a">8 juin</div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px">
+              <div style="font-size:9px;font-weight:700;color:#818cf8">60</div>
+              <div style="width:100%;background:linear-gradient(0deg,#6366f1,#8b5cf6);border-radius:2px 2px 0 0;height:47px;opacity:0.85"></div>
+              <div style="font-size:9px;color:#5a5a7a">11 juin</div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px">
+              <div style="font-size:9px;font-weight:700;color:#818cf8">63</div>
+              <div style="width:100%;background:linear-gradient(0deg,#6366f1,#8b5cf6);border-radius:2px 2px 0 0;height:51px;opacity:0.9"></div>
+              <div style="font-size:9px;color:#5a5a7a">13 juin</div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px">
+              <div style="font-size:9px;font-weight:700;color:#818cf8">61</div>
+              <div style="width:100%;background:linear-gradient(0deg,#6366f1,#8b5cf6);border-radius:2px 2px 0 0;height:49px;opacity:0.87"></div>
+              <div style="font-size:9px;color:#5a5a7a">15 juin</div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px">
+              <div style="font-size:9px;font-weight:700;color:#f87171">58</div>
+              <div style="width:100%;background:linear-gradient(0deg,#ef4444,#f87171);border-radius:2px 2px 0 0;height:44px;opacity:0.8"></div>
+              <div style="font-size:9px;color:#5a5a7a">17 juin</div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.05)">
+            <div style="display:flex;justify-content:space-between;font-size:11px">
+              <span style="color:#9898b8">Score actuel</span>
+              <span style="color:#f87171;font-weight:700">58 / 100</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:11px">
+              <span style="color:#9898b8">Tendance 30j</span>
+              <span style="color:#ef4444;font-weight:700">↓ -4 pts</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:11px">
+              <span style="color:#9898b8">Impact principal</span>
+              <span style="color:#fbbf24;font-weight:600">Leila (-100%) · Youssef (-5%)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div style="text-align:center;margin-top:32px;padding-bottom:24px">
+  <p style="font-size:11px;color:#5a5a7a">IntelliX CRM · Module RH · People Engine · Maquette Vue Équipe · Juin 2026</p>
+</div>
+</body>
+</html>

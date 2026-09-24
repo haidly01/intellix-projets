@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pe_freelance_invoice_tree" model="ir.ui.view">
+        <field name="name">pe.freelance.invoice.tree</field>
+        <field name="model">pe.freelance.invoice</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="statut == 'en_retard'"
+                  decoration-warning="alerte_forfait or alerte_heures">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="period_label"/>
+                <field name="type_facturation"/>
+                <field name="heures_loguees" widget="float_time"/>
+                <field name="montant_ht"/>
+                <field name="total_a_payer"/>
+                <field name="devise"/>
+                <field name="date_echeance"/>
+                <field name="statut" widget="badge"/>
+                <field name="alerte_forfait" column_invisible="1"/>
+                <field name="alerte_heures" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pe_freelance_invoice_form" model="ir.ui.view">
+        <field name="name">pe.freelance.invoice.form</field>
+        <field name="model">pe.freelance.invoice</field>
+        <field name="arch" type="xml">
+            <form string="Facture freelance">
+                <header>
+                    <button name="action_calculate" type="object" string="Recalculer"
+                            class="btn-primary"/>
+                    <button name="action_issue" type="object" string="Émettre"
+                            invisible="statut != 'brouillon'"/>
+                    <button name="action_mark_paid" type="object" string="Marquer payée"
+                            invisible="statut not in ('emise', 'en_retard')"/>
+                    <button name="action_print_invoice" type="object" string="PDF"
+                            class="btn-secondary"/>
+                    <field name="statut" widget="statusbar"
+                           statusbar_visible="brouillon,emise,payee"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-warning" role="alert"
+                         invisible="not alerte_forfait">
+                        Forfait incomplet : heures minimum non atteintes.
+                    </div>
+                    <div class="alert alert-warning" role="alert"
+                         invisible="not alerte_heures">
+                        Aucune heure loguée sur cette période.
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                        <h3><field name="employee_id" readonly="1" nolabel="1"/></h3>
+                    </div>
+                    <group>
+                        <group string="Période">
+                            <field name="contrat_id"/>
+                            <field name="period_start"/>
+                            <field name="period_end"/>
+                            <field name="period_label" readonly="1"/>
+                            <field name="type_facturation"/>
+                        </group>
+                        <group string="Activité">
+                            <field name="heures_loguees" widget="float_time"/>
+                            <field name="jours_loguees"/>
+                            <field name="taux_applique"/>
+                        </group>
+                    </group>
+                    <group string="Montants">
+                        <group>
+                            <field name="montant_ht"/>
+                            <field name="tva"/>
+                            <field name="montant_ttc"/>
+                            <field name="primes_challenges"/>
+                            <field name="total_a_payer"/>
+                            <field name="devise"/>
+                        </group>
+                        <group string="Paiement">
+                            <field name="date_emission"/>
+                            <field name="date_echeance"/>
+                            <field name="date_paiement_reel"/>
+                            <field name="ice_freelance"/>
+                            <field name="rc_freelance"/>
+                            <field name="rib_freelance"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="detail_calcul" widget="text"/>
+                        <field name="date_calcul"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_pe_freelance_invoice_search" model="ir.ui.view">
+        <field name="name">pe.freelance.invoice.search</field>
+        <field name="model">pe.freelance.invoice</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="employee_id"/>
+                <filter string="En retard" name="overdue"
+                        domain="[('statut', '=', 'en_retard')]"/>
+                <filter string="Brouillon" name="draft"
+                        domain="[('statut', '=', 'brouillon')]"/>
+                <filter string="Forfait incomplet" name="forfait_alert"
+                        domain="[('alerte_forfait', '=', True)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_pe_freelance_invoice_current" model="ir.actions.server">
+        <field name="name">Factures période courante</field>
+        <field name="model_id" ref="model_pe_freelance_invoice"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_current_period()</field>
+    </record>
+
+    <record id="action_pe_freelance_invoice_all" model="ir.actions.act_window">
+        <field name="name">Historique factures freelance</field>
+        <field name="res_model">pe.freelance.invoice</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_pe_freelance_invoices"
+        name="Factures freelance"
+        parent="menu_pe_payroll_root"
+        action="action_pe_freelance_invoice_current"
+        sequence="22"
+        groups="people_engine.group_hr"/>
+
+    <menuitem id="menu_pe_freelance_invoices_history"
+        name="Historique factures freelance"
+        parent="menu_pe_payroll_root"
+        action="action_pe_freelance_invoice_all"
+        sequence="23"
+        groups="people_engine.group_hr"/>
+
+    <menuitem id="menu_pe_freelance_invoice_generate"
+        name="Générer factures freelance"
+        parent="menu_pe_payroll_root"
+        action="action_pe_freelance_invoice_wizard"
+        sequence="24"
+        groups="people_engine.group_hr"/>
+</odoo>

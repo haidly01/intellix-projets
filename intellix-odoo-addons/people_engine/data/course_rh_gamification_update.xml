@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="course_rh_gamification" model="pe.course">
+        <field name="title">Formation RH &amp; Gamification — IntelliX People Engine</field>
+        <field name="category">leadership</field>
+        <field name="course_type">internal</field>
+        <field name="duration_hours">5.0</field>
+        <field name="difficulty">intermediate</field>
+        <field name="points_on_completion">50</field>
+        <field name="description">Formation complète RH &amp; gamification People Engine — 8 modules interactifs : objectifs, score /100, gamification, badges, coaching IA, optimisation équipe et rituels.</field>
+        <field name="content_url">/people_engine/static/src/html/formation_rh_gamification_fr.html</field>
+        <field name="is_active" eval="True"/>
+    </record>
+</odoo>

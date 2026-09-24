@@ -1,0 +1,69 @@
+{
+  "_comment": "Léa — qualification rénovation + immobilier (Québec). Stack Doorway : n8n + Deepgram + Claude + ElevenLabs + VICIdial Africa-Con + Odoo intellixcrm.",
+  "version": "1.0.0",
+  "agent_id": "lea-qc-2026",
+  "agent_name": "Léa",
+  "active": true,
+  "language": "fr-CA",
+  "stack": "n8n+deepgram+claude+elevenlabs",
+  "pipeline": "renovation_immobilier",
+  "brand": "Doorway Québec",
+  "timezone": "America/Toronto",
+  "voice": {
+    "provider": "elevenlabs",
+    "voice_id": "${ELEVENLABS_VOICE_ID}",
+    "model": "eleven_multilingual_v2",
+    "settings": {"stability": 0.55, "similarity_boost": 0.82, "style": 0.35, "speaking_rate": 1.05}
+  },
+  "stt": {
+    "provider": "deepgram",
+    "model": "nova-2",
+    "language": "fr-CA",
+    "punctuate": true,
+    "endpointing": 300,
+    "vad_turnoff": 500,
+    "interim_results": true,
+    "smart_format": true
+  },
+  "llm": {
+    "provider": "anthropic",
+    "model": "claude-sonnet-4-20250514",
+    "max_tokens": 150,
+    "temperature": 0.7,
+    "system_prompt_file": "system_prompt_claude.txt"
+  },
+  "call_settings": {
+    "max_duration_sec": 180,
+    "silence_timeout_sec": 8,
+    "interruption_threshold": 0.6,
+    "recording": true,
+    "recording_format": "mp3"
+  },
+  "telephony": {
+    "provider": "vicidial",
+    "vicidial_campaign": "DW_QCB2C",
+    "trunk": "Door_App0",
+    "trunk_provider": "Africa-Con",
+    "trunk_host": "168.119.144.57",
+    "caller_id": "15817058118"
+  },
+  "crm": {
+    "provider": "odoo",
+    "url": "${ODOO_URL}",
+    "database": "intellixcrm",
+    "team": "Rénovation",
+    "source_tag": "Léa QC",
+    "qualified_tag": "Lead qualifié Léa",
+    "director_user_login": "karine"
+  },
+  "webhooks": {
+    "outbound": "${N8N_BASE_URL}/webhook/lea-qc/outbound",
+    "conversation": "${N8N_BASE_URL}/webhook/lea-qc/conversation",
+    "events": "${N8N_BASE_URL}/webhook/lea-qc/event",
+    "qualified": "${N8N_BASE_URL}/webhook/lea-qc/qualified",
+    "non_qualified": "${N8N_BASE_URL}/webhook/lea-qc/non-qualified",
+    "call_ended": "${ODOO_URL}/doorway/api/lea-qc/call-ended",
+    "daily_stats": "${N8N_BASE_URL}/webhook/lea-qc/stats"
+  },
+  "dynamic_variables": ["prenom", "nom", "ville", "type_projet", "intention_vente", "travaux_prevus"]
+}

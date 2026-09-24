@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_hr_payroll_ma_root"
+              name="Paie Maroc"
+              parent="people_engine.menu_people_engine_root"
+              sequence="54"
+              groups="intellix_hr_payroll_ma.group_hr_payroll_ma_user"/>
+
+    <menuitem id="menu_hr_payslip_ma"
+              name="Bulletins"
+              parent="menu_hr_payroll_ma_root"
+              action="action_hr_payslip_ma"
+              sequence="10"/>
+
+    <menuitem id="menu_hr_payroll_ma_generate"
+              name="Générer bulletin"
+              parent="menu_hr_payroll_ma_root"
+              action="action_generate_payslip_ma_wizard"
+              sequence="15"/>
+
+    <menuitem id="menu_hr_payroll_ma_exports"
+              name="Exports"
+              parent="menu_hr_payroll_ma_root"
+              sequence="40"/>
+
+    <menuitem id="menu_cnss_export"
+              name="Export CNSS / Damancom"
+              parent="menu_hr_payroll_ma_exports"
+              action="action_cnss_export_wizard"
+              sequence="10"/>
+
+    <menuitem id="menu_ir9421_export"
+              name="État 9421 IR"
+              parent="menu_hr_payroll_ma_exports"
+              action="action_ir9421_export_wizard"
+              sequence="20"/>
+
+    <menuitem id="menu_hr_payroll_ma_config"
+              name="Configuration"
+              parent="menu_hr_payroll_ma_root"
+              sequence="50"
+              groups="intellix_hr_payroll_ma.group_hr_payroll_ma_manager"/>
+
+    <menuitem id="menu_hr_payroll_structure_ma"
+              name="Structures"
+              parent="menu_hr_payroll_ma_config"
+              action="action_hr_payroll_structure_ma"
+              sequence="10"/>
+
+    <menuitem id="menu_hr_salary_rule_ma"
+              name="Règles salariales"
+              parent="menu_hr_payroll_ma_config"
+              action="action_hr_salary_rule_ma"
+              sequence="20"/>
+
+    <menuitem id="menu_hr_ir_bracket"
+              name="Tranches IR"
+              parent="menu_hr_payroll_ma_config"
+              action="action_hr_ir_bracket"
+              sequence="30"/>
+
+    <menuitem id="menu_hr_ir_config"
+              name="Paramètres IR"
+              parent="menu_hr_payroll_ma_config"
+              action="action_hr_ir_config"
+              sequence="40"/>
+</odoo>

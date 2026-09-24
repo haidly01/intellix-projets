@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_pipeline_coins_marocain" model="ir.actions.act_window">
+        <field name="name">Partenariats Coins Marocain</field>
+        <field name="path">cm-partenariats</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">kanban,list,form,calendar,activity</field>
+        <field name="view_id" ref="view_crm_lead_kanban_coins_partenariat"/>
+        <field name="search_view_id" ref="view_crm_lead_search_coins_partenariat"/>
+        <field name="domain" eval="[('type', '=', 'opportunity'), ('team_id', '=', ref('crm_team_coins_marocain')), ('coins_fiche_type', '=', 'partenariat')]"/>
+        <field name="context" eval="{
+            'default_type': 'opportunity',
+            'default_team_id': ref('crm_team_coins_marocain'),
+            'default_coins_fiche_type': 'partenariat',
+            'renovation_active_pipeline_team_id': ref('crm_team_coins_marocain'),
+            'show_user_team_stages': 0,
+            'coins_pipeline': 'partenariat',
+        }"/>
+        <field name="help" type="html"><p>Pipeline partenariats — établissements uniquement.</p></field>
+    </record>
+    <record id="action_pipeline_coins_marocain_view_kanban" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="view_crm_lead_kanban_coins_partenariat"/>
+        <field name="act_window_id" ref="action_pipeline_coins_marocain"/>
+    </record>
+    <record id="action_pipeline_coins_marocain_view_list" model="ir.actions.act_window.view">
+        <field name="sequence" eval="2"/>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="view_crm_lead_list_coins_partenariat"/>
+        <field name="act_window_id" ref="action_pipeline_coins_marocain"/>
+    </record>
+    <record id="action_pipeline_coins_marocain_view_form" model="ir.actions.act_window.view">
+        <field name="sequence" eval="3"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_crm_lead_form_coins_partenariat_fiche"/>
+        <field name="act_window_id" ref="action_pipeline_coins_marocain"/>
+    </record>
+
+    <menuitem id="menu_crm_coins_marocain"
+              name="Coins Marocain"
+              parent="crm.crm_menu_root"
+              action="action_pipeline_coins_marocain"
+              sequence="1"
+              groups="coins_marocain_partenariats.group_pipeline_tab_coins_marocain"/>
+
+    <menuitem id="menu_coins_pipeline_partenariats"
+              name="Partenariats Coins Marocain"
+              parent="coins_marocain.menu_coins_root"
+              action="action_pipeline_coins_marocain"
+              sequence="6"
+              groups="coins_marocain_partenariats.group_pipeline_tab_coins_marocain,coins_marocain.group_coins_user"/>
+
+    <menuitem id="menu_coins_pipeline_voyageurs"
+              name="Voyageurs Coins Marocain"
+              parent="coins_marocain.menu_coins_root"
+              action="action_pipeline_coins_voyageurs"
+              sequence="7"
+              groups="coins_marocain_partenariats.group_pipeline_tab_coins_marocain,coins_marocain.group_coins_user"/>
+    <menuitem id="menu_coins_voyageurs_relance_today"
+              name="À relancer aujourd'hui"
+              parent="coins_marocain.menu_coins_root"
+              action="action_pipeline_coins_voyageurs_relance_today"
+              sequence="8"
+              groups="coins_marocain_partenariats.group_pipeline_tab_coins_marocain,coins_marocain.group_coins_user"/>
+    <menuitem id="menu_coins_voyageurs_relance_week"
+              name="À relancer cette semaine"
+              parent="coins_marocain.menu_coins_root"
+              action="action_pipeline_coins_voyageurs_relance_week"
+              sequence="9"
+              groups="coins_marocain_partenariats.group_pipeline_tab_coins_marocain,coins_marocain.group_coins_user"/>
+
+    <record id="action_coins_lead_classification" model="ir.actions.server">
+        <field name="name">Classification pipelines (à valider)</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="state">code</field>
+        <field name="code">action = env['coins.lead.classification'].action_open_report()</field>
+    </record>
+
+    <menuitem id="menu_coins_lead_classification"
+              name="Classification (à valider)"
+              parent="coins_marocain.menu_coins_root"
+              action="action_coins_lead_classification"
+              sequence="95"
+              groups="coins_marocain.group_coins_manager"/>
+</odoo>

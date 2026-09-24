@@ -1,0 +1,162 @@
+{
+  "api.error.caption_required": {
+    "defaultMessage": "Add a caption before publishing.",
+    "description": "LOCATION: Publish flow error toast. LIMIT: ~50 chars. TONE: instructive. VARIABLES: none. Shown when caption field is empty."
+  },
+  "api.error.config_load_failed": {
+    "defaultMessage": "Unable to load Intellix brands.",
+    "description": "LOCATION: Publish settings panel, below form fields. LIMIT: ~50 chars. TONE: neutral. VARIABLES: none. Shown when pipeline list cannot be fetched."
+  },
+  "api.error.http_error": {
+    "defaultMessage": "Request failed (status {statusCode}). Try again or contact support.",
+    "description": "LOCATION: Publish flow error toast. LIMIT: ~80 chars. TONE: neutral. VARIABLES: statusCode (HTTP status number, not translated)."
+  },
+  "api.error.invalid_response": {
+    "defaultMessage": "Received an unexpected response from Intellix.",
+    "description": "LOCATION: Publish flow error toast. LIMIT: ~60 chars. TONE: neutral. VARIABLES: none. Shown when API response body is not valid JSON."
+  },
+  "api.error.invalid_settings": {
+    "defaultMessage": "Invalid publish settings.",
+    "description": "LOCATION: Publish flow error toast. LIMIT: ~40 chars. TONE: neutral. VARIABLES: none. Shown when publishRef JSON cannot be parsed."
+  },
+  "api.error.network_error": {
+    "defaultMessage": "Could not reach Intellix. Check the URL and your connection.",
+    "description": "LOCATION: Settings panel / publish error. LIMIT: ~70 chars. TONE: neutral. VARIABLES: none. Shown when fetch fails or times out."
+  },
+  "api.error.pipeline_not_configured": {
+    "defaultMessage": "No brand or pipeline is configured in Intellix. Contact your administrator.",
+    "description": "LOCATION: Publish flow error toast. LIMIT: ~90 chars. TONE: neutral. VARIABLES: none. Shown when Odoo has no CRM team/pipeline."
+  },
+  "api.error.publish_failed": {
+    "defaultMessage": "Failed to publish to Intellix.",
+    "description": "LOCATION: Publish flow error toast. LIMIT: ~50 chars. TONE: neutral. VARIABLES: none. Generic fallback when publish fails without a specific code."
+  },
+  "api.error.server_error": {
+    "defaultMessage": "Intellix encountered an error. Try again in a few minutes.",
+    "description": "LOCATION: Publish flow error toast. LIMIT: ~70 chars. TONE: reassuring. VARIABLES: none. Shown on HTTP 500 from Odoo."
+  },
+  "api.error.unauthorized": {
+    "defaultMessage": "Invalid API key. Check your Intellix settings and try again.",
+    "description": "LOCATION: Publish flow error toast. LIMIT: ~80 chars. TONE: neutral/helpful. VARIABLES: none. Shown when Odoo rejects the Canva API key (HTTP 401)."
+  },
+  "api.error.unknown_action": {
+    "defaultMessage": "This action is not supported. Update the app and try again.",
+    "description": "LOCATION: Publish flow error toast. LIMIT: ~80 chars. TONE: neutral. VARIABLES: none. Shown when the MCP action name is invalid (HTTP 400)."
+  },
+  "design_editor.placeholder": {
+    "defaultMessage": "Hello world.",
+    "description": "LOCATION: Design Editor side panel body text. LIMIT: ~30 chars. TONE: neutral/placeholder. VARIABLES: none."
+  },
+  "output.post": {
+    "defaultMessage": "Intellix post",
+    "description": "LOCATION: Canva output type dropdown. LIMIT: ~20 chars. TONE: neutral. VARIABLES: none. Brand Intellix — do not translate."
+  },
+  "output.story_slot": {
+    "defaultMessage": "Story",
+    "description": "LOCATION: Story media slot label. LIMIT: ~15 chars. TONE: neutral. VARIABLES: none."
+  },
+  "output.story_type": {
+    "defaultMessage": "Story",
+    "description": "LOCATION: Canva output type dropdown (story). LIMIT: ~15 chars. TONE: neutral. VARIABLES: none."
+  },
+  "output.visual": {
+    "defaultMessage": "Visual",
+    "description": "LOCATION: Media slot label in publish flow. LIMIT: ~15 chars. TONE: neutral. VARIABLES: none."
+  },
+  "platform.facebook": {
+    "defaultMessage": "Facebook",
+    "description": "LOCATION: Platform dropdown + preview username. LIMIT: ~15 chars. TONE: proper noun (brand name). VARIABLES: none."
+  },
+  "platform.instagram": {
+    "defaultMessage": "Instagram",
+    "description": "LOCATION: Platform dropdown + preview username. LIMIT: ~15 chars. TONE: proper noun (brand name). VARIABLES: none."
+  },
+  "platform.linkedin": {
+    "defaultMessage": "LinkedIn",
+    "description": "LOCATION: Platform dropdown + preview username. LIMIT: ~15 chars. TONE: proper noun (brand name). VARIABLES: none."
+  },
+  "platform.pinterest": {
+    "defaultMessage": "Pinterest",
+    "description": "LOCATION: Platform dropdown + preview username. LIMIT: ~15 chars. TONE: proper noun (brand name). VARIABLES: none."
+  },
+  "preview.avatar_name": {
+    "defaultMessage": "Intellix",
+    "description": "LOCATION: Avatar component name prop (initials). LIMIT: ~10 chars. TONE: brand. VARIABLES: none. Brand name — do not translate."
+  },
+  "preview.error": {
+    "defaultMessage": "Error loading preview",
+    "description": "LOCATION: Preview image area on load failure. LIMIT: ~30 chars. TONE: neutral. VARIABLES: none."
+  },
+  "preview.image_alt": {
+    "defaultMessage": "Image preview {previewId}",
+    "description": "LOCATION: img alt text in preview carousel. LIMIT: ~40 chars. TONE: neutral/descriptive. VARIABLES: previewId (opaque ID, not translated)."
+  },
+  "preview.loading": {
+    "defaultMessage": "Loading…",
+    "description": "LOCATION: Preview image area while loading. LIMIT: ~15 chars. TONE: neutral. VARIABLES: none."
+  },
+  "preview.unavailable": {
+    "defaultMessage": "Preview not available",
+    "description": "LOCATION: Preview image area fallback. LIMIT: ~30 chars. TONE: neutral. VARIABLES: none."
+  },
+  "preview.username": {
+    "defaultMessage": "{platform, select, instagram {{brand} · Instagram} facebook {{brand} · Facebook} linkedin {{brand} · LinkedIn} pinterest {{brand} · Pinterest} other {{brand}}}",
+    "description": "LOCATION: Preview panel avatar username. LIMIT: ~30 chars. TONE: brand display. VARIABLES: brand (Intellix — do not translate), platform (select key — do not translate). ICU select for platform suffix."
+  },
+  "settings.api_key_label": {
+    "defaultMessage": "API key (optional)",
+    "description": "LOCATION: Form field label above API key input. LIMIT: ~25 chars. TONE: neutral. VARIABLES: none."
+  },
+  "settings.api_key_placeholder": {
+    "defaultMessage": "Optional",
+    "description": "LOCATION: API key text field placeholder. LIMIT: ~15 chars. TONE: neutral. VARIABLES: none."
+  },
+  "settings.app_title": {
+    "defaultMessage": "Intellix CRM",
+    "description": "LOCATION: Publish settings panel header. LIMIT: ~20 chars. TONE: brand title. VARIABLES: none. Brand name Intellix — do not translate."
+  },
+  "settings.brands_loaded": {
+    "defaultMessage": "{count, plural, one {# brand loaded} other {# brands loaded}}",
+    "description": "LOCATION: Publish settings, below Refresh button. LIMIT: ~40 chars. TONE: neutral/informative. VARIABLES: count (number of CRM pipelines)."
+  },
+  "settings.caption_label": {
+    "defaultMessage": "Caption",
+    "description": "LOCATION: Form field label above caption input. LIMIT: ~15 chars. TONE: neutral. VARIABLES: none."
+  },
+  "settings.caption_placeholder": {
+    "defaultMessage": "Write your post caption…",
+    "description": "LOCATION: Caption text field placeholder. LIMIT: ~40 chars. TONE: informal/instructive. VARIABLES: none."
+  },
+  "settings.pipeline_label": {
+    "defaultMessage": "Brand / pipeline",
+    "description": "LOCATION: Form field label above pipeline dropdown. LIMIT: ~25 chars. TONE: neutral. VARIABLES: none."
+  },
+  "settings.platform_label": {
+    "defaultMessage": "Platform",
+    "description": "LOCATION: Form field label above platform dropdown. LIMIT: ~15 chars. TONE: neutral. VARIABLES: none."
+  },
+  "settings.refresh_aria": {
+    "defaultMessage": "Refresh brand list from Intellix",
+    "description": "LOCATION: aria-label on Refresh brands button. LIMIT: ~40 chars. TONE: neutral/action. VARIABLES: none."
+  },
+  "settings.refresh_label": {
+    "defaultMessage": "Refresh brands",
+    "description": "LOCATION: Refresh button label in publish settings. LIMIT: ~20 chars. TONE: action/neutral. VARIABLES: none."
+  },
+  "settings.refresh_loading": {
+    "defaultMessage": "Loading…",
+    "description": "LOCATION: Refresh button while fetching pipelines. LIMIT: ~15 chars. TONE: neutral. VARIABLES: none."
+  },
+  "settings.subtitle": {
+    "defaultMessage": "Publish your Canva designs to the Intellix social calendar.",
+    "description": "LOCATION: Subtitle under app title in publish settings. LIMIT: ~80 chars. TONE: neutral/marketing. VARIABLES: none."
+  },
+  "settings.url_label": {
+    "defaultMessage": "Intellix URL (Odoo)",
+    "description": "LOCATION: Form field label above URL input. LIMIT: ~25 chars. TONE: neutral. VARIABLES: none."
+  },
+  "settings.url_placeholder": {
+    "defaultMessage": "https://your-odoo-server.com",
+    "description": "LOCATION: Intellix URL text field placeholder. LIMIT: ~35 chars. TONE: neutral. VARIABLES: none. Example URL — do not translate domain."
+  }
+}

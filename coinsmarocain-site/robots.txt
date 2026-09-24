@@ -1,0 +1,13 @@
+# Google Merchant Center : crawl landing + images (Googlebot / Googlebot-Image).
+# Disallow vide = tout autorisé. Ne pas ouvrir ici des chemins privés
+# partenaire / admin / Odoo — ils ne sont pas listés Disallow sur ce site.
+User-agent: Googlebot
+Disallow:
+
+User-agent: Googlebot-Image
+Disallow:
+
+User-agent: *
+Allow: /
+
+Sitemap: https://coinsmarocain.com/sitemap.xml

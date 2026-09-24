@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_social_wizard_form" model="ir.ui.view">
+        <field name="name">doorway.social.wizard.form</field>
+        <field name="model">doorway.social.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Créer du contenu">
+                <group>
+                    <group string="Calendrier IA — 30 jours en 1 clic">
+                        <field name="pipeline_id"/>
+                        <field name="topic" placeholder="ex: Subventions rénovation printemps 2026"/>
+                        <field name="period_start"/>
+                        <field name="period_end"/>
+                        <field name="frequency"/>
+                        <field name="tone"/>
+                        <field name="account_ids" widget="many2many_tags"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_generate" type="object"
+                            string="Générer le calendrier IA" class="btn-primary"/>
+                    <button string="Annuler" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_social_wizard" model="ir.actions.act_window">
+        <field name="name">Générer un calendrier IA</field>
+        <field name="res_model">doorway.social.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="action_social_post_single" model="ir.actions.act_window">
+        <field name="name">Post unique</field>
+        <field name="res_model">doorway.social.post</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'default_state': 'draft'}</field>
+    </record>
+
+    <record id="action_social_composer" model="ir.actions.client">
+        <field name="name">Créer une publication</field>
+        <field name="tag">social_composer_action</field>
+    </record>
+</odoo>

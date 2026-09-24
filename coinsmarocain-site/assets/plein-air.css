@@ -1,0 +1,241 @@
+/* Page thème Plein air — SEO + widget Viator (pas de carte filtrée) */
+.cm-plein-air-page {
+  --cream: #faf6ee;
+  --ink: #262220;
+  --gold-1: #b5732f;
+  --gold-2: #e6b876;
+  --gold-3: #8a4f22;
+  --charcoal: #262220;
+  --line: rgba(138, 79, 34, 0.22);
+  background: var(--cream);
+  color: var(--charcoal);
+  font-family: "Jost", sans-serif;
+  font-weight: 300;
+}
+
+.cm-plein-air-page .site-header.solid .cm-desk-link,
+.cm-plein-air-page .site-header.solid .cm-desk-drop-btn {
+  color: var(--ink) !important;
+}
+.cm-plein-air-page .site-header.solid .burger span {
+  background: var(--ink);
+}
+
+.cm-plein-air-shell {
+  padding: 96px 22px 64px;
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.cm-plein-air-eyebrow {
+  margin: 0 0 8px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-3);
+}
+
+.cm-plein-air-shell h1 {
+  font-family: "Cormorant Garamond", "Playfair Display", serif;
+  font-weight: 600;
+  font-size: clamp(1.9rem, 4.2vw, 2.75rem);
+  margin: 0 0 14px;
+  letter-spacing: 0.01em;
+  line-height: 1.15;
+  color: var(--ink);
+  max-width: 22ch;
+}
+
+.cm-plein-air-lead {
+  margin: 0 0 22px;
+  font-size: 1.08rem;
+  line-height: 1.55;
+  color: rgba(38, 34, 32, 0.78);
+  max-width: 62ch;
+}
+
+.cm-plein-air-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.cm-plein-air-page .cm-pill {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 12px 20px;
+  font: inherit;
+  font-weight: 500;
+  font-size: 0.92rem;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+.cm-plein-air-page .cm-pill--dark {
+  background: var(--ink);
+  color: #fff;
+}
+.cm-plein-air-page .cm-pill--outline {
+  background: transparent;
+  color: var(--ink);
+  border-color: rgba(138, 79, 34, 0.35);
+}
+
+.cm-viator-frame {
+  margin: 0;
+  padding: 18px 16px 22px;
+  background:
+    linear-gradient(180deg, #fff9ef 0%, #fff 48%, var(--cream) 100%);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: 0 10px 36px rgba(138, 79, 34, 0.08);
+  overflow: hidden;
+}
+
+.cm-viator-frame-label {
+  margin: 0 0 12px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold-3);
+}
+
+.cm-viator-mount {
+  min-height: 320px;
+  width: 100%;
+}
+
+.cm-viator-mount [data-vi-partner-id],
+.cm-viator-mount iframe {
+  max-width: 100%;
+}
+
+.cm-plein-air-note {
+  margin: 16px 0 0;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: rgba(38, 34, 32, 0.58);
+}
+
+.cm-exp-feature {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 28px;
+  align-items: center;
+  margin: 28px 0 8px;
+  padding: 18px;
+  border-radius: 18px;
+  background: #fff;
+  border: 1px solid var(--line);
+  box-shadow: 0 12px 32px rgba(40, 25, 10, 0.08);
+}
+.cm-exp-feature-media {
+  position: relative;
+  display: block;
+  aspect-ratio: 9/16;
+  max-height: 420px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #2a241f;
+}
+.cm-exp-feature-media video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.cm-exp-feature-play {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(20, 15, 10, 0.45);
+  border: 1px solid rgba(250, 246, 238, 0.4);
+  pointer-events: none;
+}
+.cm-exp-feature-play::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 54%;
+  transform: translate(-50%, -50%);
+  border-style: solid;
+  border-width: 8px 0 8px 14px;
+  border-color: transparent transparent transparent #faf6ee;
+}
+.cm-exp-feature-kicker {
+  margin: 0 0 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold-3);
+}
+.cm-exp-feature-copy h2 {
+  margin: 0 0 12px;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(1.6rem, 3vw, 2.1rem);
+  font-weight: 600;
+  color: var(--ink);
+}
+.cm-exp-feature-copy p {
+  margin: 0 0 18px;
+  line-height: 1.55;
+  color: rgba(38, 34, 32, 0.78);
+  max-width: 40ch;
+}
+.cm-exp-feature-copy .cm-pill {
+  margin: 0 8px 8px 0;
+}
+.cm-seo-fold {
+  max-width: 40rem;
+  margin: 24px 0 8px;
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+.cm-seo-fold summary {
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--gold-3);
+  list-style: none;
+}
+.cm-seo-fold summary::-webkit-details-marker { display: none; }
+.cm-seo-fold-body {
+  margin-top: 12px;
+  line-height: 1.65;
+  color: rgba(38, 34, 32, 0.78);
+}
+.cm-seo-fold-body p { margin: 0 0 12px; }
+
+@media (max-width: 720px) {
+  .cm-plein-air-shell {
+    padding: 88px 16px 48px;
+  }
+  .cm-viator-frame {
+    padding: 14px 10px 18px;
+    border-radius: 14px;
+  }
+  .cm-viator-mount {
+    min-height: 280px;
+  }
+  .cm-exp-feature {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    padding: 14px;
+  }
+  .cm-exp-feature-media {
+    max-height: 360px;
+    margin: 0 auto;
+    width: min(280px, 100%);
+  }
+}

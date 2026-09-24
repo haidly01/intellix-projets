@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Casa Ysabella — tests motion (terrasse + fontaine)</title>
+  <style>
+    :root { --ink:#2a241f; --muted:#6a5e52; --line:#e4d8c8; --bg:#f7f1e8; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Jost, system-ui, sans-serif; background: var(--bg); color: var(--ink); }
+    header { padding: 28px 20px 8px; max-width: 1200px; margin: 0 auto; }
+    h1 { font-family: "Cormorant Garamond", Georgia, serif; font-weight: 600; font-size: clamp(1.8rem, 4vw, 2.6rem); margin: 0 0 8px; }
+    h2 { font-family: "Cormorant Garamond", Georgia, serif; font-weight: 600; font-size: 1.5rem; margin: 28px 20px 0; max-width: 1200px; }
+    .wrap { max-width: 1200px; margin: 0 auto; }
+    .sub { color: var(--muted); max-width: 72ch; line-height: 1.5; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; max-width: 1200px; margin: 16px auto 8px; padding: 0 20px; }
+    figure { margin: 0; background: #fff; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+    video { width: 100%; aspect-ratio: 16/9; display: block; background: #111; }
+    figcaption { padding: 12px 14px 14px; }
+    figcaption strong { display: block; margin-bottom: 4px; }
+    figcaption span { color: var(--muted); font-size: 0.9rem; line-height: 1.45; }
+    .note { max-width: 1200px; margin: 12px auto 40px; padding: 0 20px; color: var(--muted); font-size: 0.92rem; }
+    @media (max-width: 720px) { .grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Casa Ysabella — tests photo→vidéo</h1>
+    <p class="sub">Terrasse (Ken Burns / DepthFlow) inchangée ci-dessous.
+      Nouvelle piste fontaine : texture vivante — cadrage verrouillé, seul l’éclairage suit le relief.
+      Les 4 mp4 publics de la fiche ne sont pas remplacés.</p>
+  </header>
+
+  <div class="wrap"><h2>Référence — déjà vus (B trop calme)</h2></div>
+  <div class="grid">
+    <figure>
+      <video controls playsinline loop preload="metadata" src="/assets/video/casa-ysabella-terrasse.mp4"></video>
+      <figcaption>
+        <strong>A — Orbit actuel (fiche, non modifié)</strong>
+        <span>offset ±0,50 + isometric pulsé + height 0,20. Source 2:3 étirée. À ne plus viser.</span>
+      </figcaption>
+    </figure>
+    <figure>
+      <video controls playsinline loop preload="metadata" src="/assets/video/casa-ysabella-terrasse-h005.mp4"></video>
+      <figcaption>
+        <strong>B — travel_h005 (pad, ±0,12, h 0,05)</strong>
+        <span>Ailes floues statiques + travelling trop faible. « On ne voit rien bouger ».</span>
+      </figcaption>
+    </figure>
+    <figure>
+      <video controls playsinline loop preload="metadata" src="/assets/video/casa-ysabella-terrasse-h008.mp4"></video>
+      <figcaption>
+        <strong>C — travel_h008 (pad, ±0,12, h 0,08)</strong>
+        <span>Même constat que B, relief un peu plus fort.</span>
+      </figcaption>
+    </figure>
+  </div>
+
+  <div class="wrap"><h2>Piste 1 — pad flou, offset plus large</h2></div>
+  <div class="grid">
+    <figure>
+      <video controls playsinline loop preload="metadata" src="/assets/video/casa-ysabella-terrasse-pad-h005-o20.mp4"></video>
+      <figcaption>
+        <strong>D — pad · height 0,05 · offset ±0,20</strong>
+        <span>travel_pad_h005_o20. Même pad que B, amplitude presque ×2.</span>
+      </figcaption>
+    </figure>
+    <figure>
+      <video controls playsinline loop preload="metadata" src="/assets/video/casa-ysabella-terrasse-pad-h008-o20.mp4"></video>
+      <figcaption>
+        <strong>E — pad · height 0,08 · offset ±0,20</strong>
+        <span>travel_pad_h008_o20.</span>
+      </figcaption>
+    </figure>
+    <figure>
+      <video controls playsinline loop preload="metadata" src="/assets/video/casa-ysabella-terrasse-pad-h005-o25.mp4"></video>
+      <figcaption>
+        <strong>F — pad · height 0,05 · offset ±0,25</strong>
+        <span>travel_pad_h005_o25. Encore sous l’orbit (±0,50).</span>
+      </figcaption>
+    </figure>
+    <figure>
+      <video controls playsinline loop preload="metadata" src="/assets/video/casa-ysabella-terrasse-pad-h008-o25.mp4"></video>
+      <figcaption>
+        <strong>G — pad · height 0,08 · offset ±0,25</strong>
+        <span>travel_pad_h008_o25. Plafond de cette piste : regarder le carrelage / les verres.</span>
+      </figcaption>
+    </figure>
+  </div>
+
+  <div class="wrap"><h2>Piste 2 — crop plein cadre + amplitude</h2></div>
+  <div class="grid">
+    <figure>
+      <video controls playsinline loop preload="metadata" src="/assets/video/casa-ysabella-terrasse-crop-h005.mp4"></video>
+      <figcaption>
+        <strong>H — crop · height 0,05 · offset ±0,12 (trop calme)</strong>
+        <span>travel_crop_h005. Bon cadrage, mouvement insuffisant. Fenêtre (0, 580, 667, 955).</span>
+      </figcaption>
+    </figure>
+    <figure>
+      <video controls playsinline loop preload="metadata" src="/assets/video/casa-ysabella-terrasse-crop-h005-o20.mp4"></video>
+      <figcaption>
+        <strong>I — crop · height 0,05 · offset ±0,20</strong>
+        <span>travel_crop_h005_o20. Même crop que H, amplitude de D.</span>
+      </figcaption>
+    </figure>
+    <figure>
+      <video controls playsinline loop preload="metadata" src="/assets/video/casa-ysabella-terrasse-crop-h005-o25.mp4"></video>
+      <figcaption>
+        <strong>J — crop · height 0,05 · offset ±0,25</strong>
+        <span>travel_crop_h005_o25. Même crop, amplitude de G. Surveiller verres et plateau.</span>
+      </figcaption>
+    </figure>
+  </div>
+  <div class="wrap"><h2>Piste 3 — Ken Burns 2D (sans profondeur)</h2></div>
+  <p class="note" style="margin-top:8px">Translation ou zoom sur l’image plate. Même ease + pause 0,8 s.
+    Fenêtre pan 480×270 (source), table ancrée y=580–955. Aucun DepthFlow.</p>
+  <div class="grid">
+    <figure>
+      <video controls playsinline loop preload="metadata" src="/assets/video/casa-ysabella-terrasse-kb-hpan-s.mp4"></video>
+      <figcaption>
+        <strong>K — pan horizontal S</strong>
+        <span>±36 px source (15 % de la fenêtre). On voit que ça bouge.</span>
+      </figcaption>
+    </figure>
+    <figure>
+      <video controls playsinline loop preload="metadata" src="/assets/video/casa-ysabella-terrasse-kb-hpan-m.mp4"></video>
+      <figcaption>
+        <strong>L — pan horizontal M</strong>
+        <span>±64 px (27 %). Début de travelling « filmé ».</span>
+      </figcaption>
+    </figure>
+    <figure>
+      <video controls playsinline loop preload="metadata" src="/assets/video/casa-ysabella-terrasse-kb-hpan-l.mp4"></video>
+      <figcaption>
+        <strong>M — pan horizontal L</strong>
+        <span>±93 px (39 %, max sans sortir du 667 de large). Le plus cinématique des pans.</span>
+      </figcaption>
+    </figure>
+    <figure>
+      <video controls playsinline loop preload="metadata" src="/assets/video/casa-ysabella-terrasse-kb-zoom.mp4"></video>
+      <figcaption>
+        <strong>N — zoom lent seul</strong>
+        <span>1,00 → 1,18, pas de translation. Fenêtre large (bande table 16:9).</span>
+      </figcaption>
+    </figure>
+    <figure>
+      <video controls playsinline loop preload="metadata" src="/assets/video/casa-ysabella-terrasse-kb-combo.mp4"></video>
+      <figcaption>
+        <strong>O — combo léger</strong>
+        <span>pan ±36 px + zoom 1,08. Même fenêtre que K–M.</span>
+      </figcaption>
+    </figure>
+  </div>
+  <div class="wrap"><h2>Piste 4 — Fontaine, texture vivante (caméra fixe)</h2></div>
+  <p class="note" style="margin-top:8px">Photo patio-fontaine-dessus 667×1000, pad 16:9 (pas d’étirement).
+    Estimateur Depth-Anything-V2 Small (le même que DepthFlow). Offset = 0, zoom = 1, aucun orbit.
+    Courbe ease + pause 0,8 s. La fiche publique garde l’orbit d’origine (P).</p>
+  <div class="grid">
+    <figure>
+      <video controls playsinline loop preload="metadata" src="/assets/video/casa-ysabella-fontaine.mp4"></video>
+      <figcaption>
+        <strong>P — Orbit actuel (fiche, non modifié)</strong>
+        <span>Référence du diagnostic : zellige et lustre se tordent. À ne plus viser sur cette photo.</span>
+      </figcaption>
+    </figure>
+    <figure>
+      <video controls playsinline loop preload="metadata" src="/assets/video/casa-ysabella-fontaine-lt-static.mp4"></video>
+      <figcaption>
+        <strong>Q — Statique pur</strong>
+        <span>Même cadrage pad 16:9, 8 s, zéro animation. Plancher de comparaison.</span>
+      </figcaption>
+    </figure>
+    <figure>
+      <video controls playsinline loop preload="metadata" src="/assets/video/casa-ysabella-fontaine-lt-s.mp4"></video>
+      <figcaption>
+        <strong>R — lumière subtile (amp 0,12)</strong>
+        <span>Source virtuelle ±55°. Caméra bloquée. On distingue à peine le lustre.</span>
+      </figcaption>
+    </figure>
+    <figure>
+      <video controls playsinline loop preload="metadata" src="/assets/video/casa-ysabella-fontaine-lt-m.mp4"></video>
+      <figcaption>
+        <strong>S — lumière modérée (amp 0,22)</strong>
+        <span>Même trajet de lumière, plus d’ombre sur les étages de paille.</span>
+      </figcaption>
+    </figure>
+    <figure>
+      <video controls playsinline loop preload="metadata" src="/assets/video/casa-ysabella-fontaine-lt-f.mp4"></video>
+      <figcaption>
+        <strong>T — lumière marquée (amp 0,36)</strong>
+        <span>Le plus lisible. Toujours 0 px de déplacement structurel (corrélation de phase).</span>
+      </figcaption>
+    </figure>
+    <figure>
+      <video controls playsinline loop preload="metadata" src="/assets/video/casa-ysabella-fontaine-lt-breath.mp4"></video>
+      <figcaption>
+        <strong>U — respiration (amp 0,10)</strong>
+        <span>Pas de lumière directionnelle : le relief s’éclaircit / s’assombrit. Un peu plus « gadget ».</span>
+      </figcaption>
+    </figure>
+  </div>
+  <p class="note">Page interne <code>/ysabella-motion-compare/</code> · noindex. Fiche publique inchangée :
+    <a href="/lieux/riad-medina-marrakech-la-casa-ysabella">La Casa Ysabella</a>.</p>
+</body>
+</html>

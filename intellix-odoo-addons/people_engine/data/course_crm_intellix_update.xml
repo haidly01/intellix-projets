@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="course_crm_intellix" model="pe.course">
+        <field name="title">Formation CRM IntelliX — Pourquoi &amp; Comment</field>
+        <field name="category">crm</field>
+        <field name="course_type">internal</field>
+        <field name="duration_hours">5.0</field>
+        <field name="difficulty">beginner</field>
+        <field name="points_on_completion">50</field>
+        <field name="description">Formation complète sur le CRM IntelliX — pourquoi l'utiliser et comment en tirer le maximum : 7 modules interactifs (vision, pipelines, leads, automatisations, reporting, cas pratiques).</field>
+        <field name="content_url">/people_engine/static/src/html/formation_crm_intellix_fr.html</field>
+        <field name="is_active" eval="True"/>
+    </record>
+</odoo>

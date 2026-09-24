@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="forfait_type_reno_5" model="renovation.forfait.type">
+        <field name="name">5 leads</field>
+        <field name="secteur">reno</field>
+        <field name="leads_inclus">5</field>
+        <field name="currency_id" ref="base.CAD"/>
+    </record>
+    <record id="forfait_type_reno_10" model="renovation.forfait.type">
+        <field name="name">10 leads</field>
+        <field name="secteur">reno</field>
+        <field name="leads_inclus">10</field>
+        <field name="currency_id" ref="base.CAD"/>
+    </record>
+    <record id="forfait_type_reno_20" model="renovation.forfait.type">
+        <field name="name">20 leads</field>
+        <field name="secteur">reno</field>
+        <field name="leads_inclus">20</field>
+        <field name="currency_id" ref="base.CAD"/>
+    </record>
+    <record id="forfait_type_immo_5" model="renovation.forfait.type">
+        <field name="name">5 leads</field>
+        <field name="secteur">immobilier</field>
+        <field name="leads_inclus">5</field>
+        <field name="currency_id" ref="base.CAD"/>
+    </record>
+    <record id="forfait_type_immo_10" model="renovation.forfait.type">
+        <field name="name">10 leads</field>
+        <field name="secteur">immobilier</field>
+        <field name="leads_inclus">10</field>
+        <field name="currency_id" ref="base.CAD"/>
+    </record>
+    <record id="forfait_type_immo_20" model="renovation.forfait.type">
+        <field name="name">20 leads</field>
+        <field name="secteur">immobilier</field>
+        <field name="leads_inclus">20</field>
+        <field name="currency_id" ref="base.CAD"/>
+    </record>
+    <record id="forfait_type_sur_mesure" model="renovation.forfait.type">
+        <field name="name">Sur mesure</field>
+        <field name="secteur">reno</field>
+        <field name="leads_inclus">0</field>
+        <field name="currency_id" ref="base.CAD"/>
+    </record>
+</odoo>

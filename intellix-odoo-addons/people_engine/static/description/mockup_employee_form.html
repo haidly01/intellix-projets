@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IntelliX — Fiche Employé · Maquette RH</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #050508; font-family: 'Inter', sans-serif; color: #f0f0fa; padding: 40px 24px; }
+
+.page-title { text-align: center; margin-bottom: 48px; }
+.page-title h1 { font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; }
+.page-title h1 span { background: linear-gradient(90deg, #6366f1, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.page-title p { font-size: 13px; color: #9898b8; }
+
+.screen { max-width: 1400px; margin: 0 auto; border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 32px 80px rgba(0,0,0,0.6); }
+.screen-bar { background: #0a0a14; border-bottom: 1px solid rgba(255,255,255,0.07); padding: 10px 18px; display: flex; align-items: center; gap: 12px; }
+.screen-bar-dots { display: flex; gap: 5px; }
+.screen-bar-dots span { width: 10px; height: 10px; border-radius: 50%; }
+.screen-bar-dots span:nth-child(1) { background: #ef4444; }
+.screen-bar-dots span:nth-child(2) { background: #f59e0b; }
+.screen-bar-dots span:nth-child(3) { background: #10b981; }
+.screen-bar-url { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 4px 12px; font-size: 11px; color: #5a5a7a; font-family: monospace; }
+.screen-bar-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #8b5cf6; }
+
+/* TOPNAV */
+.topnav { background: #12102a; padding: 0 20px; display: flex; align-items: center; height: 46px; border-bottom: 1px solid rgba(255,255,255,0.08); gap: 0; }
+.topnav-grid { width: 26px; height: 26px; display: grid; grid-template-columns: 1fr 1fr; gap: 3px; margin-right: 14px; padding: 4px; }
+.topnav-grid div { background: rgba(255,255,255,0.4); border-radius: 2px; }
+.topnav-section { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 700; color: #f0f0fa; margin-right: 24px; }
+.topnav-links { display: flex; align-items: center; }
+.topnav-link { padding: 0 14px; height: 46px; display: flex; align-items: center; font-size: 12px; color: rgba(255,255,255,0.6); cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; }
+.topnav-link.active { color: #fff; border-bottom-color: #8b5cf6; }
+.topnav-right { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+.topnav-badge { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 100px; }
+.badge-indigo { background: #6366f1; color: #fff; }
+.badge-green { background: #10b981; color: #fff; }
+.topnav-avatar { width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, #f59e0b, #fb923c); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
+
+/* ACTION BAR */
+.action-bar { background: #0e0c22; padding: 10px 20px; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.btn-action { padding: 6px 14px; border-radius: 7px; font-size: 11px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; border: none; white-space: nowrap; transition: all 0.2s; }
+.btn-purple { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: #fff; }
+.btn-violet { background: rgba(139,92,246,0.2); color: #a78bfa; border: 1px solid rgba(139,92,246,0.3); }
+.btn-ghost { background: rgba(255,255,255,0.05); color: #9898b8; border: 1px solid rgba(255,255,255,0.1); }
+.btn-outline { background: transparent; color: #9898b8; border: 1px solid rgba(255,255,255,0.1); }
+.action-sep { width: 1px; height: 24px; background: rgba(255,255,255,0.08); margin: 0 4px; }
+.breadcrumb { font-size: 11px; color: #5a5a7a; display: flex; align-items: center; gap: 6px; margin-right: 12px; }
+.breadcrumb span { color: #9898b8; }
+.subbar-right { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+.nav-arrows { display: flex; gap: 4px; }
+.nav-arrow { width: 26px; height: 26px; border-radius: 5px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 11px; color: #9898b8; }
+
+/* MAIN LAYOUT */
+.main-layout { display: grid; grid-template-columns: 1fr 340px; background: #0a0a12; min-height: 800px; }
+
+/* LEFT */
+.left-col { overflow: hidden; }
+
+/* EMPLOYEE HERO */
+.emp-hero { padding: 24px 24px 0; background: linear-gradient(135deg, rgba(99,102,241,0.06) 0%, rgba(139,92,246,0.04) 50%, transparent 100%); border-bottom: 1px solid rgba(255,255,255,0.06); }
+.emp-hero-inner { display: flex; align-items: flex-start; gap: 20px; margin-bottom: 20px; }
+.emp-avatar { width: 72px; height: 72px; border-radius: 16px; background: linear-gradient(135deg, #6366f1, #8b5cf6); display: flex; align-items: center; justify-content: center; font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 700; color: #fff; flex-shrink: 0; position: relative; }
+.emp-avatar-badge { position: absolute; bottom: -4px; right: -4px; width: 20px; height: 20px; border-radius: 50%; background: #10b981; border: 2px solid #0a0a12; display: flex; align-items: center; justify-content: center; font-size: 9px; }
+.emp-info { flex: 1; }
+.emp-name { font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 5px; }
+.emp-meta { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+.emp-meta-item { display: flex; align-items: center; gap: 5px; font-size: 12px; color: #9898b8; }
+.emp-meta-item svg { width: 12px; height: 12px; }
+.emp-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.emp-tag { font-size: 10px; font-weight: 600; padding: 3px 9px; border-radius: 100px; }
+.tag-dept { background: rgba(99,102,241,0.12); color: #818cf8; border: 1px solid rgba(99,102,241,0.2); }
+.tag-role { background: rgba(6,182,212,0.1); color: #22d3ee; border: 1px solid rgba(6,182,212,0.2); }
+.tag-status { background: rgba(16,185,129,0.1); color: #34d399; border: 1px solid rgba(16,185,129,0.2); }
+.tag-surv { background: rgba(245,158,11,0.1); color: #fbbf24; border: 1px solid rgba(245,158,11,0.2); }
+
+/* SCORE HERO STRIP */
+.score-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border-top: 1px solid rgba(255,255,255,0.06); }
+.score-strip-item { padding: 14px 20px; border-right: 1px solid rgba(255,255,255,0.06); }
+.score-strip-item:last-child { border-right: none; }
+.score-strip-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: #5a5a7a; margin-bottom: 6px; }
+.score-strip-val { font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 700; line-height: 1; margin-bottom: 6px; }
+.score-strip-bar { height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
+.score-strip-fill { height: 100%; border-radius: 2px; }
+.score-trend { font-size: 10px; display: flex; align-items: center; gap: 3px; margin-top: 4px; }
+.trend-up { color: #10b981; }
+.trend-down { color: #ef4444; }
+.trend-neutral { color: #9898b8; }
+
+/* TABS */
+.tabs-row { display: flex; border-bottom: 1px solid rgba(255,255,255,0.07); padding: 0 24px; background: #0c0c1a; overflow-x: auto; }
+.tab { padding: 10px 16px; font-size: 12px; font-weight: 600; color: #9898b8; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; flex-shrink: 0; }
+.tab.active { color: #a78bfa; border-bottom-color: #8b5cf6; }
+.tab-badge { background: rgba(99,102,241,0.15); color: #818cf8; font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 100px; margin-left: 4px; }
+
+/* CONTENT AREA */
+.content-area { padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+
+/* SECTION */
+.section { background: #0f0f1e; border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; overflow: hidden; }
+.section-header { padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: space-between; }
+.section-title { font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.section-icon { font-size: 14px; }
+.section-body { padding: 16px; }
+.section-edit { font-size: 10px; font-weight: 600; color: #8b5cf6; cursor: pointer; background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.2); border-radius: 5px; padding: 3px 8px; }
+
+/* FORM GRID */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.form-group { display: flex; flex-direction: column; gap: 4px; }
+.form-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: #5a5a7a; }
+.form-val { background: #141428; border: 1px solid rgba(255,255,255,0.07); border-radius: 7px; padding: 8px 12px; font-size: 12px; color: #f0f0fa; }
+.form-val.empty { color: #5a5a7a; font-style: italic; }
+.form-val.highlight { background: rgba(99,102,241,0.08); border-color: rgba(99,102,241,0.2); color: #818cf8; font-weight: 600; }
+.form-val.green { background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.2); color: #34d399; font-weight: 600; }
+.form-val.orange { background: rgba(245,158,11,0.08); border-color: rgba(245,158,11,0.2); color: #fbbf24; font-weight: 600; }
+
+/* REMUNERATION */
+.remu-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.remu-card { background: #141428; border: 1px solid rgba(255,255,255,0.07); border-radius: 8px; padding: 12px; }
+.remu-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #5a5a7a; margin-bottom: 4px; }
+.remu-val { font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700; }
+.remu-sub { font-size: 10px; color: #9898b8; margin-top: 2px; }
+
+/* PRIME TIERS */
+.prime-tiers { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.prime-tier { background: #141428; border: 1px solid rgba(255,255,255,0.07); border-radius: 8px; padding: 10px; text-align: center; transition: all 0.2s; }
+.prime-tier.active { border-color: rgba(245,158,11,0.35); background: rgba(245,158,11,0.06); }
+.prime-tier-name { font-size: 11px; font-weight: 700; margin-bottom: 3px; }
+.prime-tier-val { font-size: 10px; color: #9898b8; }
+.prime-tier-badge { font-size: 16px; margin-bottom: 4px; }
+
+/* OBJECTIFS */
+.objectif-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.objectif-row:last-child { border-bottom: none; }
+.objectif-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+.objectif-content { flex: 1; }
+.objectif-name { font-size: 12px; font-weight: 600; margin-bottom: 4px; }
+.objectif-progress { display: flex; align-items: center; gap: 8px; }
+.objectif-bar { flex: 1; height: 5px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+.objectif-fill { height: 100%; border-radius: 3px; }
+.objectif-nums { font-size: 10px; color: #9898b8; white-space: nowrap; min-width: 60px; text-align: right; }
+.objectif-status { font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 100px; white-space: nowrap; }
+.status-done { background: rgba(16,185,129,0.12); color: #34d399; }
+.status-progress { background: rgba(99,102,241,0.12); color: #818cf8; }
+.status-warn { background: rgba(245,158,11,0.12); color: #fbbf24; }
+
+/* HISTORIQUE SCORE */
+.score-history { display: flex; align-items: flex-end; gap: 6px; height: 60px; padding: 0 4px; }
+.score-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.score-bar-col { width: 100%; border-radius: 3px 3px 0 0; min-height: 4px; }
+.score-bar-date { font-size: 9px; color: #5a5a7a; }
+.score-bar-num { font-size: 9px; font-weight: 700; }
+
+/* CRITERIA BARS */
+.criteria-list { display: flex; flex-direction: column; gap: 10px; }
+.criterion { display: flex; flex-direction: column; gap: 5px; }
+.criterion-header { display: flex; justify-content: space-between; align-items: center; }
+.criterion-name { font-size: 11px; color: #d0d0e8; }
+.criterion-score { font-size: 11px; font-weight: 700; }
+.criterion-bar { height: 5px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+.criterion-fill { height: 100%; border-radius: 3px; }
+
+/* CONTRATS */
+.contrat-row { display: flex; align-items: center; gap: 12px; padding: 10px 12px; background: #141428; border: 1px solid rgba(255,255,255,0.07); border-radius: 8px; margin-bottom: 8px; cursor: pointer; transition: all 0.2s; }
+.contrat-row:hover { border-color: rgba(139,92,246,0.25); }
+.contrat-icon { font-size: 18px; flex-shrink: 0; }
+.contrat-info { flex: 1; }
+.contrat-name { font-size: 12px; font-weight: 600; margin-bottom: 2px; }
+.contrat-meta { font-size: 10px; color: #9898b8; }
+.contrat-status { font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 100px; }
+.contrat-active { background: rgba(16,185,129,0.12); color: #34d399; border: 1px solid rgba(16,185,129,0.2); }
+.contrat-draft { background: rgba(255,255,255,0.06); color: #9898b8; border: 1px solid rgba(255,255,255,0.1); }
+.contrat-actions { display: flex; gap: 5px; }
+.contrat-btn { font-size: 10px; font-weight: 600; padding: 4px 9px; border-radius: 5px; cursor: pointer; border: none; font-family: 'Inter', sans-serif; }
+.contrat-btn-primary { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: #fff; }
+.contrat-btn-ghost { background: rgba(255,255,255,0.05); color: #9898b8; border: 1px solid rgba(255,255,255,0.1); }
+
+/* DOCUMENTS */
+.doc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.doc-item { display: flex; align-items: center; gap: 8px; padding: 9px 12px; background: #141428; border: 1px solid rgba(255,255,255,0.07); border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+.doc-item:hover { border-color: rgba(139,92,246,0.25); background: rgba(139,92,246,0.04); }
+.doc-icon { font-size: 14px; flex-shrink: 0; }
+.doc-name { font-size: 11px; font-weight: 500; flex: 1; }
+.doc-action { font-size: 10px; color: #8b5cf6; font-weight: 600; }
+
+/* RIGHT COL — CHATTER */
+.right-col { background: #0c0b1e; border-left: 1px solid rgba(255,255,255,0.07); display: flex; flex-direction: column; }
+.chatter-header { padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.07); display: flex; align-items: center; gap: 8px; }
+.chatter-tabs { display: flex; gap: 0; }
+.chatter-tab { flex: 1; padding: 7px; font-size: 11px; font-weight: 600; text-align: center; color: #9898b8; cursor: pointer; border-bottom: 2px solid transparent; }
+.chatter-tab.active { color: #a78bfa; border-bottom-color: #8b5cf6; }
+.chatter-actions { display: flex; gap: 6px; padding: 10px 16px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+.chatter-btn { flex: 1; padding: 7px; font-size: 11px; font-weight: 600; border-radius: 7px; cursor: pointer; text-align: center; border: none; font-family: 'Inter', sans-serif; }
+.chatter-btn-primary { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: #fff; }
+.chatter-btn-ghost { background: rgba(255,255,255,0.05); color: #9898b8; border: 1px solid rgba(255,255,255,0.1); }
+.chatter-body { flex: 1; overflow-y: auto; padding: 14px 16px; display: flex; flex-direction: column; gap: 14px; }
+
+/* AI INSIGHT CARD */
+.ai-insight { background: rgba(99,102,241,0.08); border: 1px solid rgba(99,102,241,0.2); border-radius: 10px; padding: 12px 14px; margin-bottom: 4px; }
+.ai-insight-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.ai-insight-icon { width: 24px; height: 24px; border-radius: 6px; background: linear-gradient(135deg, #6366f1, #8b5cf6); display: flex; align-items: center; justify-content: center; font-size: 11px; flex-shrink: 0; }
+.ai-insight-title { font-size: 11px; font-weight: 700; color: #818cf8; }
+.ai-insight-text { font-size: 11px; color: #9898b8; line-height: 1.6; }
+
+/* TIMELINE */
+.timeline-item { display: flex; gap: 10px; }
+.timeline-avatar { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+.timeline-bubble { flex: 1; }
+.timeline-header { display: flex; justify-content: space-between; margin-bottom: 3px; }
+.timeline-author { font-size: 11px; font-weight: 600; }
+.timeline-time { font-size: 10px; color: #5a5a7a; }
+.timeline-text { font-size: 11px; color: #9898b8; line-height: 1.5; }
+.timeline-change { display: flex; align-items: center; gap: 5px; font-size: 11px; }
+.change-from { color: #9898b8; }
+.change-arrow { color: #5a5a7a; font-size: 10px; }
+.change-to { color: #818cf8; font-weight: 600; }
+.change-field { color: #5a5a7a; font-size: 10px; }
+
+/* SCORE BADGE */
+.score-ring { position: relative; display: inline-flex; align-items: center; justify-content: center; }
+</style>
+</head>
+<body>
+
+<div class="page-title">
+  <h1>Module <span>RH</span> IntelliX — Fiche Employé</h1>
+  <p>Maquette redesignée · People Engine · Score · Rémunération · Objectifs · Contrats · Documents · Référence Odoo 19</p>
+</div>
+
+<div class="screen">
+  <div class="screen-bar">
+    <div class="screen-bar-dots"><span></span><span></span><span></span></div>
+    <div class="screen-bar-url">intellixcrm.com/odoo/rh/employes/leila-dhaoudi</div>
+    <div class="screen-bar-label">RH · Fiche Employé</div>
+  </div>
+
+  <!-- TOPNAV -->
+  <div class="topnav">
+    <div class="topnav-grid"><div></div><div></div><div></div><div></div></div>
+    <span class="topnav-section">RH</span>
+    <div class="topnav-links">
+      <div class="topnav-link">Vue d'ensemble</div>
+      <div class="topnav-link">Mon tableau de bord</div>
+      <div class="topnav-link active">Équipe</div>
+      <div class="topnav-link">Coaching IA</div>
+      <div class="topnav-link">Formation</div>
+      <div class="topnav-link">Primes</div>
+      <div class="topnav-link">Paie & contrats</div>
+      <div class="topnav-link">Objectifs</div>
+      <div class="topnav-link">Configuration</div>
+    </div>
+    <div class="topnav-right">
+      <span class="topnav-badge badge-indigo">950</span>
+      <span class="topnav-badge badge-green">3</span>
+      <span style="font-size:11px;color:rgba(255,255,255,0.5)">Digital Doorway SARL</span>
+      <div class="topnav-avatar">K</div>
+    </div>
+  </div>
+
+  <!-- ACTION BAR -->
+  <div class="action-bar">
+    <div class="breadcrumb">
+      <span style="cursor:pointer">Tableau de bord équipe</span>
+      <span>/</span>
+      <span style="color:#f0f0fa;font-weight:600">Leila Dhaoudi</span>
+    </div>
+    <div class="action-sep"></div>
+    <button class="btn-action btn-purple">Actualiser métriques</button>
+    <button class="btn-action btn-ghost">Calculer le score</button>
+    <button class="btn-action btn-ghost">🎉 Féliciter</button>
+    <button class="btn-action btn-violet">🤖 Coaching IA</button>
+    <button class="btn-action btn-ghost">Parcours LMS</button>
+    <button class="btn-action btn-ghost">Créer évaluation</button>
+    <div class="action-sep"></div>
+    <button class="btn-action btn-violet">Document personnalisé</button>
+    <button class="btn-action btn-violet">Assistant onboarding</button>
+    <button class="btn-action btn-ghost">Créer contrat</button>
+    <button class="btn-action btn-ghost">Contrat CDD</button>
+    <button class="btn-action btn-ghost">Contrat CDI</button>
+    <div class="subbar-right">
+      <span style="font-size:11px;color:#5a5a7a">2 / 2</span>
+      <div class="nav-arrows">
+        <div class="nav-arrow">←</div>
+        <div class="nav-arrow">→</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-layout">
+    <div class="left-col">
+
+      <!-- EMPLOYEE HERO -->
+      <div class="emp-hero">
+        <div class="emp-hero-inner">
+          <div class="emp-avatar">
+            LD
+            <div class="emp-avatar-badge">✓</div>
+          </div>
+          <div class="emp-info">
+            <div class="emp-name">Leila Dhaoudi</div>
+            <div class="emp-meta">
+              <div class="emp-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><briefcase/><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+                Prospecteur VICIdial
+              </div>
+              <div class="emp-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                Call Center QC
+              </div>
+              <div class="emp-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                Manager : Karine Barmaki
+              </div>
+              <div class="emp-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                Depuis le 7 juin 2026
+              </div>
+            </div>
+            <div class="emp-tags">
+              <span class="emp-tag tag-dept">Call Center QC</span>
+              <span class="emp-tag tag-role">Prospecteur VICIdial</span>
+              <span class="emp-tag tag-surv">⚠ Surveillance</span>
+              <span class="emp-tag" style="background:rgba(99,102,241,0.1);color:#818cf8;border:1px solid rgba(99,102,241,0.2)">Période essai</span>
+            </div>
+          </div>
+          <!-- SCORE RING -->
+          <div style="text-align:center;flex-shrink:0">
+            <div style="position:relative;display:inline-block;margin-bottom:6px">
+              <svg width="80" height="80" viewBox="0 0 80 80">
+                <circle cx="40" cy="40" r="34" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="6"/>
+                <circle cx="40" cy="40" r="34" fill="none" stroke="url(#scoreGrad)" stroke-width="6" stroke-dasharray="213.6" stroke-dashoffset="170.88" stroke-linecap="round" transform="rotate(-90 40 40)"/>
+                <defs><linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs>
+              </svg>
+              <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center">
+                <div style="font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:#818cf8;line-height:1">20</div>
+                <div style="font-size:9px;color:#5a5a7a">/100</div>
+              </div>
+            </div>
+            <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#5a5a7a">Score global</div>
+            <div style="font-size:10px;color:#ef4444;margin-top:2px">↓ En baisse</div>
+          </div>
+        </div>
+
+        <!-- SCORE STRIP -->
+        <div class="score-strip">
+          <div class="score-strip-item">
+            <div class="score-strip-label">Performance /40</div>
+            <div class="score-strip-val" style="color:#818cf8">0</div>
+            <div class="score-strip-bar"><div class="score-strip-fill" style="width:0%;background:#6366f1"></div></div>
+            <div class="score-trend trend-neutral">— Pas de données</div>
+          </div>
+          <div class="score-strip-item">
+            <div class="score-strip-label">Engagement /30</div>
+            <div class="score-strip-val" style="color:#22d3ee">0</div>
+            <div class="score-strip-bar"><div class="score-strip-fill" style="width:0%;background:#06b6d4"></div></div>
+            <div class="score-trend trend-neutral">— Pas de données</div>
+          </div>
+          <div class="score-strip-item">
+            <div class="score-strip-label">Croissance /30</div>
+            <div class="score-strip-val" style="color:#34d399">0</div>
+            <div class="score-strip-bar"><div class="score-strip-fill" style="width:0%;background:#10b981"></div></div>
+            <div class="score-trend trend-neutral">— Pas de données</div>
+          </div>
+          <div class="score-strip-item">
+            <div class="score-strip-label">Taux objectifs</div>
+            <div class="score-strip-val" style="color:#fbbf24">0<span style="font-size:14px;color:#9898b8">%</span></div>
+            <div class="score-strip-bar"><div class="score-strip-fill" style="width:0%;background:#f59e0b"></div></div>
+            <div class="score-trend trend-down">↓ -100% vs mois dernier</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TABS -->
+      <div class="tabs-row">
+        <div class="tab active">Onboarding RH</div>
+        <div class="tab">CRM <span class="tab-badge">0</span></div>
+        <div class="tab">Projet</div>
+        <div class="tab">Agents IA</div>
+        <div class="tab">Activité</div>
+        <div class="tab">Rémunération</div>
+        <div class="tab">Contrat <span class="tab-badge">0</span></div>
+        <div class="tab">Objectifs</div>
+        <div class="tab">Historique scores</div>
+        <div class="tab">Évaluations</div>
+      </div>
+
+      <!-- CONTENT -->
+      <div class="content-area">
+
+        <!-- IDENTITÉ & ACCÈS RH -->
+        <div class="section">
+          <div class="section-header">
+            <div class="section-title"><span class="section-icon">👤</span>Identité & Accès RH</div>
+            <span class="section-edit">Modifier</span>
+          </div>
+          <div class="section-body">
+            <div class="form-grid" style="margin-bottom:12px">
+              <div class="form-group">
+                <div class="form-label">Utilisateur Odoo</div>
+                <div class="form-val highlight">Leila Dhaoudi</div>
+              </div>
+              <div class="form-group">
+                <div class="form-label">Email professionnel</div>
+                <div class="form-val">leiladaouadi@gmail.com</div>
+              </div>
+              <div class="form-group">
+                <div class="form-label">Département</div>
+                <div class="form-val empty">Non assigné</div>
+              </div>
+              <div class="form-group">
+                <div class="form-label">Département RH</div>
+                <div class="form-val">Call Center QC</div>
+              </div>
+              <div class="form-group">
+                <div class="form-label">Rôle VICIdial</div>
+                <div class="form-val">Prospecteur VICIdial</div>
+              </div>
+              <div class="form-group">
+                <div class="form-label">Stade cycle de vie</div>
+                <div class="form-val empty">À définir</div>
+              </div>
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <div class="form-label">Segment Doorway</div>
+                <div class="form-val">B2C · Rénovation / Assurance / Immobilier</div>
+              </div>
+              <div class="form-group">
+                <div class="form-label">Statut People Engine</div>
+                <div class="form-val orange">⚠ Surveillance</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RÉMUNÉRATION -->
+        <div class="section">
+          <div class="section-header">
+            <div class="section-title"><span class="section-icon">💰</span>Rémunération & Contrat</div>
+            <span class="section-edit">Modifier</span>
+          </div>
+          <div class="section-body">
+            <div class="remu-grid">
+              <div class="remu-card">
+                <div class="remu-label">Salaire base</div>
+                <div class="remu-val" style="color:#f0f0fa">500 <span style="font-size:13px;color:#9898b8">€</span></div>
+                <div class="remu-sub">Fixe mensuel</div>
+              </div>
+              <div class="remu-card">
+                <div class="remu-label">Type rémunération</div>
+                <div class="remu-val" style="font-size:14px;color:#818cf8;margin-top:4px">Fixe + variable</div>
+                <div class="remu-sub">Temps plein · EUR</div>
+              </div>
+              <div class="remu-card">
+                <div class="remu-label">Prime variable cible</div>
+                <div class="remu-val" style="color:#fbbf24">0 <span style="font-size:13px;color:#9898b8">%</span></div>
+                <div class="remu-sub">À configurer</div>
+              </div>
+            </div>
+            <!-- PRIME TIERS -->
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#5a5a7a;margin-bottom:10px">Paliers de prime — Score Elite</div>
+            <div class="prime-tiers">
+              <div class="prime-tier">
+                <div class="prime-tier-badge">🥉</div>
+                <div class="prime-tier-name" style="color:#cd7f32">Bronze</div>
+                <div class="prime-tier-val">Score ≥ 50</div>
+                <div style="font-size:11px;color:#9898b8;margin-top:4px">+5%</div>
+              </div>
+              <div class="prime-tier active">
+                <div class="prime-tier-badge">🥈</div>
+                <div class="prime-tier-name" style="color:#c0c0c0">Silver</div>
+                <div class="prime-tier-val">Score ≥ 75</div>
+                <div style="font-size:11px;color:#fbbf24;margin-top:4px;font-weight:700">+10%</div>
+              </div>
+              <div class="prime-tier">
+                <div class="prime-tier-badge">🥇</div>
+                <div class="prime-tier-name" style="color:#ffd700">Gold</div>
+                <div class="prime-tier-val">Score ≥ 90</div>
+                <div style="font-size:11px;color:#9898b8;margin-top:4px">+20%</div>
+              </div>
+              <div class="prime-tier">
+                <div class="prime-tier-badge">💎</div>
+                <div class="prime-tier-name" style="color:#b9f2ff">Platinum</div>
+                <div class="prime-tier-val">Score ≥ 98</div>
+                <div style="font-size:11px;color:#9898b8;margin-top:4px">+35%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- OBJECTIFS -->
+        <div class="section">
+          <div class="section-header">
+            <div class="section-title"><span class="section-icon">🎯</span>Objectifs opérationnels</div>
+            <div style="display:flex;gap:6px">
+              <span class="section-edit">+ Ajouter</span>
+              <span class="section-edit" style="color:#9898b8;background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.1)">Voir contrat</span>
+            </div>
+          </div>
+          <div class="section-body">
+            <div class="objectif-row">
+              <div class="objectif-icon" style="background:rgba(99,102,241,0.12)">📞</div>
+              <div class="objectif-content">
+                <div class="objectif-name">Appels par jour</div>
+                <div class="objectif-progress">
+                  <div class="objectif-bar"><div class="objectif-fill" style="width:0%;background:#6366f1"></div></div>
+                  <span class="objectif-nums">0 / 80</span>
+                </div>
+              </div>
+              <span class="objectif-status status-warn">⚠ Non démarré</span>
+            </div>
+            <div class="objectif-row">
+              <div class="objectif-icon" style="background:rgba(16,185,129,0.12)">✅</div>
+              <div class="objectif-content">
+                <div class="objectif-name">Taux qualification mensuel</div>
+                <div class="objectif-progress">
+                  <div class="objectif-bar"><div class="objectif-fill" style="width:0%;background:#10b981"></div></div>
+                  <span class="objectif-nums">0 / 25%</span>
+                </div>
+              </div>
+              <span class="objectif-status status-warn">⚠ Non démarré</span>
+            </div>
+            <div class="objectif-row">
+              <div class="objectif-icon" style="background:rgba(139,92,246,0.12)">⭐</div>
+              <div class="objectif-content">
+                <div class="objectif-name">Score coaching IA moyen</div>
+                <div class="objectif-progress">
+                  <div class="objectif-bar"><div class="objectif-fill" style="width:0%;background:#8b5cf6"></div></div>
+                  <span class="objectif-nums">0 / 70</span>
+                </div>
+              </div>
+              <span class="objectif-status status-warn">⚠ Non démarré</span>
+            </div>
+            <div class="objectif-row">
+              <div class="objectif-icon" style="background:rgba(6,182,212,0.12)">📊</div>
+              <div class="objectif-content">
+                <div class="objectif-name">Respect du script /100</div>
+                <div class="objectif-progress">
+                  <div class="objectif-bar"><div class="objectif-fill" style="width:0%;background:#06b6d4"></div></div>
+                  <span class="objectif-nums">0 / 80</span>
+                </div>
+              </div>
+              <span class="objectif-status status-warn">⚠ Non démarré</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CONTRATS & DOCUMENTS (2 colonnes) -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+
+          <!-- CONTRATS -->
+          <div class="section">
+            <div class="section-header">
+              <div class="section-title"><span class="section-icon">📄</span>Contrats</div>
+              <div style="display:flex;gap:5px">
+                <button class="contrat-btn contrat-btn-primary">+ CDD</button>
+                <button class="contrat-btn contrat-btn-ghost">+ CDI</button>
+              </div>
+            </div>
+            <div class="section-body">
+              <div style="text-align:center;padding:20px;color:#5a5a7a;font-size:12px">
+                <div style="font-size:28px;margin-bottom:8px">📋</div>
+                Aucun contrat actif<br>
+                <span style="font-size:11px">Crée un CDD ou CDI depuis les boutons ci-dessus</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- DOCUMENTS -->
+          <div class="section">
+            <div class="section-header">
+              <div class="section-title"><span class="section-icon">📁</span>Documents RH</div>
+              <span class="section-edit">Envoyer tout</span>
+            </div>
+            <div class="section-body">
+              <div class="doc-grid">
+                <div class="doc-item" style="border-color:rgba(16,185,129,0.25);background:rgba(16,185,129,0.04)">
+                  <span class="doc-icon">✅</span>
+                  <span class="doc-name" style="color:#34d399">Lettre de bienvenue</span>
+                  <span class="doc-action">Envoyé</span>
+                </div>
+                <div class="doc-item">
+                  <span class="doc-icon">📋</span>
+                  <span class="doc-name">Règlement intérieur</span>
+                  <span class="doc-action">Envoyer</span>
+                </div>
+                <div class="doc-item">
+                  <span class="doc-icon">📝</span>
+                  <span class="doc-name">Offre d'embauche</span>
+                  <span class="doc-action">Envoyer</span>
+                </div>
+                <div class="doc-item">
+                  <span class="doc-icon">🏁</span>
+                  <span class="doc-name">Fin période d'essai</span>
+                  <span class="doc-action">Envoyer</span>
+                </div>
+                <div class="doc-item">
+                  <span class="doc-icon">🏠</span>
+                  <span class="doc-name">Attestation emploi</span>
+                  <span class="doc-action">Générer</span>
+                </div>
+                <div class="doc-item">
+                  <span class="doc-icon">💰</span>
+                  <span class="doc-name">Attestation salaire</span>
+                  <span class="doc-action">Générer</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- HISTORIQUE SCORE -->
+        <div class="section">
+          <div class="section-header">
+            <div class="section-title"><span class="section-icon">📈</span>Historique des scores</div>
+            <span style="font-size:10px;color:#5a5a7a">30 derniers jours</span>
+          </div>
+          <div class="section-body">
+            <div style="display:flex;align-items:flex-end;gap:6px;height:70px;margin-bottom:8px">
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+                <div style="font-size:9px;font-weight:700;color:#5a5a7a">0</div>
+                <div style="width:100%;height:2px;background:#6366f1;border-radius:2px 2px 0 0;opacity:0.3"></div>
+                <div style="font-size:9px;color:#5a5a7a">7 juin</div>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+                <div style="font-size:9px;font-weight:700;color:#818cf8">35</div>
+                <div style="width:100%;height:26px;background:#6366f1;border-radius:2px 2px 0 0;opacity:0.7"></div>
+                <div style="font-size:9px;color:#5a5a7a">8 juin</div>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+                <div style="font-size:9px;font-weight:700;color:#818cf8">40</div>
+                <div style="width:100%;height:30px;background:#6366f1;border-radius:2px 2px 0 0;opacity:0.8"></div>
+                <div style="font-size:9px;color:#5a5a7a">11 juin</div>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+                <div style="font-size:9px;font-weight:700;color:#818cf8">39</div>
+                <div style="width:100%;height:28px;background:#6366f1;border-radius:2px 2px 0 0;opacity:0.75"></div>
+                <div style="font-size:9px;color:#5a5a7a">15 juin</div>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+                <div style="font-size:9px;font-weight:700;color:#ef4444">0</div>
+                <div style="width:100%;height:2px;background:#ef4444;border-radius:2px 2px 0 0;opacity:0.6"></div>
+                <div style="font-size:9px;color:#5a5a7a">17 juin</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:16px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.05)">
+              <div style="font-size:11px;color:#9898b8">Score actuel : <span style="color:#ef4444;font-weight:700">0 / 100</span></div>
+              <div style="font-size:11px;color:#9898b8">Tendance : <span style="color:#ef4444;font-weight:700">↓ En baisse (-100%)</span></div>
+              <div style="font-size:11px;color:#9898b8">Pic : <span style="color:#818cf8;font-weight:700">40 pts</span> le 11 juin</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- RIGHT — CHATTER -->
+    <div class="right-col">
+      <div style="padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.07)">
+        <div class="chatter-tabs">
+          <div class="chatter-tab active">Message</div>
+          <div class="chatter-tab">Note</div>
+          <div class="chatter-tab">Activité</div>
+        </div>
+      </div>
+      <div class="chatter-actions">
+        <button class="chatter-btn chatter-btn-primary">Envoyer message</button>
+        <button class="chatter-btn chatter-btn-ghost">Note interne</button>
+      </div>
+
+      <div class="chatter-body">
+
+        <!-- AI INSIGHT -->
+        <div class="ai-insight">
+          <div class="ai-insight-header">
+            <div class="ai-insight-icon">🤖</div>
+            <span class="ai-insight-title">Analyse IA — People Engine</span>
+          </div>
+          <div class="ai-insight-text">Leila est en période d'essai depuis 10 jours. Son score est tombé à 0 suite à l'absence de métriques cette semaine. Recommandation : vérifier que les appels VICIdial sont bien enregistrés sous son profil et relancer le calcul de score.</div>
+        </div>
+
+        <!-- TIMELINE -->
+        <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#5a5a7a;margin-bottom:4px">17 juin 2026</div>
+
+        <div class="timeline-item">
+          <div class="timeline-avatar" style="background:#1a1a2e;border:1px solid rgba(255,255,255,0.1)">🤖</div>
+          <div class="timeline-bubble">
+            <div class="timeline-header">
+              <span class="timeline-author" style="color:#818cf8;font-size:10px">OdooBot</span>
+              <span class="timeline-time">17 juin, 14h21</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:3px">
+              <div class="timeline-change">
+                <span class="change-from">40,00</span>
+                <span class="change-arrow">→</span>
+                <span class="change-to" style="color:#ef4444">0,00</span>
+                <span class="change-field">(Score actuel)</span>
+              </div>
+              <div class="timeline-change">
+                <span class="change-from">40,00</span>
+                <span class="change-arrow">→</span>
+                <span class="change-to" style="color:#ef4444">0,00</span>
+                <span class="change-field">(Score global /100)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#5a5a7a;margin:8px 0 4px">11 juin 2026</div>
+
+        <div class="timeline-item">
+          <div class="timeline-avatar" style="background:#1a1a2e;border:1px solid rgba(255,255,255,0.1)">🤖</div>
+          <div class="timeline-bubble">
+            <div class="timeline-header">
+              <span class="timeline-author" style="color:#818cf8;font-size:10px">OdooBot</span>
+              <span class="timeline-time">11 juin, 14h22</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:3px">
+              <div class="timeline-change">
+                <span class="change-from">39,00</span>
+                <span class="change-arrow">→</span>
+                <span class="change-to">40,00</span>
+                <span class="change-field">(Score actuel)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#5a5a7a;margin:8px 0 4px">7 juin 2026</div>
+
+        <div class="timeline-item">
+          <div class="timeline-avatar" style="background:linear-gradient(135deg,#10b981,#06b6d4);font-size:10px;font-weight:700">Z</div>
+          <div class="timeline-bubble">
+            <div class="timeline-header">
+              <span class="timeline-author">Zakaria Barmaki</span>
+              <span class="timeline-time">7 juin, 08h28</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:3px">
+              <div class="timeline-change">
+                <span class="change-from">0,00</span>
+                <span class="change-arrow">→</span>
+                <span class="change-to">35,00</span>
+                <span class="change-field">(Score actuel)</span>
+              </div>
+              <div class="timeline-change">
+                <span class="change-from">Actif</span>
+                <span class="change-arrow">→</span>
+                <span class="change-to" style="color:#fbbf24">Surveillance</span>
+                <span class="change-field">(Pe Status)</span>
+              </div>
+              <div class="timeline-change">
+                <span class="change-from">Aucun</span>
+                <span class="change-arrow">→</span>
+                <span class="change-to">Karine Barmaki</span>
+                <span class="change-field">(Manager)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-avatar" style="background:#1a1a2e;border:1px solid rgba(255,255,255,0.1)">🤖</div>
+          <div class="timeline-bubble">
+            <div class="timeline-header">
+              <span class="timeline-author" style="color:#818cf8;font-size:10px">OdooBot</span>
+              <span class="timeline-time">7 juin, 07h50</span>
+            </div>
+            <div class="timeline-change">
+              <span class="change-from">Digital Doorway SARL</span>
+              <span class="change-arrow">→</span>
+              <span class="change-to">Agence Doorway Inc.</span>
+              <span class="change-field">(Company)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-avatar" style="background:#1a1a2e;border:1px solid rgba(255,255,255,0.1)">🤖</div>
+          <div class="timeline-bubble">
+            <div class="timeline-header">
+              <span class="timeline-author" style="color:#818cf8;font-size:10px">OdooBot</span>
+              <span class="timeline-time">7 juin, 07h43</span>
+            </div>
+            <div class="timeline-text" style="color:#34d399;font-weight:600;font-size:11px">✓ Profil People Engine créé</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="text-align:center;margin-top:32px;padding-bottom:24px">
+  <p style="font-size:11px;color:#5a5a7a">IntelliX CRM · Module RH · People Engine · Maquette Fiche Employé · Juin 2026</p>
+</div>
+
+</body>
+</html>

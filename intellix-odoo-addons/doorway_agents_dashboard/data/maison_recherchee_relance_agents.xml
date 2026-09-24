@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="agent_maison_relance_j1" model="doorway.agent.profile">
+        <field name="name">Maison Recherchée · J+1 Relance</field>
+        <field name="immo_agent_role">j1_relance</field>
+        <field name="provider">elevenlabs</field>
+        <field name="external_agent_id">ELEVENLABS_AGENT_ID_RELANCE_J1</field>
+        <field name="pipeline">immobilier</field>
+        <field name="agent_type">outbound</field>
+        <field name="language">fr</field>
+        <field name="default_volet">qualification</field>
+        <field name="status">inactive</field>
+    </record>
+    <record id="agent_maison_relance_j3" model="doorway.agent.profile">
+        <field name="name">Maison Recherchée · J+3 Relance</field>
+        <field name="immo_agent_role">j3_relance</field>
+        <field name="provider">elevenlabs</field>
+        <field name="external_agent_id">ELEVENLABS_AGENT_ID_RELANCE_J3</field>
+        <field name="pipeline">immobilier</field>
+        <field name="agent_type">outbound</field>
+        <field name="language">fr</field>
+        <field name="status">inactive</field>
+    </record>
+    <record id="agent_maison_relance_j7" model="doorway.agent.profile">
+        <field name="name">Maison Recherchée · J+7 Relance</field>
+        <field name="immo_agent_role">j7_relance</field>
+        <field name="provider">elevenlabs</field>
+        <field name="external_agent_id">ELEVENLABS_AGENT_ID_RELANCE_J7</field>
+        <field name="pipeline">immobilier</field>
+        <field name="agent_type">outbound</field>
+        <field name="language">fr</field>
+        <field name="status">inactive</field>
+    </record>
+    <record id="agent_maison_relance_j14" model="doorway.agent.profile">
+        <field name="name">Maison Recherchée · J+14 Re-engagement</field>
+        <field name="immo_agent_role">j14_relance</field>
+        <field name="provider">elevenlabs</field>
+        <field name="external_agent_id">ELEVENLABS_AGENT_ID_RELANCE_J14</field>
+        <field name="pipeline">immobilier</field>
+        <field name="agent_type">outbound</field>
+        <field name="language">fr</field>
+        <field name="status">inactive</field>
+    </record>
+</odoo>

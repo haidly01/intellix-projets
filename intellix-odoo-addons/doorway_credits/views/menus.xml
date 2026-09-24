@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_doorway_credits_root" name="Crédits IA" sequence="97"
+              action="action_credits_home"/>
+
+    <menuitem id="menu_tenant_dashboard" name="Mon compte"
+              parent="menu_doorway_credits_root"
+              action="action_tenant_dashboard" sequence="10"/>
+
+    <menuitem id="menu_admin_credits" name="Administration SaaS"
+              parent="menu_doorway_credits_root"
+              groups="doorway_credits.group_doorway_credits_admin"
+              sequence="90"/>
+
+    <menuitem id="menu_admin_tenants" name="Tous les tenants"
+              parent="menu_admin_credits"
+              action="action_admin_tenants" sequence="10"/>
+
+    <menuitem id="menu_admin_alerts" name="Alertes"
+              parent="menu_admin_credits"
+              action="action_admin_alerts" sequence="20"/>
+
+    <menuitem id="menu_credit_packs" name="Packs crédits"
+              parent="menu_admin_credits"
+              action="action_credit_packs" sequence="30"/>
+
+    <menuitem id="menu_subscriptions" name="Abonnements"
+              parent="menu_admin_credits"
+              action="action_subscriptions" sequence="40"/>
+
+    <menuitem id="menu_credits_buy" name="Acheter des crédits"
+              parent="menu_doorway_credits_root"
+              action="action_open_paywall_buy" sequence="15"/>
+
+    <menuitem id="menu_credits_my_purchases" name="Mes achats"
+              parent="menu_doorway_credits_root"
+              action="action_credit_purchases" sequence="20"/>
+
+    <menuitem id="menu_admin_pending_payments" name="Paiements à confirmer"
+              parent="menu_admin_credits"
+              groups="doorway_credits.group_doorway_credits_admin"
+              action="action_credit_purchases_pending" sequence="25"/>
+
+    <menuitem id="menu_credits_onboarding" name="Visite guidée"
+              parent="menu_doorway_credits_root"
+              action="action_credits_onboarding_tour"
+              sequence="99"/>
+</odoo>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_coins_partenaires_dashboard" model="ir.actions.client">
+        <field name="name">Dashboard partenaires (live)</field>
+        <field name="tag">coins_partenaires_dashboard</field>
+    </record>
+
+    <menuitem id="menu_coins_partenaires_dashboard"
+              name="Dashboard live"
+              parent="menu_coins_partenariats_root"
+              action="action_coins_partenaires_dashboard"
+              sequence="5"
+              groups="coins_marocain.group_coins_user,coins_marocain.group_coins_manager"/>
+</odoo>

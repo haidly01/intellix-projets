@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <record id="mail_template_partner_package_welcome" model="mail.template">
+        <field name="name">Rénovation : bienvenue forfait partenaire</field>
+        <field name="model_id" ref="model_renovation_partner_package"/>
+        <field name="subject">Bienvenue — forfait {{ object.package_type_id.name }}</field>
+        <field name="email_from">info@agencedoorway.com</field>
+        <field name="email_to">{{ object.partner_id.email }}</field>
+        <field name="body_html" type="html">
+            <p>Bonjour <t t-out="object.partner_id.name"/>,</p>
+            <p>Votre forfait <strong><t t-out="object.package_type_id.name"/></strong> est maintenant actif.</p>
+            <p>Cordialement,<br/>L'équipe Agence Doorway</p>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <record id="mail_template_renewal_alert" model="mail.template">
+        <field name="name">Rénovation : alerte renouvellement forfait</field>
+        <field name="model_id" ref="model_renovation_partner_package"/>
+        <field name="subject">Alerte leads — {{ object.partner_id.name }} ({{ object.leads_remaining }} restant(s))</field>
+        <field name="email_from">info@agencedoorway.com</field>
+        <field name="body_html" type="html">
+            <p>Bonjour,</p>
+            <p>Le forfait <strong><t t-out="object.package_type_id.name"/></strong> du partenaire <strong><t t-out="object.partner_id.name"/></strong> arrive en fin de quota.</p>
+            <ul>
+                <li>Leads inclus : <t t-out="object.leads_total"/></li>
+                <li>Leads utilisés : <t t-out="object.leads_used"/></li>
+                <li>Leads restants : <t t-out="object.leads_remaining"/></li>
+            </ul>
+            <p>Merci de contacter le partenaire pour un renouvellement.</p>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+</odoo>

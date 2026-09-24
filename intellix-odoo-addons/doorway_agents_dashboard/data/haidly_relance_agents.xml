@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="agent_haidly_relance_j1" model="doorway.agent.profile">
+        <field name="name">Haidly · J+1 Relance</field>
+        <field name="haidly_agent_role">j1_relance</field>
+        <field name="provider">elevenlabs</field>
+        <field name="external_agent_id">ELEVENLABS_AGENT_ID_HAIDLY_J1</field>
+        <field name="pipeline">renovation</field>
+        <field name="agent_type">outbound</field>
+        <field name="status">inactive</field>
+    </record>
+    <record id="agent_haidly_relance_j3" model="doorway.agent.profile">
+        <field name="name">Haidly · J+3 Relance</field>
+        <field name="haidly_agent_role">j3_relance</field>
+        <field name="provider">elevenlabs</field>
+        <field name="external_agent_id">ELEVENLABS_AGENT_ID_HAIDLY_J3</field>
+        <field name="pipeline">renovation</field>
+        <field name="status">inactive</field>
+    </record>
+    <record id="agent_haidly_relance_j7" model="doorway.agent.profile">
+        <field name="name">Haidly · J+7 Fermeture</field>
+        <field name="haidly_agent_role">j7_relance</field>
+        <field name="provider">elevenlabs</field>
+        <field name="external_agent_id">ELEVENLABS_AGENT_ID_HAIDLY_J7</field>
+        <field name="pipeline">renovation</field>
+        <field name="status">inactive</field>
+    </record>
+    <record id="agent_haidly_relance_j14" model="doorway.agent.profile">
+        <field name="name">Haidly · J+14 Re-engagement</field>
+        <field name="haidly_agent_role">j14_relance</field>
+        <field name="provider">elevenlabs</field>
+        <field name="external_agent_id">ELEVENLABS_AGENT_ID_HAIDLY_J14</field>
+        <field name="pipeline">renovation</field>
+        <field name="status">inactive</field>
+    </record>
+</odoo>

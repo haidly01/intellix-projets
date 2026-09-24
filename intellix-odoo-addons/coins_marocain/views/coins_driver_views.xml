@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_coins_driver_contrat_form" model="ir.ui.view">
+        <field name="name">coins.driver.contrat.form</field>
+        <field name="model">coins.driver.contrat</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml"><form string="Contrat chauffeur">
+                <header>
+                    <button name="action_envoyer_signature" type="object" string="Envoyer pour signature" class="btn-primary" invisible="statut == 'signe'"/>
+                    <button name="action_marquer_refuse" type="object" string="Marquer refusé" invisible="statut in ('signe', 'refuse')"/>
+                    <field name="statut" widget="statusbar" statusbar_visible="brouillon,envoye,signe"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="chauffeur_id"/>
+                            <field name="frais_par_course"/>
+                            <field name="signature_id" readonly="1"/>
+                            <field name="token_signature" readonly="1" groups="coins_marocain.group_coins_manager"/>
+                        </group>
+                        <group>
+                            <field name="date_envoi" readonly="1"/>
+                            <field name="date_signature" readonly="1"/>
+                            <field name="pdf_contrat" filename="pdf_contrat_filename"/>
+                            <field name="pdf_contrat_filename" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Contenu" name="contenu">
+                            <field name="contenu_html" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form></field>
+    </record>
+
+    <record id="view_coins_driver_contrat_list" model="ir.ui.view">
+        <field name="name">coins.driver.contrat.list</field>
+        <field name="model">coins.driver.contrat</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml"><list>
+                <field name="name"/>
+                <field name="chauffeur_id"/>
+                <field name="frais_par_course"/>
+                <field name="statut" widget="badge" decoration-info="statut == 'brouillon'" decoration-warning="statut == 'envoye'" decoration-success="statut == 'signe'" decoration-danger="statut == 'refuse'"/>
+                <field name="date_envoi"/>
+                <field name="date_signature"/>
+            </list></field>
+    </record>
+
+    <record id="view_coins_driver_form" model="ir.ui.view">
+        <field name="name">coins.driver.form</field>
+        <field name="model">coins.driver</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml"><form string="Chauffeur">
+                <header>
+                    <button name="action_creer_contrat" type="object" string="Créer un contrat" class="btn-primary" invisible="has_contrat_signe"/>
+                    <button name="action_open_contrat" type="object" string="Voir le contrat" invisible="not contrat_id"/>
+                    <button name="action_send_portal_link_whatsapp" type="object" string="Envoyer lien portail WhatsApp" class="oe_highlight" invisible="not phone"/>
+                    <button name="action_regenerate_portal_link" type="object" string="Régénérer lien"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" icon="fa-money" type="object" name="action_open_contrat" invisible="not solde_du_jour">
+                            <div class="o_stat_info">
+                                <span class="o_stat_value"><field name="solde_du_jour"/></span>
+                                <span class="o_stat_text">Solde dû</span>
+                            </div>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Contrat signé" bg_color="text-bg-success" invisible="not has_contrat_signe"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Nom du chauffeur"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="state"/>
+                            <field name="partner_id"/>
+                            <field name="phone"/>
+                            <field name="email"/>
+                        </group>
+                        <group>
+                            <field name="rating"/>
+                            <field name="trips_count"/>
+                            <field name="solde_du_jour"/>
+                            <field name="contrat_id"/>
+                            <field name="has_contrat_signe" invisible="1"/>
+                            <field name="mode_remise"/>
+                            <field name="rib_coordonnees" invisible="mode_remise != 'rib'" required="mode_remise == 'rib'"/>
+                            <field name="portal_url" widget="url"/>
+                            <field name="portal_token" groups="coins_marocain.group_coins_manager"/>
+                            <field name="portal_last_access" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Contrat &amp; solde" name="contrat_solde">
+                            <field name="contrat_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="frais_par_course"/>
+                                    <field name="statut"/>
+                                    <field name="date_signature"/>
+                                </list>
+                            </field>
+                            <separator string="Mouvements récents"/>
+                            <field name="mouvement_ids">
+                                <list>
+                                    <field name="date"/>
+                                    <field name="type"/>
+                                    <field name="montant"/>
+                                    <field name="remise_quotidienne_id"/>
+                                </list>
+                            </field>
+                            <separator string="Remises"/>
+                            <field name="remise_ids">
+                                <list>
+                                    <field name="date"/>
+                                    <field name="montant_total_du"/>
+                                    <field name="statut"/>
+                                    <field name="heure_rencontre"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Fidélité" name="loyalty">
+                            <field name="loyalty_notes" nolabel="1"/>
+                        </page>
+                        <page string="Courses détente" name="detente">
+                            <field name="detente_booking_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="service_date"/>
+                                    <field name="service_time" widget="float_time"/>
+                                    <field name="customer_id"/>
+                                    <field name="trip_status"/>
+                                    <field name="status"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form></field>
+    </record>
+
+    <record id="view_coins_driver_list" model="ir.ui.view">
+        <field name="name">coins.driver.list</field>
+        <field name="model">coins.driver</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml"><list>
+                <field name="name"/>
+                <field name="phone"/>
+                <field name="rating"/>
+                <field name="trips_count"/>
+                <field name="solde_du_jour"/>
+                <field name="contrat_statut" optional="show" decoration-success="contrat_statut == 'signe'" decoration-warning="contrat_statut == 'envoye'" widget="badge"/>
+                <field name="has_contrat_signe" optional="hide"/>
+                <field name="portal_url" optional="hide"/>
+                <field name="state" widget="badge" decoration-success="state == 'active'" decoration-warning="state == 'training'" decoration-muted="state == 'inactive'"/>
+            </list></field>
+    </record>
+
+    <record id="view_coins_driver_mouvement_form" model="ir.ui.view">
+        <field name="name">coins.driver.mouvement.form</field>
+        <field name="model">coins.driver.mouvement</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml"><form string="Mouvement chauffeur">
+                <header>
+                    <button name="action_partenaire_confirme" type="object" string="Partenaire confirme reçu" invisible="type != 'marge_package_partenaire' or partenaire_confirme_paye"/>
+                    <button name="action_partenaire_non_recu" type="object" string="Partenaire non reçu" class="btn-secondary" invisible="type != 'marge_package_partenaire'"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="chauffeur_id"/>
+                            <field name="type"/>
+                            <field name="montant"/>
+                            <field name="date"/>
+                        </group>
+                        <group>
+                            <field name="detente_booking_id"/>
+                            <field name="reservation_id"/>
+                            <field name="remise_quotidienne_id"/>
+                            <field name="partenaire_id" invisible="type != 'marge_package_partenaire'"/>
+                            <field name="montant_partenaire_paye_directement" invisible="type != 'marge_package_partenaire'"/>
+                            <field name="partenaire_confirme_paye" invisible="type != 'marge_package_partenaire'"/>
+                            <field name="partenaire_refus" invisible="type != 'marge_package_partenaire'"/>
+                            <field name="notes"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form></field>
+    </record>
+
+    <record id="view_coins_driver_mouvement_list" model="ir.ui.view">
+        <field name="name">coins.driver.mouvement.list</field>
+        <field name="model">coins.driver.mouvement</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml"><list>
+                <field name="name"/>
+                <field name="date"/>
+                <field name="chauffeur_id"/>
+                <field name="type" decoration-info="type == 'frais_course'" decoration-warning="type == 'marge_package_partenaire'" widget="badge"/>
+                <field name="montant"/>
+                <field name="partenaire_confirme_paye"/>
+                <field name="partenaire_refus" decoration-danger="partenaire_refus"/>
+                <field name="remise_quotidienne_id"/>
+            </list></field>
+    </record>
+
+    <record id="view_coins_driver_remise_form" model="ir.ui.view">
+        <field name="name">coins.driver.remise_quotidienne.form</field>
+        <field name="model">coins.driver.remise_quotidienne</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml"><form string="Remise quotidienne">
+                <header>
+                    <button name="action_marquer_remise" type="object" string="Confirmer remise" class="btn-primary" invisible="statut != 'en_attente'" groups="coins_marocain.group_coins_manager"/>
+                    <button name="action_marquer_reconciliee" type="object" string="Marquer réconciliée" invisible="statut != 'remise'" groups="coins_marocain.group_coins_manager"/>
+                    <field name="statut" widget="statusbar" statusbar_visible="en_attente,remise,reconciliee"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="chauffeur_id"/>
+                            <field name="date"/>
+                        </group>
+                        <group>
+                            <field name="montant_total_du"/>
+                            <field name="heure_rencontre"/>
+                            <field name="notes"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Mouvements" name="mouvements">
+                            <field name="mouvements_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="type"/>
+                                    <field name="montant"/>
+                                    <field name="partenaire_refus"/>
+                                    <field name="date"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form></field>
+    </record>
+
+    <record id="view_coins_driver_remise_list" model="ir.ui.view">
+        <field name="name">coins.driver.remise_quotidienne.list</field>
+        <field name="model">coins.driver.remise_quotidienne</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml"><list>
+                <field name="name"/>
+                <field name="date"/>
+                <field name="chauffeur_id"/>
+                <field name="montant_total_du"/>
+                <field name="statut" widget="badge" decoration-warning="statut == 'en_attente'" decoration-info="statut == 'remise'" decoration-success="statut == 'reconciliee'"/>
+                <field name="heure_rencontre"/>
+            </list></field>
+    </record>
+
+    <record id="view_coins_driver_search" model="ir.ui.view">
+        <field name="name">coins.driver.search</field>
+        <field name="model">coins.driver</field>
+        <field name="type">search</field>
+        <field name="arch" type="xml"><search>
+                <field name="name"/>
+                <field name="phone"/>
+                <filter name="filter_no_contrat" string="Sans contrat signé" domain="[('has_contrat_signe', '=', False)]"/>
+                <filter name="filter_solde" string="Solde ouvert" domain="[('solde_du_jour', '&gt;', 0)]"/>
+                <filter name="filter_active" string="Actifs" domain="[('state', '=', 'active')]"/>
+            </search></field>
+    </record>
+
+</odoo>

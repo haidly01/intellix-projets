@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="ir_cron_social_inbox_meta" model="ir.cron">
+        <field name="name">Social IA : sync inbox Meta (15 min)</field>
+        <field name="model_id" ref="model_doorway_social_meta_service"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_sync_meta_inbox()</field>
+        <field name="interval_number">15</field>
+        <field name="interval_type">minutes</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <record id="ir_cron_social_inbox_all" model="ir.cron">
+        <field name="name">Social IA : sync inbox LinkedIn + GMB (30 min)</field>
+        <field name="model_id" ref="model_doorway_social_inbox"/>
+        <field name="state">code</field>
+        <field name="code">model.action_sync_all_social()</field>
+        <field name="interval_number">30</field>
+        <field name="interval_type">minutes</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

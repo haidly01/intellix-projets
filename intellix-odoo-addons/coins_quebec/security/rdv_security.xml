@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="rule_cq_rdv_user_own" model="ir.rule">
+        <field name="name">RDV CQ : ses RDV seulement</field>
+        <field name="model_id" ref="model_coins_quebec_rdv"/>
+        <field name="domain_force">[('agent_user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_coins_quebec_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_cq_rdv_manager_all" model="ir.rule">
+        <field name="name">RDV CQ : manager tout voir</field>
+        <field name="model_id" ref="model_coins_quebec_rdv"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_coins_quebec_manager'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+</odoo>

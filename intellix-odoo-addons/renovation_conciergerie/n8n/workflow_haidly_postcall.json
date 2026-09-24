@@ -1,0 +1,138 @@
+{
+  "name": "Haidly — Post-appel ElevenLabs + Claude + Odoo",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "haidly-postcall",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "hp1-webhook",
+      "name": "Webhook Post-Call EL",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 300],
+      "webhookId": "haidly-postcall-doorway"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json;\nconst body = raw.body || raw;\nconst data = body.data || body;\nconst analysis = data.analysis || body.analysis || {};\nconst dcRaw = analysis.data_collection_results || data.data_collection || body.data_collection || {};\nfunction dcVal(key) {\n  const o = dcRaw[key];\n  if (o && typeof o === 'object' && 'value' in o) return o.value;\n  return dcRaw[key] ?? '';\n}\nlet transcript = data.transcript || body.transcript || '';\nif (Array.isArray(transcript)) {\n  transcript = transcript.map(t => {\n    if (typeof t === 'string') return t;\n    return (t.role || '') + ': ' + (t.message || t.content || '');\n  }).join('\\n');\n}\nconst dyn = (data.conversation_initiation_client_data || {}).dynamic_variables || {};\nconst leadId = String(dyn.lead_id_odoo || dcVal('lead_id_odoo') || body.lead_id_odoo || body.lead_id || '').replace(/\\D/g, '') || '';\nreturn [{\n  json: {\n    conversation_id: data.conversation_id || body.conversation_id || body.call_id || '',\n    lead_id: leadId,\n    transcript,\n    call_duration_seconds: data.metadata?.call_duration_secs || data.call_duration_seconds || body.duration || 0,\n    call_successful: (data.status || body.status) !== 'failed',\n    data_collection: dcRaw,\n    lead_name: dyn.lead_name || dcVal('lead_name') || '',\n    project_type: dyn.project_type || dcVal('project_type') || 'multi',\n    city: dyn.city || dcVal('city') || '',\n    budget_range: dyn.budget_range || dcVal('budget_range') || '',\n    property_type: dyn.property_type || dcVal('property_type') || '',\n    phone: dyn.phone || dcVal('phone') || ''\n  }\n}];"
+      },
+      "id": "hp2-parse",
+      "name": "Parser payload EL",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [260, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const p = $('Parser payload EL').first().json;\nconst apiKey = '{{ANTHROPIC_API_KEY}}';\nconst prompt = `Tu es expert qualification leads rénovation résidentielle Québec (SoumissionEntrepreneurs). Analyse et retourne UNIQUEMENT un JSON valide sans markdown.\\n\\nLead:\\n- Nom: ${p.lead_name}\\n- Ville: ${p.city}\\n- Projet: ${p.project_type}\\n- Budget: ${p.budget_range}\\n- Type propriété: ${p.property_type}\\n- Durée appel: ${p.call_duration_seconds}s\\n- Transcript (extrait): ${(p.transcript || '').slice(0, 2000)}\\n\\nHOT: budget > 25k, délai < 3 mois, veut visite/soumissions.\\nWARM: projet défini, timing flexible.\\nCOLD: magasinage, pas de budget, délai > 1 an.\\n\\nRéponds: {\"score\":\"hot|warm|cold\",\"score_numeric\":0-100,\"transfer_now\":true|false,\"plans_3d_recommanded\":true|false,\"subventions_applicables\":[\"renoclimat\"],\"subvention_estimee\":0,\"upload_link_sent\":true,\"summary\":\"2 phrases\",\"next_action\":\"...\",\"odoo_stage\":\"Qualifié|En développement|Nouveau\"}`;\nlet parsed = { score: 'warm', score_numeric: 50, transfer_now: false, summary: '', next_action: '', odoo_stage: 'En développement', subventions_applicables: [], subvention_estimee: 0, upload_link_sent: true };\nif (!apiKey || apiKey.startsWith('{{')) {\n  const dur = parseInt(p.call_duration_seconds || 0, 10);\n  if (dur < 15) parsed = { ...parsed, score: 'cold', score_numeric: 20, odoo_stage: 'Nouveau' };\n  return [{ json: { ...p, ...parsed } }];\n}\ntry {\n  const res = await this.helpers.httpRequest({\n    method: 'POST',\n    url: 'https://api.anthropic.com/v1/messages',\n    headers: { 'x-api-key': apiKey, 'anthropic-version': '2023-06-01', 'Content-Type': 'application/json' },\n    body: { model: 'claude-sonnet-4-20250514', max_tokens: 500, messages: [{ role: 'user', content: prompt }] },\n    json: true,\n  });\n  let text = (res.content && res.content[0] && res.content[0].text) || '';\n  const match = text.match(/\\{[\\s\\S]*\\}/);\n  if (match) parsed = { ...parsed, ...JSON.parse(match[0]) };\n} catch (e) {\n  parsed.summary = 'Scoring fallback: ' + String(e.message || e);\n}\nreturn [{ json: { ...p, ...parsed } }];"
+      },
+      "id": "hp3-claude",
+      "name": "Claude Scoring",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [520, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "leftValue": "={{ $json.score }}",
+              "rightValue": "hot",
+              "operator": { "type": "string", "operation": "equals" }
+            }
+          ]
+        }
+      },
+      "id": "hp4-if-hot",
+      "name": "IF Hot?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [780, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const j = $input.first().json;\nconst token = '{{HAIDLY_WEBHOOK_TOKEN}}';\nconst body = {\n  lead_id: parseInt(j.lead_id, 10),\n  score: j.score,\n  score_numeric: j.score_numeric,\n  transfer_now: true,\n  summary: j.summary,\n  next_action: j.next_action,\n  odoo_stage: j.odoo_stage || 'Qualifié',\n  conversation_id: j.conversation_id,\n  transcript: j.transcript,\n  subventions_applicables: Array.isArray(j.subventions_applicables) ? j.subventions_applicables.join(',') : (j.subventions_applicables || ''),\n  subvention_estimee: j.subvention_estimee || 0,\n  upload_link_sent: true,\n  increment_call_attempt: true,\n  nurture_active: false\n};\nconst res = await this.helpers.httpRequest({\n  method: 'POST',\n  url: 'https://intellixcrm.com/api/haidly/lead/update',\n  headers: { 'X-Haidly-Webhook-Token': token, 'Content-Type': 'application/json' },\n  body,\n  json: true,\n});\nreturn [{ json: { ...j, odoo: res } }];"
+      },
+      "id": "hp5-odoo-hot",
+      "name": "Odoo Update HOT",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1040, 180]
+    },
+    {
+      "parameters": {
+        "jsCode": "const j = $input.first().json;\nconst token = '{{HAIDLY_WEBHOOK_TOKEN}}';\nconst body = {\n  lead_id: parseInt(j.lead_id, 10),\n  score: j.score,\n  score_numeric: j.score_numeric,\n  transfer_now: false,\n  summary: j.summary,\n  next_action: j.next_action,\n  odoo_stage: j.odoo_stage || 'En développement',\n  conversation_id: j.conversation_id,\n  transcript: j.transcript,\n  subventions_applicables: Array.isArray(j.subventions_applicables) ? j.subventions_applicables.join(',') : (j.subventions_applicables || ''),\n  subvention_estimee: j.subvention_estimee || 0,\n  upload_link_sent: true,\n  increment_call_attempt: true,\n  nurture_active: true\n};\nconst res = await this.helpers.httpRequest({\n  method: 'POST',\n  url: 'https://intellixcrm.com/api/haidly/lead/update',\n  headers: { 'X-Haidly-Webhook-Token': token, 'Content-Type': 'application/json' },\n  body,\n  json: true,\n});\nreturn [{ json: { ...j, odoo: res } }];"
+      },
+      "id": "hp6-odoo-warm",
+      "name": "Odoo Update WARM/COLD",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1040, 420]
+    },
+    {
+      "parameters": {
+        "jsCode": "const j = $('Claude Scoring').first().json;\nconst phone = j.phone || '';\nif (!phone || j.score !== 'hot') return [{ json: j }];\nconst sid = '{{TWILIO_ACCOUNT_SID}}';\nconst auth = Buffer.from(sid + ':{{TWILIO_AUTH_TOKEN}}').toString('base64');\nconst first = (j.lead_name || '').split(' ')[0] || 'Bonjour';\nawait this.helpers.httpRequest({\n  method: 'POST',\n  url: `https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`,\n  headers: { Authorization: 'Basic ' + auth, 'Content-Type': 'application/x-www-form-urlencoded' },\n  body: `To=${encodeURIComponent(phone)}&From=${encodeURIComponent('+15817058118')}&Body=${encodeURIComponent(first + ', votre projet de rénovation nous enthousiasme! Un conseiller SoumissionEntrepreneurs vous contacte sous peu. Sans frais, sans obligation.')}`,\n});\nreturn [{ json: j }];"
+      },
+      "id": "hp7-sms-hot",
+      "name": "SMS HOT transfert",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1300, 180]
+    },
+    {
+      "parameters": {
+        "jsCode": "const j = $('Claude Scoring').first().json;\nconst phone = j.phone || '';\nif (!phone) return [{ json: j }];\nconst sid = '{{TWILIO_ACCOUNT_SID}}';\nconst auth = Buffer.from(sid + ':{{TWILIO_AUTH_TOKEN}}').toString('base64');\nconst first = (j.lead_name || '').split(' ')[0] || 'Bonjour';\nconst emoji = { cuisine: '🍳', salle_de_bain: '🛁', sous_sol: '🏠', patio: '☀️' }[j.project_type] || '🏠';\nawait this.helpers.httpRequest({\n  method: 'POST',\n  url: `https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`,\n  headers: { Authorization: 'Basic ' + auth, 'Content-Type': 'application/x-www-form-urlencoded' },\n  body: `To=${encodeURIComponent(phone)}&From=${encodeURIComponent('+15817058118')}&Body=${encodeURIComponent(first + '! ' + emoji + ' Haidly de SoumissionEntrepreneurs — envoyez vos photos ici: https://soumissionentrepreneurs.com/ — Plans 3D GRATUITS avec nos entrepreneurs RBQ. Sans frais!')}`,\n});\nreturn [{ json: { ...j, upload_link_sent: true } }];"
+      },
+      "id": "hp8-sms-photos",
+      "name": "SMS lien photos",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1300, 420]
+    },
+    {
+      "parameters": {
+        "jsCode": "const j = $('Claude Scoring').first().json;\nif (j.score === 'hot' || !j.lead_id) return [];\nconst token = '{{HAIDLY_WEBHOOK_TOKEN}}';\nlet lead = {};\ntry {\n  lead = await this.helpers.httpRequest({\n    method: 'GET',\n    url: `https://intellixcrm.com/api/haidly/lead/${j.lead_id}`,\n    headers: { 'X-Haidly-Webhook-Token': token },\n    json: true,\n  });\n} catch (e) {}\nconst dur = parseInt(j.call_duration_seconds || 0, 10);\nreturn [{ json: {\n  lead_id: j.lead_id,\n  phone: lead.phone || j.phone,\n  first_name: lead.first_name || j.lead_name,\n  project_type: lead.project_type || j.project_type,\n  city: lead.city || j.city,\n  score: j.score,\n  call_answered: dur >= 25 && j.call_successful !== false,\n  call_duration_seconds: dur,\n  total_call_attempts: (lead.haidly_total_call_attempts || 0) + 1,\n  skip_initial_call: true\n}}];"
+      },
+      "id": "hp9-prep-nurture",
+      "name": "Préparer nurture",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1560, 420]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n.intellixcrm.com/webhook/haidly-nurture-start",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}"
+      },
+      "id": "hp10-nurture",
+      "name": "Démarrer nurture Haidly",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1820, 420]
+    }
+  ],
+  "connections": {
+    "Webhook Post-Call EL": { "main": [[{ "node": "Parser payload EL", "type": "main", "index": 0 }]] },
+    "Parser payload EL": { "main": [[{ "node": "Claude Scoring", "type": "main", "index": 0 }]] },
+    "Claude Scoring": { "main": [[{ "node": "IF Hot?", "type": "main", "index": 0 }]] },
+    "IF Hot?": {
+      "main": [
+        [{ "node": "Odoo Update HOT", "type": "main", "index": 0 }],
+        [{ "node": "Odoo Update WARM/COLD", "type": "main", "index": 0 }]
+      ]
+    },
+    "Odoo Update HOT": { "main": [[{ "node": "SMS HOT transfert", "type": "main", "index": 0 }]] },
+    "Odoo Update WARM/COLD": { "main": [[{ "node": "SMS lien photos", "type": "main", "index": 0 }]] },
+    "SMS lien photos": { "main": [[{ "node": "Préparer nurture", "type": "main", "index": 0 }]] },
+    "Préparer nurture": { "main": [[{ "node": "Démarrer nurture Haidly", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "tags": [{ "name": "haidly" }, { "name": "elevenlabs" }]
+}

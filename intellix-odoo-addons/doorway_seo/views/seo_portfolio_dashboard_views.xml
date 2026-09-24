@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================================ -->
+    <!-- Dashboard Portfolio (filtrable) — additif, ne remplace pas   -->
+    <!-- la vue liste brute "Portfolio Doorway" (action_seo_portfolio_audit) -->
+    <!-- ni l'envoi courriel existant.                                -->
+    <!-- ============================================================ -->
+    <record id="action_seo_portfolio_dashboard" model="ir.actions.client">
+        <field name="name">Dashboard Portfolio</field>
+        <field name="tag">doorway_seo_portfolio_dashboard</field>
+    </record>
+
+    <menuitem id="menu_seo_portfolio_dashboard"
+              name="Dashboard Portfolio"
+              parent="menu_seo_root"
+              action="action_seo_portfolio_dashboard"
+              sequence="9"/>
+</odoo>

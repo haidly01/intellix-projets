@@ -1,0 +1,334 @@
+// Intellix — composants partagés (dashboards OWL Doorway)
+
+.ix-app-toolbar {
+    background: var(--ix-surface);
+    border-bottom: 1px solid var(--ix-border);
+    padding: 0.75rem 1rem;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+
+    .form-select {
+        border-radius: var(--ix-radius-btn);
+        border-color: var(--ix-border);
+        background: var(--ix-surface-elevated);
+        color: var(--ix-text);
+        font-family: var(--ix-font);
+        font-size: 0.8125rem;
+    }
+}
+
+.ix-kpi-card {
+    min-width: 150px;
+    border-radius: var(--ix-radius-card);
+    border: 1px solid var(--ix-border);
+    background: var(--ix-surface);
+    box-shadow: 0 1px 2px rgba(10, 10, 26, 0.04);
+
+    .ix-kpi-value {
+        font-weight: 700;
+        font-size: 1.5rem;
+        color: var(--ix-primary-light);
+        font-family: var(--ix-font);
+    }
+
+    .ix-kpi-label {
+        color: var(--ix-text-muted);
+        font-size: 0.75rem;
+    }
+}
+
+.ix-agent-card {
+    width: 300px;
+    border-radius: var(--ix-radius-card);
+    border: 1px solid var(--ix-border);
+    border-left: 4px solid var(--ix-primary);
+    background: var(--ix-surface);
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
+
+    &:hover {
+        box-shadow: 0 8px 24px rgba(99, 102, 241, 0.12);
+    }
+
+    .ix-agent-title {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--ix-text);
+    }
+
+    .ix-agent-meta {
+        font-size: 0.75rem;
+        color: var(--ix-text-muted);
+    }
+
+    .ix-agent-muted {
+        font-size: 0.6875rem;
+        color: var(--ix-text-muted);
+    }
+}
+
+.ix-badge-pill {
+    border-radius: var(--ix-radius-pill);
+    font-size: 0.625rem;
+    font-weight: 600;
+    padding: 0.2em 0.55em;
+    letter-spacing: 0.02em;
+}
+
+.ix-badge-provider {
+    background: var(--ix-gradient-primary);
+    color: var(--ix-text-inverse);
+}
+
+.ix-badge-status-active {
+    background: rgba(34, 211, 238, 0.15);
+    color: var(--ix-success);
+    border: 1px solid rgba(34, 211, 238, 0.35);
+}
+
+.ix-badge-status-inactive {
+    background: rgba(148, 163, 184, 0.12);
+    color: var(--ix-text-muted);
+    border: 1px solid var(--ix-border);
+}
+
+.ix-badge-status-error {
+    background: rgba(239, 68, 68, 0.12);
+    color: var(--ix-danger);
+    border: 1px solid rgba(239, 68, 68, 0.35);
+}
+
+.ix-score-high {
+    color: var(--ix-success) !important;
+}
+
+.ix-score-mid {
+    color: var(--ix-warning) !important;
+}
+
+.ix-score-low {
+    color: var(--ix-danger) !important;
+}
+
+.ix-progress-thin {
+    height: 6px;
+    margin-top: 4px;
+    border-radius: var(--ix-radius-pill);
+    background: var(--ix-border);
+
+    .progress-bar {
+        border-radius: var(--ix-radius-pill);
+    }
+
+    &.ix-score-high .progress-bar {
+        background: var(--ix-success);
+    }
+
+    &.ix-score-mid .progress-bar {
+        background: var(--ix-warning);
+    }
+
+    &.ix-score-low .progress-bar {
+        background: var(--ix-danger);
+    }
+}
+
+.ix-btn-cta {
+    background: var(--ix-gradient-cta) !important;
+    border: none !important;
+    color: var(--ix-text-inverse) !important;
+    border-radius: var(--ix-radius-btn) !important;
+    font-weight: 600;
+    font-family: var(--ix-font);
+
+    &:hover {
+        filter: brightness(1.06);
+        color: var(--ix-text-inverse) !important;
+    }
+}
+
+// Veille — OWL (Triage temps réel) + formulaire Tableau de bord
+.o_doorway_veille_dashboard.o_intellix_client_action {
+    padding: 1.25rem 1.5rem !important;
+}
+
+.o_doorway_veille_dashboard,
+.o_doorway_veille_dashboard_form .o_form_sheet {
+    font-family: var(--ix-font);
+    color: var(--ix-text);
+
+    h1, h2, h3 {
+        color: var(--ix-text);
+        font-weight: 600;
+    }
+
+    .text-muted {
+        color: var(--ix-text-muted) !important;
+    }
+
+    .btn-outline-primary {
+        border-color: var(--ix-primary);
+        color: var(--ix-primary-light);
+
+        &:hover {
+            background: rgba(99, 102, 241, 0.12);
+            color: var(--ix-text);
+        }
+    }
+
+    .btn-outline-secondary {
+        border-color: var(--ix-border);
+        color: var(--ix-text-muted);
+
+        &:hover {
+            background: var(--ix-surface-hover);
+            color: var(--ix-text);
+        }
+    }
+
+    .btn-link {
+        color: var(--ix-primary-light);
+    }
+}
+
+.o_doorway_veille_dashboard {
+    background: var(--ix-bg);
+    min-height: 100%;
+}
+
+.o_doorway_veille_dashboard_form {
+    .oe_title h1 {
+        color: var(--ix-text);
+        font-weight: 600;
+    }
+
+    .o_group .o_horizontal_separator,
+    .o_inner_group > label {
+        color: var(--ix-text-muted) !important;
+    }
+}
+
+// KPI partagés (OWL + formulaire)
+.o_doorway_veille_dashboard,
+.o_doorway_veille_stats {
+    .ix-veille-stat {
+        border-radius: var(--ix-radius-card);
+        border: 1px solid var(--ix-border);
+        background: var(--ix-surface);
+        text-align: center;
+
+        strong {
+            display: block;
+            margin-bottom: 0.25rem;
+            color: var(--ix-text);
+        }
+
+        .fs-2,
+        .ix-veille-stat-value,
+        .ix-veille-stat-value .o_field_widget {
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1.2;
+            color: var(--ix-primary-light);
+        }
+
+        &.ix-veille-hot .fs-2,
+        &.ix-veille-hot .ix-veille-stat-value,
+        &.ix-veille-hot .ix-veille-stat-value .o_field_widget {
+            color: var(--ix-danger);
+        }
+
+        &.ix-veille-warm .fs-2,
+        &.ix-veille-warm .ix-veille-stat-value,
+        &.ix-veille-warm .ix-veille-stat-value .o_field_widget {
+            color: var(--ix-warning);
+        }
+
+        &.ix-veille-cold .fs-2,
+        &.ix-veille-cold .ix-veille-stat-value,
+        &.ix-veille-cold .ix-veille-stat-value .o_field_widget {
+            color: var(--ix-text-muted);
+        }
+
+        &.ix-veille-pending .fs-2,
+        &.ix-veille-pending .ix-veille-stat-value,
+        &.ix-veille-pending .ix-veille-stat-value .o_field_widget {
+            color: var(--ix-secondary);
+        }
+
+        &.ix-veille-reactivation .fs-2,
+        &.ix-veille-reactivation .ix-veille-stat-value,
+        &.ix-veille-reactivation .ix-veille-stat-value .o_field_widget {
+            color: var(--ix-purple);
+        }
+    }
+}
+
+.o_doorway_veille_dashboard .table {
+    --bs-table-bg: var(--ix-surface);
+    --bs-table-color: var(--ix-text);
+    --bs-table-border-color: var(--ix-border);
+    --bs-table-hover-bg: rgba(99, 102, 241, 0.08);
+    --bs-table-hover-color: var(--ix-text);
+    border-radius: var(--ix-radius-card);
+    overflow: hidden;
+
+    thead th {
+        background: var(--ix-surface-elevated);
+        color: var(--ix-text-muted);
+        border-color: var(--ix-border);
+    }
+
+    td, th {
+        border-color: var(--ix-border);
+    }
+}
+
+// VICIdial monitor
+.o_vicidial_campaign_monitor {
+    font-family: var(--ix-font);
+    color: var(--ix-text);
+    min-height: 100%;
+
+    h2 {
+        color: var(--ix-text);
+        font-weight: 600;
+    }
+
+    .text-muted {
+        color: var(--ix-text-muted) !important;
+    }
+
+    .card {
+        border: 1px solid var(--ix-border);
+        border-radius: var(--ix-radius-card);
+        background: var(--ix-surface);
+        color: var(--ix-text);
+
+        .fs-3, .fs-5, .fw-bold {
+            color: var(--ix-primary-light);
+        }
+    }
+
+    .table {
+        --bs-table-bg: var(--ix-surface);
+        --bs-table-color: var(--ix-text);
+        --bs-table-border-color: var(--ix-border);
+        --bs-table-hover-bg: rgba(99, 102, 241, 0.08);
+
+        thead th {
+            background: var(--ix-surface-elevated);
+            color: var(--ix-text-muted);
+        }
+    }
+
+    table tbody tr:hover {
+        background-color: rgba(99, 102, 241, 0.08);
+        cursor: pointer;
+    }
+
+    .badge.text-bg-secondary {
+        background: var(--ix-surface-elevated) !important;
+        color: var(--ix-text-muted) !important;
+        border: 1px solid var(--ix-border);
+    }
+}

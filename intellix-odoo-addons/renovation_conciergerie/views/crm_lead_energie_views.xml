@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="crm_lead_view_form_energie" model="ir.ui.view">
+        <field name="name">crm.lead.form.energie</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Énergie Pro (IA)" name="energie_ia">
+                    <group>
+                        <group string="Source &amp; projet">
+                            <field name="energie_meta_page_id"/>
+                            <field name="energie_site_source"/>
+                            <field name="energie_projet_type"/>
+                            <field name="energie_chauffage_actuel"/>
+                            <field name="energie_programmes_eligibles"/>
+                            <field name="energie_subvention_estimee"/>
+                        </group>
+                        <group string="Qualification &amp; score">
+                            <field name="energie_ia_score"/>
+                            <field name="energie_ia_score_numeric"/>
+                            <field name="energie_total_call_attempts"/>
+                            <field name="energie_nurture_active"/>
+                            <field name="energie_do_not_call"/>
+                            <field name="energie_transfer_at"/>
+                            <field name="energie_elevenlabs_conv_id"/>
+                        </group>
+                    </group>
+                    <group string="Détails projet">
+                        <field name="energie_type_thermopompe"/>
+                        <field name="energie_zones_isolation"/>
+                        <field name="energie_evaluation_renoclimat"/>
+                        <field name="energie_nb_ouvertures"/>
+                        <field name="energie_type_vitrage_actuel"/>
+                    </group>
+                    <field name="energie_call_transcript" nolabel="1"/>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

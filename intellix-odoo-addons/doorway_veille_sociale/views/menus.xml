@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_veille_root"
+              name="Veille Sociale"
+              action="action_veille_home"
+              sequence="45"
+              groups="base.group_user"/>
+
+    <menuitem id="menu_veille_dashboard"
+              name="Tableau de bord"
+              parent="menu_veille_root"
+              action="action_veille_dashboard"
+              sequence="1"/>
+
+    <menuitem id="menu_veille_dashboard_live"
+              name="Triage temps réel"
+              parent="menu_veille_root"
+              action="action_veille_dashboard_client"
+              sequence="2"/>
+
+    <menuitem id="menu_veille_signaux"
+              name="Signaux détectés"
+              parent="menu_veille_root"
+              sequence="10"/>
+
+    <menuitem id="menu_veille_signaux_hot"
+              name="En attente (hot)"
+              parent="menu_veille_signaux"
+              action="action_veille_signal_hot"
+              sequence="1"/>
+
+    <menuitem id="menu_veille_signaux_all"
+              name="Tous les signaux"
+              parent="menu_veille_signaux"
+              action="action_veille_signal_all"
+              sequence="2"/>
+
+    <menuitem id="menu_veille_signaux_created"
+              name="Leads créés"
+              parent="menu_veille_signaux"
+              action="action_veille_signal_created"
+              sequence="3"/>
+
+    <menuitem id="menu_veille_signaux_reactivation"
+              name="Réactivation douce"
+              parent="menu_veille_signaux"
+              action="action_veille_signal_reactivation"
+              sequence="4"/>
+
+    <menuitem id="menu_veille_reactivation_rules"
+              name="Automatisations réactivation"
+              parent="menu_veille_config"
+              action="action_veille_reactivation_automation"
+              sequence="3"
+              groups="doorway_veille_sociale.group_veille_settings,base.group_system"/>
+
+    <menuitem id="menu_veille_communaute"
+              name="Communauté"
+              parent="menu_veille_root"
+              sequence="20"/>
+
+    <menuitem id="menu_veille_communaute_calendar"
+              name="Calendrier publications"
+              parent="menu_veille_communaute"
+              action="action_community_post_calendar"
+              sequence="1"/>
+
+    <menuitem id="menu_veille_communaute_all"
+              name="Toutes les publications"
+              parent="menu_veille_communaute"
+              action="action_community_post_all"
+              sequence="2"/>
+
+    <menuitem id="menu_veille_communaute_new"
+              name="Nouveau post"
+              parent="menu_veille_communaute"
+              action="action_community_post_new"
+              sequence="3"/>
+
+    <menuitem id="menu_veille_config"
+              name="Configuration"
+              parent="menu_veille_root"
+              sequence="90"/>
+
+    <menuitem id="menu_veille_config_settings"
+              name="Paramètres veille"
+              parent="menu_veille_config"
+              action="action_veille_config_open"
+              sequence="1"
+              groups="doorway_veille_sociale.group_veille_settings,base.group_system"/>
+
+    <menuitem id="menu_veille_config_sources"
+              name="Connexions &amp; sources"
+              parent="menu_veille_config"
+              action="action_veille_sources_open"
+              sequence="2"
+              groups="doorway_veille_sociale.group_veille_settings,base.group_system"/>
+
+    <menuitem id="menu_veille_sources_root"
+              name="Connexions &amp; sources"
+              parent="menu_veille_root"
+              action="action_veille_sources_open"
+              sequence="88"
+              groups="doorway_veille_sociale.group_veille_settings,base.group_system"/>
+
+    <menuitem id="menu_veille_onboarding"
+              name="Visite guidée"
+              parent="menu_veille_config"
+              action="action_veille_onboarding_tour"
+              sequence="0"
+              groups="base.group_user"/>
+
+    <!-- Force la visibilité des menus (évite les groupes obsolètes en base) -->
+    <record id="menu_veille_config" model="ir.ui.menu">
+        <field name="group_ids" eval="[(5, 0, 0)]"/>
+    </record>
+</odoo>

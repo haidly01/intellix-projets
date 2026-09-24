@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="partenaire_hebergement_ops_page" name="Portail hébergement — Pace &amp; taxe">
+        <html lang="fr">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <title>Paramètres hébergement — <t t-out="prop.name"/> — Coins Marocain</title>
+                <link rel="preconnect" href="https://fonts.googleapis.com"/>
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
+                <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,500&amp;family=Playfair+Display:wght@600&amp;family=Jost:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+                <link rel="stylesheet" href="/coins_marocain/static/src/css/partenaire_portal.css"/>
+            </head>
+            <body>
+                <div class="cm-wrap">
+                    <header class="cm-hero">
+                        <p class="cm-kicker">Coins Marocain · espace partenaire</p>
+                        <h1><t t-out="prop.name"/></h1>
+                        <p>Pace, taxe, plateformes OTA et bibliothèque voyageurs — libre-service. La taxe n’est appliquée qu’après validation Karine.</p>
+                    </header>
+
+                    <t t-call="coins_marocain.partenaire_hebergement_nav"/>
+
+                    <t t-if="submitted">
+                        <div class="cm-ok">
+                            Enregistré.
+                            <t t-if="tax_awaiting">
+                                La taxe de séjour est en attente de validation Karine — le taux de collecte actuel n’a pas changé.
+                            </t>
+                        </div>
+                    </t>
+                    <t t-if="error">
+                        <div class="cm-err"><t t-out="error"/></div>
+                    </t>
+
+                    <form class="cm-card" method="post" t-attf-action="/partenaire/{{ token }}/hebergement">
+                        <input type="hidden" name="csrf_token" t-att-value="csrf_token"/>
+                        <input type="hidden" name="save_library" value="1"/>
+
+                        <h2>Concurrents (Pace / Booking Analytics)</h2>
+                        <p class="cm-note">
+                            Jusqu’à 10 noms exacts tels qu’ils apparaissent dans
+                            <b>Booking Analytics → Pace</b> (compte hôte de cet établissement).
+                            Remplissez ce que vous voyez ; pas besoin des 10 champs.
+                            Chemin typique : extranet Booking → Analytics → Pace → liste des concurrents.
+                        </p>
+                        <t t-foreach="pace_slots" t-as="slot">
+                            <label t-attf-for="pace_{{ slot['index'] }}">
+                                Concurrent <t t-out="slot['index']"/>
+                            </label>
+                            <input type="text"
+                                   t-attf-id="pace_{{ slot['index'] }}"
+                                   name="pace_name"
+                                   maxlength="120"
+                                   t-att-value="slot['name']"
+                                   t-att-placeholder="slot['placeholder']"/>
+                        </t>
+
+                        <h2>Taxe de séjour</h2>
+                        <p class="cm-note">
+                            Saisissez le barème de <b>votre commune</b> (MAD / personne / nuit).
+                            Une proposition ne déclenche pas la collecte : Karine valide avant application.
+                        </p>
+                        <div class="cm-row">
+                            <div>
+                                <label>Taux actif (collecte)</label>
+                                <input type="text" readonly="readonly"
+                                       t-att-value="('%.2f MAD' % active_rate) if active_rate else 'Non défini'"/>
+                            </div>
+                            <div>
+                                <label>Statut</label>
+                                <input type="text" readonly="readonly" t-att-value="tax_status_label"/>
+                            </div>
+                        </div>
+                        <label for="tax_commune">Commune de référence</label>
+                        <input id="tax_commune" type="text" name="tax_commune"
+                               placeholder="ex. Tameslouht, Commune Urbaine de Marrakech"
+                               t-att-value="proposed_commune or active_commune or ''"/>
+                        <label for="tax_rate">Montant proposé (MAD / pers. / nuit)</label>
+                        <input id="tax_rate" type="number" step="0.01" min="0" name="tax_rate"
+                               t-att-value="proposed_rate if proposed_rate else ''"/>
+                        <div class="cm-row">
+                            <div>
+                                <label for="tax_tpt">Dont TPT (optionnel)</label>
+                                <input id="tax_tpt" type="number" step="0.01" min="0" name="tax_tpt"
+                                       t-att-value="proposed_tpt if proposed_tpt else ''"/>
+                            </div>
+                            <div>
+                                <label for="tax_communal">Dont communale (optionnel)</label>
+                                <input id="tax_communal" type="number" step="0.01" min="0" name="tax_communal"
+                                       t-att-value="proposed_communal if proposed_communal else ''"/>
+                            </div>
+                        </div>
+                        <p class="cm-note">
+                            Si vous laissez le montant vide, la taxe n’est pas modifiée.
+                        </p>
+
+                        <h2>Connecter vos plateformes</h2>
+                        <p class="cm-note">
+                            Chaque connexion se fait <b>depuis votre compte OTA</b> (Booking exige une
+                            authentification à 2 facteurs sur <b>votre</b> téléphone). Les liens ci-dessous
+                            mènent aux guides officiels Channex — à suivre tels quels.
+                        </p>
+                        <t t-foreach="ota_rows" t-as="ota">
+                            <div class="cm-ota-row" style="margin:14px 0 18px;padding-bottom:14px;border-bottom:1px solid #e6ddcc;">
+                                <label style="text-transform:none;letter-spacing:0;font-size:15px;color:#262220;">
+                                    <t t-out="ota['label']"/>
+                                    — <t t-out="ota['status_label']"/>
+                                </label>
+                                <p class="cm-note" style="margin:6px 0;"><t t-out="ota['owner_note']"/></p>
+                                <p class="cm-note" style="margin:6px 0;">
+                                    Messagerie auto : <t t-out="ota['messaging_label']"/>
+                                </p>
+                                <t t-if="ota.get('guide_url')">
+                                    <p class="cm-note" style="margin:6px 0;">
+                                        <a t-att-href="ota['guide_url']" target="_blank" rel="noopener">
+                                            Guide Channex officiel →
+                                        </a>
+                                    </p>
+                                </t>
+                                <t t-if="ota['code'] != 'whatsapp' and ota['status'] != 'connected'">
+                                    <label t-attf-for="ota_pending_{{ ota['code'] }}" style="text-transform:none;font-size:13px;">
+                                        <input type="checkbox"
+                                               t-attf-id="ota_pending_{{ ota['code'] }}"
+                                               name="ota_pending"
+                                               t-att-value="ota['code']"
+                                               style="width:auto;margin-right:8px;"/>
+                                        J’ai lancé la connexion depuis mon compte — passer en « En attente »
+                                    </label>
+                                </t>
+                            </div>
+                        </t>
+
+                        <h2>Bibliothèque voyageurs (agent du lieu)</h2>
+                        <p class="cm-note">
+                            Ces infos alimentent <b>uniquement</b> l’agent de <t t-out="prop.name"/>.
+                            Aucun mélange avec un autre établissement. Hot-handoff (humain / urgence)
+                            : même logique que Yasmine. WhatsApp : numéro Coins partagé, routage par lieu.
+                            Sur Booking / Airbnb / Expedia / Agoda : auto-réponse non branchée tant que
+                            l’API Messages n’est pas activée (statuts ci-dessus).
+                        </p>
+                        <t t-if="agent_enabled">
+                            <p class="cm-note">Agent conversationnel : <b>actif</b> pour ce lieu.</p>
+                        </t>
+                        <label for="lib_neighborhood">Quartier / situation</label>
+                        <input id="lib_neighborhood" type="text" name="lib_neighborhood"
+                               t-att-value="lib_neighborhood"/>
+                        <div class="cm-row">
+                            <div>
+                                <label for="lib_checkin">Heure check-in (ex. 14)</label>
+                                <input id="lib_checkin" type="number" step="0.25" min="0" max="23.75"
+                                       name="lib_checkin" t-att-value="lib_checkin"/>
+                            </div>
+                            <div>
+                                <label for="lib_checkout">Heure check-out (ex. 11)</label>
+                                <input id="lib_checkout" type="number" step="0.25" min="0" max="23.75"
+                                       name="lib_checkout" t-att-value="lib_checkout"/>
+                            </div>
+                        </div>
+                        <label for="lib_howto">Instructions check-in / accès</label>
+                        <textarea id="lib_howto" name="lib_howto" rows="3"><t t-out="lib_howto"/></textarea>
+                        <label for="lib_wifi">Wi‑Fi (réseau / mot de passe)</label>
+                        <textarea id="lib_wifi" name="lib_wifi" rows="2"><t t-out="lib_wifi"/></textarea>
+                        <label for="lib_rules">Règlement intérieur</label>
+                        <textarea id="lib_rules" name="lib_rules" rows="3"><t t-out="lib_rules"/></textarea>
+                        <label for="lib_contacts">Contacts utiles</label>
+                        <textarea id="lib_contacts" name="lib_contacts" rows="2"><t t-out="lib_contacts"/></textarea>
+                        <label for="lib_tips">Recommandations locales</label>
+                        <textarea id="lib_tips" name="lib_tips" rows="3"><t t-out="lib_tips"/></textarea>
+                        <label for="lib_facts">Autres infos pratiques</label>
+                        <textarea id="lib_facts" name="lib_facts" rows="3"><t t-out="lib_facts"/></textarea>
+
+                        <button type="submit" class="cm-btn">Enregistrer</button>
+                    </form>
+                </div>
+            </body>
+        </html>
+    </template>
+</odoo>

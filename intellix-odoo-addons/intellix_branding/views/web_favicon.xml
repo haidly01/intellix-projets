@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="web_layout_title_intellix" inherit_id="web.layout" name="Intellix — Titre">
+        <xpath expr="//title" position="replace">
+            <title t-esc="title or 'Intellix'"/>
+        </xpath>
+    </template>
+
+    <template id="web_layout_favicon_intellix" inherit_id="web.layout" name="Intellix — Favicon">
+        <xpath expr="//link[@rel='shortcut icon']" position="replace">
+            <link type="image/svg+xml" rel="icon" href="/intellix_branding/static/src/img/intellix-icon.svg"/>
+            <link type="image/svg+xml" rel="shortcut icon" href="/intellix_branding/static/src/img/intellix-icon.svg"/>
+        </xpath>
+    </template>
+</odoo>

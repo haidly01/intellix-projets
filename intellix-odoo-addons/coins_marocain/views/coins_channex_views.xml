@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_coins_channex_config_form" model="ir.ui.view">
+        <field name="name">coins.channex.config.form</field>
+        <field name="model">coins.channex.config</field>
+        <field name="arch" type="xml">
+            <form string="Channex — production">
+                <group>
+                    <group>
+                        <field name="environment"/>
+                        <field name="base_url"/>
+                        <field name="staging_url"/>
+                        <field name="api_key_source"/>
+                        <field name="api_key" password="True"
+                               placeholder="Ne pas coller — CHANNEX_API_KEY dans odoo-doorway.env"/>
+                        <field name="enabled"/>
+                    </group>
+                    <group>
+                        <field name="last_ping" nolabel="1" colspan="2"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_save" type="object" string="Enregistrer" class="btn-primary"/>
+                    <button name="action_ping" type="object" string="Tester la connexion"/>
+                    <button name="action_use_production" type="object" string="Revenir en production"/>
+                    <button name="action_use_staging_rollback" type="object" string="Repli staging"/>
+                    <button string="Fermer" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="action_coins_channex_config" model="ir.actions.act_window">
+        <field name="name">Connexion Channex</field>
+        <field name="res_model">coins.channex.config</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="view_coins_channex_mapping_list" model="ir.ui.view">
+        <field name="name">coins.channex.mapping.list</field>
+        <field name="model">coins.channex.mapping</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="kind"/>
+                <field name="property_id"/>
+                <field name="local_id"/>
+                <field name="channex_id"/>
+                <field name="note"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_coins_channex_mapping" model="ir.actions.act_window">
+        <field name="name">Mapping IntelliX ↔ Channex</field>
+        <field name="res_model">coins.channex.mapping</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_coins_channex_push_list" model="ir.ui.view">
+        <field name="name">coins.channex.push.list</field>
+        <field name="model">coins.channex.push</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="property_id"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="action"/>
+                <field name="reason"/>
+                <field name="origin"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'done'"
+                       decoration-warning="state == 'pending'"
+                       decoration-info="state == 'ready'"
+                       decoration-danger="state == 'error'"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_coins_channex_push_form" model="ir.ui.view">
+        <field name="name">coins.channex.push.form</field>
+        <field name="model">coins.channex.push</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_retry" type="object" string="Relancer"
+                            invisible="state == 'done'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="property_id"/>
+                        <field name="action"/>
+                        <field name="reason"/>
+                        <field name="origin"/>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                    </group>
+                    <group>
+                        <field name="error_message"/>
+                        <field name="payload_preview"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_coins_channex_push" model="ir.actions.act_window">
+        <field name="name">File fermeture OTA</field>
+        <field name="res_model">coins.channex.push</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_coins_channex_revision_list" model="ir.ui.view">
+        <field name="name">coins.channex.revision.list</field>
+        <field name="model">coins.channex.revision</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="booking_id"/>
+                <field name="ota_status"/>
+                <field name="reservation_id"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'done'"
+                       decoration-warning="state == 'pending'"
+                       decoration-danger="state == 'error'"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_coins_channex_revision_form" model="ir.ui.view">
+        <field name="name">coins.channex.revision.form</field>
+        <field name="model">coins.channex.revision</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_retry" type="object" string="Retraiter"
+                            invisible="state == 'done'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="revision_id"/>
+                        <field name="booking_id"/>
+                        <field name="property_channex_id"/>
+                        <field name="ota_status"/>
+                        <field name="reservation_id"/>
+                    </group>
+                    <group>
+                        <field name="error_message"/>
+                    </group>
+                    <field name="raw_json"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_coins_channex_revision" model="ir.actions.act_window">
+        <field name="name">Résas OTA inbound</field>
+        <field name="res_model">coins.channex.revision</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_coins_channex_calendar_list" model="ir.ui.view">
+        <field name="name">coins.channex.calendar.list</field>
+        <field name="model">coins.channex.calendar</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="property_id"/>
+                <field name="mapping_id" domain="[('property_id', '=', property_id), ('kind', '=', 'rate_plan')]"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="rate"/>
+                <field name="min_stay"/>
+                <field name="stop_sell"/>
+                <field name="closed_to_arrival"/>
+                <field name="closed_to_departure"/>
+                <field name="max_stay"/>
+                <field name="push_availability"/>
+                <field name="availability"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'done'"
+                       decoration-danger="state == 'error'"/>
+                <field name="last_task_ids"/>
+                <button name="action_push_now" type="object" string="Pousser"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_coins_channex_calendar_form" model="ir.ui.view">
+        <field name="name">coins.channex.calendar.form</field>
+        <field name="model">coins.channex.calendar</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_push_now" type="object" string="Pousser vers Channex" class="btn-primary"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="property_id"/>
+                            <field name="mapping_id" domain="[('property_id', '=', property_id), ('kind', '=', 'rate_plan')]"/>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                        </group>
+                        <group>
+                            <field name="rate"/>
+                            <field name="min_stay"/>
+                            <field name="stop_sell"/>
+                            <field name="closed_to_arrival"/>
+                            <field name="closed_to_departure"/>
+                            <field name="max_stay"/>
+                            <field name="push_availability"/>
+                            <field name="availability" invisible="not push_availability"/>
+                            <field name="last_task_ids"/>
+                            <field name="error_message"/>
+                            <field name="push_id"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_coins_channex_calendar" model="ir.actions.act_window">
+        <field name="name">Calendrier tarifs OTA</field>
+        <field name="res_model">coins.channex.calendar</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

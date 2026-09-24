@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Masquer menu / footer vitrine sur login CRM -->
+    <template id="website_login_layout_intellix_minimal" inherit_id="website.login_layout" name="Intellix — Login sans chrome vitrine" priority="50">
+        <xpath expr="//t[@t-call='website.layout']" position="before">
+            <t t-set="no_header" t-value="True"/>
+            <t t-set="no_footer" t-value="True"/>
+        </xpath>
+    </template>
+
+    <!-- Login /web/login utilise website.layout (pas web.login_layout) -->
+    <template id="website_layout_intellix_auth_dark" inherit_id="website.layout" name="Intellix — Auth pages dark" priority="50">
+        <xpath expr="//t[@t-set='html_data']" position="after">
+            <t t-if="request.httprequest.path.startswith('/web/login') or request.httprequest.path.startswith('/web/signup') or request.httprequest.path.startswith('/web/reset_password')"
+               t-set="nothing"
+               t-value="html_data.update({'data-bs-theme': 'dark'})"/>
+        </xpath>
+    </template>
+
+    <template id="website_login_layout_intellix" inherit_id="website.login_layout" name="Intellix — Website login" priority="30">
+        <xpath expr="//div[hasclass('oe_website_login_container')]" position="attributes">
+            <attribute name="class" add="ix-website-login" separator=" "/>
+        </xpath>
+    </template>
+
+    <template id="website_login_intellix_brand" inherit_id="web.login" name="Intellix — Marque sur login website" priority="35">
+        <xpath expr="//form[@role='form' and @data-captcha='login']" position="before">
+            <t t-call="intellix_branding.intellix_brand_header"/>
+        </xpath>
+    </template>
+</odoo>

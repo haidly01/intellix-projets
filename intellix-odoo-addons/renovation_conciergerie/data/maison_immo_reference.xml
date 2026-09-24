@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Pub Meta « évaluation marchande » — alerte si ad_id webhook différent -->
+    <record id="config_meta_immo_reference_ad" model="ir.config_parameter">
+        <field name="key">renovation_conciergerie.meta_immo_reference_ad_id</field>
+        <field name="value">120245070455390396</field>
+    </record>
+    <record id="config_meta_immo_facebook_page" model="ir.config_parameter">
+        <field name="key">renovation_conciergerie.meta_immo_facebook_page_id</field>
+        <field name="value">964640820063787</field>
+    </record>
+    <record id="config_meta_immo_facebook_page_name" model="ir.config_parameter">
+        <field name="key">renovation_conciergerie.meta_immo_facebook_page_name</field>
+        <field name="value">Maison Recherchée</field>
+    </record>
+</odoo>

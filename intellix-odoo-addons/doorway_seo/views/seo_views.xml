@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================================ -->
+    <!-- Client action OWL (tableau de bord + chat)                   -->
+    <!-- ============================================================ -->
+    <record id="action_seo_dashboard" model="ir.actions.client">
+        <field name="name">SEO IA</field>
+        <field name="tag">doorway_seo_dashboard</field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Vues back-office (inspection / édition manuelle)             -->
+    <!-- ============================================================ -->
+    <record id="view_seo_page_audit_list" model="ir.ui.view">
+        <field name="name">doorway.seo.page.audit.list</field>
+        <field name="model">doorway.seo.page.audit</field>
+        <field name="arch" type="xml">
+            <list string="Audits SEO">
+                <field name="page_name"/>
+                <field name="url"/>
+                <field name="target_keyword"/>
+                <field name="score"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_seo_page_audit_form" model="ir.ui.view">
+        <field name="name">doorway.seo.page.audit.form</field>
+        <field name="model">doorway.seo.page.audit</field>
+        <field name="arch" type="xml">
+            <form string="Audit SEO">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="page_id"/>
+                            <field name="url"/>
+                            <field name="target_keyword"/>
+                            <field name="score"/>
+                            <field name="state"/>
+                        </group>
+                        <group>
+                            <field name="current_meta_title"/>
+                            <field name="current_meta_description"/>
+                            <field name="current_meta_keywords"/>
+                        </group>
+                    </group>
+                    <group string="Proposition IA">
+                        <field name="suggested_meta_title"/>
+                        <field name="suggested_meta_description"/>
+                        <field name="suggested_keywords"/>
+                        <field name="suggested_jsonld"/>
+                        <field name="suggestions"/>
+                    </group>
+                    <group>
+                        <field name="issues_json"/>
+                        <field name="metrics_json"/>
+                        <field name="last_error"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_seo_page_audit" model="ir.actions.act_window">
+        <field name="name">Audits SEO (pages)</field>
+        <field name="res_model">doorway.seo.page.audit</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_seo_backlink_list" model="ir.ui.view">
+        <field name="name">doorway.seo.backlink.target.list</field>
+        <field name="model">doorway.seo.backlink.target</field>
+        <field name="arch" type="xml">
+            <list string="Cibles de backlinks">
+                <field name="name"/>
+                <field name="target_type"/>
+                <field name="url"/>
+                <field name="status"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_seo_backlink_form" model="ir.ui.view">
+        <field name="name">doorway.seo.backlink.target.form</field>
+        <field name="model">doorway.seo.backlink.target</field>
+        <field name="arch" type="xml">
+            <form string="Cible de backlink">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="target_type"/>
+                        <field name="url" widget="url"/>
+                        <field name="status"/>
+                        <field name="mail_template_id"/>
+                    </group>
+                    <group string="Approche (white-hat)">
+                        <field name="approach"/>
+                        <field name="rationale"/>
+                    </group>
+                    <group string="Email d'approche (brouillon)">
+                        <field name="outreach_subject"/>
+                        <field name="outreach_body"/>
+                    </group>
+                    <field name="last_error" invisible="not last_error"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_seo_backlink" model="ir.actions.act_window">
+        <field name="name">Backlinks (white-hat)</field>
+        <field name="res_model">doorway.seo.backlink.target</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_seo_nap_form" model="ir.ui.view">
+        <field name="name">doorway.seo.nap.form</field>
+        <field name="model">doorway.seo.nap</field>
+        <field name="arch" type="xml">
+            <form string="Fiche NAP">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="address"/>
+                            <field name="city"/>
+                            <field name="postal_code"/>
+                            <field name="country"/>
+                        </group>
+                        <group>
+                            <field name="phone"/>
+                            <field name="email"/>
+                            <field name="website_url" widget="url"/>
+                            <field name="hours"/>
+                            <field name="categories"/>
+                        </group>
+                    </group>
+                    <field name="description"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_seo_nap" model="ir.actions.act_window">
+        <field name="name">Fiche NAP</field>
+        <field name="res_model">doorway.seo.nap</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_seo_directory_list" model="ir.ui.view">
+        <field name="name">doorway.seo.directory.list</field>
+        <field name="model">doorway.seo.directory</field>
+        <field name="arch" type="xml">
+            <list string="Annuaires">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="region"/>
+                <field name="category"/>
+                <field name="is_priority"/>
+                <field name="url"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_seo_directory" model="ir.actions.act_window">
+        <field name="name">Annuaires</field>
+        <field name="res_model">doorway.seo.directory</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_seo_citation_list" model="ir.ui.view">
+        <field name="name">doorway.seo.citation.list</field>
+        <field name="model">doorway.seo.citation</field>
+        <field name="arch" type="xml">
+            <list string="Citations">
+                <field name="directory_id"/>
+                <field name="status"/>
+                <field name="short_description"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_seo_citation_form" model="ir.ui.view">
+        <field name="name">doorway.seo.citation.form</field>
+        <field name="model">doorway.seo.citation</field>
+        <field name="arch" type="xml">
+            <form string="Citation">
+                <sheet>
+                    <group>
+                        <field name="nap_id"/>
+                        <field name="directory_id"/>
+                        <field name="status"/>
+                    </group>
+                    <group string="Contenu de soumission (IA)">
+                        <field name="tagline"/>
+                        <field name="short_description"/>
+                        <field name="business_description"/>
+                        <field name="categories"/>
+                        <field name="keywords"/>
+                        <field name="notes"/>
+                    </group>
+                    <field name="last_error" invisible="not last_error"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_seo_citation" model="ir.actions.act_window">
+        <field name="name">Citations</field>
+        <field name="res_model">doorway.seo.citation</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Menus                                                        -->
+    <!-- ============================================================ -->
+    <menuitem id="menu_seo_root"
+              name="SEO IA"
+              web_icon="website,static/description/icon.png"
+              sequence="93"/>
+
+    <menuitem id="menu_seo_dashboard"
+              name="Assistant SEO"
+              parent="menu_seo_root"
+              action="action_seo_dashboard"
+              sequence="1"/>
+
+    <menuitem id="menu_seo_config"
+              name="Configuration"
+              parent="menu_seo_root"
+              sequence="20"/>
+
+    <menuitem id="menu_seo_audits"
+              name="Audits de pages"
+              parent="menu_seo_config"
+              action="action_seo_page_audit"
+              sequence="1"/>
+    <menuitem id="menu_seo_backlinks"
+              name="Backlinks"
+              parent="menu_seo_config"
+              action="action_seo_backlink"
+              sequence="2"/>
+    <menuitem id="menu_seo_nap"
+              name="Fiche NAP"
+              parent="menu_seo_config"
+              action="action_seo_nap"
+              sequence="3"/>
+    <menuitem id="menu_seo_citations"
+              name="Citations"
+              parent="menu_seo_config"
+              action="action_seo_citation"
+              sequence="4"/>
+    <menuitem id="menu_seo_directories"
+              name="Annuaires"
+              parent="menu_seo_config"
+              action="action_seo_directory"
+              sequence="5"/>
+
+    <!-- ============================================================ -->
+    <!-- Mots-clés suivis + relevés de position                       -->
+    <!-- ============================================================ -->
+    <record id="view_seo_tracked_keyword_list" model="ir.ui.view">
+        <field name="name">doorway.seo.tracked.keyword.list</field>
+        <field name="model">doorway.seo.tracked.keyword</field>
+        <field name="arch" type="xml">
+            <list string="Mots-clés suivis">
+                <field name="keyword"/>
+                <field name="target_url"/>
+                <field name="location"/>
+                <field name="current_position"/>
+                <field name="best_position"/>
+                <field name="last_checked"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_seo_tracked_keyword_form" model="ir.ui.view">
+        <field name="name">doorway.seo.tracked.keyword.form</field>
+        <field name="model">doorway.seo.tracked.keyword</field>
+        <field name="arch" type="xml">
+            <form string="Mot-clé suivi">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="keyword"/>
+                            <field name="target_url"/>
+                            <field name="location"/>
+                        </group>
+                        <group>
+                            <field name="country_code"/>
+                            <field name="language"/>
+                            <field name="device"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="current_position"/>
+                        <field name="previous_position"/>
+                        <field name="best_position"/>
+                        <field name="last_url"/>
+                        <field name="last_checked"/>
+                        <field name="last_error" invisible="not last_error"/>
+                    </group>
+                    <field name="snapshot_ids">
+                        <list string="Historique">
+                            <field name="check_date"/>
+                            <field name="position"/>
+                            <field name="found"/>
+                            <field name="ranking_url"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_seo_tracked_keyword" model="ir.actions.act_window">
+        <field name="name">Mots-clés suivis</field>
+        <field name="res_model">doorway.seo.tracked.keyword</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_seo_keyword_idea_list" model="ir.ui.view">
+        <field name="name">doorway.seo.keyword.idea.list</field>
+        <field name="model">doorway.seo.keyword.idea</field>
+        <field name="arch" type="xml">
+            <list string="Idées de mots-clés">
+                <field name="keyword"/>
+                <field name="intent"/>
+                <field name="group"/>
+                <field name="volume_label"/>
+                <field name="difficulty_label"/>
+                <field name="saved"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_seo_keyword_idea" model="ir.actions.act_window">
+        <field name="name">Idées de mots-clés</field>
+        <field name="res_model">doorway.seo.keyword.idea</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_seo_keyword_ideas"
+              name="Idées de mots-clés"
+              parent="menu_seo_config"
+              action="action_seo_keyword_idea"
+              sequence="6"/>
+    <menuitem id="menu_seo_tracked_keywords"
+              name="Mots-clés suivis"
+              parent="menu_seo_config"
+              action="action_seo_tracked_keyword"
+              sequence="7"/>
+</odoo>

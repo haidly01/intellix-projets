@@ -1,0 +1,399 @@
+/* ─── RH & Coaching IA — dark dashboard (aligné Mon Coaching d'appel) ─── */
+:root {
+    --ix-bg-page: #0a0a12;
+    --ix-bg-card: #15151f;
+    --ix-bg-input: rgba(255, 255, 255, 0.06);
+    --ix-border: rgba(255, 255, 255, 0.08);
+    --ix-border-hover: rgba(99, 102, 241, 0.4);
+    --ix-text-primary: #f0f0ff;
+    --ix-text-secondary: #e8e8ff;
+    --ix-text-muted: rgba(255, 255, 255, 0.45);
+    --ix-text-hint: rgba(255, 255, 255, 0.25);
+    --ix-indigo: #6366f1;
+    --ix-indigo-light: rgba(99, 102, 241, 0.15);
+    --ix-indigo-text: #a5b4fc;
+    --ix-green: #4ade80;
+    --ix-green-light: rgba(74, 222, 128, 0.13);
+    --ix-amber: #fbbf24;
+    --ix-amber-light: rgba(251, 191, 36, 0.13);
+    --ix-red: #f87171;
+    --ix-red-light: rgba(248, 113, 113, 0.15);
+}
+
+.o_pe_team_dashboard,
+.o_pe_coaching_list,
+.o_pe_dev_plan_list {
+    background: var(--ix-bg-page) !important;
+}
+
+/* ─── Stat cards ─── */
+.ix-stat-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.ix-stat-card {
+    background: var(--ix-bg-card);
+    border: 1px solid var(--ix-border);
+    border-radius: 10px;
+    padding: 14px 16px;
+}
+
+.ix-stat-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ix-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 6px;
+}
+
+.ix-stat-val {
+    font-size: 26px;
+    font-weight: 500;
+    color: var(--ix-text-primary);
+    line-height: 1;
+}
+
+.ix-stat-val.indigo { color: var(--ix-indigo-text); }
+.ix-stat-val.green { color: var(--ix-green); }
+.ix-stat-val.amber { color: var(--ix-amber); }
+.ix-stat-val.red { color: var(--ix-red); }
+
+.ix-stat-denom {
+    font-size: 16px;
+    color: var(--ix-text-hint);
+}
+
+.ix-stat-sub {
+    font-size: 12px;
+    color: var(--ix-text-muted);
+    margin-top: 5px;
+}
+
+/* ─── Kanban ─── */
+.ix-team-dashboard {
+    padding: 0 4px 16px;
+}
+
+.ix-kanban-cols {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.ix-k-col-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.ix-k-col-title {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ix-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+}
+
+.ix-k-col-count {
+    font-size: 11px;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--ix-text-muted);
+    padding: 2px 7px;
+    border-radius: 10px;
+}
+
+.ix-k-card {
+    background: var(--ix-bg-card);
+    border: 1px solid var(--ix-border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+}
+
+.ix-k-card:hover {
+    border-color: var(--ix-border-hover);
+}
+
+.ix-k-card.top {
+    border-color: rgba(74, 222, 128, 0.2);
+}
+
+.ix-k-card-top {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 10px;
+}
+
+.ix-k-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 500;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.ix-k-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ix-text-primary);
+}
+
+.ix-k-role {
+    font-size: 11px;
+    color: var(--ix-text-muted);
+    margin-top: 1px;
+}
+
+.ix-k-score-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.ix-k-score-label {
+    font-size: 11px;
+    color: var(--ix-text-muted);
+    min-width: 38px;
+}
+
+.ix-k-score-bar {
+    flex: 1;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.ix-k-score-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.3s;
+}
+
+.ix-k-score-num {
+    font-size: 12px;
+    font-weight: 500;
+    min-width: 28px;
+    text-align: right;
+}
+
+.ix-k-tags {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.ix-k-tag {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.ix-k-tag.alert {
+    background: var(--ix-red-light);
+    color: #fca5a5;
+}
+
+.ix-k-tag.ok {
+    background: var(--ix-green-light);
+    color: #86efac;
+}
+
+.ix-k-tag.warn {
+    background: var(--ix-amber-light);
+    color: #fde68a;
+}
+
+.ix-k-tag.info {
+    background: rgba(165, 180, 252, 0.12);
+    color: #c7d2fe;
+}
+
+.ix-k-empty {
+    font-size: 12px;
+    color: var(--ix-text-hint);
+    text-align: center;
+    padding: 20px 0;
+}
+
+/* ─── List tables ─── */
+.ix-coaching-list .o_list_table th,
+.ix-devplan-list .o_list_table th,
+.o_pe_coaching_list .o_list_table th,
+.o_pe_dev_plan_list .o_list_table th {
+    font-size: 11px !important;
+    font-weight: 500 !important;
+    color: var(--ix-text-muted) !important;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    background: #0f0f1a !important;
+    border-bottom: 1px solid var(--ix-border) !important;
+}
+
+.ix-coaching-list .o_list_table td,
+.ix-devplan-list .o_list_table td,
+.o_pe_coaching_list .o_list_table td,
+.o_pe_dev_plan_list .o_list_table td {
+    font-size: 13px !important;
+    color: var(--ix-text-secondary) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+    padding: 10px 12px !important;
+}
+
+.o_pe_coaching_list .o_list_renderer,
+.o_pe_dev_plan_list .o_list_renderer {
+    background: var(--ix-bg-page);
+}
+
+.ix-list-header-wrap {
+    padding: 12px 16px 0;
+    background: var(--ix-bg-page);
+}
+
+/* ─── Progress bar custom ─── */
+.ix-progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ix-progress-bar {
+    width: 100px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.07);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.ix-progress-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.4s;
+}
+
+.ix-progress-label {
+    font-size: 12px;
+    color: var(--ix-text-muted);
+    min-width: 32px;
+}
+
+/* ─── Badges ─── */
+.o_pe_coaching_list .badge.text-bg-success,
+.o_pe_dev_plan_list .badge.text-bg-success,
+.ix-coaching-list .badge.text-bg-success,
+.ix-devplan-list .badge.text-bg-success {
+    background: var(--ix-green-light) !important;
+    color: #86efac !important;
+    border: none !important;
+}
+
+.o_pe_coaching_list .badge.text-bg-warning,
+.o_pe_dev_plan_list .badge.text-bg-warning,
+.ix-coaching-list .badge.text-bg-warning,
+.ix-devplan-list .badge.text-bg-warning {
+    background: var(--ix-amber-light) !important;
+    color: #fde68a !important;
+    border: none !important;
+}
+
+.o_pe_coaching_list .badge.text-bg-info,
+.o_pe_dev_plan_list .badge.text-bg-info,
+.ix-coaching-list .badge.text-bg-info,
+.ix-devplan-list .badge.text-bg-info {
+    background: rgba(165, 180, 252, 0.13) !important;
+    color: #c7d2fe !important;
+    border: none !important;
+}
+
+.o_pe_coaching_list .badge.text-bg-danger,
+.o_pe_dev_plan_list .badge.text-bg-danger,
+.ix-coaching-list .badge.text-bg-danger,
+.ix-devplan-list .badge.text-bg-danger {
+    background: var(--ix-red-light) !important;
+    color: #fca5a5 !important;
+    border: none !important;
+}
+
+/* ─── Empty state ─── */
+.ix-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 20px;
+    gap: 12px;
+    text-align: center;
+    background: var(--ix-bg-page);
+}
+
+.ix-empty-ico {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    background: var(--ix-indigo-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    color: var(--ix-indigo-text);
+}
+
+.ix-empty-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--ix-text-primary);
+}
+
+.ix-empty-sub {
+    font-size: 13px;
+    color: var(--ix-text-muted);
+    max-width: 400px;
+    line-height: 1.6;
+}
+
+.ix-btn-primary {
+    padding: 8px 18px;
+    background: var(--ix-indigo);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.ix-btn-primary:hover {
+    background: #4f46e5;
+}
+
+@media (max-width: 1200px) {
+    .ix-stat-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .ix-kanban-cols {
+        grid-template-columns: 1fr;
+    }
+}

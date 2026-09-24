@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" href="/favicon.ico?v=cm126" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32.png?v=cm126">
+  <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png?v=cm126">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hébergement à Marrakech — villas & riads en vidéo | Coins Marocain</title>
+  <meta name="description" content="Découvrez les hébergements partenaires à Marrakech en vidéo : villas et riads sélectionnés, pins sur la carte, privatisation possible.">
+  <link rel="canonical" href="https://coinsmarocain.com/carte/hebergement">
+  <link rel="alternate" hreflang="fr" href="https://coinsmarocain.com/carte/hebergement">
+  <link rel="alternate" hreflang="en" href="https://coinsmarocain.com/en/map/stay">
+  <meta property="og:title" content="Hébergement à Marrakech — villas & riads en vidéo | Coins Marocain">
+  <meta property="og:description" content="Découvrez les hébergements partenaires à Marrakech en vidéo : villas et riads sélectionnés, pins sur la carte, privatisation possible.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://coinsmarocain.com/carte/hebergement">
+  <meta property="og:image" content="https://coinsmarocain.com/assets/img/og-default.jpg?v=cm127">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:alt" content="Coins Marocain">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://coinsmarocain.com/assets/img/og-default.jpg?v=cm127">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Playfair+Display:wght@500;600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/activites.css?v=cm132">
+  <link rel="stylesheet" href="/assets/cm-chrome.css?v=cm148">
+  <link rel="stylesheet" href="/assets/cookies.css?v=cm148">
+  <link rel="stylesheet" href="/assets/vendor/leaflet/leaflet.css?v=cm92">
+  <link rel="stylesheet" href="/assets/carte.css?v=cm154">
+</head>
+<body class="cm-carte-page" data-header="solid" data-carte-theme="hebergement" data-wa-msg="Bonjour Yasmine, je découvre la carte vidéo Coins Marocain." data-planner-interests="piscine">
+  <header class="site-header solid" id="siteHeader">
+    <div class="wrap header-inner">
+      <a class="brand" href="/">
+        <img src="/assets/img/logo-emblem-white.png?v=cm99" alt="Coins Marocain" class="brand-logo logo-light">
+        <img src="/assets/img/logo-emblem.png?v=cm99" alt="Coins Marocain" class="brand-logo logo-dark">
+      </a>
+      <div class="header-actions">
+        <button class="burger" id="burger" aria-label="Ouvrir le menu"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+  <nav class="menu-overlay" id="menuOverlay" aria-hidden="true">
+    <button class="menu-close" id="menuClose" aria-label="Fermer le menu">&times;</button>
+    <p class="m-eyebrow">Coins Marocain</p>
+  </nav>
+
+  <div class="cm-carte-shell">
+    <section class="cm-carte-intro">
+      <div class="cm-carte-intro-grid">
+        <div class="cm-carte-intro-copy">
+          <p class="cm-carte-eyebrow" id="cmCarteEyebrow">Carte · Marrakech</p>
+          <h1 id="cmCarteH1">Hébergement à Marrakech</h1>
+          <p class="lead" id="cmCarteLead">Villas et riads en vidéo — choisissez avec le regard, puis demandez dates et capacité.</p>
+          <div class="cm-carte-intro-actions">
+            <a class="cm-pill cm-pill--outline" href="#cmCarteMapWrap" id="cmCarteExplore">Explorer la carte</a>
+            <a class="cm-pill cm-pill--text" href="https://wa.me/212660159177?text=Bonjour%20Yasmine%2C%20je%20cherche%20un%20h%C3%A9bergement%20%C3%A0%20Marrakech" target="_blank" rel="noopener noreferrer">Écrire Yasmine</a>
+          </div>
+        </div>
+        <div class="cm-carte-intro-visual" id="cmCarteHeroVisual" aria-hidden="true">
+          <div class="cm-story-card cm-story-card--hero">
+            <img class="cm-story-media" src="/assets/img/forfaits-hero.jpg" alt="" loading="eager" decoding="async">
+            <div class="cm-story-gradient"></div>
+            <span class="cm-story-cat">HÉBERGEMENT · MARRAKECH</span>
+            <span class="cm-story-play" aria-hidden="true"><span class="tri"></span></span>
+            <h3 class="cm-story-name">Lieux en vedette</h3>
+          </div>
+        </div>
+      </div>
+    </section>
+    <div class="cm-carte-toolbar">
+      <div class="cm-carte-mode" role="group" aria-label="Mode de filtrage">
+        <button type="button" data-mode="theme" class="on">Par thème</button>
+        <button type="button" data-mode="zone">Par zone</button>
+      </div>
+      <div class="cm-carte-filters cm-carte-theme-chips" id="cmCarteFilters" role="group" aria-label="Filtrer par thème">
+        <button type="button" data-filter="all">Tous</button>
+        <button type="button" data-filter="hebergement" class="on">Hébergement</button>
+        <button type="button" data-filter="bien_etre">Bien-être</button>
+        <button type="button" data-filter="route_gourmande">Route gourmande</button>
+        <button type="button" data-filter="experiences">Activités et expériences</button>
+        <button type="button" data-filter="evenements">Événements</button>
+      </div>
+      <div class="cm-carte-filters cm-carte-zone-chips" id="cmCarteZones" role="group" aria-label="Filtrer par zone" hidden>
+        <button type="button" data-zone="all" class="on">Toutes</button>
+        <button type="button" data-zone="marrakech_centre">Centre</button>
+        <button type="button" data-zone="palmeraie">Palmeraie</button>
+        <button type="button" data-zone="agafay">Agafay</button>
+        <button type="button" data-zone="autre">Autres (~30 min)</button>
+      </div>
+    </div>
+
+    <div class="cm-carte-map-wrap" id="cmCarteMapWrap">
+      <div id="cmCarteMap" role="application" aria-label="Carte des lieux Coins Marocain"></div>
+      <p class="cm-carte-zoom-hint" id="cmCarteZoomHint">Cliquez la carte pour zoomer à la molette</p>
+      <p class="cm-carte-map-status" id="cmCarteStatus">Chargement…</p>
+    </div>
+  </div>
+
+  <section class="cm-carte-feed" id="pres-de-vous" aria-labelledby="cmCarteFeedTitle">
+    <div class="wrap">
+      <div class="cm-carte-feed-head">
+        <h2 id="cmCarteFeedTitle">En ce moment près de vous</h2>
+        <a href="#cmCarteMap">Voir la carte →</a>
+      </div>
+      <div class="cm-carte-feed-grid" id="cmCarteFeed"></div>
+    </div>
+  </section>
+
+  <section class="cm-carte-cta" id="vous-avez-un-lieu">
+    <div class="wrap">
+      <div class="cm-carte-cta-card">
+        <span class="cm-carte-cta-icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 22s7-7.2 7-12a7 7 0 1 0-14 0c0 4.8 7 12 7 12z" stroke="#8a4f22" stroke-width="1.6"/>
+            <circle cx="12" cy="10" r="2.4" fill="#8a4f22"/>
+          </svg>
+        </span>
+        <div class="cm-carte-cta-text">
+          <h2>Vous avez un lieu ?</h2>
+          <p>Inscription gratuite, on valide ensemble les détails</p>
+        </div>
+        <a class="cm-pill cm-pill--outline" href="#inscription">S'inscrire</a>
+      </div>
+    </div>
+  </section>
+    <main id="cm-seo-main">
+<details id="seo-dense" class="cm-seo-fold">
+      <summary>En savoir plus — hébergement en vidéo</summary>
+      <div class="cm-seo-fold-body">
+
+        <h2>Villas et riads en vidéo, pas en catalogue</h2>
+              <p>Chaque pin hébergement ouvre une courte vidéo du lieu : lumière, volumes, outdoor. L'idée est de choisir avec le regard avant de demander une privatisation. Les adresses restent confidentielles — pas de listing exhaustif type plateforme.</p>
+              <p>Pour un devis : précisez dates, effectif et ambiance (médina, palmeraie, domaine). Compléments : <a href="/villas-riads-marrakech">page villas &amp; riads</a>, <a href="/evenements">événements</a>, <a href="/contact">contact</a>.</p>
+        <h2>Villas et riads à louer près de Marrakech</h2>
+        <p>Ce filtre montre les hébergements partenaires : chambres à l’unité ou domaine privatisé. Ouvrez un pin, regardez la vidéo, puis demandez dates et capacité — sans marketplace anonyme. Les adresses exactes restent confidentielles jusqu’à un projet engagé.</p>
+        <p>Rayon d’environ trente minutes : médina, palmeraie, Ourika, Agafay. Pour une nuitée seule, croisez avec <a href="/villas-riads-marrakech">villas &amp; riads</a> ; pour un mariage ou EVJF, le hub <a href="/evenements">événements</a>.</p>
+        <h2>Ce que la vidéo change pour un séjour</h2>
+        <p>Lumière du patio, bruit de voisinage, vraie échelle de la piscine : une courte vidéo terrain évite les mauvaises surprises avant de parler budget et calendrier avec Yasmine.</p>
+      </div>
+    </details>
+    </main>
+
+<section class="cm-carte-signup" id="inscription">
+    <div class="wrap">
+      <h2>Inscription</h2>
+      <p class="intro">Nom du lieu, thème et vos coordonnées — nous validons ensuite l’accès au portail propriétaire.</p>
+      <div class="cm-carte-signup-grid">
+        <form class="cm-carte-form" id="cmCarteSignup" novalidate>
+          <label>Nom du lieu
+            <input type="text" name="place_name" id="cmCartePlaceName" required maxlength="160" autocomplete="organization">
+          </label>
+          <label>Thème
+            <select name="category" required>
+              <option value="">—</option>
+              <option value="hebergement">Hébergement</option>
+              <option value="bien_etre">Bien-être</option>
+              <option value="resto">Route gourmande</option>
+              <option value="experiences">Activités et expériences</option>
+              <option value="evenements">Événements</option>
+              <option value="autre">Autre</option>
+            </select>
+          </label>
+          <label>Nom du contact
+            <input type="text" name="contact_name" maxlength="120" autocomplete="name">
+          </label>
+          <div class="row">
+            <label>Courriel
+              <input type="email" name="email" required maxlength="120" autocomplete="email">
+            </label>
+            <label>Téléphone
+              <input type="tel" name="phone" required maxlength="40" autocomplete="tel">
+            </label>
+          </div>
+          <label>Description du lieu
+            <textarea name="description" id="cmCarteDescription" rows="4" maxlength="4000" placeholder="Ambiance, capacité, atouts — quelques phrases suffisent."></textarea>
+          </label>
+          <label class="cm-carte-photo-label">Photo principale
+            <input type="file" name="photo" id="cmCartePhoto" accept="image/jpeg,image/png,image/webp,image/*">
+            <span class="cm-carte-photo-hint">JPEG, PNG ou WebP — max 5&nbsp;Mo (optionnel)</span>
+          </label>
+          <input type="hidden" name="signup_channel" value="carte">
+          <button type="submit" class="btn-submit" id="cmCarteSignupSubmit">Envoyer l’inscription</button>
+          <p class="cm-carte-form-status" id="cmCarteSignupStatus" role="status" aria-live="polite"></p>
+        </form>
+        <aside class="cm-carte-preview" aria-label="Aperçu de votre fiche">
+          <p class="cm-carte-preview-label">Aperçu de votre fiche</p>
+          <div class="cm-story-card cm-story-card--preview">
+            <div class="cm-story-media cm-story-media--placeholder" id="cmCartePreviewMedia" role="button" tabindex="0" aria-label="Ajouter une photo">
+              <span class="cm-preview-add">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                <span>ajouter photo</span>
+              </span>
+            </div>
+            <div class="cm-story-gradient"></div>
+            <span class="cm-story-cat">VOTRE LIEU</span>
+            <span class="cm-story-play" aria-hidden="true"><span class="tri"></span></span>
+            <h3 class="cm-story-name" id="cmCartePreviewName">Nom du lieu</h3>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  
+<section id="seo-pad" class="wrap" style="max-width:720px;margin:0 auto 40px;padding:0 22px;line-height:1.65;color:#262220">
+<h2 style="font-family:Cardo,Georgia,serif;font-size:1.35rem">Continuer avec Coins Marocain</h2>
+<p>Coins Marocain assemble lieux privatissables, expériences privées et conciergerie humaine à Marrakech. La <a href="/carte">carte en vidéo</a> montre les adresses partenaires ; le <a href="/guide-marrakech">guide des escapades</a> relie médina, désert, Atlas et océan ; les pages <a href="/evenements">événements</a> couvrent mariages, EVJF, retraites et célébrations.</p>
+<p>Pour un projet daté, le plus simple reste un message clair : dates, effectif, intention. Yasmine répond avec une proposition courte — pas un catalogue. <a href="/contact">Nous contacter</a> · <a href="/villas-riads-marrakech">Villas &amp; riads</a> · <a href="/activites">Expériences</a>.</p>
+</section>
+
+<footer class="site-footer">
+    <div class="wrap footer-cols">
+      <div>
+        <div class="foot-brand"><img src="/assets/img/logo-emblem-white.png?v=cm99" alt="Coins Marocain" width="173" height="44" style="height:44px;width:auto"></div>
+        <p class="foot-tag">Voyages &amp; expériences curatés au Maroc.</p>
+      </div>
+      <div>
+        <h4>Explorer</h4>
+        <a href="/carte">Carte</a>
+        <a href="/villas-riads-marrakech">Villas &amp; Riads</a>
+        <a href="/activites">Expériences</a>
+        <a href="/evenements">Événements</a>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <a href="/contact">Nous contacter</a>
+        <a href="mailto:info@coinsmarocain.com">info@coinsmarocain.com</a>
+      </div>
+    </div>
+    <div class="wrap foot-bottom">
+      <p>© 2026 Coins Marocain — propriété de Digital Doorway SARL</p>
+    </div>
+  </footer>
+
+  <div id="cmCarteStories" class="cm-stories" hidden aria-hidden="true"></div>
+
+  <script src="/assets/vendor/leaflet/leaflet.js?v=cm92" defer></script>
+  <script src="/assets/lang-map.js?v=cm92" defer></script>
+  <script src="/assets/nav.js?v=cm148" defer></script>
+  <script src="/assets/cookies.js?v=cm148" defer></script>
+  <script src="/assets/carte-themes.js?v=cm113" defer></script>
+  <script src="/assets/carte.js?v=cm156" defer></script>
+</body>
+</html>

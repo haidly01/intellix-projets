@@ -1,0 +1,615 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ========== coins.property (étendu Airbnb + galerie) ========== -->
+    <record id="view_coins_property_list" model="ir.ui.view">
+        <field name="name">coins.property.list</field>
+        <field name="model">coins.property</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="property_type"/>
+                <field name="district"/>
+                <field name="city"/>
+                <field name="owner_id"/>
+                <field name="capacity"/>
+                <field name="price_per_night"/>
+                <field name="currency_id" optional="show"/>
+                <field name="airbnb_ical_export_url" optional="hide"/>
+                <field name="disponibilite_count" optional="show"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'active'"
+                       decoration-warning="state == 'negotiating'"
+                       decoration-muted="state == 'inactive'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_coins_property_form" model="ir.ui.view">
+        <field name="name">coins.property.form</field>
+        <field name="model">coins.property</field>
+        <field name="arch" type="xml">
+            <form string="Bien">
+                <header>
+                    <button name="action_publish_onboarding" type="object"
+                            string="Publier"
+                            class="btn-primary"
+                            invisible="onboarding_status not in ('en_attente_validation', 'correction')"
+                            confirm="Publication humaine uniquement. La fiche apparaîtra sur les pages publiques."/>
+                    <button name="action_request_onboarding_correction" type="object"
+                            string="À corriger"
+                            class="btn-secondary"
+                            invisible="onboarding_status != 'en_attente_validation'"/>
+                    <button name="action_purge_draft_photos_after_retouch" type="object"
+                            string="Supprimer photos brutes (après retouche)"
+                            class="btn-secondary"
+                            invisible="draft_photo_count == 0"
+                            confirm="Supprime les photos WhatsApp / brutes dès qu'une photo retouchée existe pour la même chambre ou la galerie. Les seules photos d'une chambre sans retouche sont conservées. La fiche publiée n'est pas renvoyée en validation."/>
+                    <button name="action_sync_airbnb_ical" type="object"
+                            string="Sync Airbnb iCal"
+                            class="btn-secondary"
+                            invisible="not airbnb_ical_export_url"/>
+                    <button name="action_channex_full_sync" type="object"
+                            string="Channex Full Sync (500 j)"
+                            class="btn-primary"
+                            confirm="Certif Full Sync : 2 appels API, 500 jours alignés, toutes les restrictions. Copie les task IDs de la notification — pas ceux de « Pousser tarifs OTA »."/>
+                    <button name="action_channex_push_calendar" type="object"
+                            string="Pousser tarifs OTA (batch)"
+                            class="btn-secondary"/>
+                </header>
+                <sheet>
+                    <field name="draft_photo_count" invisible="1"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_reservations" type="object"
+                                class="oe_stat_button" icon="fa-calendar">
+                            <field name="reservation_count" widget="statinfo"
+                                   string="Réservations"/>
+                        </button>
+                        <button name="action_view_disponibilites" type="object"
+                                class="oe_stat_button" icon="fa-calendar-check-o">
+                            <field name="disponibilite_count" widget="statinfo"
+                                   string="Dispos"/>
+                        </button>
+                        <button name="action_view_ops_slots" type="object"
+                                class="oe_stat_button" icon="fa-clock-o">
+                            <field name="ops_slot_count" widget="statinfo"
+                                   string="Agenda ops"/>
+                        </button>
+                        <button name="action_open_detente_partner" type="object"
+                                class="oe_stat_button" icon="fa-handshake-o"
+                                invisible="not detente_partner_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Partenaire détente</span>
+                            </div>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Piscine / Hammam" bg_color="text-bg-info"
+                            invisible="property_type != 'pool_hammam'"/>
+                    <field name="image_1920" widget="image" class="oe_avatar"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Nom du bien"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="property_type"/>
+                            <field name="state"/>
+                            <field name="owner_id"/>
+                            <field name="management_commission"/>
+                            <field name="detente_partner_id"
+                                   invisible="property_type != 'pool_hammam'"/>
+                        </group>
+                        <group>
+                            <field name="district"/>
+                            <field name="city"/>
+                            <field name="street"/>
+                            <field name="latitude"/>
+                            <field name="longitude"/>
+                            <field name="map_zone"/>
+                            <field name="map_pillar"/>
+                            <field name="category_ids" widget="many2many_tags" options="{'no_create_edit': True}"/>
+                            <field name="location_chambre_unite"/>
+                            <field name="nb_suites"/>
+                            <field name="terrain_hectares"/>
+                            <label for="tarif_privatisation_jour"/>
+                            <div class="o_row">
+                                <field name="tarif_privatisation_jour"/>
+                                <field name="currency_id" options="{'no_create': True}"/>
+                            </div>
+                            <field name="niveau_visibilite" readonly="1"/>
+                            <field name="recommande_par_radio"/>
+                            <field name="nom_radio" invisible="not recommande_par_radio"/>
+                            <field name="capacity"/>
+                            <label for="price_per_night"/>
+                            <div class="o_row">
+                                <field name="price_per_night"/>
+                                <field name="currency_id" options="{'no_create': True}"/>
+                            </div>
+                            <field name="frais_service_pct"/>
+                            <field name="online_booking"/>
+                            <field name="active" invisible="1"/>
+                            <field name="onboarding_kind"/>
+                            <field name="onboarding_status"/>
+                            <field name="onboarding_contact_name"/>
+                            <field name="onboarding_phone"/>
+                            <field name="onboarding_email"/>
+                        </group>
+                    </group>
+                    <group string="Location directe (économie)"
+                           invisible="property_type != 'pool_hammam'">
+                        <group>
+                            <field name="direct_rental_price_base"/>
+                            <field name="direct_rental_markup_fixed"/>
+                        </group>
+                        <group>
+                            <field name="direct_rental_owner_payout"/>
+                            <field name="direct_rental_margin"
+                                   decoration-success="direct_rental_margin &gt; 0"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Descriptif" name="description">
+                            <field name="description" placeholder="Descriptif plateforme (indépendant d'Airbnb)"/>
+                        </page>
+                        <page string="Pourquoi ce bien" name="narrative">
+                            <field name="narrative"/>
+                        </page>
+                        <page string="Chambres" name="rooms">
+                            <field name="room_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="sleeps"/>
+                                    <field name="description"/>
+                                    <field name="active"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Offres (daypass / repas)" name="offers">
+                            <group string="Daypass piscine">
+                                <group>
+                                    <field name="daypass_piscine"/>
+                                    <label for="daypass_price" invisible="not daypass_piscine"/>
+                                    <div class="o_row" invisible="not daypass_piscine">
+                                        <field name="daypass_price"/>
+                                        <field name="currency_id" options="{'no_create': True}"/>
+                                    </div>
+                                    <field name="daypass_capacity_day"
+                                           invisible="not daypass_piscine"/>
+                                </group>
+                            </group>
+                            <group string="Repas proposés">
+                                <group>
+                                    <field name="meal_breakfast_available"/>
+                                    <label for="meal_breakfast_price"
+                                           invisible="not meal_breakfast_available"/>
+                                    <div class="o_row" invisible="not meal_breakfast_available">
+                                        <field name="meal_breakfast_price"/>
+                                        <field name="currency_id" options="{'no_create': True}"/>
+                                    </div>
+                                    <field name="meal_lunch_available"/>
+                                    <label for="meal_lunch_price"
+                                           invisible="not meal_lunch_available"/>
+                                    <div class="o_row" invisible="not meal_lunch_available">
+                                        <field name="meal_lunch_price"/>
+                                        <field name="currency_id" options="{'no_create': True}"/>
+                                    </div>
+                                    <field name="meal_dinner_available"/>
+                                    <label for="meal_dinner_price"
+                                           invisible="not meal_dinner_available"/>
+                                    <div class="o_row" invisible="not meal_dinner_available">
+                                        <field name="meal_dinner_price"/>
+                                        <field name="currency_id" options="{'no_create': True}"/>
+                                    </div>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Tarifs OTA (Channex)" name="channex_rates">
+                            <p class="text-muted">
+                                Un save ici pousse le delta (prix, min stay, stop sell, CTA/CTD, max stay, dispo).
+                                Dispo : une ligne = une plage date_from/date_to (pas un jour par objet).
+                                Pour plusieurs chambres : saisis les lignes puis « Pousser tarifs OTA (batch) ».
+                            </p>
+                            <field name="channex_calendar_ids">
+                                <list editable="bottom">
+                                    <field name="mapping_id" domain="[('property_id', '=', parent.id), ('kind', '=', 'rate_plan')]"/>
+                                    <field name="date_from"/>
+                                    <field name="date_to"/>
+                                    <field name="rate"/>
+                                    <field name="min_stay"/>
+                                    <field name="stop_sell"/>
+                                    <field name="closed_to_arrival"/>
+                                    <field name="closed_to_departure"/>
+                                    <field name="max_stay"/>
+                                    <field name="push_availability"/>
+                                    <field name="availability"/>
+                                    <field name="state" widget="badge"
+                                           decoration-success="state == 'done'"
+                                           decoration-danger="state == 'error'"/>
+                                    <field name="last_task_ids" optional="show"/>
+                                    <button name="action_push_now" type="object" string="Pousser" icon="fa-upload"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Agenda" name="agenda">
+                            <p class="text-muted">
+                                Disponibilités (Airbnb / blocages) et créneaux ops
+                                (daypass, repas, check-in) liés aux réservations.
+                            </p>
+                            <separator string="Périodes libres"/>
+                            <field name="disponibilite_ids" readonly="1">
+                                <list>
+                                    <field name="date_debut"/>
+                                    <field name="date_fin"/>
+                                </list>
+                            </field>
+                            <separator string="Créneaux ops"/>
+                            <field name="ops_slot_ids">
+                                <list>
+                                    <field name="date_start"/>
+                                    <field name="slot_type"/>
+                                    <field name="name"/>
+                                    <field name="reservation_id"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Route gourmande" name="route_gourmande">
+                            <group>
+                                <group>
+                                    <field name="rg_cuisine"/>
+                                    <field name="rg_alcool"/>
+                                    <field name="rg_ambiance"/>
+                                    <field name="rg_vue"/>
+                                    <field name="rg_fourchette_prix"/>
+                                </group>
+                                <group>
+                                    <field name="rg_cadre" placeholder="ex. rooftop,terrasse_exterieure"/>
+                                    <field name="rg_animations" placeholder="ex. musique_live,lounge"/>
+                                    <field name="rg_capacite_couverts"/>
+                                    <field name="rg_capacite_groupe_max"/>
+                                    <field name="rg_privatisation_possible"/>
+                                </group>
+                            </group>
+                            <p class="text-muted">
+                                Cadre : rooftop, terrasse_exterieure, jardin, salle_interieure, salle_privee.
+                                Animations : musique_live, dj, danse_orientale, lounge, aucune.
+                                Codes séparés par des virgules.
+                            </p>
+                        </page>
+                        <page string="Route bien-être" name="route_bien_etre">
+                            <group>
+                                <group>
+                                    <field name="be_type_lieu"/>
+                                    <field name="be_mixte"/>
+                                    <field name="be_capacite_simultanee"/>
+                                    <field name="be_services" placeholder="ex. massage,hammam_traditionnel"/>
+                                    <field name="detente_partner_id"
+                                           string="Prestataire (villa/riad)"
+                                           invisible="be_type_lieu != 'villa_evenementiel'"/>
+                                    <field name="be_prestataire_libre"
+                                           invisible="be_type_lieu != 'hammam_specialise'"/>
+                                </group>
+                                <group string="Hammam spécialisé"
+                                       invisible="be_type_lieu != 'hammam_specialise'">
+                                    <field name="be_cadre" placeholder="ex. spa_interieur,terrasse"/>
+                                    <field name="be_ambiance"/>
+                                    <field name="be_duree_moyenne" placeholder="ex. 90 min"/>
+                                    <field name="be_fourchette_prix"/>
+                                </group>
+                            </group>
+                            <p class="text-muted">
+                                Services : massage, hammam_traditionnel, soin_visage, henna, brushing, soins_beaute.
+                                Cadre hammam : spa_interieur, jardin, terrasse.
+                                Villas/riads : prestataire = Zen Traitements (partenaire détente).
+                            </p>
+                        </page>
+                        <page string="Vidéos (carte)" name="videos">
+                            <field name="fiche_video_ids">
+                                <list editable="bottom">
+                                    <field name="ordre_affichage" widget="handle"/>
+                                    <field name="titre"/>
+                                    <field name="source"/>
+                                    <field name="uploaded_by"/>
+                                    <field name="statut"/>
+                                    <field name="video_url"/>
+                                    <field name="view_count_7d"/>
+                                    <field name="date_upload"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Galerie photos" name="photos">
+                            <field name="draft_photo_count" invisible="1"/>
+                            <p class="text-muted" invisible="draft_photo_count == 0">
+                                <field name="draft_photo_count"/> photo(s) WhatsApp / brute(s) encore
+                                attachée(s). Après retouche, utilisez le bouton
+                                « Supprimer photos brutes (après retouche) » pour ne garder
+                                que le set public.
+                            </p>
+                            <field name="photo_ids" mode="kanban" nolabel="1">
+                                <kanban>
+                                    <field name="id"/>
+                                    <field name="sequence"/>
+                                    <field name="legende"/>
+                                    <field name="image"/>
+                                    <templates>
+                                        <t t-name="card">
+                                            <div class="oe_kanban_global_click">
+                                                <field name="image" widget="image"
+                                                       class="oe_avatar"
+                                                       options="{'size': [160, 160]}"/>
+                                                <div><field name="legende"/></div>
+                                            </div>
+                                        </t>
+                                    </templates>
+                                </kanban>
+                                <form string="Photo">
+                                    <group>
+                                        <field name="image" widget="image"/>
+                                        <field name="sequence"/>
+                                        <field name="room_id"/>
+                                        <field name="category_ids" widget="many2many_tags"
+                                               options="{'no_create_edit': True}"/>
+                                        <field name="legende"/>
+                                    </group>
+                                </form>
+                                <list>
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="image" widget="image" options="{'size': [64, 64]}"/>
+                                    <field name="room_id"/>
+                                    <field name="category_ids" widget="many2many_tags"/>
+                                    <field name="legende"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Agenda / Airbnb (sync)" name="airbnb">
+                            <p class="text-muted">
+                                Airbnb n’est pas proposé au public. Si le partenaire est inscrit
+                                et fournit un iCal export, on synchronise les disponibilités ici.
+                                Sinon : créer l’agenda manuellement (disponibilités / blocages).
+                            </p>
+                            <group>
+                                <group>
+                                    <field name="airbnb_listing_url" widget="url"
+                                           string="Lien annonce Airbnb (interne)"/>
+                                    <field name="airbnb_ical_export_url" widget="url"
+                                           placeholder="https://www.airbnb.fr/calendar/ical/....ics"/>
+                                    <field name="horizon_dispo_jours"/>
+                                    <field name="airbnb_ical_last_sync"/>
+                                </group>
+                            </group>
+                            <separator string="Périodes libres (recalculées après sync iCal ou saisie manuelle)"/>
+                            <field name="disponibilite_ids" readonly="1">
+                                <list>
+                                    <field name="date_debut"/>
+                                    <field name="date_fin"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Équipements" name="amenities">
+                            <field name="amenities" nolabel="1"/>
+                        </page>
+                        <page string="Blocages (audit)" name="blocages" groups="coins_marocain.group_coins_manager">
+                            <field name="blocage_ids" readonly="1">
+                                <list>
+                                    <field name="date_debut"/>
+                                    <field name="date_fin"/>
+                                    <field name="source"/>
+                                    <field name="statut"/>
+                                    <field name="uid_externe"/>
+                                    <field name="summary"/>
+                                    <field name="reservation_id"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_coins_property_search" model="ir.ui.view">
+        <field name="name">coins.property.search</field>
+        <field name="model">coins.property</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="district"/>
+                <field name="city"/>
+                <field name="owner_id"/>
+                <filter name="active_props" string="Actifs"
+                        domain="[('state', '=', 'active')]"/>
+                <filter name="negotiating" string="En négociation"
+                        domain="[('state', '=', 'negotiating')]"/>
+                <filter name="pool_hammam" string="Piscine / Hammam"
+                        domain="[('property_type', '=', 'pool_hammam')]"/>
+                <filter name="with_airbnb" string="Avec iCal Airbnb"
+                        domain="[('airbnb_ical_export_url', '!=', False)]"/>
+                <group>
+                    <filter name="group_type" string="Type"
+                            context="{'group_by': 'property_type'}"/>
+                    <filter name="group_city" string="Ville"
+                            context="{'group_by': 'city'}"/>
+                    <filter name="group_state" string="Statut"
+                            context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_coins_property" model="ir.actions.act_window">
+        <field name="name">Fiches propriétés</field>
+        <field name="res_model">coins.property</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Ajoutez votre premier bien</p>
+            <p>Riads, appartements, villas — fiche éditable + sync disponibilités Airbnb (lecture seule).</p>
+        </field>
+    </record>
+
+    <!-- ========== Disponibilités ========== -->
+    <record id="view_coins_property_disponibilite_list" model="ir.ui.view">
+        <field name="name">coins.property.disponibilite.list</field>
+        <field name="model">coins.property.disponibilite</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="property_id"/>
+                <field name="date_debut"/>
+                <field name="date_fin"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_coins_property_disponibilite_form" model="ir.ui.view">
+        <field name="name">coins.property.disponibilite.form</field>
+        <field name="model">coins.property.disponibilite</field>
+        <field name="arch" type="xml">
+            <form string="Disponibilité">
+                <sheet>
+                    <group>
+                        <field name="property_id"/>
+                        <field name="date_debut"/>
+                        <field name="date_fin"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_coins_property_disponibilite_calendar" model="ir.ui.view">
+        <field name="name">coins.property.disponibilite.calendar</field>
+        <field name="model">coins.property.disponibilite</field>
+        <field name="arch" type="xml">
+            <calendar string="Disponibilités"
+                      date_start="date_debut"
+                      date_stop="date_fin"
+                      color="property_id"
+                      mode="month"
+                      quick_create="0">
+                <field name="property_id"/>
+                <field name="date_debut"/>
+                <field name="date_fin"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="view_coins_property_disponibilite_search" model="ir.ui.view">
+        <field name="name">coins.property.disponibilite.search</field>
+        <field name="model">coins.property.disponibilite</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="property_id"/>
+                <field name="date_debut"/>
+                <field name="date_fin"/>
+                <group>
+                    <filter name="group_property" string="Propriété"
+                            context="{'group_by': 'property_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_coins_property_disponibilite" model="ir.actions.act_window">
+        <field name="name">Disponibilités</field>
+        <field name="res_model">coins.property.disponibilite</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="search_view_id" ref="view_coins_property_disponibilite_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucune période libre pour l'instant</p>
+            <p>Les disponibilités sont recalculées après chaque import Airbnb ou modification de blocage.</p>
+        </field>
+    </record>
+
+    <!-- ========== Blocages (lecture seule / audit) ========== -->
+    <record id="view_coins_property_blocage_list" model="ir.ui.view">
+        <field name="name">coins.property.blocage.list</field>
+        <field name="model">coins.property.blocage</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0" delete="0">
+                <field name="property_id"/>
+                <field name="date_debut"/>
+                <field name="date_fin"/>
+                <field name="source"/>
+                <field name="statut"/>
+                <field name="uid_externe"/>
+                <field name="summary"/>
+                <field name="reservation_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_coins_property_blocage" model="ir.actions.act_window">
+        <field name="name">Blocages (audit)</field>
+        <field name="res_model">coins.property.blocage</field>
+        <field name="view_mode">list</field>
+        <field name="help" type="html">
+            <p>Table technique — source du calcul des disponibilités (pas destinée à l'affichage site).</p>
+        </field>
+    </record>
+
+    <!-- ========== Agenda ops ========== -->
+    <record id="view_coins_property_ops_slot_list" model="ir.ui.view">
+        <field name="name">coins.property.ops.slot.list</field>
+        <field name="model">coins.property.ops.slot</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="property_id"/>
+                <field name="slot_type"/>
+                <field name="name"/>
+                <field name="reservation_id"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_coins_property_ops_slot_form" model="ir.ui.view">
+        <field name="name">coins.property.ops.slot.form</field>
+        <field name="model">coins.property.ops.slot</field>
+        <field name="arch" type="xml">
+            <form string="Créneau ops">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="property_id"/>
+                            <field name="reservation_id"/>
+                            <field name="slot_type"/>
+                            <field name="name"/>
+                            <field name="state"/>
+                        </group>
+                        <group>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                        </group>
+                    </group>
+                    <field name="notes"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_coins_property_ops_slot_calendar" model="ir.ui.view">
+        <field name="name">coins.property.ops.slot.calendar</field>
+        <field name="model">coins.property.ops.slot</field>
+        <field name="arch" type="xml">
+            <calendar string="Agenda ops" date_start="date_start" date_stop="date_end"
+                      color="slot_type" mode="month">
+                <field name="name"/>
+                <field name="property_id"/>
+                <field name="slot_type"/>
+                <field name="state"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="action_coins_property_ops_slot" model="ir.actions.act_window">
+        <field name="name">Agenda ops</field>
+        <field name="res_model">coins.property.ops.slot</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun créneau ops</p>
+            <p>Les daypass, repas et check-in sont créés à la confirmation de réservation.</p>
+        </field>
+    </record>
+</odoo>

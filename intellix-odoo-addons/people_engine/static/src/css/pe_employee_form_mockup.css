@@ -1,0 +1,576 @@
+/* RH Fiche Employé — maquette mockup (scoped, pas de @import Google Fonts) */
+
+.o_pe_employee_mockup_form .o_form_sheet_bg {
+    background: #0a0a12 !important;
+    padding: 0 !important;
+}
+
+.o_pe_employee_mockup_form .o_content {
+    background: #0a0a12 !important;
+}
+
+.o_pe_employee_mockup_form header.o_form_statusbar {
+    background: #12102a !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 6px 12px !important;
+}
+
+.o_pe_employee_mockup_form header.o_form_statusbar .btn {
+    font-size: 11px !important;
+    border-radius: 7px !important;
+}
+
+/* Split layout via form renderer grid (sheet + chatter siblings) */
+.o_pe_employee_mockup_form .o_form_renderer {
+    display: grid !important;
+    grid-template-columns: 1fr 340px;
+    grid-template-rows: auto auto auto 1fr;
+    align-items: stretch;
+    background: #0a0a12;
+    min-height: calc(100vh - 120px);
+}
+
+.o_pe_employee_mockup_form .o_form_renderer > header {
+    grid-column: 1 / -1;
+}
+
+.o_pe_employee_mockup_form .o_form_renderer > .pe-emp-action-bar,
+.o_pe_employee_mockup_form .o_form_renderer > .pe-emp-hero,
+.o_pe_employee_mockup_form .o_form_renderer > .o_form_sheet_bg,
+.o_pe_employee_mockup_form .o_form_renderer > .pe-emp-content-sheet {
+    grid-column: 1;
+}
+
+.o_pe_employee_mockup_form .o_form_renderer > .pe-emp-ai-insight,
+.o_pe_employee_mockup_form .o_form_renderer > .pe-emp-chatter,
+.o_pe_employee_mockup_form .o_form_renderer > .o-mail-Form-chatter {
+    grid-column: 2;
+}
+
+.o_pe_employee_mockup_form .o_form_renderer > .pe-emp-ai-insight {
+    grid-row: 2;
+    align-self: start;
+}
+
+.o_pe_employee_mockup_form .o_form_renderer > .pe-emp-chatter,
+.o_pe_employee_mockup_form .o_form_renderer > .o-mail-Form-chatter {
+    grid-row: 2 / -1;
+    border-left: 1px solid rgba(255, 255, 255, 0.07);
+    background: #0e0c22;
+    min-height: 0;
+    overflow: auto;
+}
+
+/* Legacy split class (unused if grid on renderer works) */
+.o_pe_employee_mockup_form .o_pe_emp_form_layout {
+    display: contents;
+}
+
+.o_pe_employee_mockup_form .o_pe_emp_form_main {
+    display: contents;
+}
+
+/* Action bar */
+.o_pe_employee_mockup_form .pe-emp-action-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 18px;
+    background: #0e0c22;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    flex-wrap: wrap;
+}
+
+.o_pe_employee_mockup_form .pe-emp-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #9898b8;
+}
+
+.o_pe_employee_mockup_form .pe-emp-breadcrumb-root {
+    color: #5a5a7a;
+}
+
+.o_pe_employee_mockup_form .pe-emp-breadcrumb-name,
+.o_pe_employee_mockup_form .pe-emp-breadcrumb-name span {
+    font-weight: 600;
+    color: #f0f0fa !important;
+}
+
+.o_pe_employee_mockup_form .pe-emp-action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.o_pe_employee_mockup_form .pe-emp-btn-purple {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6) !important;
+    border: none !important;
+    color: #fff !important;
+    font-weight: 600 !important;
+}
+
+.o_pe_employee_mockup_form .pe-emp-btn-violet {
+    background: rgba(139, 92, 246, 0.2) !important;
+    border: 1px solid rgba(139, 92, 246, 0.35) !important;
+    color: #c4b5fd !important;
+}
+
+.o_pe_employee_mockup_form .pe-emp-btn-ghost {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #9898b8 !important;
+}
+
+.o_pe_employee_mockup_form .pe-emp-btn-outline {
+    background: transparent !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    color: #9898b8 !important;
+}
+
+/* Hero */
+.o_pe_employee_mockup_form .pe-emp-hero {
+    background: linear-gradient(135deg, #12102a 0%, #0e0c22 50%, #0a0a18 100%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    padding: 20px 22px 0;
+}
+
+.o_pe_employee_mockup_form .pe-emp-hero-inner {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    margin-bottom: 16px;
+}
+
+.o_pe_employee_mockup_form .pe-emp-avatar {
+    position: relative;
+    width: 64px;
+    height: 64px;
+    flex-shrink: 0;
+}
+
+.o_pe_employee_mockup_form .pe-emp-avatar-initials {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.o_pe_employee_mockup_form .pe-emp-avatar-badge {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #10b981;
+    border: 2px solid #12102a;
+    font-size: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
+
+.o_pe_employee_mockup_form .pe-emp-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.o_pe_employee_mockup_form .pe-emp-name,
+.o_pe_employee_mockup_form .pe-emp-name span {
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    color: #f0f0fa !important;
+    margin: 0 0 8px !important;
+    letter-spacing: -0.02em;
+}
+
+.o_pe_employee_mockup_form .pe-emp-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 18px;
+    margin-bottom: 10px;
+}
+
+.o_pe_employee_mockup_form .pe-emp-meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #9898b8;
+}
+
+.o_pe_employee_mockup_form .pe-emp-meta-item i {
+    color: #5a5a7a;
+    width: 14px;
+    text-align: center;
+}
+
+.o_pe_employee_mockup_form .pe-emp-meta-item span,
+.o_pe_employee_mockup_form .pe-emp-meta-item a {
+    color: #9898b8 !important;
+}
+
+.o_pe_employee_mockup_form .pe-emp-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.o_pe_employee_mockup_form .pe-emp-tag {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 100px;
+}
+
+.o_pe_employee_mockup_form .pe-emp-tag span,
+.o_pe_employee_mockup_form .pe-emp-tag a {
+    color: inherit !important;
+    font-size: inherit !important;
+}
+
+.o_pe_employee_mockup_form .pe-emp-tag-dept {
+    background: rgba(99, 102, 241, 0.12);
+    color: #818cf8;
+    border: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+.o_pe_employee_mockup_form .pe-emp-tag-role {
+    background: rgba(6, 182, 212, 0.1);
+    color: #22d3ee;
+    border: 1px solid rgba(6, 182, 212, 0.2);
+}
+
+.o_pe_employee_mockup_form .pe-emp-tag-surv {
+    background: rgba(239, 68, 68, 0.1);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+.o_pe_employee_mockup_form .pe-emp-tag-stage {
+    background: rgba(99, 102, 241, 0.1);
+    color: #818cf8;
+    border: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+/* Score ring */
+.o_pe_employee_mockup_form .pe-emp-score-ring {
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.o_pe_employee_mockup_form .pe-emp-score-ring-html .pe-emp-score-ring-wrap {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 6px;
+}
+
+.o_pe_employee_mockup_form .pe-emp-score-ring-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    line-height: 1;
+}
+
+.o_pe_employee_mockup_form .pe-emp-score-ring-val {
+    font-size: 18px;
+    font-weight: 700;
+    color: #818cf8;
+}
+
+.o_pe_employee_mockup_form .pe-emp-score-ring-max {
+    font-size: 9px;
+    color: #5a5a7a;
+}
+
+.o_pe_employee_mockup_form .pe-emp-score-ring-label {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #5a5a7a;
+}
+
+.o_pe_employee_mockup_form .pe-emp-score-trend,
+.o_pe_employee_mockup_form .pe-emp-score-trend span {
+    font-size: 10px !important;
+    color: #ef4444 !important;
+    margin-top: 2px;
+}
+
+/* Score strip */
+.o_pe_employee_mockup_form .pe-emp-score-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: rgba(255, 255, 255, 0.06);
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    margin: 0 -22px;
+}
+
+.o_pe_employee_mockup_form .pe-emp-score-strip-item {
+    background: rgba(255, 255, 255, 0.02);
+    padding: 12px 16px;
+}
+
+.o_pe_employee_mockup_form .pe-emp-score-strip-label {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #5a5a7a;
+    margin-bottom: 4px;
+}
+
+.o_pe_employee_mockup_form .pe-emp-score-strip-val,
+.o_pe_employee_mockup_form .pe-emp-score-strip-val span {
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    line-height: 1;
+    margin-bottom: 6px;
+}
+
+.o_pe_employee_mockup_form .pe-emp-color-indigo span { color: #818cf8 !important; }
+.o_pe_employee_mockup_form .pe-emp-color-cyan span { color: #22d3ee !important; }
+.o_pe_employee_mockup_form .pe-emp-color-green span { color: #34d399 !important; }
+.o_pe_employee_mockup_form .pe-emp-color-amber,
+.o_pe_employee_mockup_form .pe-emp-color-amber span { color: #fbbf24 !important; }
+
+.o_pe_employee_mockup_form .pe-emp-score-progress .o_progressbar {
+    height: 4px !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+    border-radius: 2px !important;
+}
+
+.o_pe_employee_mockup_form .pe-emp-score-progress .o_progress {
+    border-radius: 2px !important;
+}
+
+.o_pe_employee_mockup_form .pe-emp-score-strip-item:nth-child(1) .o_progress {
+    background: #6366f1 !important;
+}
+
+.o_pe_employee_mockup_form .pe-emp-score-strip-item:nth-child(2) .o_progress {
+    background: #06b6d4 !important;
+}
+
+.o_pe_employee_mockup_form .pe-emp-score-strip-item:nth-child(3) .o_progress {
+    background: #10b981 !important;
+}
+
+.o_pe_employee_mockup_form .pe-emp-score-strip-item:nth-child(4) .o_progress {
+    background: #f59e0b !important;
+}
+
+.o_pe_employee_mockup_form .pe-emp-score-progress .o_progressbar_value {
+    display: none !important;
+}
+
+/* Content sheet — hide legacy header blocks moved to hero */
+.o_pe_employee_mockup_form .pe-emp-content-sheet {
+    background: #0a0a12 !important;
+    border: none !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 0 18px 24px !important;
+    max-width: none !important;
+}
+
+.o_pe_employee_mockup_form .pe-emp-content-sheet .oe_button_box,
+.o_pe_employee_mockup_form .pe-emp-content-sheet .oe_title,
+.o_pe_employee_mockup_form .pe-emp-content-sheet > group:first-of-type {
+    display: none !important;
+}
+
+/* Tabs */
+.o_pe_employee_mockup_form .pe-emp-tabs .nav-tabs {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    background: #0e0c22;
+    padding: 0 8px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+}
+
+.o_pe_employee_mockup_form .pe-emp-tabs .nav-link {
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    color: #9898b8 !important;
+    border: none !important;
+    border-bottom: 2px solid transparent !important;
+    border-radius: 0 !important;
+    padding: 12px 14px !important;
+    white-space: nowrap;
+}
+
+.o_pe_employee_mockup_form .pe-emp-tabs .nav-link.active {
+    color: #f0f0fa !important;
+    background: transparent !important;
+    border-bottom-color: #8b5cf6 !important;
+}
+
+.o_pe_employee_mockup_form .pe-emp-tabs .tab-content {
+    background: #0a0a12;
+    padding-top: 16px;
+}
+
+/* Section cards inside tabs */
+.o_pe_employee_mockup_form .pe-emp-content-sheet .o_group {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+}
+
+.o_pe_employee_mockup_form .pe-emp-content-sheet .o_horizontal_separator {
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    color: #f0f0fa !important;
+    text-transform: none !important;
+    border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+    margin-bottom: 12px !important;
+}
+
+/* Right chatter column */
+.o_pe_employee_mockup_form .pe-emp-chatter-col {
+    display: none;
+}
+
+.o_pe_employee_mockup_form .pe-emp-ai-insight {
+    background: rgba(99, 102, 241, 0.08);
+    border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+    padding: 14px 16px;
+    flex-shrink: 0;
+}
+
+.o_pe_employee_mockup_form .pe-emp-ai-insight-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.o_pe_employee_mockup_form .pe-emp-ai-insight-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+}
+
+.o_pe_employee_mockup_form .pe-emp-ai-insight-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: #818cf8;
+}
+
+.o_pe_employee_mockup_form .pe-emp-ai-insight-text,
+.o_pe_employee_mockup_form .pe-emp-ai-insight-text span {
+    font-size: 11px !important;
+    color: #9898b8 !important;
+    line-height: 1.6 !important;
+    white-space: pre-wrap;
+}
+
+.o_pe_employee_mockup_form .pe-emp-chatter {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    border-top: none !important;
+    background: #0e0c22 !important;
+}
+
+.o_pe_employee_mockup_form .pe-emp-chatter .o-mail-Chatter,
+.o_pe_employee_mockup_form .pe-emp-chatter .o_Chatter {
+    background: #0e0c22 !important;
+}
+
+.o_pe_employee_mockup_form .pe-emp-chatter .o-mail-Chatter-top,
+.o_pe_employee_mockup_form .pe-emp-chatter .o_Chatter_topbar {
+    background: #0e0c22 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07) !important;
+}
+
+.o_pe_employee_mockup_form .pe-emp-chatter .nav-link {
+    color: #9898b8 !important;
+    font-size: 11px !important;
+}
+
+.o_pe_employee_mockup_form .pe-emp-chatter .nav-link.active {
+    color: #a78bfa !important;
+    border-bottom-color: #8b5cf6 !important;
+}
+
+/* Dark theme text overrides for form fields in mockup */
+.o_pe_employee_mockup_form .pe-emp-content-sheet label,
+.o_pe_employee_mockup_form .pe-emp-content-sheet .o_form_label,
+.o_pe_employee_mockup_form .pe-emp-content-sheet .o_field_widget,
+.o_pe_employee_mockup_form .pe-emp-content-sheet .o_field_widget span,
+.o_pe_employee_mockup_form .pe-emp-content-sheet .o_list_renderer {
+    color: #f0f0fa !important;
+}
+
+.o_pe_employee_mockup_form .pe-emp-content-sheet .text-muted {
+    color: #9898b8 !important;
+}
+
+.o_pe_employee_mockup_form .pe-emp-content-sheet .o_field_widget input,
+.o_pe_employee_mockup_form .pe-emp-content-sheet .o_field_widget select,
+.o_pe_employee_mockup_form .pe-emp-content-sheet .o_field_widget textarea {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    color: #f0f0fa !important;
+}
+
+@media (max-width: 1200px) {
+    .o_pe_employee_mockup_form .o_form_renderer {
+        grid-template-columns: 1fr !important;
+    }
+
+    .o_pe_employee_mockup_form .o_form_renderer > .pe-emp-ai-insight,
+    .o_pe_employee_mockup_form .o_form_renderer > .pe-emp-chatter,
+    .o_pe_employee_mockup_form .o_form_renderer > .o-mail-Form-chatter {
+        grid-column: 1;
+        grid-row: auto;
+        max-height: 420px;
+    }
+
+    .o_pe_employee_mockup_form .pe-emp-score-strip {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .o_pe_employee_mockup_form .pe-emp-hero-inner {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .o_pe_employee_mockup_form .pe-emp-meta,
+    .o_pe_employee_mockup_form .pe-emp-tags {
+        justify-content: center;
+    }
+
+    .o_pe_employee_mockup_form .pe-emp-score-strip {
+        grid-template-columns: 1fr;
+    }
+}

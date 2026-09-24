@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Dave Pichette Immo est aujourd'hui le seul utilisateur de son organisation :
+         il devient gestionnaire par défaut lors de l'introduction du rôle. -->
+    <function model="res.users" name="write">
+        <function model="res.users" name="search">
+            <value eval="[('login', '=', 'dave.pichette@remax-quebec.com')]"/>
+        </function>
+        <value eval="{'is_portal_manager': True}"/>
+    </function>
+</odoo>

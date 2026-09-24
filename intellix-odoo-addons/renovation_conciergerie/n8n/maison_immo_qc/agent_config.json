@@ -1,0 +1,38 @@
+{
+  "version": "1.0.0",
+  "agent_id": "sophie-maison-immo-qc-2026",
+  "agent_name": "Sophie",
+  "active": true,
+  "language": "fr-CA",
+  "stack": "n8n+deepgram+claude+elevenlabs",
+  "pipeline": "immobilier",
+  "brand": "MaisonRecherchee.com",
+  "timezone": "America/Toronto",
+  "voice": {
+    "provider": "elevenlabs",
+    "voice_id": "XB0fDUnXU5powFXDhCwa",
+    "model": "eleven_multilingual_v2",
+    "settings": {
+      "stability": 0.55,
+      "similarity_boost": 0.82,
+      "style": 0.35
+    }
+  },
+  "stt": {
+    "provider": "deepgram",
+    "model": "nova-2",
+    "language": "fr-CA",
+    "endpointing": 300,
+    "utterance_end_ms": 700
+  },
+  "telephony": {
+    "provider": "vicidial",
+    "vicidial_campaign": "MR_IMMO_QC",
+    "vicidial_list": "MR_IMMO_QC"
+  },
+  "webhooks": {
+    "events": "${N8N_BASE_URL}/webhook/maison-immo-qc/event",
+    "conversation": "${N8N_BASE_URL}/webhook/maison-immo-qc/conversation",
+    "call_ended": "${ODOO_URL}/doorway/api/maison-immo-qc/call-ended"
+  }
+}

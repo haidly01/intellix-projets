@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="doorway_site_builder.App" owl="1">
+        <div class="o_action o_intellix_client_action dsb-builder">
+
+            <t t-if="state.loading">
+                <div class="dsb-loading">
+                    <i class="fa fa-spinner fa-spin"/>
+                    <span>Chargement de l'assistant…</span>
+                </div>
+            </t>
+
+            <t t-else="">
+                <!-- ============ RAIL D'ICÔNES — extrême gauche ============ -->
+                <nav class="dsb-rail">
+                    <div class="dsb-rail__brand" title="Site Builder IA">
+                        <i class="fa fa-magic"/>
+                    </div>
+                    <div class="dsb-rail__nav">
+                        <button type="button"
+                                t-att-class="'dsb-rail__btn' + (state.activeTab === 'preview' ? ' dsb-rail__btn--active' : '')"
+                                t-on-click="() => this.setTab('preview')" title="Aperçu">
+                            <i class="fa fa-window-maximize"/>
+                        </button>
+                        <button type="button"
+                                t-att-class="'dsb-rail__btn' + (state.activeTab === 'brief' ? ' dsb-rail__btn--active' : '')"
+                                t-on-click="() => this.setTab('brief')" title="Brief">
+                            <i class="fa fa-sliders"/>
+                        </button>
+                        <button type="button"
+                                t-att-class="'dsb-rail__btn' + (state.activeTab === 'pages' ? ' dsb-rail__btn--active' : '')"
+                                t-on-click="() => this.setTab('pages')" title="Pages">
+                            <i class="fa fa-th-large"/>
+                        </button>
+                        <button type="button" class="dsb-rail__btn"
+                                t-on-click="() => this.openWebsite()" title="Voir le site en ligne">
+                            <i class="fa fa-globe"/>
+                        </button>
+                        <button type="button" class="dsb-rail__btn"
+                                t-on-click="() => this.newSession()" title="Nouveau projet">
+                            <i class="fa fa-plus"/>
+                        </button>
+                    </div>
+                    <div class="dsb-rail__avatar" title="Doorway"><i class="fa fa-user"/></div>
+                </nav>
+
+                <!-- ============ COLONNE PRINCIPALE (top bar + centre) ============ -->
+                <div class="dsb-main">
+
+                    <!-- ==== TOP BAR ==== -->
+                    <header class="dsb-top">
+                        <div class="dsb-tabs">
+                            <button type="button"
+                                    t-att-class="'dsb-tab' + (state.activeTab === 'preview' ? ' dsb-tab--active' : '')"
+                                    t-on-click="() => this.setTab('preview')">Aperçu</button>
+                            <button type="button"
+                                    t-att-class="'dsb-tab' + (state.activeTab === 'brief' ? ' dsb-tab--active' : '')"
+                                    t-on-click="() => this.setTab('brief')">Brief</button>
+                            <button type="button"
+                                    t-att-class="'dsb-tab' + (state.activeTab === 'pages' ? ' dsb-tab--active' : '')"
+                                    t-on-click="() => this.setTab('pages')">Pages</button>
+                        </div>
+
+                        <div class="dsb-top__actions">
+                            <span class="dsb-credit-chip" title="Solde de crédits">
+                                <i class="fa fa-bolt"/>
+                                <span t-esc="state.data.credit_balance"/>
+                            </span>
+                            <button type="button" class="dsb-iconbtn"
+                                    t-att-disabled="!hasSite"
+                                    t-on-click="() => this.openWebsite()" title="Prévisualiser le site (gratuit)">
+                                <i class="fa fa-eye"/>
+                            </button>
+                            <button type="button" class="dsb-btn dsb-btn--primary"
+                                    t-att-disabled="state.publishing or !hasSite"
+                                    t-on-click="() => this.publish()" title="Publier le site">
+                                <i t-att-class="state.publishing ? 'fa fa-spinner fa-spin' : 'fa fa-rocket'"/>
+                                <span t-esc="state.publishing ? 'Publication…' : publishLabel"/>
+                            </button>
+                            <span class="dsb-top__user" title="Doorway"><i class="fa fa-user"/></span>
+                        </div>
+                    </header>
+
+                    <!-- ==== CANVAS CENTRAL ==== -->
+                    <section class="dsb-canvas">
+
+                        <!-- ===== Onglet APERÇU ===== -->
+                        <t t-if="state.activeTab === 'preview'">
+                            <div class="dsb-stage">
+                                <div class="dsb-preview">
+                                    <div class="dsb-preview__bar">
+                                        <span class="dsb-dot"/><span class="dsb-dot"/><span class="dsb-dot"/>
+                                        <span class="dsb-preview__url" t-esc="state.data.name || 'Mon site'"/>
+                                    </div>
+                                    <t t-if="previewUrl">
+                                        <iframe class="dsb-preview__frame" t-att-src="previewUrl" title="Aperçu du site"/>
+                                    </t>
+                                    <t t-else="">
+                                        <!-- Maquette décorative en attendant la génération -->
+                                        <div class="dsb-mock">
+                                            <div class="dsb-mock__hero">
+                                                <span class="dsb-mock__badge"/>
+                                                <span class="dsb-mock__title"/>
+                                                <span class="dsb-mock__line"/>
+                                                <span class="dsb-mock__btn"/>
+                                                <span class="dsb-mock__wave"/>
+                                            </div>
+                                            <div class="dsb-mock__blocks">
+                                                <span class="dsb-mock__block"/>
+                                                <span class="dsb-mock__block"/>
+                                                <span class="dsb-mock__block"/>
+                                            </div>
+                                            <div class="dsb-mock__hint">
+                                                <i class="fa fa-magic"/>
+                                                <span>Décrivez votre site ci-dessous, puis cliquez sur « Générer » pour voir l'aperçu en direct.</span>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                        </t>
+
+                        <!-- ===== Onglet BRIEF ===== -->
+                        <t t-if="state.activeTab === 'brief'">
+                            <div class="dsb-sheet">
+                                <h2 class="dsb-sheet__title"><i class="fa fa-sliders"/> Brief du site</h2>
+
+                                <label class="dsb-field">
+                                    <span class="dsb-field__label">Nom du projet</span>
+                                    <input type="text" class="dsb-input"
+                                           t-model="state.form.name" t-on-change="() => this.saveBrief()"/>
+                                </label>
+
+                                <div class="dsb-field__row">
+                                    <label class="dsb-field">
+                                        <span class="dsb-field__label">Secteur</span>
+                                        <input type="text" class="dsb-input"
+                                               t-model="state.form.sector" t-on-change="() => this.saveBrief()"
+                                               placeholder="ex : immobilier"/>
+                                    </label>
+                                    <label class="dsb-field">
+                                        <span class="dsb-field__label">Langue</span>
+                                        <input type="text" class="dsb-input"
+                                               t-model="state.form.language" t-on-change="() => this.saveBrief()"
+                                               placeholder="fr"/>
+                                    </label>
+                                </div>
+
+                                <label class="dsb-field">
+                                    <span class="dsb-field__label">Ton souhaité</span>
+                                    <input type="text" class="dsb-input"
+                                           t-model="state.form.tone" t-on-change="() => this.saveBrief()"
+                                           placeholder="ex : premium, chaleureux"/>
+                                </label>
+
+                                <label class="dsb-field">
+                                    <span class="dsb-field__label">Inspiration / références</span>
+                                    <textarea class="dsb-input dsb-input--area" rows="2"
+                                              t-model="state.form.inspiration" t-on-change="() => this.saveBrief()"/>
+                                </label>
+
+                                <label class="dsb-field">
+                                    <span class="dsb-field__label">Personas / cibles</span>
+                                    <textarea class="dsb-input dsb-input--area" rows="2"
+                                              t-model="state.form.personas" t-on-change="() => this.saveBrief()"/>
+                                </label>
+
+                                <label class="dsb-field">
+                                    <span class="dsb-field__label">Objectifs</span>
+                                    <textarea class="dsb-input dsb-input--area" rows="2"
+                                              t-model="state.form.objectives" t-on-change="() => this.saveBrief()"/>
+                                </label>
+
+                                <label class="dsb-field">
+                                    <span class="dsb-field__label">Pages souhaitées</span>
+                                    <input type="text" class="dsb-input"
+                                           t-model="state.form.pages_wanted" t-on-change="() => this.saveBrief()"
+                                           placeholder="Accueil, À propos, Services, Contact"/>
+                                </label>
+
+                                <label class="dsb-toggle">
+                                    <span>Définir comme page d'accueil du site</span>
+                                    <input type="checkbox" t-model="state.form.set_as_homepage" t-on-change="() => this.saveBrief()"/>
+                                    <span class="dsb-toggle__track"><span class="dsb-toggle__knob"/></span>
+                                </label>
+
+                                <p t-if="!state.data.claude_available" class="dsb-warn">
+                                    <i class="fa fa-exclamation-triangle"/> Clé API Claude non configurée.
+                                </p>
+                            </div>
+                        </t>
+
+                        <!-- ===== Onglet PAGES ===== -->
+                        <t t-if="state.activeTab === 'pages'">
+                            <div class="dsb-sheet">
+                                <h2 class="dsb-sheet__title"><i class="fa fa-th-large"/> Pages générées</h2>
+
+                                <t t-if="pages.length">
+                                    <ul class="dsb-pages">
+                                        <t t-foreach="pages" t-as="page" t-key="page.page_id">
+                                            <li class="dsb-pages__item">
+                                                <a href="#" t-on-click.prevent="() => this.openUrl(page.url)">
+                                                    <i class="fa fa-file-o"/>
+                                                    <span t-esc="page.title"/>
+                                                    <small t-if="page.is_home"> · accueil</small>
+                                                </a>
+                                                <i class="fa fa-external-link dsb-pages__ext"/>
+                                            </li>
+                                        </t>
+                                    </ul>
+                                </t>
+                                <t t-else="">
+                                    <p class="dsb-empty">
+                                        <i class="fa fa-files-o"/>
+                                        Aucune page générée pour l'instant. Décrivez votre site et lancez la génération.
+                                    </p>
+                                </t>
+
+                                <t t-if="Object.keys(palette).length">
+                                    <h3 class="dsb-sheet__subtitle">Palette suggérée</h3>
+                                    <div class="dsb-palette">
+                                        <t t-foreach="Object.entries(palette)" t-as="entry" t-key="entry[0]">
+                                            <span class="dsb-swatch" t-att-style="'background-color:' + entry[1]"
+                                                  t-att-title="entry[0] + ': ' + entry[1]"/>
+                                        </t>
+                                    </div>
+                                </t>
+                            </div>
+                        </t>
+
+                        <!-- ==== BARRE DE PROMPT (toujours visible) ==== -->
+                        <div class="dsb-prompt">
+                            <div class="dsb-prompt__bar">
+                                <i class="fa fa-magic dsb-prompt__icon"/>
+                                <textarea class="dsb-prompt__input" rows="1"
+                                          t-model="state.chatInput"
+                                          t-on-keydown="(ev) => this.onKeydown(ev)"
+                                          placeholder="Décrivez votre site, ou demandez un ajustement (« rends-le plus premium », « ajoute une page tarifs »)…"/>
+                                <button type="button" class="dsb-prompt__send"
+                                        t-on-click="() => this.sendMessage()" title="Envoyer">
+                                    <i class="fa fa-arrow-right"/>
+                                </button>
+                            </div>
+                            <div class="dsb-projects">
+                                <button type="button" class="dsb-projects__pill" t-on-click="() => this.toggleProjects()">
+                                    <i class="fa fa-folder-o"/>
+                                    <span t-esc="state.data.name || 'Projets'"/>
+                                    <i class="fa fa-caret-down"/>
+                                </button>
+                                <div t-if="state.projectsOpen" class="dsb-projects__menu">
+                                    <button type="button" class="dsb-projects__item" t-on-click="() => this.newSession()">
+                                        <i class="fa fa-plus"/> Nouveau projet
+                                    </button>
+                                    <button type="button" class="dsb-projects__item" t-on-click="() => this.setTab('brief')">
+                                        <i class="fa fa-sliders"/> Modifier le brief
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- ============ PANNEAU DE CHAT — droite ============ -->
+                <aside class="dsb-chat">
+                    <div class="dsb-chat__head">
+                        <i class="fa fa-comment-o"/>
+                        <span>Chat</span>
+                        <span class="dsb-chat__state" t-esc="state.data.state"/>
+                    </div>
+
+                    <div class="dsb-chat__thread">
+                        <t t-foreach="state.data.messages" t-as="msg" t-key="msg.id">
+                            <div t-att-class="'dsb-msg dsb-msg--' + msg.role">
+                                <span t-if="msg.role === 'assistant'" class="dsb-msg__avatar"><i class="fa fa-magic"/></span>
+                                <div class="dsb-msg__bubble" t-esc="msg.content"/>
+                            </div>
+                        </t>
+                        <div t-if="state.generating" class="dsb-msg dsb-msg--assistant">
+                            <span class="dsb-msg__avatar"><i class="fa fa-magic"/></span>
+                            <div class="dsb-msg__bubble"><i class="fa fa-spinner fa-spin"/> Léa réfléchit…</div>
+                        </div>
+                    </div>
+
+                    <div class="dsb-chat__suggest">
+                        <span class="dsb-chat__suggest-label">Suggestions</span>
+                        <div class="dsb-chips">
+                            <t t-foreach="suggestions" t-as="sug" t-key="sug">
+                                <button type="button" class="dsb-chip" t-on-click="() => this.useSuggestion(sug)" t-esc="sug"/>
+                            </t>
+                        </div>
+                    </div>
+
+                    <div class="dsb-chat__footer">
+                        <button type="button" class="dsb-btn dsb-btn--ghost"
+                                t-att-disabled="!hasSite"
+                                t-on-click="() => this.openWebsite()">
+                            <i class="fa fa-globe"/> Prévisualiser
+                        </button>
+                        <button type="button" class="dsb-btn dsb-btn--primary"
+                                t-att-disabled="state.generating or !state.data.claude_available"
+                                t-on-click="() => this.generate()">
+                            <i t-att-class="state.generating ? 'fa fa-spinner fa-spin' : 'fa fa-bolt'"/>
+                            <span t-esc="state.generating ? 'Génération…' : generateLabel"/>
+                        </button>
+                    </div>
+                </aside>
+            </t>
+        </div>
+    </t>
+
+</templates>

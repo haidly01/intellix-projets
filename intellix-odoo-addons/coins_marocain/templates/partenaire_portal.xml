@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="partenaire_portal_unknown" name="Lien partenaire inconnu">
+        <html lang="fr">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <title>Lien introuvable — Coins Marocain</title>
+                <link rel="preconnect" href="https://fonts.googleapis.com"/>
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
+                <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,500&amp;family=Playfair+Display:wght@600&amp;family=Jost:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+                <link rel="stylesheet" href="/coins_marocain/static/src/css/partenaire_portal.css"/>
+            </head>
+            <body>
+                <div class="cm-wrap">
+                    <div class="cm-hero">
+                        <p class="cm-kicker">Coins Marocain</p>
+                        <h1>Ce lien n’est plus valable</h1>
+                        <p>Demandez un nouveau lien à Zakaria — +212 6 60 15 91 77</p>
+                    </div>
+                </div>
+            </body>
+        </html>
+    </template>
+
+    <template id="partenaire_portal_page" name="Portail partenaire Coins">
+        <html lang="fr">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <title>Compléter ma fiche — <t t-out="prop.name"/> — Coins Marocain</title>
+                <link rel="preconnect" href="https://fonts.googleapis.com"/>
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
+                <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,500&amp;family=Playfair+Display:wght@600&amp;family=Jost:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+                <link rel="stylesheet" href="/coins_marocain/static/src/css/partenaire_portal.css"/>
+            </head>
+            <body>
+                <div class="cm-wrap">
+                    <header class="cm-hero">
+                        <p class="cm-kicker">Coins Marocain · espace partenaire</p>
+                        <h1><t t-out="prop.name"/></h1>
+                        <p>Complétez votre fiche. Rien n’est publié sans validation de l’équipe.</p>
+                        <t t-if="hebergement_ops_url">
+                            <p style="margin-top:12px">
+                                <a t-att-href="hebergement_ops_url" style="color:#fffdf8;text-decoration:underline">
+                                    Paramètres hébergement →
+                                </a>
+                            </p>
+                        </t>
+                        <t t-if="messages_url">
+                            <p style="margin-top:8px">
+                                <a t-att-href="messages_url" style="color:#fffdf8;text-decoration:underline">
+                                    Messages →
+                                </a>
+                                ·
+                                <a t-attf-href="/partenaire/{{ token }}/performance" style="color:#fffdf8;text-decoration:underline">
+                                    Performance
+                                </a>
+                                ·
+                                <a t-attf-href="/partenaire/{{ token }}/reservations" style="color:#fffdf8;text-decoration:underline">
+                                    Réservations
+                                </a>
+                                ·
+                                <a t-attf-href="/partenaire/{{ token }}/facturation" style="color:#fffdf8;text-decoration:underline">
+                                    Facturation
+                                </a>
+                            </p>
+                        </t>
+                    </header>
+
+                    <t t-if="submitted">
+                        <div class="cm-ok">
+                            Merci. Votre fiche est en attente de validation.
+                            Nous vous écrivons dès qu’elle est relue.
+                        </div>
+                    </t>
+                    <t t-if="error">
+                        <div class="cm-err"><t t-out="error"/></div>
+                    </t>
+
+                    <form class="cm-card" method="post" enctype="multipart/form-data"
+                          t-attf-action="/partenaire/{{ token }}" id="cm-partner-form">
+                        <input type="hidden" name="csrf_token" t-att-value="csrf_token"/>
+                        <h2>Catégories</h2>
+                        <p class="cm-note">Cochez tout ce qui s’applique — une seule fiche, un seul lien.</p>
+                        <div class="cm-cats">
+                            <label class="cm-cat">
+                                <input type="checkbox" name="onboarding_cat" value="restaurant"
+                                       t-att-checked="'restaurant' in kinds and 'checked' or None"/>
+                                Resto
+                            </label>
+                            <label class="cm-cat">
+                                <input type="checkbox" name="onboarding_cat" value="spa"
+                                       t-att-checked="'spa' in kinds and 'checked' or None"/>
+                                Spa / Bien-être
+                            </label>
+                            <label class="cm-cat">
+                                <input type="checkbox" name="onboarding_cat" value="hebergement"
+                                       t-att-checked="'hebergement' in kinds and 'checked' or None"/>
+                                Hébergement
+                            </label>
+                        </div>
+                        <h2>Votre établissement</h2>
+                        <label for="name">Nom</label>
+                        <input id="name" type="text" name="name" required="required"
+                               t-att-value="prop.name"/>
+                        <div class="cm-row">
+                            <div>
+                                <label for="street">Adresse</label>
+                                <input id="street" type="text" name="street"
+                                       t-att-value="prop.street"/>
+                            </div>
+                            <div>
+                                <label for="district">Quartier</label>
+                                <input id="district" type="text" name="district"
+                                       t-att-value="prop.district"/>
+                            </div>
+                        </div>
+                        <label for="city">Ville</label>
+                        <input id="city" type="text" name="city"
+                               t-att-value="prop.city or 'Marrakech'"/>
+
+                        <h2>Contact</h2>
+                        <div class="cm-row">
+                            <div>
+                                <label for="contact_name">Personne à contacter</label>
+                                <input id="contact_name" type="text" name="contact_name"
+                                       t-att-value="prop.onboarding_contact_name"/>
+                            </div>
+                            <div>
+                                <label for="phone">Téléphone / WhatsApp</label>
+                                <input id="phone" type="tel" name="phone"
+                                       t-att-value="prop.onboarding_phone"/>
+                            </div>
+                        </div>
+                        <label for="email">Email</label>
+                        <input id="email" type="email" name="email"
+                               t-att-value="prop.onboarding_email"/>
+
+                        <h2>Présentation</h2>
+                        <label for="description">Description</label>
+                        <textarea id="description" name="description"
+                                  t-out="prop.description"/>
+                        <label for="photos">Photos</label>
+                        <input id="photos" type="file" name="photos" accept="image/*" multiple="multiple"/>
+                        <label for="video_url">Vidéo (lien YouTube, Instagram ou fichier)</label>
+                        <input id="video_url" type="url" name="video_url" placeholder="https://…"/>
+
+                        <div id="cm-block-hebergement" class="cm-kind-block"
+                             t-att-hidden="None if show_hebergement else 'hidden'">
+                            <h2>Hébergement — chambres et suites</h2>
+                            <p class="cm-note">Chaque chambre devient une unité réservable distincte. Ajoutez-en autant que nécessaire.</p>
+                            <div id="cm-rooms">
+                                <t t-set="rooms" t-value="prop.room_ids.filtered('active')"/>
+                                <t t-if="not rooms">
+                                    <div class="cm-room" data-room-index="0">
+                                        <div class="cm-room-head">
+                                            <h3>Chambre 1</h3>
+                                            <button type="button" class="cm-room-remove" hidden="hidden">Supprimer</button>
+                                        </div>
+                                        <input type="hidden" name="room_id" value=""/>
+                                        <label>Nom de la chambre / suite</label>
+                                        <input type="text" name="room_name" placeholder="ex. Suite Anna Sweety"
+                                               t-att-value="prop.name"/>
+                                        <label>Description</label>
+                                        <textarea name="room_description"/>
+                                        <div class="cm-row">
+                                            <div>
+                                                <label>Capacité</label>
+                                                <input type="number" min="1" name="room_sleeps"
+                                                       t-att-value="prop.capacity or 2"/>
+                                            </div>
+                                            <div>
+                                                <label>Tarif / nuit</label>
+                                                <input type="text" name="room_price"
+                                                       t-att-value="prop.price_per_night or ''"/>
+                                            </div>
+                                        </div>
+                                        <label>Étage / emplacement</label>
+                                        <select name="room_emplacement">
+                                            <option value="etage">Étage</option>
+                                            <option value="rdc">RDC</option>
+                                        </select>
+                                        <label>Photos de cette chambre</label>
+                                        <input type="file" name="room_photos_0" accept="image/*" multiple="multiple"/>
+                                    </div>
+                                </t>
+                                <t t-foreach="rooms" t-as="room">
+                                    <div class="cm-room" t-att-data-room-index="room_index">
+                                        <div class="cm-room-head">
+                                            <h3>Chambre <t t-out="room_index + 1"/></h3>
+                                            <button type="button" class="cm-room-remove">Supprimer</button>
+                                        </div>
+                                        <input type="hidden" name="room_id" t-att-value="room.id"/>
+                                        <label>Nom de la chambre / suite</label>
+                                        <input type="text" name="room_name" t-att-value="room.name"/>
+                                        <label>Description</label>
+                                        <textarea name="room_description" t-out="room.description"/>
+                                        <div class="cm-row">
+                                            <div>
+                                                <label>Capacité</label>
+                                                <input type="number" min="1" name="room_sleeps"
+                                                       t-att-value="room.sleeps or 2"/>
+                                            </div>
+                                            <div>
+                                                <label>Tarif / nuit</label>
+                                                <input type="text" name="room_price"
+                                                       t-att-value="room.price_per_night or ''"/>
+                                            </div>
+                                        </div>
+                                        <label>Étage / emplacement</label>
+                                        <select name="room_emplacement">
+                                            <option value="etage" t-att-selected="room.emplacement == 'etage' and 'selected' or None">Étage</option>
+                                            <option value="rdc" t-att-selected="room.emplacement == 'rdc' and 'selected' or None">RDC</option>
+                                        </select>
+                                        <label>Photos de cette chambre</label>
+                                        <input type="file" t-att-name="'room_photos_%s' % room_index" accept="image/*" multiple="multiple"/>
+                                    </div>
+                                </t>
+                            </div>
+                            <button type="button" class="cm-btn cm-btn-ghost" id="cm-add-room">Ajouter une chambre</button>
+                            <input type="hidden" name="nb_chambres" t-att-value="prop.nb_suites or ''"/>
+                            <input type="hidden" name="capacite" t-att-value="prop.capacity or ''"/>
+                            <input type="hidden" name="tarif" t-att-value="prop.price_per_night or ''"/>
+                            <div class="cm-checks">
+                                <label><input type="checkbox" name="privatisation"
+                                              t-att-checked="prop.rg_privatisation_possible and 'checked' or None"/> Privatisation complète possible</label>
+                                <label><input type="checkbox" name="petit_dejeuner"
+                                              t-att-checked="prop.meal_breakfast_available and 'checked' or None"/> Petit-déjeuner inclus</label>
+                                <label><input type="checkbox" name="piscine"
+                                              t-att-checked="prop.daypass_piscine and 'checked' or None"/> Piscine</label>
+                            </div>
+                        </div>
+
+                        <div id="cm-block-restaurant" class="cm-kind-block"
+                             t-att-hidden="None if show_resto else 'hidden'">
+                            <h2>Restaurant</h2>
+                            <label for="rg_cuisine">Type de cuisine</label>
+                            <select id="rg_cuisine" name="rg_cuisine">
+                                <option value="">—</option>
+                                <option value="marocaine_traditionnelle" t-att-selected="prop.rg_cuisine == 'marocaine_traditionnelle' and 'selected' or None">Marocaine traditionnelle</option>
+                                <option value="fusion" t-att-selected="prop.rg_cuisine == 'fusion' and 'selected' or None">Fusion</option>
+                                <option value="mediterraneenne" t-att-selected="prop.rg_cuisine == 'mediterraneenne' and 'selected' or None">Méditerranéenne</option>
+                                <option value="internationale" t-att-selected="prop.rg_cuisine == 'internationale' and 'selected' or None">Internationale</option>
+                                <option value="street_food" t-att-selected="prop.rg_cuisine == 'street_food' and 'selected' or None">Street food gastronomique</option>
+                            </select>
+                            <label>Cadre</label>
+                            <div class="cm-checks">
+                                <label><input type="checkbox" name="cadre" value="rooftop" t-att-checked="'rooftop' in prop.rg_cadre_list() and 'checked' or None"/> Rooftop</label>
+                                <label><input type="checkbox" name="cadre" value="terrasse_exterieure" t-att-checked="'terrasse_exterieure' in prop.rg_cadre_list() and 'checked' or None"/> Terrasse</label>
+                                <label><input type="checkbox" name="cadre" value="salle_privee" t-att-checked="'salle_privee' in prop.rg_cadre_list() and 'checked' or None"/> Salle privée</label>
+                            </div>
+                            <label for="rg_alcool">Alcool</label>
+                            <select id="rg_alcool" name="rg_alcool">
+                                <option value="">—</option>
+                                <option value="licence_complete" t-att-selected="prop.rg_alcool == 'licence_complete' and 'selected' or None">Oui — licence complète</option>
+                                <option value="sans_alcool" t-att-selected="prop.rg_alcool == 'sans_alcool' and 'selected' or None">Sans alcool</option>
+                                <option value="sur_demande" t-att-selected="prop.rg_alcool == 'sur_demande' and 'selected' or None">Sur demande</option>
+                            </select>
+                            <label for="rg_animations">Animations</label>
+                            <input id="rg_animations" type="text" name="rg_animations"
+                                   placeholder="musique live, DJ…"
+                                   t-att-value="prop.rg_animations or ''"/>
+                            <div class="cm-row">
+                                <div>
+                                    <label for="rg_capacite">Capacité / privatisation</label>
+                                    <input id="rg_capacite" type="number" min="0" name="rg_capacite"
+                                           t-att-value="prop.rg_capacite_couverts or ''"/>
+                                </div>
+                                <div>
+                                    <label for="rg_ambiance">Ambiance</label>
+                                    <select id="rg_ambiance" name="rg_ambiance">
+                                        <option value="">—</option>
+                                        <option value="romantique" t-att-selected="prop.rg_ambiance == 'romantique' and 'selected' or None">Romantique</option>
+                                        <option value="festif" t-att-selected="prop.rg_ambiance == 'festif' and 'selected' or None">Festif</option>
+                                        <option value="familial" t-att-selected="prop.rg_ambiance == 'familial' and 'selected' or None">Familial</option>
+                                        <option value="chic" t-att-selected="prop.rg_ambiance == 'chic' and 'selected' or None">Chic / formel</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <label for="rg_vue">Vue</label>
+                            <select id="rg_vue" name="rg_vue">
+                                <option value="">—</option>
+                                <option value="panoramique_medina" t-att-selected="prop.rg_vue == 'panoramique_medina' and 'selected' or None">Panoramique médina</option>
+                                <option value="jardin" t-att-selected="prop.rg_vue == 'jardin' and 'selected' or None">Jardin</option>
+                                <option value="aucune" t-att-selected="prop.rg_vue == 'aucune' and 'selected' or None">Aucune vue particulière</option>
+                            </select>
+                            <label for="rg_fourchette_prix">Fourchette de prix</label>
+                            <select id="rg_fourchette_prix" name="rg_fourchette_prix">
+                                <option value="">—</option>
+                                <option value="accessible" t-att-selected="prop.rg_fourchette_prix == 'accessible' and 'selected' or None">Accessible</option>
+                                <option value="milieu" t-att-selected="prop.rg_fourchette_prix == 'milieu' and 'selected' or None">Milieu de gamme</option>
+                                <option value="premium" t-att-selected="prop.rg_fourchette_prix == 'premium' and 'selected' or None">Premium</option>
+                                <option value="sur_devis" t-att-selected="prop.rg_fourchette_prix == 'sur_devis' and 'selected' or None">Sur devis</option>
+                            </select>
+                            <div class="cm-checks">
+                                <label><input type="checkbox" name="privatisation"/> Privatisation possible</label>
+                            </div>
+                        </div>
+
+                        <div id="cm-block-spa" class="cm-kind-block"
+                             t-att-hidden="None if show_spa else 'hidden'">
+                            <h2>Spa / bien-être</h2>
+                            <label for="be_type_lieu">Type de lieu</label>
+                            <select id="be_type_lieu" name="be_type_lieu">
+                                <option value="">—</option>
+                                <option value="villa_evenementiel" t-att-selected="prop.be_type_lieu == 'villa_evenementiel' and 'selected' or None">Villa / riad événementiel</option>
+                                <option value="hammam_specialise" t-att-selected="prop.be_type_lieu == 'hammam_specialise' and 'selected' or None">Hammam spécialisé</option>
+                            </select>
+                            <label>Services</label>
+                            <div class="cm-checks">
+                                <label><input type="checkbox" name="be_services" value="massage" t-att-checked="'massage' in prop.be_services_list() and 'checked' or None"/> Massage</label>
+                                <label><input type="checkbox" name="be_services" value="hammam_traditionnel" t-att-checked="'hammam_traditionnel' in prop.be_services_list() and 'checked' or None"/> Hammam</label>
+                                <label><input type="checkbox" name="be_services" value="soin_visage" t-att-checked="'soin_visage' in prop.be_services_list() and 'checked' or None"/> Soin visage</label>
+                                <label><input type="checkbox" name="be_services" value="henna" t-att-checked="'henna' in prop.be_services_list() and 'checked' or None"/> Henné</label>
+                            </div>
+                            <label for="be_mixte">Mixte / non-mixte</label>
+                            <select id="be_mixte" name="be_mixte">
+                                <option value="">—</option>
+                                <option value="mixte" t-att-selected="prop.be_mixte == 'mixte' and 'selected' or None">Mixte</option>
+                                <option value="creneaux_separes" t-att-selected="prop.be_mixte == 'creneaux_separes' and 'selected' or None">Créneaux séparés</option>
+                                <option value="non_mixte" t-att-selected="prop.be_mixte == 'non_mixte' and 'selected' or None">Non-mixte</option>
+                            </select>
+                            <div class="cm-row">
+                                <div>
+                                    <label for="be_capacite">Capacité simultanée</label>
+                                    <input id="be_capacite" type="number" min="0" name="be_capacite"
+                                           t-att-value="prop.be_capacite_simultanee or ''"/>
+                                </div>
+                                <div>
+                                    <label for="be_prestataire">Prestataire</label>
+                                    <input id="be_prestataire" type="text" name="be_prestataire"
+                                           placeholder="Zen Traitements ou le vôtre"
+                                           t-att-value="prop.be_prestataire_libre or ''"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <p class="cm-note">La fiche reste privée jusqu’à validation humaine. Aucune mise en ligne automatique.</p>
+                        <button class="cm-btn" type="submit">Envoyer pour validation</button>
+                    </form>
+
+                    <footer class="cm-foot">
+                        <em>Coins Marocain</em><br/>
+                        Digital Doorway SARL · Marrakech
+                    </footer>
+                </div>
+                <script>
+                    (function () {
+                        var form = document.getElementById("cm-partner-form");
+                        var map = {
+                            restaurant: "cm-block-restaurant",
+                            spa: "cm-block-spa",
+                            hebergement: "cm-block-hebergement"
+                        };
+                        function syncKinds() {
+                            if (!form) return;
+                            form.querySelectorAll('input[name="onboarding_cat"]').forEach(function (cb) {
+                                var el = document.getElementById(map[cb.value]);
+                                if (el) el.hidden = !cb.checked;
+                            });
+                        }
+                        if (form) {
+                            form.addEventListener("change", function (ev) {
+                                if (ev.target &amp;&amp; ev.target.name === "onboarding_cat") syncKinds();
+                            });
+                            syncKinds();
+                        }
+                    })();
+                    (function () {
+                        var box = document.getElementById("cm-rooms");
+                        var add = document.getElementById("cm-add-room");
+                        if (!box || !add) return;
+                        function reindex() {
+                            var rooms = box.querySelectorAll(".cm-room");
+                            rooms.forEach(function (room, i) {
+                                room.setAttribute("data-room-index", i);
+                                var title = room.querySelector("h3");
+                                if (title) title.textContent = "Chambre " + (i + 1);
+                                var photos = room.querySelector('input[type="file"]');
+                                if (photos) photos.setAttribute("name", "room_photos_" + i);
+                                var remove = room.querySelector(".cm-room-remove");
+                                if (remove) remove.hidden = rooms.length === 1;
+                            });
+                        }
+                        add.addEventListener("click", function () {
+                            var proto = box.querySelector(".cm-room");
+                            if (!proto) return;
+                            var clone = proto.cloneNode(true);
+                            clone.querySelectorAll("input, textarea, select").forEach(function (el) {
+                                if (el.type === "hidden" &amp;&amp; el.name === "room_id") el.value = "";
+                                else if (el.type === "checkbox" || el.type === "file") el.value = "";
+                                else if (el.tagName === "TEXTAREA") el.value = "";
+                                else if (el.name !== "room_emplacement") el.value = "";
+                            });
+                            box.appendChild(clone);
+                            reindex();
+                        });
+                        box.addEventListener("click", function (ev) {
+                            if (!ev.target.classList.contains("cm-room-remove")) return;
+                            var rooms = box.querySelectorAll(".cm-room");
+                            if (rooms.length &lt; 2) return;
+                            ev.target.closest(".cm-room").remove();
+                            reindex();
+                        });
+                        reindex();
+                    })();
+                </script>
+            </body>
+        </html>
+    </template>
+</odoo>

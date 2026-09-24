@@ -1,0 +1,36 @@
+{
+  "etablissement": "Riad Asrari",
+  "rooms": 6,
+  "capacity": null,
+  "amenities": [
+    "piscine extérieure (patio arboré)",
+    "wifi",
+    "climatisation dans les chambres",
+    "toit-terrasse",
+    "petit-déjeuner (continental / végétarien / halal / à la carte)",
+    "restaurant (cuisine marocaine)",
+    "hammam / spa (services sur place)",
+    "réception 24h/24",
+    "chambres non-fumeurs",
+    "navette aéroport sur demande"
+  ],
+  "location_facts": [
+    "42, Derb Derdouba, Médina, 40000 Marrakech"
+  ],
+  "other_facts": [
+    "6 options d'hébergement distinctes sur la fiche : Chambre Triple Classique, Suite vue jardin, Chambre Double Supérieure, Chambre Double salle de bains privative (×2 types), Chambre Lits Jumeaux Deluxe",
+    "arrivée 13:00, départ 11:00",
+    "enregistrement à partir de 18 ans",
+    "animaux non admis",
+    "licence 40000MH0975"
+  ],
+  "warnings": [
+    "HTTP direct Booking = WAF 202 (Chrome et Safari, depuis ce réseau et depuis le VPS France). Faits extraits via 1 requête lecteur de page (r.jina.ai), pas via le HTML brut.",
+    "rooms=6 = nombre d'options d'hébergement listées (IDs RD distincts). Confirmer s'il n'existe pas plusieurs unités d'un même type.",
+    "capacité totale non indiquée en clair sur la page.",
+    "Ne pas recopier le texte marketing Booking dans la fiche publique."
+  ],
+  "source_url": "https://www.booking.com/hotel/ma/riad-asrari.fr.html",
+  "fetch_method": "reader-jina",
+  "note": "Matière factuelle seulement. Ne pas citer Booking. Reformuler dans le ton Coins Marocain."
+}

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pe_kpi_snapshot_tree" model="ir.ui.view">
+        <field name="name">pe.kpi.snapshot.tree</field>
+        <field name="model">pe.kpi.snapshot</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="statut_global == 'critique'"
+                  decoration-warning="statut_global == 'attention'"
+                  decoration-success="statut_global == 'ok'">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="departement"/>
+                <field name="semaine"/>
+                <field name="annee"/>
+                <field name="periode_debut"/>
+                <field name="periode_fin"/>
+                <field name="leads_crees" optional="show"/>
+                <field name="taux_conversion_pc" optional="show"/>
+                <field name="deals_gagnes" optional="show"/>
+                <field name="ca_genere" optional="show"/>
+                <field name="taches_assignees" optional="hide"/>
+                <field name="taux_completion_pc" optional="hide"/>
+                <field name="heures_loguees" optional="hide"/>
+                <field name="statut_global" widget="badge"
+                       decoration-danger="statut_global == 'critique'"
+                       decoration-warning="statut_global == 'attention'"
+                       decoration-success="statut_global == 'ok'"/>
+                <field name="alerte_envoyee" optional="hide"/>
+                <field name="incident_cree" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pe_kpi_snapshot_form" model="ir.ui.view">
+        <field name="name">pe.kpi.snapshot.form</field>
+        <field name="model">pe.kpi.snapshot</field>
+        <field name="arch" type="xml">
+            <form string="Snapshot KPI">
+                <sheet>
+                    <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="employee_id"/>
+                            <field name="departement"/>
+                            <field name="semaine"/>
+                            <field name="annee"/>
+                            <field name="date_calcul"/>
+                        </group>
+                        <group>
+                            <field name="periode_debut"/>
+                            <field name="periode_fin"/>
+                            <field name="statut_global" widget="badge"/>
+                            <field name="alerte_envoyee"/>
+                            <field name="incident_cree"/>
+                            <field name="incident_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Commercial" invisible="departement != 'commercial'">
+                            <group>
+                                <group>
+                                    <field name="leads_crees"/>
+                                    <field name="leads_qualifies"/>
+                                    <field name="opportunites"/>
+                                    <field name="deals_gagnes"/>
+                                    <field name="ca_genere"/>
+                                </group>
+                                <group>
+                                    <field name="taux_conversion_pc"/>
+                                    <field name="rdv_pris"/>
+                                    <field name="relances_effectuees"/>
+                                    <field name="pipeline_valeur"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Marketing" invisible="departement != 'marketing'">
+                            <group>
+                                <group>
+                                    <field name="taches_assignees"/>
+                                    <field name="taches_completees"/>
+                                    <field name="taux_completion_pc"/>
+                                    <field name="heures_loguees"/>
+                                </group>
+                                <group>
+                                    <field name="publications_faites"/>
+                                    <field name="leads_generes_marketing"/>
+                                    <field name="campagnes_actives"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_pe_kpi_snapshot_search" model="ir.ui.view">
+        <field name="name">pe.kpi.snapshot.search</field>
+        <field name="model">pe.kpi.snapshot</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="employee_id"/>
+                <field name="departement"/>
+                <field name="semaine"/>
+                <field name="annee"/>
+                <filter name="commercial" string="Commercial" domain="[('departement', '=', 'commercial')]"/>
+                <filter name="marketing" string="Marketing" domain="[('departement', '=', 'marketing')]"/>
+                <filter name="attention" string="Attention" domain="[('statut_global', '=', 'attention')]"/>
+                <filter name="critique" string="Critique" domain="[('statut_global', '=', 'critique')]"/>
+                <group>
+                    <filter name="group_dept" string="Département" context="{'group_by': 'departement'}"/>
+                    <filter name="group_week" string="Semaine" context="{'group_by': 'semaine'}"/>
+                    <filter name="group_employee" string="Employé" context="{'group_by': 'employee_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_pe_kpi_snapshot" model="ir.actions.act_window">
+        <field name="name">KPI hebdomadaire</field>
+        <field name="res_model">pe.kpi.snapshot</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_pe_kpi_snapshot"
+        name="KPI hebdomadaire"
+        parent="menu_pe_disciplinary_root"
+        action="action_pe_kpi_snapshot"
+        sequence="30"
+        groups="people_engine.group_manager,people_engine.group_hr"/>
+
+    <menuitem id="menu_pe_kpi_snapshot_objectifs"
+        name="KPI hebdomadaire"
+        parent="menu_pe_objectives"
+        action="action_pe_kpi_snapshot"
+        sequence="15"
+        groups="people_engine.group_manager,people_engine.group_hr"/>
+</odoo>

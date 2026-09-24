@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_callcenter_prospects"
+              name="Prospects CC MA/TN"
+              parent="doorway_leads_bruts.menu_leads_bruts_leads"
+              action="action_callcenter_prospects"
+              sequence="10"/>
+</odoo>

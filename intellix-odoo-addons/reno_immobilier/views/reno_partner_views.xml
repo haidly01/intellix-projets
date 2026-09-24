@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_reno_partner_list" model="ir.ui.view">
+        <field name="name">res.partner.list.reno.immobilier</field>
+        <field name="model">res.partner</field>
+        <field name="priority">8</field>
+        <field name="arch" type="xml">
+            <list class="o_reno_immo_list">
+                <field name="name"/>
+                <field name="email"/>
+                <field name="phone"/>
+                <field name="city"/>
+                <field name="service_category_ids" widget="many2many_tags"/>
+                <field name="coverage_mode"/>
+                <field name="active_package_id"/>
+                <field name="reno_crm_stage" optional="show"/>
+                <field name="reno_crm_user_id" optional="hide" string="Suivi"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_reno_partner_kanban" model="ir.ui.view">
+        <field name="name">res.partner.kanban.reno.immobilier.crm</field>
+        <field name="model">res.partner</field>
+        <field name="priority">8</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="reno_crm_stage"
+                    class="o_reno_partner_crm"
+                    records_draggable="true"
+                    quick_create="false">
+                <field name="name"/>
+                <field name="city"/>
+                <field name="phone"/>
+                <field name="email"/>
+                <field name="reno_crm_stage"/>
+                <field name="reno_crm_user_id"/>
+                <field name="reno_crm_meeting_date"/>
+                <field name="active_package_id"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="o_reno_partner_card">
+                            <div class="o_reno_partner_card_title"><field name="name"/></div>
+                            <div class="o_reno_partner_card_meta" t-if="record.city.raw_value">
+                                <field name="city"/>
+                            </div>
+                            <div class="o_reno_partner_card_meta" t-if="record.phone.raw_value">
+                                <field name="phone"/>
+                            </div>
+                            <div class="o_reno_partner_card_meta" t-if="record.reno_crm_user_id.raw_value">
+                                Suivi : <field name="reno_crm_user_id"/>
+                            </div>
+                            <div class="o_reno_partner_card_meta" t-if="record.reno_crm_meeting_date.raw_value">
+                                RDV : <field name="reno_crm_meeting_date"/>
+                            </div>
+                            <div class="o_reno_partner_card_stage">
+                                <field name="reno_crm_stage"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_reno_partner_form" model="ir.ui.view">
+        <field name="name">res.partner.form.reno.immobilier</field>
+        <field name="model">res.partner</field>
+        <field name="priority">8</field>
+        <field name="arch" type="xml">
+            <form string="Partenaire" class="o_reno_partner_crm">
+                <header>
+                    <button name="action_reno_book_martin_partner"
+                            type="object"
+                            string="Assigner un RDV à Martin"
+                            class="btn-primary"
+                            groups="renovation_conciergerie.group_doorway_pipeline_assigned,sales_team.group_sale_salesman"/>
+                    <button name="action_reno_log_interaction"
+                            type="object"
+                            string="Noter une interaction"
+                            class="btn-secondary"
+                            groups="renovation_conciergerie.group_doorway_pipeline_assigned,sales_team.group_sale_salesman"/>
+                    <field name="reno_crm_stage" widget="statusbar"
+                           statusbar_visible="nouveau,contacte,rdv_pris,suivi,actif"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_reno_partner_meeting_stat" type="object"
+                                class="oe_stat_button" icon="fa-calendar"
+                                groups="renovation_conciergerie.group_doorway_pipeline_assigned,sales_team.group_sale_salesman">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text"><field name="reno_crm_meeting_label"/></span>
+                                <field name="reno_crm_meeting_date" class="o_stat_value"
+                                       invisible="not reno_crm_meeting_date"/>
+                                <span class="o_stat_text" invisible="not reno_crm_rdv_booked_display">
+                                    <field name="reno_crm_rdv_booked_display"/>
+                                </span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Nom du partenaire"/>
+                        </h1>
+                    </div>
+                    <group string="Rendez-vous (heure du Canada)"
+                           invisible="not reno_crm_meeting_date">
+                        <group>
+                            <field name="reno_crm_meeting_date" string="Créneau client" readonly="1"/>
+                            <field name="reno_crm_rdv_booked_display" readonly="1"/>
+                            <field name="reno_crm_rdv_event_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Contact">
+                            <field name="is_company" invisible="1"/>
+                            <field name="supplier_rank" invisible="1"/>
+                            <field name="email"/>
+                            <field name="phone"/>
+                            <field name="street"/>
+                            <field name="city"/>
+                            <field name="state_id"/>
+                            <field name="zip"/>
+                            <field name="country_id"/>
+                        </group>
+                        <group string="Services et forfait">
+                            <field name="service_category_ids" widget="many2many_tags"/>
+                            <field name="active_package_id" readonly="1"/>
+                            <field name="reno_crm_user_id" string="Suivi commercial"
+                                   options="{'no_create': True}"/>
+                        </group>
+                    </group>
+                    <group string="Région couverte">
+                        <field name="coverage_mode" widget="radio"/>
+                        <field name="province_ids" widget="many2many_tags"
+                               options="{'no_create': True}"
+                               invisible="coverage_mode != 'province'"/>
+                        <field name="city_text"
+                               placeholder="ex: Montréal Laval Longueuil (espace ou virgule)"
+                               invisible="coverage_mode != 'city'"/>
+                        <field name="coverage_radius_km"
+                               invisible="coverage_mode != 'radius'"/>
+                        <field name="postal_codes_text"
+                               placeholder="ex: H7T1A1 J7E2B2 G1A0A1 (espace ou virgule)"
+                               invisible="coverage_mode != 'postal'"/>
+                    </group>
+                    <group string="Forfaits (quota leads)">
+                        <field name="package_ids" nolabel="1">
+                            <list>
+                                <field name="package_type_id"/>
+                                <field name="leads_total"/>
+                                <field name="leads_used"/>
+                                <field name="leads_remaining"/>
+                                <field name="date_start"/>
+                                <field name="date_end"/>
+                                <field name="state"/>
+                            </list>
+                        </field>
+                    </group>
+                    <notebook>
+                        <page string="Suivi CRM" name="reno_crm">
+                            <group>
+                                <field name="reno_crm_interaction_ids" nolabel="1" colspan="2">
+                                    <list editable="bottom">
+                                        <field name="date"/>
+                                        <field name="kind"/>
+                                        <field name="summary"/>
+                                        <field name="user_id"/>
+                                        <field name="rdv_id" optional="hide"/>
+                                    </list>
+                                </field>
+                            </group>
+                            <group string="RDV Martin">
+                                <field name="reno_crm_rdv_ids" nolabel="1" colspan="2">
+                                    <list>
+                                        <field name="start_at_display" string="Créneau (Canada)"/>
+                                        <field name="booker_id"/>
+                                        <field name="state"/>
+                                        <field name="event_id"/>
+                                    </list>
+                                </field>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_reno_partner_search" model="ir.ui.view">
+        <field name="name">res.partner.search.reno.immobilier</field>
+        <field name="model">res.partner</field>
+        <field name="priority">8</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="Partenaire" filter_domain="[
+                    '|', '|', '|',
+                    ('name', 'ilike', self),
+                    ('email', 'ilike', self),
+                    ('phone', 'ilike', self),
+                    ('city', 'ilike', self)]"/>
+                <field name="email" string="Email"/>
+                <field name="phone" string="Téléphone"/>
+                <field name="city"/>
+                <field name="service_category_ids"/>
+                <field name="reno_crm_user_id"/>
+                <filter name="avec_forfait" string="Avec forfait"
+                        domain="[('package_ids', '!=', False)]"/>
+                <filter name="avec_services" string="Avec services"
+                        domain="[('service_category_ids', '!=', False)]"/>
+                <separator/>
+                <filter name="crm_nouveau" string="Nouveau"
+                        domain="[('reno_crm_stage', '=', 'nouveau')]"/>
+                <filter name="crm_rdv" string="RDV pris"
+                        domain="[('reno_crm_stage', '=', 'rdv_pris')]"/>
+                <separator/>
+                <filter name="group_crm_stage" string="Étape CRM"
+                        context="{'group_by': 'reno_crm_stage'}"/>
+                <filter name="group_crm_user" string="Suivi commercial"
+                        context="{'group_by': 'reno_crm_user_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_reno_immobilier_partenaires" model="ir.actions.act_window">
+        <field name="name">Partenaires</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">['|', '|', ('package_ids', '!=', False), ('service_category_ids', '!=', False), ('supplier_rank', '&gt;', 0)]</field>
+        <field name="context">{'default_supplier_rank': 1, 'default_is_company': True}</field>
+        <field name="search_view_id" ref="view_reno_partner_search"/>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_reno_partner_kanban')}),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_reno_partner_list')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_reno_partner_form')})]"/>
+    </record>
+
+    <menuitem id="menu_reno_partners_in_partenaires_app"
+              name="Partenaires"
+              parent="renovation_conciergerie.menu_renovation_root"
+              action="action_reno_immobilier_partenaires"
+              sequence="5"/>
+</odoo>

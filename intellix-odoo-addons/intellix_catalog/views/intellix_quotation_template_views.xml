@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sale_order_template_view_kanban_intellix" model="ir.ui.view">
+        <field name="name">sale.order.template.kanban.intellix</field>
+        <field name="model">sale.order.template</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile ix-quotation-templates" default_order="sequence,name">
+                <field name="name"/>
+                <field name="sequence"/>
+                <field name="number_of_days"/>
+                <field name="ix_line_count"/>
+                <field name="ix_product_summary"/>
+                <field name="ix_category_label"/>
+                <field name="active"/>
+                <templates>
+                    <t t-name="card" class="flex-row">
+                        <div class="ix-qt-card oe_kanban_global_click">
+                            <div class="ix-qt-card-header">
+                                <span class="ix-qt-badge" t-esc="record.ix_category_label.value"/>
+                                <span class="ix-qt-validity" t-if="record.number_of_days.value">
+                                    <i class="fa fa-clock-o"/> <t t-esc="record.number_of_days.value"/> jours
+                                </span>
+                            </div>
+                            <strong class="ix-qt-title"><field name="name"/></strong>
+                            <div class="ix-qt-meta">
+                                <span><i class="fa fa-list"/> <t t-esc="record.ix_line_count.value"/> produit(s)</span>
+                            </div>
+                            <p class="ix-qt-summary" t-esc="record.ix_product_summary.value"/>
+                            <div class="ix-qt-actions">
+                                <button name="action_ix_create_quotation" type="object"
+                                        class="btn btn-primary btn-sm">
+                                    <i class="fa fa-file-text-o"/> Créer un devis
+                                </button>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="sale_order_template_view_list_intellix" model="ir.ui.view">
+        <field name="name">sale.order.template.list.intellix</field>
+        <field name="model">sale.order.template</field>
+        <field name="inherit_id" ref="sale_management.sale_order_template_view_tree"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="ix_category_label" string="Catégorie"/>
+                <field name="ix_line_count" string="Produits"/>
+                <field name="number_of_days" string="Validité (j)"/>
+            </field>
+            <list position="inside">
+                <button name="action_ix_create_quotation" type="object"
+                        string="Créer devis" icon="fa-file-text-o" class="btn-link"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="sale_order_template_view_form_intellix" model="ir.ui.view">
+        <field name="name">sale.order.template.form.intellix</field>
+        <field name="model">sale.order.template</field>
+        <field name="inherit_id" ref="sale_management.sale_order_template_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/sheet" position="before">
+                <header>
+                    <button name="action_ix_create_quotation" type="object"
+                            string="Créer un devis depuis ce modèle"
+                            class="btn-primary" icon="fa-file-text-o"/>
+                </header>
+            </xpath>
+            <xpath expr="//field[@name='number_of_days']" position="after">
+                <field name="ix_template_code"/>
+                <field name="ix_tax_mode" widget="radio"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_intellix_quotation_templates" model="ir.actions.act_window">
+        <field name="name">Modèles de devis</field>
+        <field name="res_model">sale.order.template</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="sale_management.sale_order_template_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créez un devis en un clic à partir d'un modèle Intellix
+            </p>
+            <p>
+                Les modèles <strong>Starter Intellix</strong>, <strong>Croissance IA</strong>
+                et <strong>Présence Digitale Complète</strong> préremplissent les lignes.
+                Choisissez ensuite Digital Doorway (dh) ou Agence Doorway ($CAD).
+            </p>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_social_connect_wizard_form" model="ir.ui.view">
+        <field name="name">doorway.social.connect.wizard.form</field>
+        <field name="model">doorway.social.connect.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Connecter tous les comptes Meta">
+                <group>
+                    <p colspan="2" class="text-muted">
+                        Synchronise toutes les pages Facebook et comptes Instagram
+                        accessibles avec le token configuré dans
+                        <strong>Veille Sociale → Connexions &amp; sources</strong>,
+                        puis les rattache aux pipelines CRM (Haidly, Marketing, Immo, Énergie…).
+                    </p>
+                    <field name="pipeline_id" placeholder="Pipeline par défaut (si non mappé)"/>
+                </group>
+                <footer>
+                    <button name="action_import_meta_from_veille" type="object"
+                            string="Connecter tous les comptes Meta" class="btn-primary"/>
+                    <button string="Annuler" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_social_connect_meta" model="ir.actions.act_window">
+        <field name="name">Connecter Meta</field>
+        <field name="res_model">doorway.social.connect.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

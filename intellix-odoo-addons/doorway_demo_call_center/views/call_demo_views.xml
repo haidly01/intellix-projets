@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_call_log_search_demo" model="ir.ui.view">
+        <field name="name">doorway.call.log.search.demo</field>
+        <field name="model">doorway.call.log</field>
+        <field name="inherit_id" ref="doorway_vicidial_campaigns.view_doorway_call_log_search"/>
+        <field name="arch" type="xml">
+            <filter name="human" position="after">
+                <separator/>
+                <filter name="demo_decroche" string="Décrochés"
+                        domain="[('amd_result', '=', 'human')]"/>
+                <filter name="demo_repondeur" string="Répondeur"
+                        domain="['|', ('amd_result', 'in', ('answering_machine', 'amd_hangup')), ('disposition', '=', 'REPONDEUR')]"/>
+                <filter name="demo_mauvais_numero" string="Mauvais numéro"
+                        domain="['|', ('amd_result', '=', 'invalid'), ('disposition', '=', 'INVALIDE')]"/>
+                <filter name="demo_sans_reponse" string="Sans réponse"
+                        domain="[('amd_result', '=', 'no_answer')]"/>
+                <filter name="demo_occupe" string="Occupé"
+                        domain="[('amd_result', '=', 'busy')]"/>
+                <filter name="demo_qualifie" string="Qualifiés"
+                        domain="[('disposition', 'in', ('VENTE', 'INTERET'))]"/>
+            </filter>
+        </field>
+    </record>
+
+    <record id="view_call_log_list_demo" model="ir.ui.view">
+        <field name="name">doorway.call.log.list.demo</field>
+        <field name="model">doorway.call.log</field>
+        <field name="inherit_id" ref="doorway_vicidial_campaigns.view_doorway_call_log_list"/>
+        <field name="arch" type="xml">
+            <field name="amd_result" position="attributes">
+                <attribute name="string">Résultat</attribute>
+            </field>
+            <field name="disposition" position="attributes">
+                <attribute name="string">Qualification</attribute>
+            </field>
+        </field>
+    </record>
+
+    <record id="action_demo_call_results_menu" model="ir.actions.server">
+        <field name="name">Résultats des appels</field>
+        <field name="model_id" ref="doorway_vicidial_campaigns.model_doorway_campaign"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_demo_open_call_results_menu()</field>
+    </record>
+
+    <menuitem id="menu_demo_call_results"
+              name="Résultats des appels"
+              parent="doorway_vicidial_campaigns.menu_vicidial_app_root"
+              action="action_demo_call_results_menu"
+              groups="doorway_demo_call_center.group_demo_call_center"
+              sequence="3"/>
+</odoo>

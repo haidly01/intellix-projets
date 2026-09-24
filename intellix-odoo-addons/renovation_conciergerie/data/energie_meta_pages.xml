@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <function model="renovation.energie.webhook" name="_ensure_energie_meta_pages_icp"/>
+</odoo>

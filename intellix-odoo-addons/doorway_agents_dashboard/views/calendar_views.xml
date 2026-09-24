@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Visioconférence plus visible dans le formulaire événement -->
+    <record id="view_calendar_event_form_doorway_videocall" model="ir.ui.view">
+        <field name="name">calendar.event.form.doorway.videocall</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='videocall_location_div']//button[@name='set_discuss_videocall_location']" position="attributes">
+                <attribute name="class">btn btn-primary btn-sm text-nowrap</attribute>
+            </xpath>
+            <xpath expr="//field[@name='videocall_location']" position="after">
+                <field name="doorway_agent_profile_id" invisible="not doorway_agent_profile_id"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_calendar_event_form_quick_create_doorway" model="ir.ui.view">
+        <field name="name">calendar.event.form.quick.create.doorway</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_form_quick_create"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='set_discuss_videocall_location']" position="attributes">
+                <attribute name="class">btn btn-primary btn-sm text-nowrap</attribute>
+                <attribute name="string">Visioconférence</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Popover calendrier : lien visio mis en avant -->
+    <record id="view_calendar_event_calendar_doorway" model="ir.ui.view">
+        <field name="name">calendar.event.calendar.doorway</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_calendar"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='videocall_location']" position="attributes">
+                <attribute name="text">Rejoindre la visioconférence</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

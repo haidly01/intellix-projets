@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_users_form_demo_call_center" model="ir.ui.view">
+        <field name="name">res.users.form.demo.call.center</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <header>
+                    <button name="action_resend_demo_invitation" type="object"
+                            string="Renvoyer invitation Intellix"
+                            class="btn-primary"
+                            invisible="not demo_call_center"
+                            groups="base.group_system"/>
+                </header>
+            </xpath>
+            <xpath expr="//page[@name='access_rights']" position="inside">
+                <group string="Demo Call Center" groups="base.group_system">
+                    <field name="demo_call_center" readonly="1"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

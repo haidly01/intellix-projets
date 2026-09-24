@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="channel_meta" model="doorway.traffic.channel">
+        <field name="name">Meta Ads</field>
+        <field name="code">meta</field>
+        <field name="sequence">10</field>
+    </record>
+    <record id="channel_google" model="doorway.traffic.channel">
+        <field name="name">Google Ads</field>
+        <field name="code">google</field>
+        <field name="sequence">20</field>
+    </record>
+    <record id="channel_tiktok" model="doorway.traffic.channel">
+        <field name="name">TikTok Ads</field>
+        <field name="code">tiktok</field>
+        <field name="sequence">30</field>
+    </record>
+    <record id="channel_linkedin" model="doorway.traffic.channel">
+        <field name="name">LinkedIn Ads</field>
+        <field name="code">linkedin</field>
+        <field name="sequence">40</field>
+    </record>
+    <record id="channel_youtube" model="doorway.traffic.channel">
+        <field name="name">YouTube Ads</field>
+        <field name="code">youtube</field>
+        <field name="sequence">50</field>
+    </record>
+    <record id="channel_backlink" model="doorway.traffic.channel">
+        <field name="name">Backlink</field>
+        <field name="code">backlink</field>
+        <field name="sequence">60</field>
+    </record>
+    <record id="channel_annuaire" model="doorway.traffic.channel">
+        <field name="name">Annuaire</field>
+        <field name="code">annuaire</field>
+        <field name="sequence">70</field>
+    </record>
+</odoo>

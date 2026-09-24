@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_ia_campaign_list" model="ir.actions.act_window">
+        <field name="name">Campagnes IA</field>
+        <field name="res_model">doorway.ia.campaign</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_ia_campaign_wizard" model="ir.actions.act_window">
+        <field name="name">Lancer campagne IA</field>
+        <field name="res_model">doorway.ia.campaign.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

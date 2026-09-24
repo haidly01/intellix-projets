@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="crm_lead_view_form_dave_booking" model="ir.ui.view">
+        <field name="name">crm.lead.form.dave.booking</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="priority">48</field>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <field name="dave_booking_state" invisible="1"/>
+                <button name="action_dave_confirm_send"
+                        type="object"
+                        string="Confirmer et envoyer à Dave"
+                        class="btn-primary"
+                        invisible="dave_booking_state != 'pending'"
+                        confirm="Envoyer l'invitation calendrier à Dave Pichette ?"/>
+                <button name="action_dave_cancel_hold"
+                        type="object"
+                        string="Libérer le créneau"
+                        class="btn-secondary"
+                        invisible="dave_booking_state != 'pending'"/>
+                <button name="action_dave_auto_hold"
+                        type="object"
+                        string="Réserver un créneau Dave"
+                        class="btn-secondary"
+                        invisible="dave_booking_state in ('pending', 'confirmed')"/>
+            </xpath>
+            <xpath expr="//notebook" position="before">
+                <group string="Créneau Dave Pichette"
+                       invisible="dave_booking_state == 'none'">
+                    <group>
+                        <field name="dave_booking_state" readonly="1"/>
+                        <field name="dave_booking_slot_display" readonly="1"/>
+                        <field name="dave_booking_event_id" readonly="1"/>
+                    </group>
+                    <group>
+                        <div class="text-muted" colspan="2">
+                            Le créneau est bloqué sur l’agenda de Dave.
+                            L’invitation ne part qu’après « Confirmer et envoyer à Dave ».
+                        </div>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

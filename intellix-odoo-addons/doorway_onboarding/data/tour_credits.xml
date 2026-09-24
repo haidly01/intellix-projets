@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="tour_credits" model="doorway.onboarding.tour">
+        <field name="name">Crédits IA</field>
+        <field name="code">doorway_credits</field>
+        <field name="sequence">40</field>
+        <field name="quest_label">Quête Crédits IA</field>
+        <field name="home_action_xmlid">doorway_credits.action_tenant_dashboard</field>
+        <field name="badge_icon">💳</field>
+        <field name="badge_name">Pionnier SaaS</field>
+        <field name="reward_points">35</field>
+    </record>
+    <record id="tour_credits_step_welcome" model="doorway.onboarding.tour.step">
+        <field name="tour_id" ref="tour_credits"/>
+        <field name="sequence">1</field>
+        <field name="key">welcome</field>
+        <field name="title">Crédits IA &amp; abonnements</field>
+        <field name="body_html" type="html">
+            <p>Gérez les crédits consommés par les services IA Doorway (agents, coaching, etc.).</p>
+            <div class="alert alert-info border-0 pe-xp-callout" role="status">
+                Badge <em>Pionnier SaaS</em> 💳 (+35 XP)
+            </div>
+        </field>
+    </record>
+    <record id="tour_credits_step_tenant" model="doorway.onboarding.tour.step">
+        <field name="tour_id" ref="tour_credits"/>
+        <field name="sequence">2</field>
+        <field name="key">tenant</field>
+        <field name="title">Mon compte tenant</field>
+        <field name="body_html" type="html">
+            <p>Solde de crédits, consommation récente et alertes de seuil.</p>
+            <p>Abonnement <strong>89 $/utilisateur</strong> et packs prépayés Stripe.</p>
+        </field>
+        <field name="action_xmlid">doorway_credits.action_tenant_dashboard</field>
+        <field name="action_label">Mon compte</field>
+    </record>
+    <record id="tour_credits_step_admin" model="doorway.onboarding.tour.step">
+        <field name="tour_id" ref="tour_credits"/>
+        <field name="sequence">3</field>
+        <field name="key">admin</field>
+        <field name="title">Administration SaaS</field>
+        <field name="admin_only" eval="True"/>
+        <field name="body_html" type="html">
+            <ul>
+                <li>Tous les tenants et soldes</li>
+                <li>Packs crédits et abonnements</li>
+                <li>Alertes de facturation</li>
+            </ul>
+        </field>
+        <field name="action_xmlid">doorway_credits.action_admin_tenants</field>
+        <field name="action_label">Administration tenants</field>
+    </record>
+</odoo>
