@@ -1,0 +1,72 @@
+[source] hero-home.webm: ÉCHEC du téléchargement (https://maisonrecherchee.fr/assets/video/hero-home.webm) -> <urlopen error Tunnel connection failed: 403 Forbidden>
+[source] palmeraie.jpg: ÉCHEC du téléchargement (https://maisonrecherchee.fr/assets/img/guides/palmeraie/hero.jpg) -> <urlopen error Tunnel connection failed: 403 Forbidden>
+[source] golfs.jpg: ÉCHEC du téléchargement (https://maisonrecherchee.fr/assets/img/guides/golfs-amelkis-al-maaden-royal-palm/hero.jpg) -> <urlopen error Tunnel connection failed: 403 Forbidden>
+[source] ourika.jpg: ÉCHEC du téléchargement (https://maisonrecherchee.fr/assets/img/projets/wyld-ourika/01.jpg) -> <urlopen error Tunnel connection failed: 403 Forbidden>
+[source] hivernage.jpg: ÉCHEC du téléchargement (https://maisonrecherchee.fr/assets/img/guides/hivernage/hero.jpg) -> <urlopen error Tunnel connection failed: 403 Forbidden>
+[source] gueliz.jpg: ÉCHEC du téléchargement (https://maisonrecherchee.fr/assets/img/guides/gueliz/hero.jpg) -> <urlopen error Tunnel connection failed: 403 Forbidden>
+[source] medina.jpg: ÉCHEC du téléchargement (https://maisonrecherchee.fr/assets/img/guides/medina/hero.jpg) -> <urlopen error Tunnel connection failed: 403 Forbidden>
+[source] amizmiz.jpg: ÉCHEC du téléchargement (https://maisonrecherchee.fr/assets/img/projets/les-clos-de-leden/t1-01.jpg) -> <urlopen error Tunnel connection failed: 403 Forbidden>
+[source] theone: ÉCHEC du téléchargement (None) -> <urlopen error Tunnel connection failed: 403 Forbidden>
+[preview] aplats « SOURCE MANQUANTE » pour : hero-home.webm, palmeraie.jpg, golfs.jpg, ourika.jpg, hivernage.jpg, gueliz.jpg, medina.jpg, amizmiz.jpg, theone
+[safe]  0.0-2.5 s texte y=639..1030 (zone autorisée 250..1539) OK
+[safe]  2.5-4.0 s texte y=693..976 (zone autorisée 250..1539) OK
+[safe]  4.0-8.0 s texte y=1213..1527 (zone autorisée 250..1539) OK
+[safe]  8.0-12.0s texte y=1213..1527 (zone autorisée 250..1539) OK
+[safe] 12.0-16.0s texte y=1111..1527 (zone autorisée 250..1539) OK
+[safe] 16.0-20.0s texte y=1213..1527 (zone autorisée 250..1539) OK
+[safe] 20.0-24.0s texte y=1213..1527 (zone autorisée 250..1539) OK
+[safe] 24.0-28.0s texte y=1155..1527 (zone autorisée 250..1539) OK
+[safe] 28.0-30.5s texte y=1047..1527 (zone autorisée 250..1539) OK
+[safe] 30.5-33.0s texte y=1047..1527 (zone autorisée 250..1539) OK
+[safe] 33.0-38.0s texte y=766..1303 (zone autorisée 250..1539) OK
+[render]  0.0-2.5 s hero-home.webm (75 images)
+[render]  2.5-4.0 s hero-home.webm (45 images)
+[render]  4.0-8.0 s palmeraie.jpg (120 images)
+[render]  8.0-12.0s golfs.jpg (120 images)
+[render] 12.0-16.0s ourika.jpg (120 images)
+[render] 16.0-20.0s hivernage.jpg (120 images)
+[render] 20.0-24.0s gueliz.jpg (120 images)
+[render] 24.0-28.0s medina.jpg (120 images)
+[render] 28.0-30.5s amizmiz.jpg (75 images)
+[render] 30.5-33.0s theone (75 images)
+[render] 33.0-38.0s CTA (150 images)
+
+=== Animation par source ===
+  hero-home.webm   vidéo native + punch-in
+  palmeraie.jpg    Ken Burns 1.00→1.08
+  golfs.jpg        Ken Burns 1.00→1.08
+  ourika.jpg       Ken Burns 1.00→1.08
+  hivernage.jpg    Ken Burns 1.00→1.08
+  gueliz.jpg       Ken Burns 1.00→1.08
+  medina.jpg       Ken Burns 1.00→1.08
+  amizmiz.jpg      Ken Burns 1.00→1.08
+  theone           Ken Burns 1.00→1.08
+
+=== ffprobe ===
+index=0
+codec_name=h264
+profile=High
+codec_type=video
+width=1080
+height=1920
+pix_fmt=yuv420p
+r_frame_rate=30/1
+index=1
+codec_name=aac
+profile=LC
+codec_type=audio
+sample_rate=48000
+channels=2
+r_frame_rate=0/0
+duration=38.000000
+size=4858013
+bit_rate=1022739
+TAG:title=BabInvest — 7 quartiers de Marrakech classés par rendement
+TAG:artist=Karine Barmaki
+
+=== Fichiers ===
+   4,858,013 o  preview/reel_babinvest_01_APERCU.mp4
+     126,648 o  preview/cover_babinvest_01_APERCU.png
+         454 o  preview/caption.txt
+     560,569 o  preview/contact_sheet_APERCU.png
+      37,425 o  build_reel.py
