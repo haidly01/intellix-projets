@@ -2,7 +2,19 @@
 
 Autrice : Karine Barmaki
 
-## Lancer le rendu final (sur une machine qui accède à maisonrecherchee.fr)
+## Version livrée : illustrations stylisées
+
+Les visuels de maisonrecherchee.fr n'étaient pas accessibles depuis l'environnement de rendu.
+La version livrée utilise donc des **scènes illustrées stylisées**, dessinées en Python
+(`illustrations.py`, sans photo ni image générée par IA). Chaque scène est une pile de calques,
+ce qui donne un vrai parallaxe 2.5D. La mention « Illustrations stylisées — visuels non
+contractuels » est ajoutée à l'écran, en plus des mentions obligatoires.
+
+```bash
+python3 build_reel.py --illustrations
+```
+
+## Lancer le rendu avec les vrais visuels du site (sur une machine qui accède à maisonrecherchee.fr)
 
 ```bash
 python3 -m pip install pillow numpy          # + optionnel : pip install depthflow

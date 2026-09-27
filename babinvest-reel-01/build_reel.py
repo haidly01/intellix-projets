@@ -13,6 +13,8 @@ Pipeline :
 Usage :
   python3 build_reel.py                  # rendu final (exige toutes les sources réelles)
   python3 build_reel.py --no-depthflow   # force le fallback Ken Burns
+  python3 build_reel.py --illustrations  # sans accès au site : scènes illustrées en calques
+                                         # (parallaxe 2.5D natif), mention « Illustrations » ajoutée
   python3 build_reel.py --preview        # aperçu de mise en page : les sources manquantes
                                          # sont remplacées par des aplats neutres marqués
                                          # « SOURCE MANQUANTE » (jamais livrable)
@@ -96,6 +98,7 @@ FOCUS = {}
 
 MENTION_YIELD = "Rendement brut indicatif — source : guides BabInvest"
 MENTION_RENDER = "Vue d'artiste — rendu non contractuel"
+MENTION_ILLUS = "Illustrations stylisées — visuels non contractuels"
 
 # Un segment = un plan. "cut": True -> coupe franche + flash blanc de 3 images à l'entrée.
 # Lignes de texte : liste de runs (texte, style). Styles : name, price, yield, body, hook.
@@ -603,6 +606,24 @@ def segment_backgrounds(seg, src_paths, work, use_df, report):
         return (np.zeros((H, W, 3), np.uint8) for _ in range(n))
     path = src_paths[src]
     focus = FOCUS.get(src, (0.5, 0.5))
+    if hasattr(path, "frame"):  # scène illustrée en calques (illustrations.py)
+        scene = path
+        if seg.get("motion", "").startswith("punchin"):
+            t_off, total_hook = seg["t0"], SEGMENTS[1]["t1"]
+
+            def gen_hook():
+                for i in range(n):
+                    t = t_off + i / FPS
+                    z = 1.0 + 0.10 * ease_out(t / 0.5)
+                    yield np.asarray(scene.frame(t / total_hook, zoom=z), dtype=np.uint8)
+            report[src] = "illustration en calques : parallaxe 2.5D + punch-in"
+            return gen_hook()
+
+        def gen():
+            for i in range(n):
+                yield np.asarray(scene.frame(i / max(n - 1, 1)), dtype=np.uint8)
+        report[src] = "illustration en calques : parallaxe 2.5D (zoom 1.00→1.08)"
+        return gen()
     if path.endswith((".webm", ".mp4", ".mov")):
         t_off = seg["t0"]
         total_hook = SEGMENTS[1]["t1"]
@@ -697,9 +718,13 @@ def build_video(src_paths, out_dir, use_df, tag=""):
 
 # ── 5. Couverture, légende, planche contact ────────────────────────────────
 def build_cover(src_paths, out_path, preview_mark=False):
-    img = ImageOps.exif_transpose(Image.open(src_paths[COVER_SRC])).convert("RGB")
-    x, y, cw, ch = cover_crop_box(*img.size, FOCUS.get(COVER_SRC, (0.5, 0.5)), 1.0)
-    img = img.resize((W, H), Image.LANCZOS, box=(x, y, x + cw, y + ch)).convert("RGBA")
+    src = src_paths[COVER_SRC]
+    if hasattr(src, "still"):
+        img = src.still().convert("RGBA")
+    else:
+        img = ImageOps.exif_transpose(Image.open(src)).convert("RGB")
+        x, y, cw, ch = cover_crop_box(*img.size, FOCUS.get(COVER_SRC, (0.5, 0.5)), 1.0)
+        img = img.resize((W, H), Image.LANCZOS, box=(x, y, x + cw, y + ch)).convert("RGBA")
     ov = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     d = ImageDraw.Draw(ov)
     # titre dans la zone centrale 4:5 (visible dans la grille du profil)
@@ -775,6 +800,9 @@ def main():
     ap.add_argument("--sources", default=os.path.join(HERE, "sources"),
                     help="dossier des visuels sources (téléchargés ou déposés à la main)")
     ap.add_argument("--no-depthflow", action="store_true", help="forcer le fallback Ken Burns")
+    ap.add_argument("--illustrations", action="store_true",
+                    help="remplacer les visuels du site par des scènes illustrées stylisées (illustrations.py) "
+                         "+ mention « Illustrations » à l'écran")
     ap.add_argument("--preview", action="store_true",
                     help="aperçu de mise en page avec aplats pour les sources manquantes (non livrable)")
     args = ap.parse_args()
@@ -783,7 +811,16 @@ def main():
         if not os.path.exists(p):
             raise SystemExit(f"Police manquante : {p} (Fraunces / Inter, Google Fonts)")
 
-    status = fetch_sources(args.sources)
+    if args.illustrations:
+        from illustrations import Scene
+        status = {k: Scene(k) for k in SOURCES}
+        for seg in SEGMENTS:
+            if seg["src"] is not None:
+                seg["mentions"] = seg.get("mentions", []) + [MENTION_ILLUS]
+        log("[source] mode --illustrations : scènes illustrées stylisées (illustrations.py), "
+            "aucune photo du site utilisée")
+    else:
+        status = fetch_sources(args.sources)
     missing = [k for k, v in status.items() if v is None]
     out_dir = args.out
     tag = ""
@@ -807,8 +844,8 @@ def main():
                 status[k] = placeholder(k, os.path.join(ph_dir, k + ".png"))
         log(f"[preview] aplats « SOURCE MANQUANTE » pour : {', '.join(missing)}")
 
-    use_df = (not args.no_depthflow) and depthflow_available()
-    if not args.no_depthflow and not use_df:
+    use_df = (not args.no_depthflow) and (not args.illustrations) and depthflow_available()
+    if not args.no_depthflow and not args.illustrations and not use_df:
         log("[motion] DepthFlow non installé -> fallback Ken Burns pour toutes les images")
 
     mp4, report = build_video(status, out_dir, use_df, tag)

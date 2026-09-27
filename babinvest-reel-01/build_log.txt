@@ -1,0 +1,63 @@
+[source] mode --illustrations : scènes illustrées stylisées (illustrations.py), aucune photo du site utilisée
+[safe]  0.0-2.5 s texte y=606..1062 (zone autorisée 250..1539) OK
+[safe]  2.5-4.0 s texte y=660..1008 (zone autorisée 250..1539) OK
+[safe]  4.0-8.0 s texte y=1166..1527 (zone autorisée 250..1539) OK
+[safe]  8.0-12.0s texte y=1166..1527 (zone autorisée 250..1539) OK
+[safe] 12.0-16.0s texte y=1060..1527 (zone autorisée 250..1539) OK
+[safe] 16.0-20.0s texte y=1166..1527 (zone autorisée 250..1539) OK
+[safe] 20.0-24.0s texte y=1166..1527 (zone autorisée 250..1539) OK
+[safe] 24.0-28.0s texte y=1108..1527 (zone autorisée 250..1539) OK
+[safe] 28.0-30.5s texte y=1000..1527 (zone autorisée 250..1539) OK
+[safe] 30.5-33.0s texte y=1000..1527 (zone autorisée 250..1539) OK
+[safe] 33.0-38.0s texte y=766..1303 (zone autorisée 250..1539) OK
+[render]  0.0-2.5 s hero-home.webm (75 images)
+[render]  2.5-4.0 s hero-home.webm (45 images)
+[render]  4.0-8.0 s palmeraie.jpg (120 images)
+[render]  8.0-12.0s golfs.jpg (120 images)
+[render] 12.0-16.0s ourika.jpg (120 images)
+[render] 16.0-20.0s hivernage.jpg (120 images)
+[render] 20.0-24.0s gueliz.jpg (120 images)
+[render] 24.0-28.0s medina.jpg (120 images)
+[render] 28.0-30.5s amizmiz.jpg (75 images)
+[render] 30.5-33.0s theone (75 images)
+[render] 33.0-38.0s CTA (150 images)
+
+=== Animation par source ===
+  hero-home.webm   illustration en calques : parallaxe 2.5D + punch-in
+  palmeraie.jpg    illustration en calques : parallaxe 2.5D (zoom 1.00→1.08)
+  golfs.jpg        illustration en calques : parallaxe 2.5D (zoom 1.00→1.08)
+  ourika.jpg       illustration en calques : parallaxe 2.5D (zoom 1.00→1.08)
+  hivernage.jpg    illustration en calques : parallaxe 2.5D (zoom 1.00→1.08)
+  gueliz.jpg       illustration en calques : parallaxe 2.5D (zoom 1.00→1.08)
+  medina.jpg       illustration en calques : parallaxe 2.5D (zoom 1.00→1.08)
+  amizmiz.jpg      illustration en calques : parallaxe 2.5D (zoom 1.00→1.08)
+  theone           illustration en calques : parallaxe 2.5D (zoom 1.00→1.08)
+
+=== ffprobe ===
+index=0
+codec_name=h264
+profile=High
+codec_type=video
+width=1080
+height=1920
+pix_fmt=yuv420p
+r_frame_rate=30/1
+index=1
+codec_name=aac
+profile=LC
+codec_type=audio
+sample_rate=48000
+channels=2
+r_frame_rate=0/0
+duration=38.000000
+size=5807156
+bit_rate=1222559
+TAG:title=BabInvest — 7 quartiers de Marrakech classés par rendement
+TAG:artist=Karine Barmaki
+
+=== Fichiers ===
+   5,807,156 o  reel_babinvest_01.mp4
+     186,714 o  cover_babinvest_01.png
+         454 o  caption.txt
+     956,706 o  contact_sheet.png
+      39,379 o  build_reel.py
